@@ -21,10 +21,10 @@ const ContactPage = () => {
               <div>
                 <h3 className="text-sm font-medium mb-2">Email</h3>
                 <a 
-                  href="mailto:hello@reeddigitalgroup.com" 
+                  href="mailto:info@reeddigitalgroup.com" 
                   className="text-xl hover:text-muted-foreground transition-colors font-mono"
                 >
-                  hello@reeddigitalgroup.com
+                  info@reeddigitalgroup.com
                 </a>
               </div>
               <div>
@@ -48,8 +48,7 @@ const ContactPage = () => {
             <div className="border-t border-border pt-8">
               <h3 className="text-sm font-medium mb-4">Office Hours</h3>
               <div className="space-y-1 text-sm text-muted-foreground font-mono">
-                <p>Monday – Friday: 9:00 AM – 5:00 PM EST</p>
-                <p>Saturday – Sunday: Closed</p>
+                <p>Monday – Sunday: 9:00 AM – 5:00 PM EST</p>
               </div>
             </div>
 
