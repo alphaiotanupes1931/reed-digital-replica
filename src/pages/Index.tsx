@@ -1,15 +1,12 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import PartnersMarquee from "@/components/PartnersMarquee";
-import AboutSection from "@/components/AboutSection";
-import FounderSection from "@/components/FounderSection";
-import ConsultationCTA from "@/components/ConsultationCTA";
+import LogoMarquee from "@/components/LogoMarquee";
 import ServicesSection from "@/components/ServicesSection";
-import WhyUsSection from "@/components/WhyUsSection";
 import WorkSection from "@/components/WorkSection";
-import PrioritySection from "@/components/PrioritySection";
+import FeaturesShowcase from "@/components/FeaturesShowcase";
+import WhyUsSection from "@/components/WhyUsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import FinalCTA from "@/components/FinalCTA";
+import ContactCTA from "@/components/ContactCTA";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -17,16 +14,13 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <HeroSection />
-      <PartnersMarquee />
-      <AboutSection />
-      <FounderSection />
-      <ConsultationCTA />
+      <LogoMarquee />
       <ServicesSection />
-      <WhyUsSection />
       <WorkSection />
-      <PrioritySection />
+      <FeaturesShowcase />
+      <WhyUsSection />
       <TestimonialsSection />
-      <FinalCTA />
+      <ContactCTA />
       <Footer />
     </div>
   );

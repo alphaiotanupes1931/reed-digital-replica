@@ -1,80 +1,115 @@
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState, useRef } from "react";
+import { ArrowRight, Play } from "lucide-react";
 
-const rotatingWords = ["Websites", "Apps", "Brands", "Experiences"];
+const words = ["Websites", "Apps", "Platforms", "Experiences"];
 
 const HeroSection = () => {
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [currentWord, setCurrentWord] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
-        setIsAnimating(false);
-      }, 300);
-    }, 3000);
-
+      setCurrentWord((prev) => (prev + 1) % words.length);
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <section className="relative min-h-screen hero-gradient overflow-hidden pt-20">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-light/90 via-purple-medium/80 to-purple-light/70 z-10"></div>
-        <img
-          src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=2000&q=80"
-          alt="Coding workspace"
-          className="w-full h-full object-cover object-center opacity-40"
-        />
-      </div>
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (heroRef.current) {
+        const rect = heroRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: (e.clientX - rect.left) / rect.width,
+          y: (e.clientY - rect.top) / rect.height,
+        });
+      }
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
-      <div className="container mx-auto px-6 relative z-20">
-        <div className="flex flex-col lg:flex-row items-center min-h-[calc(100vh-5rem)] py-20">
-          {/* Left Content */}
-          <div className="w-full lg:w-1/2 text-left">
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground leading-tight mb-6">
-              We Build
-              <br />
-              <span className="relative inline-block h-[1.2em] overflow-hidden">
-                <span
-                  className={`text-gradient-gold inline-block transition-all duration-300 ${
-                    isAnimating ? "opacity-0 translate-y-full" : "opacity-100 translate-y-0"
-                  }`}
-                >
-                  {rotatingWords[currentWordIndex]}
-                </span>
-              </span>
-            </h1>
-            
-            <div className="flex flex-col sm:flex-row gap-4 mt-10">
-              <Button className="btn-gold text-base">Start Your Project</Button>
-              <Button variant="outline" className="btn-outline-dark text-base">
-                View Our Work
-              </Button>
-            </div>
+  return (
+    <section
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden glow-top"
+    >
+      {/* Animated Grid Background */}
+      <div className="absolute inset-0 grid-pattern opacity-50" />
+      
+      {/* Floating Elements */}
+      <div
+        className="absolute w-96 h-96 rounded-full bg-primary/5 blur-3xl animate-float"
+        style={{
+          left: `${20 + mousePosition.x * 10}%`,
+          top: `${20 + mousePosition.y * 10}%`,
+        }}
+      />
+      <div
+        className="absolute w-64 h-64 rounded-full bg-cyan/5 blur-3xl animate-float"
+        style={{
+          right: `${20 + mousePosition.x * 5}%`,
+          bottom: `${30 + mousePosition.y * 5}%`,
+          animationDelay: "-3s",
+        }}
+      />
+
+      <div className="container mx-auto px-6 relative z-10 pt-20">
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/50 backdrop-blur-sm mb-8 animate-fade-in">
+            <span className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
+            <span className="text-sm text-muted-foreground">Available for new projects</span>
           </div>
 
-          {/* Right Content - Monitor mockup would go here */}
-          <div className="w-full lg:w-1/2 mt-12 lg:mt-0 flex justify-center">
-            <div className="relative w-full max-w-lg">
-              <div className="bg-card rounded-2xl shadow-2xl overflow-hidden border border-border">
-                <div className="bg-muted p-3 flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-destructive"></div>
-                  <div className="w-3 h-3 rounded-full bg-primary"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                </div>
-                <img
-                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80"
-                  alt="Website preview"
-                  className="w-full h-64 object-cover"
-                />
+          {/* Main Heading */}
+          <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[0.9] mb-8">
+            <span className="text-foreground">We Build</span>
+            <br />
+            <span className="text-gradient relative inline-block min-w-[300px]">
+              {words[currentWord]}
+            </span>
+            <br />
+            <span className="text-muted-foreground/60">That Scale</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
+            Modern software development for businesses ready to grow. 
+            We craft digital solutions that look stunning and perform flawlessly.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+            <a href="#contact" className="btn-primary flex items-center gap-2 text-base w-full sm:w-auto justify-center">
+              Start Your Project <ArrowRight size={18} />
+            </a>
+            <a href="#work" className="btn-ghost flex items-center gap-2 text-base w-full sm:w-auto justify-center">
+              <Play size={18} /> View Our Work
+            </a>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
+            {[
+              { value: "50+", label: "Projects Delivered" },
+              { value: "100%", label: "Client Satisfaction" },
+              { value: "<2wk", label: "Avg. Turnaround" },
+              { value: "24/7", label: "Support Available" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <p className="font-display text-3xl md:text-4xl font-bold text-gradient">{stat.value}</p>
+                <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-pulse-slow">
+        <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
+        <div className="w-px h-12 bg-gradient-to-b from-muted-foreground to-transparent" />
       </div>
     </section>
   );

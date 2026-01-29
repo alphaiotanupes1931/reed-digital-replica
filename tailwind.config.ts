@@ -49,16 +49,17 @@ export default {
         },
         gold: {
           DEFAULT: "hsl(var(--gold))",
-          light: "hsl(var(--gold-light))",
-          dark: "hsl(var(--gold-dark))",
+          dim: "hsl(var(--gold-dim))",
         },
-        purple: {
-          light: "hsl(var(--purple-light))",
-          medium: "hsl(var(--purple-medium))",
-          dark: "hsl(var(--purple-dark))",
+        dark: {
+          100: "hsl(var(--dark-100))",
+          200: "hsl(var(--dark-200))",
+          300: "hsl(var(--dark-300))",
+          400: "hsl(var(--dark-400))",
+          500: "hsl(var(--dark-500))",
         },
-        dark: "hsl(var(--dark))",
-        cream: "hsl(var(--cream))",
+        cyan: "hsl(var(--cyan))",
+        emerald: "hsl(var(--emerald))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -71,7 +72,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
+        display: ["Space Grotesk", "sans-serif"],
         sans: ["Inter", "sans-serif"],
       },
       borderRadius: {
@@ -88,20 +89,20 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        marquee: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
         },
-        "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.8" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        marquee: "marquee 30s linear infinite",
-        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        float: "float 6s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
       },
     },
   },
