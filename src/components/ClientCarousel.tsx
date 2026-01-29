@@ -31,11 +31,6 @@ const ClientLogo = ({ name, logo }: { name: string; logo: string }) => (
 const ClientCarousel = () => {
   return (
     <section className="py-12 border-t border-border overflow-hidden">
-      <div className="container mb-6">
-        <p className="text-xs text-muted-foreground tracking-widest text-center font-mono uppercase">
-          Built With Modern Technology
-        </p>
-      </div>
       
       {/* Infinite scroll container */}
       <div className="relative group">
