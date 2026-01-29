@@ -1,72 +1,74 @@
-import { ArrowUpRight } from "lucide-react";
+import { Code, Palette, Globe, Smartphone, Cloud, Users } from "lucide-react";
 
 const services = [
   {
-    number: "01",
-    title: "Web Development",
-    description: "Custom websites and web applications built with modern technologies. Fast, responsive, and optimized for growth.",
-    features: ["React & Next.js", "E-commerce", "CMS Integration", "API Development"],
+    icon: Code,
+    title: "Custom Development",
+    description: "Bespoke web applications built with modern technologies and best practices.",
   },
   {
-    number: "02",
-    title: "Mobile Apps",
-    description: "Native and cross-platform mobile applications that deliver seamless experiences across all devices.",
-    features: ["iOS & Android", "React Native", "App Store Launch", "Push Notifications"],
-  },
-  {
-    number: "03",
+    icon: Palette,
     title: "UI/UX Design",
-    description: "User-centered design that combines aesthetics with functionality. From concept to pixel-perfect delivery.",
-    features: ["User Research", "Wireframing", "Prototyping", "Design Systems"],
+    description: "Intuitive interfaces that balance aesthetics with exceptional user experience.",
   },
   {
-    number: "04",
-    title: "Branding",
-    description: "Complete brand identity design that tells your story and connects with your audience.",
-    features: ["Logo Design", "Brand Guidelines", "Visual Identity", "Brand Strategy"],
+    icon: Globe,
+    title: "Web Applications",
+    description: "Scalable, performant solutions that grow with your business needs.",
+  },
+  {
+    icon: Smartphone,
+    title: "Mobile Development",
+    description: "Native and cross-platform applications for iOS and Android devices.",
+  },
+  {
+    icon: Cloud,
+    title: "Cloud Solutions",
+    description: "AWS and Azure infrastructure designed for reliability and scale.",
+  },
+  {
+    icon: Users,
+    title: "Digital Strategy",
+    description: "Strategic consulting to align technology with your business objectives.",
   },
 ];
 
 const ServicesSection = () => {
   return (
-    <section id="services" className="py-24 md:py-32">
+    <section id="services" className="py-24 md:py-32 border-t border-border">
       <div className="container">
-        {/* Section Header */}
-        <div className="max-w-2xl mb-16">
-          <p className="section-label mb-4">Services</p>
-          <h2 className="text-display-sm md:text-display font-bold mb-6">
-            Everything you need to launch and grow
+        {/* Header */}
+        <div className="max-w-2xl mx-auto text-center mb-20">
+          <span className="section-label">Services</span>
+          <h2 className="text-display-sm md:text-display font-serif mt-4 mb-6">
+            What We Do
           </h2>
-          <p className="text-lg text-muted-foreground">
-            From initial concept to final deployment, we handle every aspect of your digital product.
+          <div className="flex justify-center mb-6">
+            <div className="divider" />
+          </div>
+          <p className="text-muted-foreground leading-relaxed">
+            We offer comprehensive digital solutions, from initial concept 
+            through to deployment and ongoing support.
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {services.map((service) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+          {services.map((service, index) => (
             <div
-              key={service.number}
-              className="group card-hover p-8 md:p-10 cursor-pointer"
+              key={service.title}
+              className="bg-background p-10 md:p-12 group hover:bg-secondary/50 transition-colors duration-300"
             >
-              <div className="flex items-start justify-between mb-6">
-                <span className="text-sm font-mono text-muted-foreground">{service.number}</span>
-                <ArrowUpRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-              </div>
-              
-              <h3 className="text-xl md:text-2xl font-semibold mb-4">{service.title}</h3>
-              <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
-              
-              <div className="flex flex-wrap gap-2">
-                {service.features.map((feature) => (
-                  <span
-                    key={feature}
-                    className="text-xs px-3 py-1.5 rounded-full bg-secondary text-muted-foreground"
-                  >
-                    {feature}
-                  </span>
-                ))}
-              </div>
+              <service.icon 
+                className="w-6 h-6 text-foreground mb-6" 
+                strokeWidth={1.5} 
+              />
+              <h3 className="text-lg font-medium mb-3">
+                {service.title}
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {service.description}
+              </p>
             </div>
           ))}
         </div>

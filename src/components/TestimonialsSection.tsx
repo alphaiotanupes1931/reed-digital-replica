@@ -1,83 +1,93 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
-    text: "Reed Digital Group delivered a website that exceeded our expectations. Professional, responsive, and truly understood our vision.",
-    author: "Shelley Sanders",
-    role: "Insurance Agency Owner",
+    quote: "Reed Digital delivered beyond our expectations. Their attention to detail and commitment to quality is unmatched.",
+    author: "Sarah Chen",
+    title: "CEO, TechStart Inc.",
   },
   {
-    text: "They really listened to what I needed and delivered a clean, professional website. The monthly payment options made it easy to get started.",
-    author: "Chaz Crockett",
-    role: "Business Owner",
+    quote: "Working with Reed Digital was a seamless experience. They understood our vision and executed it flawlessly.",
+    author: "Michael Torres",
+    title: "Director of Operations, Nexus Group",
   },
   {
-    text: "The quality of work is truly exceptional. Everything is extremely professional, well-designed, and delivered on time.",
-    author: "Iyana Ponce-Scott",
-    role: "Entrepreneur",
-  },
-  {
-    text: "Very experienced and knowledgeable. Worth every penny. Would recommend this team to anyone.",
-    author: "Tyrel Fuentes",
-    role: "Project Manager",
+    quote: "Professional, responsive, and incredibly talented. They transformed our digital presence completely.",
+    author: "Emily Richardson",
+    title: "Marketing Director, Elevate Co.",
   },
 ];
 
 const TestimonialsSection = () => {
-  const [current, setCurrent] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const next = () => setCurrent((prev) => (prev + 1) % testimonials.length);
-  const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  const next = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prev = () => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
 
   return (
-    <section className="py-24 md:py-32">
+    <section className="py-24 md:py-32 border-t border-border">
       <div className="container">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Section Header */}
-          <p className="section-label mb-4">Testimonials</p>
-          <div className="flex items-center justify-center gap-1 mb-8">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-foreground text-foreground" />
-            ))}
-            <span className="ml-2 text-sm text-muted-foreground">5.0 on Google</span>
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <span className="section-label">Testimonials</span>
+            <h2 className="text-display-sm md:text-display font-serif mt-4 mb-6">
+              Client Voices
+            </h2>
+            <div className="flex justify-center">
+              <div className="divider" />
+            </div>
           </div>
 
           {/* Testimonial */}
-          <blockquote className="text-2xl md:text-3xl font-medium mb-8 leading-relaxed min-h-[120px]">
-            "{testimonials[current].text}"
-          </blockquote>
-
-          <div className="mb-8">
-            <p className="font-semibold">{testimonials[current].author}</p>
-            <p className="text-sm text-muted-foreground">{testimonials[current].role}</p>
-          </div>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={prev}
-              className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="flex gap-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrent(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    current === index ? "w-6 bg-foreground" : "bg-border"
-                  }`}
-                />
-              ))}
+          <div className="text-center">
+            <blockquote className="text-2xl md:text-3xl font-serif leading-relaxed mb-10">
+              "{testimonials[currentIndex].quote}"
+            </blockquote>
+            <div className="mb-10">
+              <p className="font-medium">{testimonials[currentIndex].author}</p>
+              <p className="text-sm text-muted-foreground">
+                {testimonials[currentIndex].title}
+              </p>
             </div>
-            <button
-              onClick={next}
-              className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-center gap-6">
+              <button
+                onClick={prev}
+                className="p-2 border border-border hover:border-foreground transition-colors"
+                aria-label="Previous testimonial"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex gap-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      index === currentIndex 
+                        ? "bg-foreground" 
+                        : "bg-border hover:bg-muted-foreground"
+                    }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={next}
+                className="p-2 border border-border hover:border-foreground transition-colors"
+                aria-label="Next testimonial"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

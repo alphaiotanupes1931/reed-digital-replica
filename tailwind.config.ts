@@ -60,13 +60,13 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        serif: ["Playfair Display", "Georgia", "serif"],
       },
       fontSize: {
-        "display-xl": ["4.5rem", { lineHeight: "1", letterSpacing: "-0.02em" }],
-        "display-lg": ["3.75rem", { lineHeight: "1", letterSpacing: "-0.02em" }],
-        "display": ["3rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
-        "display-sm": ["2.25rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
+        "display-xl": ["4rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
+        "display-lg": ["3.25rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
+        "display": ["2.5rem", { lineHeight: "1.15", letterSpacing: "-0.01em" }],
+        "display-sm": ["2rem", { lineHeight: "1.2", letterSpacing: "0" }],
       },
       borderRadius: {
         lg: "var(--radius)",

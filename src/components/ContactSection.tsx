@@ -1,48 +1,60 @@
-import { ArrowRight, Mail, Calendar } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 const ContactSection = () => {
   return (
     <section id="contact" className="py-24 md:py-32 bg-foreground text-background">
       <div className="container">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-sm font-medium text-background/60 uppercase tracking-wider mb-4">
-            Get Started
-          </p>
-          <h2 className="text-display-sm md:text-display font-bold mb-6">
-            Ready to build something great?
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Header */}
+          <span className="text-xs uppercase tracking-[0.2em] text-background/60">
+            Contact
+          </span>
+          <h2 className="text-display-sm md:text-display font-serif mt-4 mb-6">
+            Let's Work Together
           </h2>
-          <p className="text-lg text-background/70 mb-10 max-w-xl mx-auto">
-            Book a free consultation. We'll discuss your project, timeline, and provide a transparent quote.
+          <div className="flex justify-center mb-8">
+            <div className="w-12 h-px bg-background/30" />
+          </div>
+          <p className="text-lg text-background/70 mb-12 max-w-xl mx-auto leading-relaxed">
+            Ready to start your next project? We'd love to hear from you. 
+            Schedule a consultation to discuss your vision.
           </p>
 
+          {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <a
               href="mailto:hello@reeddigitalgroup.com"
-              className="inline-flex items-center gap-2 bg-background text-foreground font-medium px-6 py-3 rounded-full transition-all duration-200 hover:opacity-90 w-full sm:w-auto justify-center"
+              className="inline-flex items-center justify-center gap-2 bg-background text-foreground font-medium px-8 py-3 text-sm uppercase tracking-widest transition-all duration-200 hover:opacity-90 w-full sm:w-auto"
             >
-              <Mail size={18} /> Get in touch
+              Get in Touch
             </a>
             <a
               href="#"
-              className="inline-flex items-center gap-2 border border-background/30 text-background font-medium px-6 py-3 rounded-full transition-all duration-200 hover:bg-background/10 w-full sm:w-auto justify-center"
+              className="inline-flex items-center justify-center gap-2 border border-background/30 text-background font-medium px-8 py-3 text-sm uppercase tracking-widest transition-all duration-200 hover:bg-background/10 w-full sm:w-auto"
             >
-              <Calendar size={18} /> Schedule a call
+              Schedule a Call
             </a>
           </div>
 
-          {/* Quick Facts */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <p className="text-2xl font-bold mb-1">Free</p>
-              <p className="text-sm text-background/60">30-min consultation</p>
+          {/* Contact Info */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-background/20">
+            <div className="flex flex-col items-center gap-3">
+              <Mail className="w-5 h-5 text-background/60" strokeWidth={1.5} />
+              <span className="text-sm text-background/80">
+                hello@reeddigitalgroup.com
+              </span>
             </div>
-            <div className="md:border-x border-background/20 md:px-8">
-              <p className="text-2xl font-bold mb-1">48h</p>
-              <p className="text-sm text-background/60">Quote turnaround</p>
+            <div className="flex flex-col items-center gap-3">
+              <Phone className="w-5 h-5 text-background/60" strokeWidth={1.5} />
+              <span className="text-sm text-background/80">
+                (443) 555-0123
+              </span>
             </div>
-            <div>
-              <p className="text-2xl font-bold mb-1">1-2 weeks</p>
-              <p className="text-sm text-background/60">Project kickoff</p>
+            <div className="flex flex-col items-center gap-3">
+              <MapPin className="w-5 h-5 text-background/60" strokeWidth={1.5} />
+              <span className="text-sm text-background/80">
+                Baltimore, Maryland
+              </span>
             </div>
           </div>
         </div>

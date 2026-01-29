@@ -1,65 +1,64 @@
-import { Check } from "lucide-react";
-
-const benefits = [
-  "Direct communication with developers",
-  "Transparent pricing, no hidden fees",
-  "Fast turnaround (2-4 weeks average)",
-  "30 days free maintenance after launch",
-  "Satisfaction guarantee or full refund",
-  "Modern tech stack, future-proof code",
-];
-
 const stats = [
-  { value: "50+", label: "Projects delivered" },
-  { value: "100%", label: "Client satisfaction" },
-  { value: "5.0", label: "Google rating" },
-  { value: "<2wk", label: "Avg. turnaround" },
+  { value: "50+", label: "Projects Delivered" },
+  { value: "98%", label: "Client Satisfaction" },
+  { value: "5+", label: "Years Experience" },
+  { value: "24/7", label: "Support Available" },
 ];
 
 const AboutSection = () => {
   return (
-    <section id="about" className="py-24 md:py-32 bg-secondary/50">
+    <section id="about" className="py-24 md:py-32 bg-secondary/30">
       <div className="container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Content */}
-          <div>
-            <p className="section-label mb-4">Why us</p>
-            <h2 className="text-display-sm md:text-display font-bold mb-6">
-              Quality work without the agency overhead
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <span className="section-label">About</span>
+            <h2 className="text-display-sm md:text-display font-serif mt-4 mb-6">
+              Who We Are
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              We're a lean team that moves fast. No account managers, no bureaucracy—just 
-              direct access to the people building your product. You get agency-quality 
-              work at a fraction of the cost.
-            </p>
-
-            <ul className="space-y-4 mb-8">
-              {benefits.map((benefit) => (
-                <li key={benefit} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-foreground flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 text-background" />
-                  </div>
-                  <span className="text-foreground">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-
-            <a href="#contact" className="btn-primary inline-flex">
-              Work with us
-            </a>
+            <div className="flex justify-center">
+              <div className="divider" />
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-6">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-background rounded-2xl p-8 border border-border text-center"
-              >
-                <p className="text-4xl md:text-5xl font-bold mb-2">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+            <div>
+              <p className="text-xl md:text-2xl font-serif leading-relaxed mb-6">
+                Reed Digital Group is a boutique development studio 
+                dedicated to crafting exceptional digital experiences.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Founded with a commitment to quality over quantity, we partner 
+                with select clients who value thoughtful design and meticulous 
+                execution. Our team brings together expertise in development, 
+                design, and strategy to deliver solutions that stand apart.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Based in Baltimore, Maryland, we serve clients nationwide 
+                and are proud to support government and enterprise initiatives 
+                as a certified small business.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-px bg-border">
+              {stats.map((stat) => (
+                <div key={stat.label} className="bg-background p-8 text-center">
+                  <div className="text-3xl md:text-4xl font-serif mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Certifications */}
+          <div className="border-t border-border pt-12 text-center">
+            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Small Business · SAM Registered · Federal Contractor Ready
+            </span>
           </div>
         </div>
       </div>
