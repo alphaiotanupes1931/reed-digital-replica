@@ -60,7 +60,7 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
-        serif: ["Playfair Display", "Georgia", "serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
         "display-xl": ["4rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
