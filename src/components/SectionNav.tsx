@@ -11,7 +11,6 @@ const sections = [
   { id: "about", label: "About" },
   { id: "testimonials", label: "Testimonials" },
   { id: "faq", label: "FAQ" },
-  { id: "calendly", label: "Schedule" },
   { id: "contact", label: "Contact" },
 ];
 
