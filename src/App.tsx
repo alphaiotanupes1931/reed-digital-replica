@@ -7,7 +7,6 @@ import { AnimatePresence } from "framer-motion";
 import CustomCursor from "./components/CustomCursor";
 import PageLoader from "./components/PageLoader";
 import ScrollProgress from "./components/ScrollProgress";
-import SocialProofToast from "./components/SocialProofToast";
 import Index from "./pages/Index";
 import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
@@ -30,7 +29,6 @@ const App = () => (
       <PageLoader />
       <ScrollProgress />
       <CustomCursor />
-      <SocialProofToast />
       <Toaster />
       <Sonner />
       <BrowserRouter>
