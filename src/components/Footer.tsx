@@ -12,7 +12,7 @@ const Footer = () => {
               <img 
                 src={logo} 
                 alt="Reed Digital Group" 
-                className="h-6 w-auto opacity-60 hover:opacity-100 transition-opacity"
+                className="h-12 w-auto opacity-60 hover:opacity-100 transition-opacity"
               />
             </Link>
           </div>
