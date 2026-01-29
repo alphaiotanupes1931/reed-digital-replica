@@ -1,61 +1,57 @@
-import { Mail, MapPin, Globe, ArrowLeft } from "lucide-react";
+import { Mail, MapPin, Globe, ArrowLeft, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "@/assets/rdg-logo.png";
 
 const CapabilityStatement = () => {
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
+    <div className="min-h-screen bg-muted/30 py-8 px-4">
       {/* Back Button */}
       <div className="max-w-4xl mx-auto mb-6 print:hidden">
-        <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
+        <Link to="/government" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
           <ArrowLeft size={16} />
-          Back to Home
+          Back to Government
         </Link>
       </div>
 
-      <div className="max-w-4xl mx-auto bg-background border border-border rounded-2xl overflow-hidden shadow-sm print:shadow-none print:border-gray-300">
+      <div className="max-w-4xl mx-auto bg-background border border-border overflow-hidden print:border-0">
         {/* Header */}
-        <div className="bg-foreground text-background p-6">
+        <div className="bg-foreground text-background p-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-background/20 rounded-lg flex items-center justify-center">
-                <span className="font-bold text-2xl">R</span>
-              </div>
+            <div className="flex items-center gap-5">
+              <img 
+                src={logo} 
+                alt="Reed Digital Group" 
+                className="w-16 h-16 invert"
+              />
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">Reed Digital Group LLC</h1>
-                <p className="text-background/70 text-sm">Modern Technology Solutions for Mission Success</p>
+                <h1 className="text-2xl font-medium tracking-tight">Reed Digital Group LLC</h1>
+                <p className="text-background/60 text-sm mt-1">Modern Technology Solutions for Mission Success</p>
               </div>
             </div>
             <div className="text-right text-sm hidden sm:block">
-              <p className="font-semibold">CAPABILITY STATEMENT</p>
-              <p className="opacity-70">Federal Contracting</p>
+              <p className="font-mono text-xs tracking-wider opacity-60">CAPABILITY STATEMENT</p>
             </div>
           </div>
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-3">
           {/* Left Column */}
-          <div className="md:col-span-2 p-6 space-y-6 border-r border-border">
+          <div className="md:col-span-2 p-8 space-y-8">
             {/* Core Competencies */}
             <section>
-              <h2 className="text-lg font-semibold border-b-2 border-foreground pb-1 mb-3">
+              <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4">
                 Core Competencies
               </h2>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                <ul className="space-y-1">
-                  {["Custom Software Development", "Web Application Development", "Mobile Application Development", "Cloud Solutions (AWS, Azure)", "Database Design & Management"].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="text-foreground mt-1">■</span>
-                      <span>{item}</span>
-                    </li>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                <ul className="space-y-2">
+                  {["Custom Software Development", "Web Application Development", "Mobile App Development", "Cloud Solutions (AWS, Azure)", "Database Design & Management"].map((item) => (
+                    <li key={item} className="text-muted-foreground">{item}</li>
                   ))}
                 </ul>
-                <ul className="space-y-1">
-                  {["IT Consulting & Strategy", "System Integration Services", "UI/UX Design & Prototyping", "Agile Project Management", "Technical Support & Maintenance"].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="text-foreground mt-1">■</span>
-                      <span>{item}</span>
-                    </li>
+                <ul className="space-y-2">
+                  {["IT Consulting & Strategy", "System Integration", "UI/UX Design", "Agile Project Management", "Technical Support"].map((item) => (
+                    <li key={item} className="text-muted-foreground">{item}</li>
                   ))}
                 </ul>
               </div>
@@ -63,108 +59,136 @@ const CapabilityStatement = () => {
 
             {/* Differentiators */}
             <section>
-              <h2 className="text-lg font-semibold border-b-2 border-foreground pb-1 mb-3">
+              <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4">
                 Differentiators
               </h2>
-              <ul className="text-sm space-y-2">
+              <div className="space-y-3 text-sm">
                 {[
-                  { title: "Agile Methodology", desc: "Iterative development with continuous stakeholder engagement ensures alignment with mission requirements." },
-                  { title: "Small Business Agility", desc: "Lean operations enable rapid response, direct communication, and flexible contracting." },
-                  { title: "Modern Technology Stack", desc: "Expertise in current frameworks and cloud-native architectures for scalable, maintainable solutions." },
-                  { title: "Fast Turnaround", desc: "Accelerated delivery timelines without compromising quality or security standards." },
-                  { title: "Cost-Effective Solutions", desc: "Competitive pricing with transparent billing and no hidden overhead costs." },
+                  { title: "Agile Methodology", desc: "Iterative development with continuous stakeholder engagement" },
+                  { title: "Small Business Agility", desc: "Rapid response, direct communication, flexible contracting" },
+                  { title: "Modern Tech Stack", desc: "Cloud-native architectures for scalable solutions" },
+                  { title: "Fast Turnaround", desc: "Accelerated delivery without compromising quality" },
+                  { title: "Cost-Effective", desc: "Competitive pricing with transparent billing" },
                 ].map((item) => (
-                  <li key={item.title} className="flex items-start gap-2">
-                    <span className="text-foreground font-bold">✓</span>
-                    <span><strong>{item.title}:</strong> {item.desc}</span>
-                  </li>
+                  <div key={item.title}>
+                    <span className="font-medium">{item.title}</span>
+                    <span className="text-muted-foreground"> — {item.desc}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </section>
 
             {/* Past Performance */}
             <section>
-              <h2 className="text-lg font-semibold border-b-2 border-foreground pb-1 mb-3">
+              <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4">
                 Past Performance
               </h2>
-              <div className="text-sm space-y-3">
-                <div className="bg-secondary p-3 rounded-lg">
-                  <p className="font-semibold">Commercial Web & Application Development</p>
-                  <p className="text-muted-foreground mt-1">Delivered 50+ custom web applications and mobile solutions for small businesses, startups, and organizations. Projects include e-commerce platforms, member management systems, and business process automation tools.</p>
+              <div className="text-sm space-y-4">
+                <div>
+                  <p className="font-medium">Commercial Web & Application Development</p>
+                  <p className="text-muted-foreground mt-1">
+                    50+ custom web applications and mobile solutions for businesses and organizations.
+                  </p>
                 </div>
-                <div className="bg-secondary p-3 rounded-lg">
-                  <p className="font-semibold">Consulting & Digital Transformation</p>
-                  <p className="text-muted-foreground mt-1">Provided IT strategy consulting and digital presence development for professional services firms, resulting in improved operational efficiency and client engagement.</p>
+                <div>
+                  <p className="font-medium">IT Consulting & Digital Transformation</p>
+                  <p className="text-muted-foreground mt-1">
+                    Strategy consulting and digital presence development for professional services firms.
+                  </p>
                 </div>
-                <p className="text-muted-foreground italic">Federal-ready. Actively pursuing GSA Schedule and government prime/subcontracting opportunities.</p>
+                <p className="text-xs text-muted-foreground font-mono mt-4">
+                  Federal-ready. Actively pursuing GSA Schedule and government contracting opportunities.
+                </p>
               </div>
             </section>
           </div>
 
           {/* Right Column */}
-          <div className="p-6 bg-secondary/50 space-y-5">
+          <div className="p-8 bg-muted/50 space-y-6 border-l border-border">
             {/* NAICS Codes */}
             <section>
-              <h2 className="text-sm font-semibold border-b-2 border-foreground pb-1 mb-2">
-                NAICS CODES
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">
+                NAICS Codes
               </h2>
-              <ul className="text-xs space-y-1">
-                <li><span className="font-mono font-semibold">541511</span> <span className="text-muted-foreground">Custom Computer Programming</span> <span className="text-xs font-semibold">(PRIMARY)</span></li>
-                <li><span className="font-mono font-semibold">541512</span> <span className="text-muted-foreground">Computer Systems Design</span></li>
-                <li><span className="font-mono font-semibold">541519</span> <span className="text-muted-foreground">Other Computer Related Services</span></li>
-                <li><span className="font-mono font-semibold">518210</span> <span className="text-muted-foreground">Data Processing & Hosting</span></li>
-                <li><span className="font-mono font-semibold">541611</span> <span className="text-muted-foreground">Admin. Management Consulting</span></li>
-              </ul>
+              <div className="space-y-1 text-sm">
+                <div><span className="font-mono">541511</span> <span className="text-muted-foreground text-xs">(Primary)</span></div>
+                <div className="text-muted-foreground text-xs">Custom Computer Programming</div>
+                <div className="font-mono mt-2">541512</div>
+                <div className="text-muted-foreground text-xs">Computer Systems Design</div>
+                <div className="font-mono mt-2">541519</div>
+                <div className="text-muted-foreground text-xs">Other Computer Related Services</div>
+                <div className="font-mono mt-2">541611</div>
+                <div className="text-muted-foreground text-xs">Admin. Management Consulting</div>
+              </div>
             </section>
 
             {/* PSC Codes */}
             <section>
-              <h2 className="text-sm font-semibold border-b-2 border-foreground pb-1 mb-2">
-                PSC CODES
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">
+                PSC Codes
               </h2>
-              <ul className="text-xs space-y-1">
-                <li><span className="font-mono font-semibold">DA01</span> <span className="text-muted-foreground">IT & Telecom - Business App/Mail</span></li>
-                <li><span className="font-mono font-semibold">DA10</span> <span className="text-muted-foreground">IT & Telecom - Web-Based SW Svcs</span></li>
-              </ul>
+              <div className="space-y-1 text-sm">
+                <div className="font-mono">DA01</div>
+                <div className="text-muted-foreground text-xs">IT & Telecom - Business App</div>
+                <div className="font-mono mt-2">DA10</div>
+                <div className="text-muted-foreground text-xs">IT & Telecom - Web-Based Services</div>
+              </div>
             </section>
 
             {/* Company Data */}
             <section>
-              <h2 className="text-sm font-semibold border-b-2 border-foreground pb-1 mb-2">
-                COMPANY DATA
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">
+                Company Data
               </h2>
-              <ul className="text-xs space-y-2">
-                <li><span className="text-muted-foreground block">UEI Number</span><span className="font-mono font-semibold">[UEI PENDING]</span></li>
-                <li><span className="text-muted-foreground block">CAGE Code</span><span className="font-mono font-semibold">[CAGE PENDING]</span></li>
-                <li><span className="text-muted-foreground block">Business Type</span><span className="font-semibold">Small Business</span></li>
-                <li><span className="text-muted-foreground block">Entity Structure</span><span className="font-semibold">LLC</span></li>
-                <li><span className="text-muted-foreground block">Headquarters</span><span className="font-semibold">Baltimore, Maryland</span></li>
-              </ul>
-            </section>
-
-            {/* Status */}
-            <section>
-              <h2 className="text-sm font-semibold border-b-2 border-foreground pb-1 mb-2">
-                STATUS
-              </h2>
-              <ul className="text-xs space-y-1">
-                <li className="flex items-center gap-2"><span>●</span><span>Small Business (SB)</span></li>
-                <li className="flex items-center gap-2 text-muted-foreground"><span>○</span><span>SAM.gov Registered (Pending)</span></li>
-              </ul>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <div className="text-muted-foreground text-xs">UEI Number</div>
+                  <div className="font-mono">Pending</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-xs">CAGE Code</div>
+                  <div className="font-mono">Pending</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-xs">Business Type</div>
+                  <div>Small Business</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-xs">Entity</div>
+                  <div>LLC</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-xs">Location</div>
+                  <div>Brandywine, MD</div>
+                </div>
+              </div>
             </section>
 
             {/* Contact */}
             <section>
-              <h2 className="text-sm font-semibold border-b-2 border-foreground pb-1 mb-2">
-                POINT OF CONTACT
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">
+                Point of Contact
               </h2>
-              <div className="text-xs space-y-2">
-                <p className="font-semibold">Terell Reed</p>
-                <p className="text-muted-foreground">Founder & CEO</p>
-                <div className="space-y-1 mt-2">
-                  <p className="flex items-center gap-2"><Mail className="w-3 h-3" /><span>hello@reeddigitalgroup.com</span></p>
-                  <p className="flex items-center gap-2"><Globe className="w-3 h-3" /><span>reeddigitalgroup.com</span></p>
-                  <p className="flex items-center gap-2"><MapPin className="w-3 h-3" /><span>Baltimore, MD</span></p>
+              <div className="text-sm space-y-1">
+                <p className="font-medium">Terell Reed</p>
+                <p className="text-muted-foreground text-xs">Founder & CEO</p>
+                <div className="space-y-1 mt-3 text-xs text-muted-foreground">
+                  <p className="flex items-center gap-2">
+                    <Mail className="w-3 h-3" />
+                    info@reeddigitalgroup.com
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Phone className="w-3 h-3" />
+                    (301) 332-4084
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Globe className="w-3 h-3" />
+                    reeddigitalgroup.com
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <MapPin className="w-3 h-3" />
+                    Brandywine, MD
+                  </p>
                 </div>
               </div>
             </section>
@@ -172,19 +196,22 @@ const CapabilityStatement = () => {
         </div>
 
         {/* Footer */}
-        <div className="bg-foreground text-background p-3 text-center">
-          <p className="text-xs opacity-80">
-            <span className="font-semibold">Reed Digital Group LLC</span> — Modern Technology Solutions for Government & Commercial Clients
+        <div className="bg-foreground text-background py-4 px-8">
+          <p className="text-xs text-center opacity-60 font-mono">
+            Reed Digital Group LLC — Modern Technology Solutions for Government & Commercial Clients
           </p>
         </div>
       </div>
 
       {/* Print Button */}
-      <div className="max-w-4xl mx-auto mt-6 text-center print:hidden">
-        <button onClick={() => window.print()} className="btn-primary">
+      <div className="max-w-4xl mx-auto mt-8 text-center print:hidden">
+        <button 
+          onClick={() => window.print()} 
+          className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+        >
           Download as PDF
         </button>
-        <p className="text-sm text-muted-foreground mt-2">Use browser print to save as PDF</p>
+        <p className="text-xs text-muted-foreground mt-2 font-mono">Use browser print to save as PDF</p>
       </div>
     </div>
   );
