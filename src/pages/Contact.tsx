@@ -1,68 +1,101 @@
+import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
+import ScrollReveal from "@/components/ScrollReveal";
+import PageTransition from "@/components/PageTransition";
 
 const ContactPage = () => {
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="pt-32 pb-24">
-        <div className="container">
-          <div className="max-w-2xl mx-auto text-center">
-            {/* Header */}
-            <span className="section-label font-mono">Contact</span>
-            <TypedHeader text="Let's talk." className="mt-4 mb-6" />
-            <p className="text-muted-foreground mb-16 font-mono">
-              Ready when you are.
-            </p>
+  useEffect(() => {
+    // Load Calendly widget script
+    const script = document.createElement("script");
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
 
-            {/* Contact Info */}
-            <div className="space-y-8 mb-16">
-              <div>
-                <h3 className="text-sm font-medium mb-2">Email</h3>
-                <a 
-                  href="mailto:info@reeddigitalgroup.com" 
-                  className="text-xl hover:text-muted-foreground transition-colors font-mono"
-                >
-                  info@reeddigitalgroup.com
-                </a>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium mb-2">Phone</h3>
-                <a 
-                  href="tel:3013324084"
-                  className="text-xl font-mono text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  (301) 332-4084
-                </a>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium mb-2">Location</h3>
+    return () => {
+      const existingScript = document.querySelector('script[src="https://assets.calendly.com/assets/external/widget.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, []);
+
+  return (
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-32 pb-24">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              {/* Header */}
+              <div className="text-center mb-16">
+                <span className="section-label font-mono">Contact</span>
+                <TypedHeader text="Let's talk." className="mt-4 mb-6" />
                 <p className="text-muted-foreground font-mono">
-                  Remote Based Agency
+                  Ready when you are.
                 </p>
               </div>
-            </div>
 
-            {/* Hours */}
-            <div className="border-t border-border pt-8">
-              <h3 className="text-sm font-medium mb-4">Office Hours</h3>
-              <div className="space-y-1 text-sm text-muted-foreground font-mono">
-                <p>Monday – Sunday: 9:00 AM – 5:00 PM EST</p>
+              {/* Two Column Layout */}
+              <div className="grid md:grid-cols-2 gap-12 mb-16">
+                {/* Left - Contact Info */}
+                <ScrollReveal>
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Email</h3>
+                      <a 
+                        href="mailto:info@reeddigitalgroup.com" 
+                        className="text-xl hover:text-muted-foreground transition-colors font-mono"
+                      >
+                        info@reeddigitalgroup.com
+                      </a>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Phone</h3>
+                      <a 
+                        href="tel:3013324084"
+                        className="text-xl font-mono text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        (301) 332-4084
+                      </a>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Location</h3>
+                      <p className="text-muted-foreground font-mono">
+                        Remote Based Agency
+                      </p>
+                    </div>
+                    <div className="pt-4 border-t border-border">
+                      <h3 className="text-sm font-medium mb-3">Office Hours</h3>
+                      <p className="text-sm text-muted-foreground font-mono">
+                        Monday – Sunday: 9:00 AM – 5:00 PM EST
+                      </p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      We typically respond within one business day.
+                    </p>
+                  </div>
+                </ScrollReveal>
+
+                {/* Right - Calendly */}
+                <ScrollReveal delay={0.1}>
+                  <div>
+                    <h3 className="text-sm font-medium mb-4">Schedule a Call</h3>
+                    <div 
+                      className="calendly-inline-widget border border-border" 
+                      data-url="https://calendly.com/terellebony/consultation-with-terell-reed?hide_event_type_details=1&hide_gdpr_banner=1"
+                      style={{ minWidth: '280px', height: '600px' }}
+                    />
+                  </div>
+                </ScrollReveal>
               </div>
             </div>
-
-            {/* Response time */}
-            <div className="mt-16 pt-8 border-t border-border">
-              <p className="text-sm text-muted-foreground">
-                We typically respond within one business day.
-              </p>
-            </div>
           </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </PageTransition>
   );
 };
 
