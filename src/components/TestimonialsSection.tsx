@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const testimonials = [
@@ -20,30 +21,44 @@ const TestimonialsSection = () => {
   }, []);
 
   return (
-    <section className="py-20 md:py-28 border-t border-border">
+    <section className="py-24 md:py-32 border-t border-border">
       <div className="container">
         <ScrollReveal>
-          <p className="text-xs font-mono text-muted-foreground tracking-widest uppercase text-center mb-12">
+          <p className="text-xs font-mono text-muted-foreground tracking-widest uppercase text-center mb-16">
             Testimonials
           </p>
         </ScrollReveal>
 
         <div className="max-w-xl mx-auto text-center">
-          <blockquote className="text-lg md:text-xl leading-relaxed mb-6 min-h-[4rem]">
-            "{testimonials[currentIndex].quote}"
-          </blockquote>
-          <p className="text-sm text-muted-foreground font-mono mb-8">
-            — {testimonials[currentIndex].author}
-          </p>
+          <div className="min-h-[120px] flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                <blockquote className="text-xl md:text-2xl leading-relaxed mb-6 font-light">
+                  "{testimonials[currentIndex].quote}"
+                </blockquote>
+                <p className="text-sm text-muted-foreground font-mono">
+                  — {testimonials[currentIndex].author}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-center gap-3 mt-10">
             {testimonials.map((_, index) => (
-              <button
+              <motion.button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                className={`w-2 h-2 rounded-full transition-colors ${
                   index === currentIndex ? "bg-foreground" : "bg-border"
                 }`}
+                whileHover={{ scale: 1.5 }}
+                whileTap={{ scale: 0.9 }}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
