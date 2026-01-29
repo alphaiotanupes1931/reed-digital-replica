@@ -7,6 +7,8 @@ const features = [
   { id: "ecommerce", label: "E-Commerce", price: 2000 },
   { id: "booking", label: "Booking", price: 1000 },
   { id: "auth", label: "User Auth", price: 800 },
+  { id: "api", label: "API Integrations", price: 1500 },
+  { id: "advanced", label: "Advanced Features", price: 2500 },
 ];
 
 const PricingCalculator = () => {
