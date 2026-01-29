@@ -1,4 +1,6 @@
 import founderImage from "@/assets/founder.png";
+import ScrollReveal from "@/components/ScrollReveal";
+import TiltCard from "@/components/TiltCard";
 
 const FounderSection = () => {
   return (
@@ -6,7 +8,7 @@ const FounderSection = () => {
       <div className="container">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1">
+            <ScrollReveal direction="left" className="order-2 md:order-1">
               <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
                 Leadership
               </span>
@@ -22,14 +24,16 @@ const FounderSection = () => {
                 Award-winning developer with experience across fintech, enterprise, 
                 and startup environments.
               </p>
-            </div>
-            <div className="order-1 md:order-2 flex justify-center">
-              <img 
-                src={founderImage} 
-                alt="Founder of Reed Digital Group" 
-                className="w-64 h-80 object-cover"
-              />
-            </div>
+            </ScrollReveal>
+            <ScrollReveal direction="right" className="order-1 md:order-2 flex justify-center">
+              <TiltCard>
+                <img 
+                  src={founderImage} 
+                  alt="Founder of Reed Digital Group" 
+                  className="w-64 h-80 object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </TiltCard>
+            </ScrollReveal>
           </div>
         </div>
       </div>
