@@ -1,22 +1,24 @@
 const clients = [
-  { name: "Acme Corp", initials: "AC" },
-  { name: "TechStart Inc", initials: "TS" },
-  { name: "Nexus Group", initials: "NG" },
-  { name: "Elevate Co", initials: "EC" },
-  { name: "Horizon Partners", initials: "HP" },
-  { name: "Summit Digital", initials: "SD" },
-  { name: "Atlas Solutions", initials: "AS" },
-  { name: "Quantum Labs", initials: "QL" },
+  { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
+  { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" },
+  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/200px-Amazon_logo.svg.png" },
+  { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/200px-Meta_Platforms_Inc._logo.svg.png" },
+  { name: "Apple", logo: "https://www.apple.com/ac/globalnav/7/en_US/images/be15095f-5a20-57d0-ad14-cf4c638e223a/globalnav_apple_image__b5er5ngrzxqq_large.svg" },
+  { name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/200px-Netflix_2015_logo.svg.png" },
+  { name: "Spotify", logo: "https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png" },
+  { name: "Slack", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/100px-Slack_icon_2019.svg.png" },
 ];
 
-const LogoPlaceholder = ({ initials, name }: { initials: string; name: string }) => (
+const ClientLogo = ({ name, logo }: { name: string; logo: string }) => (
   <div 
-    className="flex items-center justify-center w-24 h-12 border border-border bg-background"
+    className="flex items-center justify-center w-32 h-16 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100"
     title={name}
   >
-    <span className="text-sm font-mono font-medium text-muted-foreground">
-      {initials}
-    </span>
+    <img 
+      src={logo} 
+      alt={name}
+      className="max-w-full max-h-full object-contain"
+    />
   </div>
 );
 
@@ -31,14 +33,14 @@ const ClientCarousel = () => {
       
       {/* Infinite scroll container */}
       <div className="relative">
-        <div className="flex animate-scroll-left">
+        <div className="flex animate-scroll-left items-center">
           {/* First set */}
           {clients.map((client, index) => (
             <div
               key={`first-${index}`}
               className="flex-shrink-0 px-8 md:px-12"
             >
-              <LogoPlaceholder initials={client.initials} name={client.name} />
+              <ClientLogo name={client.name} logo={client.logo} />
             </div>
           ))}
           {/* Duplicate set for seamless loop */}
@@ -47,7 +49,7 @@ const ClientCarousel = () => {
               key={`second-${index}`}
               className="flex-shrink-0 px-8 md:px-12"
             >
-              <LogoPlaceholder initials={client.initials} name={client.name} />
+              <ClientLogo name={client.name} logo={client.logo} />
             </div>
           ))}
         </div>
