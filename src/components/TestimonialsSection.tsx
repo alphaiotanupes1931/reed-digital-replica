@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const testimonials = [
   {
@@ -22,71 +21,52 @@ const testimonials = [
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
+  // Auto-advance every 6 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="py-24 md:py-32 border-t border-border">
       <div className="container">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <span className="section-label">Testimonials</span>
-            <h2 className="text-display-sm md:text-display font-serif mt-4 mb-6">
+            <h2 className="text-3xl md:text-4xl font-semibold mt-4">
               Client Voices
             </h2>
-            <div className="flex justify-center">
-              <div className="divider" />
-            </div>
           </div>
 
           {/* Testimonial */}
           <div className="text-center">
-            <blockquote className="text-2xl md:text-3xl font-serif leading-relaxed mb-10">
+            <blockquote className="text-xl md:text-2xl leading-relaxed mb-8 transition-opacity duration-500">
               "{testimonials[currentIndex].quote}"
             </blockquote>
-            <div className="mb-10">
+            <div className="mb-8">
               <p className="font-medium">{testimonials[currentIndex].author}</p>
               <p className="text-sm text-muted-foreground">
                 {testimonials[currentIndex].title}
               </p>
             </div>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-center gap-6">
-              <button
-                onClick={prev}
-                className="p-2 border border-border hover:border-foreground transition-colors"
-                aria-label="Previous testimonial"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <div className="flex gap-2">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentIndex 
-                        ? "bg-foreground" 
-                        : "bg-border hover:bg-muted-foreground"
-                    }`}
-                    aria-label={`Go to testimonial ${index + 1}`}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={next}
-                className="p-2 border border-border hover:border-foreground transition-colors"
-                aria-label="Next testimonial"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+            {/* Dot indicators only */}
+            <div className="flex justify-center gap-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentIndex 
+                      ? "bg-foreground" 
+                      : "bg-border hover:bg-muted-foreground"
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
