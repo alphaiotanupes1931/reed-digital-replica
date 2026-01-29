@@ -49,7 +49,8 @@ const HeroSection = () => {
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <iframe
           src="https://www.youtube.com/embed/B8jgJo4yrCk?autoplay=1&mute=1&loop=1&playlist=B8jgJo4yrCk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
-          className="absolute top-1/2 left-1/2 w-[300vw] h-[300vh] md:w-[120vw] md:h-[120vh] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 pointer-events-none object-cover"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[177.78vh] min-w-full min-h-full aspect-video"
+          style={{ height: 'max(100%, 56.25vw)' }}
           allow="autoplay; encrypted-media"
           allowFullScreen
           title="Background video"
