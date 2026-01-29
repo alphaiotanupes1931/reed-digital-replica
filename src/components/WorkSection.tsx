@@ -4,7 +4,6 @@ import ScrollReveal from "@/components/ScrollReveal";
 const projects = [
   { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/" },
   { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/" },
-  { title: "AIN UPES 1931", category: "Finance", url: "https://ainupes1931.com/" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
   { title: "Call Us First", category: "Government", url: "https://callusfirst.world/" },
