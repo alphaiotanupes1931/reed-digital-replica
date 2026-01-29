@@ -15,10 +15,10 @@ const ContactSection = () => {
           {/* Contact Info - Just text */}
           <div className="space-y-4">
             <a 
-              href="mailto:hello@reeddigitalgroup.com" 
+              href="mailto:info@reeddigitalgroup.com" 
               className="block text-lg hover:text-muted-foreground transition-colors font-mono"
             >
-              hello@reeddigitalgroup.com
+              info@reeddigitalgroup.com
             </a>
             <a 
               href="tel:3013324084"
