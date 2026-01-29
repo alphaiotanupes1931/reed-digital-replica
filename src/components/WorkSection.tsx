@@ -3,24 +3,34 @@ import TypedHeader from "@/components/TypedHeader";
 
 const projects = [
   {
-    title: "Enterprise SaaS Platform",
-    category: "Web Application",
-    year: "2024",
+    title: "Wright Shade Creations",
+    category: "Art",
+    url: "https://wrightshadecreations.com/",
   },
   {
-    title: "E-Commerce Experience",
-    category: "Digital Commerce",
-    year: "2024",
+    title: "OQP Solutions",
+    category: "Government",
+    url: "https://oqpsolutions.com/",
   },
   {
-    title: "Healthcare Portal",
-    category: "Web Application",
-    year: "2023",
+    title: "AIN UPES 1931",
+    category: "Finance",
+    url: "https://ainupes1931.com/",
   },
   {
-    title: "Financial Dashboard",
-    category: "Data Visualization",
-    year: "2023",
+    title: "The Intern by Shilom",
+    category: "Finance",
+    url: "https://www.theinternbyshilom.com/",
+  },
+  {
+    title: "VisionHeartz",
+    category: "Clothing",
+    url: "https://visionheartz.github.io/",
+  },
+  {
+    title: "Call Us First",
+    category: "Government",
+    url: "https://callusfirst.world/",
   },
 ];
 
@@ -34,30 +44,44 @@ const WorkSection = () => {
           <TypedHeader text="Selected Work" className="mt-4 mb-6" />
         </div>
 
-        {/* Projects List */}
-        <div className="max-w-3xl mx-auto">
+        {/* Projects Grid with Live Previews */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project) => (
-            <div
+            <a
               key={project.title}
-              className="group flex items-center justify-between py-6 border-b border-border cursor-pointer"
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block"
             >
-              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-1">
-                  <span className="text-xs text-muted-foreground font-mono">
+              {/* Live Preview Iframe */}
+              <div className="relative aspect-video mb-4 border border-border overflow-hidden bg-white">
+                <iframe
+                  src={project.url}
+                  title={project.title}
+                  className="w-full h-full pointer-events-none scale-[0.5] origin-top-left"
+                  style={{ width: '200%', height: '200%' }}
+                  loading="lazy"
+                  sandbox="allow-scripts allow-same-origin"
+                />
+                <div className="absolute inset-0 bg-transparent group-hover:bg-foreground/5 transition-colors" />
+              </div>
+              
+              {/* Project Info */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-muted-foreground font-mono block mb-1">
                     {project.category}
                   </span>
-                  <span className="text-xs text-muted-foreground font-mono">
-                    {project.year}
-                  </span>
+                  <h3 className="text-lg font-medium group-hover:text-muted-foreground transition-colors">
+                    {project.title}
+                  </h3>
                 </div>
-                <h3 className="text-lg md:text-xl font-medium group-hover:text-muted-foreground transition-colors">
-                  {project.title}
-                </h3>
+                <ArrowUpRight 
+                  className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" 
+                />
               </div>
-              <ArrowUpRight 
-                className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" 
-              />
-            </div>
+            </a>
           ))}
         </div>
       </div>
