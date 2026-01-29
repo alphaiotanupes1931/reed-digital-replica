@@ -1,62 +1,73 @@
-import { MessageSquare, Palette, Code, Rocket } from "lucide-react";
-
 const steps = [
   {
-    icon: MessageSquare,
+    number: "01",
     title: "Discovery",
-    description: "We start with understanding your goals, audience, and vision. This shapes everything that follows.",
+    description: "We begin with understanding your vision, goals, and requirements through in-depth consultation.",
   },
   {
-    icon: Palette,
+    number: "02",
+    title: "Strategy",
+    description: "We develop a comprehensive plan that outlines the project scope, timeline, and technical approach.",
+  },
+  {
+    number: "03",
     title: "Design",
-    description: "We create wireframes and visual designs, iterating with your feedback until it's perfect.",
+    description: "Our designers create intuitive interfaces that reflect your brand and delight your users.",
   },
   {
-    icon: Code,
+    number: "04",
     title: "Development",
-    description: "Our team builds your product with clean, scalable code using modern technologies.",
+    description: "We build your solution using modern technologies and industry best practices.",
   },
   {
-    icon: Rocket,
+    number: "05",
     title: "Launch",
-    description: "We deploy, test, and launch your product, then provide ongoing support and maintenance.",
+    description: "We deploy your project and provide ongoing support to ensure continued success.",
   },
 ];
 
 const ProcessSection = () => {
   return (
-    <section id="process" className="py-24 md:py-32">
+    <section id="process" className="py-24 md:py-32 border-t border-border">
       <div className="container">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="section-label mb-4">Process</p>
-          <h2 className="text-display-sm md:text-display font-bold mb-6">
-            How we work
+        {/* Header */}
+        <div className="max-w-2xl mx-auto text-center mb-20">
+          <span className="section-label">Process</span>
+          <h2 className="text-display-sm md:text-display font-serif mt-4 mb-6">
+            How We Work
           </h2>
-          <p className="text-lg text-muted-foreground">
-            A simple, transparent process that keeps you informed every step of the way.
+          <div className="flex justify-center mb-6">
+            <div className="divider" />
+          </div>
+          <p className="text-muted-foreground leading-relaxed">
+            A structured approach that ensures clarity, efficiency, 
+            and exceptional results.
           </p>
         </div>
 
-        {/* Process Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Steps */}
+        <div className="max-w-4xl mx-auto">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              {/* Connector Line */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 left-[60%] w-full h-px bg-border" />
-              )}
-              
-              <div className="relative z-10">
-                <div className="w-20 h-20 rounded-2xl bg-secondary flex items-center justify-center mb-6">
-                  <step.icon className="w-8 h-8 text-foreground" />
-                </div>
-                <span className="text-sm font-mono text-muted-foreground mb-2 block">0{index + 1}</span>
-                <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+            <div
+              key={step.number}
+              className="grid grid-cols-12 gap-6 md:gap-10 py-10 border-t border-border"
+            >
+              <div className="col-span-2 md:col-span-1">
+                <span className="text-xs text-muted-foreground tracking-widest">
+                  {step.number}
+                </span>
+              </div>
+              <div className="col-span-10 md:col-span-3">
+                <h3 className="text-lg font-medium">{step.title}</h3>
+              </div>
+              <div className="col-span-12 md:col-span-8 md:col-start-5">
+                <p className="text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
               </div>
             </div>
           ))}
+          <div className="border-t border-border" />
         </div>
       </div>
     </section>

@@ -1,115 +1,46 @@
-import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const footerLinks = {
-  services: [
-    { label: "Web Development", href: "#services" },
-    { label: "Mobile Apps", href: "#services" },
-    { label: "UI/UX Design", href: "#services" },
-    { label: "Branding", href: "#services" },
-  ],
-  company: [
-    { label: "About", href: "#about" },
-    { label: "Work", href: "#work" },
-    { label: "Process", href: "#process" },
-    { label: "Contact", href: "#contact" },
-  ],
-  resources: [
-    { label: "Capability Statement", href: "/capability-statement", external: true },
-  ],
-};
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border">
-      <div className="container py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <a href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center">
-                <span className="text-background font-bold text-sm">R</span>
-              </div>
-              <span className="font-semibold">Reed Digital</span>
+    <footer className="border-t border-border py-12">
+      <div className="container">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Logo */}
+          <div className="flex flex-col items-center md:items-start">
+            <span className="font-serif text-lg tracking-wide">
+              REED DIGITAL
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mt-1">
+              Development Studio
+            </span>
+          </div>
+
+          {/* Links */}
+          <nav className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+            <a href="#services" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
+              Services
             </a>
-            <p className="text-sm text-muted-foreground mb-4">
-              Design-focused development studio helping businesses create beautiful digital products.
-            </p>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p className="flex items-center gap-2">
-                <Mail size={14} /> hello@reeddigitalgroup.com
-              </p>
-              <p className="flex items-center gap-2">
-                <MapPin size={14} /> Baltimore, Maryland
-              </p>
-            </div>
-          </div>
+            <a href="#work" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
+              Work
+            </a>
+            <a href="#about" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
+              About
+            </a>
+            <a href="#contact" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
+              Contact
+            </a>
+            <Link 
+              to="/capability-statement" 
+              className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Capability Statement
+            </Link>
+          </nav>
 
-          {/* Services */}
-          <div>
-            <h4 className="font-semibold mb-4">Services</h4>
-            <ul className="space-y-3">
-              {footerLinks.services.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="font-semibold mb-4">Company</h4>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h4 className="font-semibold mb-4">Resources</h4>
-            <ul className="space-y-3">
-              {footerLinks.resources.map((link) => (
-                <li key={link.label}>
-                  {link.external ? (
-                    <Link
-                      to={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-                    >
-                      {link.label} <ArrowUpRight size={12} />
-                    </Link>
-                  ) : (
-                    <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom */}
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Reed Digital Group LLC. All rights reserved.
+          {/* Copyright */}
+          <p className="text-xs text-muted-foreground text-center md:text-right">
+            © {new Date().getFullYear()} Reed Digital Group LLC
           </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Privacy
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Terms
-            </a>
-          </div>
         </div>
       </div>
     </footer>

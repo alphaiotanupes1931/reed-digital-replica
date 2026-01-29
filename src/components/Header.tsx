@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const navItems = [
   { label: "Services", href: "#services" },
   { label: "Work", href: "#work" },
   { label: "Process", href: "#process" },
   { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const Header = () => {
@@ -20,63 +22,73 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/80 backdrop-blur-xl border-b border-border" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "bg-background/95 backdrop-blur-sm border-b border-border" 
+          : "bg-transparent"
       }`}
     >
       <div className="container mx-auto">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center">
-              <span className="text-background font-bold text-sm">R</span>
-            </div>
-            <span className="font-semibold text-foreground hidden sm:block">Reed Digital</span>
+        {/* Top Bar with Logo */}
+        <div className="flex items-center justify-between py-4 border-b border-border/50">
+          <button
+            className="md:hidden p-2 -ml-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
+          {/* Centered Logo */}
+          <a href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <span className="font-serif text-xl md:text-2xl font-medium tracking-wide text-foreground">
+              REED DIGITAL
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mt-0.5">
+              Development Studio
+            </span>
           </a>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a key={item.label} href={item.href} className="nav-link">
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            <a href="#contact" className="btn-primary text-sm">
-              Get Started <ArrowRight size={16} />
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Right side placeholder for balance */}
+          <div className="w-8 md:hidden" />
         </div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center justify-center gap-8 py-3">
+          {navItems.map((item) => (
+            <a key={item.label} href={item.href} className="nav-link">
+              {item.label}
+            </a>
+          ))}
+          <span className="text-border">|</span>
+          <Link to="/capability-statement" className="nav-link">
+            Capability Statement
+          </Link>
+        </nav>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b border-border animate-fade-in">
-          <nav className="container py-6 flex flex-col gap-4">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border animate-fade-in">
+          <nav className="container py-6 flex flex-col items-center gap-4">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-lg text-foreground py-2"
+                className="text-sm uppercase tracking-[0.15em] text-foreground py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
-            <a href="#contact" className="btn-primary text-center mt-4">
-              Get Started
-            </a>
+            <div className="w-8 h-px bg-border my-2" />
+            <Link 
+              to="/capability-statement" 
+              className="text-sm uppercase tracking-[0.15em] text-foreground py-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Capability Statement
+            </Link>
           </nav>
         </div>
       )}
