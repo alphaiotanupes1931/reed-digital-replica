@@ -11,7 +11,7 @@ const clients = [
 
 const ClientLogo = ({ name, logo }: { name: string; logo: string }) => (
   <div 
-    className="flex items-center justify-center w-32 h-16 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100"
+    className="flex items-center justify-center w-32 h-16 transition-all duration-300 opacity-70 hover:opacity-100"
     title={name}
   >
     <img 
