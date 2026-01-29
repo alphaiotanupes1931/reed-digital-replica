@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/rdg-logo.png";
+import logo from "@/assets/rdg-header-logo.png";
 
 const Footer = () => {
   return (
@@ -72,7 +72,7 @@ const Footer = () => {
             © {new Date().getFullYear()} Reed Digital Group LLC
           </p>
           <p className="text-xs text-muted-foreground font-mono">
-            Baltimore, Maryland
+            Remote Based Agency
           </p>
         </div>
       </div>

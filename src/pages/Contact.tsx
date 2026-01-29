@@ -29,14 +29,17 @@ const ContactPage = () => {
               </div>
               <div>
                 <h3 className="text-sm font-medium mb-2">Phone</h3>
-                <p className="text-xl font-mono text-muted-foreground">
-                  (443) 555-0123
-                </p>
+                <a 
+                  href="tel:3013324084"
+                  className="text-xl font-mono text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  (301) 332-4084
+                </a>
               </div>
               <div>
                 <h3 className="text-sm font-medium mb-2">Location</h3>
                 <p className="text-muted-foreground font-mono">
-                  Baltimore, Maryland
+                  Remote Based Agency
                 </p>
               </div>
             </div>

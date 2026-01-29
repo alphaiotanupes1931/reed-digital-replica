@@ -20,11 +20,14 @@ const ContactSection = () => {
             >
               hello@reeddigitalgroup.com
             </a>
-            <p className="text-muted-foreground font-mono">
-              (443) 555-0123
-            </p>
+            <a 
+              href="tel:3013324084"
+              className="block text-muted-foreground hover:text-foreground transition-colors font-mono"
+            >
+              (301) 332-4084
+            </a>
             <p className="text-sm text-muted-foreground font-mono">
-              Baltimore, Maryland
+              Remote Based Agency
             </p>
           </div>
         </div>
