@@ -1,4 +1,4 @@
-import { Mail, MapPin, Globe, ArrowLeft, Phone } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/rdg-logo.png";
 
@@ -173,22 +173,10 @@ const CapabilityStatement = () => {
                 <p className="font-medium">Terell Reed</p>
                 <p className="text-muted-foreground text-xs">Founder & CEO</p>
                 <div className="space-y-1 mt-3 text-xs text-muted-foreground">
-                  <p className="flex items-center gap-2">
-                    <Mail className="w-3 h-3" />
-                    info@reeddigitalgroup.com
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Phone className="w-3 h-3" />
-                    (301) 332-4084
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Globe className="w-3 h-3" />
-                    reeddigitalgroup.com
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <MapPin className="w-3 h-3" />
-                    Brandywine, MD
-                  </p>
+                  <p>info@reeddigitalgroup.com</p>
+                  <p>(301) 332-4084</p>
+                  <p>reeddigitalgroup.com</p>
+                  <p>Brandywine, MD</p>
                 </div>
               </div>
             </section>
