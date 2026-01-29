@@ -1,3 +1,5 @@
+import TypedHeader from "@/components/TypedHeader";
+
 const services = [
   {
     title: "Custom Development",
@@ -31,10 +33,8 @@ const ServicesSection = () => {
       <div className="container">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center mb-16">
-          <span className="section-label">Services</span>
-          <h2 className="text-3xl md:text-4xl font-semibold mt-4 mb-6">
-            What We Do
-          </h2>
+          <span className="section-label font-mono">Services</span>
+          <TypedHeader text="What We Do" className="mt-4 mb-6" />
         </div>
 
         {/* Services - 2 column layout */}

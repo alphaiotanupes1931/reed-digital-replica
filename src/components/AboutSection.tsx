@@ -1,3 +1,5 @@
+import TypedHeader from "@/components/TypedHeader";
+
 const AboutSection = () => {
   return (
     <section id="about" className="py-24 md:py-32 border-t border-border">
@@ -5,10 +7,8 @@ const AboutSection = () => {
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <span className="section-label">About</span>
-            <h2 className="text-3xl md:text-4xl font-semibold mt-4">
-              Who We Are
-            </h2>
+            <span className="section-label font-mono">About</span>
+            <TypedHeader text="Who We Are" className="mt-4" />
           </div>
 
           {/* Content */}
@@ -31,7 +31,7 @@ const AboutSection = () => {
 
           {/* Certifications */}
           <div className="mt-16 pt-8 border-t border-border text-center">
-            <span className="text-xs text-muted-foreground tracking-widest">
+            <span className="text-xs text-muted-foreground tracking-widest font-mono">
               Small Business · SAM Registered · Federal Contractor Ready
             </span>
           </div>

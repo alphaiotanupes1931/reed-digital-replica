@@ -54,19 +54,9 @@ const HeroSection = () => {
           </h1>
 
           {/* Tagline */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-16 animate-fade-up stagger-1">
-            Digital solutions for businesses that demand quality.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto animate-fade-up stagger-1 font-mono">
+            Making digital dreams come true.
           </p>
-
-          {/* Scroll indicator */}
-          <div className="animate-fade-up stagger-2">
-            <div className="flex flex-col items-center gap-3">
-              <span className="text-xs text-muted-foreground tracking-widest">
-                Scroll
-              </span>
-              <div className="w-px h-12 bg-gradient-to-b from-border to-transparent" />
-            </div>
-          </div>
         </div>
       </div>
     </section>

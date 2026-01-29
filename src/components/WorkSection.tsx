@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import TypedHeader from "@/components/TypedHeader";
 
 const projects = [
   {
@@ -29,10 +30,8 @@ const WorkSection = () => {
       <div className="container">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center mb-16">
-          <span className="section-label">Portfolio</span>
-          <h2 className="text-3xl md:text-4xl font-semibold mt-4 mb-6">
-            Selected Work
-          </h2>
+          <span className="section-label font-mono">Portfolio</span>
+          <TypedHeader text="Selected Work" className="mt-4 mb-6" />
         </div>
 
         {/* Projects List */}
@@ -44,10 +43,10 @@ const WorkSection = () => {
             >
               <div className="flex-1">
                 <div className="flex items-center gap-4 mb-1">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground font-mono">
                     {project.category}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground font-mono">
                     {project.year}
                   </span>
                 </div>
