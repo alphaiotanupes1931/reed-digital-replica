@@ -1,5 +1,4 @@
 import { ArrowUpRight } from "lucide-react";
-import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const projects = [
@@ -12,46 +11,33 @@ const projects = [
 
 const WorkSection = () => {
   return (
-    <section id="work" className="py-24 md:py-32 border-t border-border">
+    <section id="work" className="py-20 md:py-28 border-t border-border">
       <div className="container">
         <ScrollReveal>
-          <p className="text-xs font-mono text-muted-foreground tracking-widest uppercase text-center mb-16">
+          <p className="text-xs font-mono text-muted-foreground tracking-widest uppercase text-center mb-12">
             Portfolio
           </p>
         </ScrollReveal>
 
         <div className="max-w-2xl mx-auto">
           {projects.map((project, index) => (
-            <ScrollReveal key={project.title} delay={index * 0.08}>
-              <motion.a
+            <ScrollReveal key={project.title} delay={index * 0.05}>
+              <a
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex justify-between items-center py-5 border-b border-border -mx-4 px-4 block"
-                whileHover={{ 
-                  x: 8,
-                  backgroundColor: "rgba(255,255,255,0.03)",
-                }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="group flex justify-between items-center py-4 border-b border-border hover:bg-muted/30 transition-colors -mx-4 px-4"
               >
-                <div className="flex items-baseline gap-4">
-                  <motion.span 
-                    className="font-medium text-lg group-hover:text-muted-foreground transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                  >
+                <div>
+                  <span className="font-medium group-hover:text-muted-foreground transition-colors">
                     {project.title}
-                  </motion.span>
-                  <span className="text-xs text-muted-foreground font-mono">
+                  </span>
+                  <span className="text-xs text-muted-foreground ml-3 font-mono">
                     {project.category}
                   </span>
                 </div>
-                <motion.div
-                  whileHover={{ x: 3, y: -3 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                >
-                  <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </motion.div>
-              </motion.a>
+                <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              </a>
             </ScrollReveal>
           ))}
         </div>
