@@ -61,16 +61,19 @@ const HeroSection = () => {
       {/* Content */}
       <div className="container relative z-10 pt-24 pb-16">
         <div className="max-w-2xl">
-          {/* Main Headline with Typing Animation */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-mono font-medium mb-8 animate-fade-up min-h-[1.5em]">
-            {displayText}
-            <span className="typing-cursor" />
-          </h1>
+          {/* Glassmorphism backdrop */}
+          <div className="backdrop-blur-md bg-background/30 border border-white/10 rounded-lg p-8 md:p-12">
+            {/* Main Headline with Typing Animation */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-mono font-medium mb-8 animate-fade-up min-h-[1.5em]">
+              {displayText}
+              <span className="typing-cursor" />
+            </h1>
 
-          {/* Tagline */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl animate-fade-up stagger-1 font-mono">
-            Making digital dreams come true.
-          </p>
+            {/* Tagline */}
+            <p className="text-lg md:text-xl text-muted-foreground max-w-xl animate-fade-up stagger-1 font-mono">
+              Making digital dreams come true.
+            </p>
+          </div>
         </div>
       </div>
     </section>
