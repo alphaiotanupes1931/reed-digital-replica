@@ -1,15 +1,16 @@
-import { Shield, Network } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
 import ScrollReveal from "@/components/ScrollReveal";
 import founderImage from "@/assets/founder.png";
+import comptiaLogo from "@/assets/comptia-logo.png";
+import ciscoLogo from "@/assets/cisco-logo.png";
 
 const certifications = [
-  { name: "CompTIA A+", org: "CompTIA", year: "2023" },
-  { name: "CompTIA Network+", org: "CompTIA", year: "2023" },
-  { name: "Cisco CCNA", org: "Cisco", year: "2022" },
-  { name: "Cisco CyberOps", org: "Cisco", year: "2022" },
+  { name: "CompTIA A+", logo: comptiaLogo },
+  { name: "CompTIA Network+", logo: comptiaLogo },
+  { name: "Cisco CCNA", logo: ciscoLogo },
+  { name: "Cisco CyberOps", logo: ciscoLogo },
 ];
 
 const AboutPage = () => {
@@ -97,18 +98,18 @@ const AboutPage = () => {
               <h2 className="text-sm font-mono text-muted-foreground text-center mb-8 uppercase tracking-wider">
                 Certifications
               </h2>
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="flex flex-wrap justify-center gap-6">
                 {certifications.map((cert) => (
                   <div 
                     key={cert.name} 
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground"
+                    className="flex items-center gap-3 px-4 py-2"
                   >
-                    {cert.org === "CompTIA" ? (
-                      <Shield className="w-4 h-4" />
-                    ) : (
-                      <Network className="w-4 h-4" />
-                    )}
-                    <span>{cert.name}</span>
+                    <img 
+                      src={cert.logo} 
+                      alt={cert.name}
+                      className="h-5 w-auto"
+                    />
+                    <span className="text-sm text-muted-foreground">{cert.name}</span>
                   </div>
                 ))}
               </div>
