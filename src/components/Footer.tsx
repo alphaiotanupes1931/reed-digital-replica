@@ -36,8 +36,8 @@ const Footer = () => {
               <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 About
               </Link>
-              <Link to="/work" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
-                Work
+              <Link to="/portfolio" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
+                Portfolio
               </Link>
               <Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Blog

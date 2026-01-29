@@ -1,44 +1,21 @@
+import { ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
+import ScrollReveal from "@/components/ScrollReveal";
+import TiltCard from "@/components/TiltCard";
 
 const projects = [
-  {
-    title: "E-Commerce Platform",
-    category: "Web Development",
-    description: "Full-featured online store with payment processing and inventory management.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
-  },
-  {
-    title: "Financial Dashboard",
-    category: "Application",
-    description: "Real-time analytics dashboard for tracking investments and market trends.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-  },
-  {
-    title: "Healthcare Portal",
-    category: "Web Application",
-    description: "Patient management system with appointment scheduling and telehealth features.",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop",
-  },
-  {
-    title: "Restaurant Mobile App",
-    category: "Mobile Development",
-    description: "iOS and Android app for online ordering and table reservations.",
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop",
-  },
-  {
-    title: "Real Estate Platform",
-    category: "Web Development",
-    description: "Property listing and search platform with virtual tour integration.",
-    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
-  },
-  {
-    title: "Corporate Website",
-    category: "Web Design",
-    description: "Modern, responsive website redesign for a Fortune 500 company.",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
-  },
+  { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/" },
+  { title: "DGM Consulting", category: "Consulting", url: "https://dgmconsulting.info/" },
+  { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
+  { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/" },
+  { title: "Evolve Connection", category: "Wellness", url: "https://www.evolveconnection.com/" },
+  { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/" },
+  { title: "Lez Tea Shop", category: "E-Commerce", url: "https://leztea.shop/" },
+  { title: "AIN UPES 1931", category: "Finance", url: "https://ainupes1931.com/" },
+  { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
+  { title: "Call Us First", category: "Government", url: "https://callusfirst.world/" },
 ];
 
 const PortfolioPage = () => {
@@ -56,30 +33,47 @@ const PortfolioPage = () => {
             </p>
           </div>
 
-          {/* Portfolio Grid */}
+          {/* Portfolio Grid with Live Previews */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <div 
-                key={index} 
-                className="group cursor-pointer"
-              >
-                <div className="aspect-[4/3] overflow-hidden mb-4">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
-                  {project.category}
-                </span>
-                <h3 className="text-lg font-medium mt-1 mb-2 group-hover:text-muted-foreground transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {project.description}
-                </p>
-              </div>
+              <ScrollReveal key={project.title} delay={index * 0.05}>
+                <TiltCard>
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block"
+                  >
+                    {/* Live Preview Iframe */}
+                    <div className="relative aspect-video mb-4 border border-border overflow-hidden bg-white rounded-sm">
+                      <iframe
+                        src={project.url}
+                        title={project.title}
+                        className="w-full h-full pointer-events-none scale-[0.5] origin-top-left"
+                        style={{ width: '200%', height: '200%' }}
+                        loading="lazy"
+                        sandbox="allow-scripts allow-same-origin"
+                      />
+                      <div className="absolute inset-0 bg-transparent group-hover:bg-foreground/5 transition-colors" />
+                    </div>
+                    
+                    {/* Project Info */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-xs text-muted-foreground font-mono block mb-1">
+                          {project.category}
+                        </span>
+                        <h3 className="text-lg font-medium group-hover:text-muted-foreground transition-colors hover-underline inline-block">
+                          {project.title}
+                        </h3>
+                      </div>
+                      <ArrowUpRight 
+                        className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" 
+                      />
+                    </div>
+                  </a>
+                </TiltCard>
+              </ScrollReveal>
             ))}
           </div>
         </div>
