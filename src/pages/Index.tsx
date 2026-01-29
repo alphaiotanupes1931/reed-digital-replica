@@ -12,25 +12,54 @@ import FAQSection from "@/components/FAQSection";
 import CalendlySection from "@/components/CalendlySection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import StatsSection from "@/components/StatsSection";
+import SectionNav from "@/components/SectionNav";
+import PageTransition from "@/components/PageTransition";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <HeroSection />
-      <ClientCarousel />
-      <ServicesSection />
-      <FounderSection />
-      <AwardsSection />
-      <WorkSection />
-      <ProcessSection />
-      <AboutSection />
-      <TestimonialsSection />
-      <FAQSection />
-      <CalendlySection />
-      <ContactSection />
-      <Footer />
-    </div>
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <SectionNav />
+        <div id="hero">
+          <HeroSection />
+        </div>
+        <ClientCarousel />
+        <StatsSection />
+        <div id="services">
+          <ServicesSection />
+        </div>
+        <div id="founder">
+          <FounderSection />
+        </div>
+        <div id="awards">
+          <AwardsSection />
+        </div>
+        <div id="work">
+          <WorkSection />
+        </div>
+        <div id="process">
+          <ProcessSection />
+        </div>
+        <div id="about">
+          <AboutSection />
+        </div>
+        <div id="testimonials">
+          <TestimonialsSection />
+        </div>
+        <div id="faq">
+          <FAQSection />
+        </div>
+        <div id="calendly">
+          <CalendlySection />
+        </div>
+        <div id="contact">
+          <ContactSection />
+        </div>
+        <Footer />
+      </div>
+    </PageTransition>
   );
 };
 
