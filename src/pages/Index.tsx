@@ -19,9 +19,9 @@ const Index = () => {
       <ClientCarousel />
       <ServicesSection />
       <FounderSection />
+      <AwardsSection />
       <WorkSection />
       <ProcessSection />
-      <AwardsSection />
       <AboutSection />
       <TestimonialsSection />
       <ContactSection />
