@@ -1,4 +1,6 @@
 import TypedHeader from "@/components/TypedHeader";
+import ScrollReveal from "@/components/ScrollReveal";
+import TiltCard from "@/components/TiltCard";
 
 const awards = [
   {
@@ -31,35 +33,40 @@ const AwardsSection = () => {
   return (
     <section className="py-24 md:py-32 border-t border-border">
       {/* Header */}
-      <div className="text-center mb-16">
-        <span className="section-label font-mono">Recognition</span>
-        <TypedHeader text="Awards & Achievements" className="mt-4" />
-      </div>
+      <ScrollReveal>
+        <div className="text-center mb-16">
+          <span className="section-label font-mono">Recognition</span>
+          <TypedHeader text="Awards & Achievements" className="mt-4" />
+        </div>
+      </ScrollReveal>
 
       {/* Awards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 md:px-8">
         {awards.map((award, index) => (
-          <div 
-            key={index} 
-            className="text-center p-6 border border-border hover:border-foreground/20 transition-colors"
-          >
-            <div className="h-16 flex items-center justify-center mb-4 bg-white rounded p-2">
-              <img 
-                src={award.logo} 
-                alt={award.event}
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-            <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
-              {award.place}
-            </span>
-            <h3 className="text-lg font-medium mt-3 mb-2">
-              {award.title}
-            </h3>
-            <p className="text-sm text-muted-foreground font-mono">
-              {award.event}
-            </p>
-          </div>
+          <ScrollReveal key={index} delay={index * 0.15}>
+            <TiltCard>
+              <div 
+                className="text-center p-6 border border-border hover:border-foreground/20 transition-all hover:shadow-lg"
+              >
+                <div className="h-16 flex items-center justify-center mb-4 bg-white rounded p-2">
+                  <img 
+                    src={award.logo} 
+                    alt={award.event}
+                    className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-110"
+                  />
+                </div>
+                <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
+                  {award.place}
+                </span>
+                <h3 className="text-lg font-medium mt-3 mb-2">
+                  {award.title}
+                </h3>
+                <p className="text-sm text-muted-foreground font-mono">
+                  {award.event}
+                </p>
+              </div>
+            </TiltCard>
+          </ScrollReveal>
         ))}
       </div>
     </section>
