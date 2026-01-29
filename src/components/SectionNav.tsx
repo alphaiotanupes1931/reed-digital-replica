@@ -4,13 +4,8 @@ import { motion } from "framer-motion";
 const sections = [
   { id: "hero", label: "Home" },
   { id: "services", label: "Services" },
-  { id: "founder", label: "Founder" },
-  { id: "awards", label: "Awards" },
   { id: "work", label: "Work" },
-  { id: "process", label: "Process" },
-  { id: "about", label: "About" },
   { id: "testimonials", label: "Testimonials" },
-  { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -20,10 +15,8 @@ const SectionNav = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show nav after scrolling past hero
       setIsVisible(window.scrollY > 300);
 
-      // Find active section
       const scrollPosition = window.scrollY + window.innerHeight / 3;
       
       for (let i = sections.length - 1; i >= 0; i--) {
