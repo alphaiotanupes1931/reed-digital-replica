@@ -49,13 +49,13 @@ const HeroSection = () => {
       <div className="absolute inset-0 w-full h-full">
         <iframe
           src="https://www.youtube.com/embed/Del9qNzFLxk?autoplay=1&mute=1&loop=1&playlist=Del9qNzFLxk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
-          className="absolute top-1/2 left-1/2 w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          className="absolute top-[60%] left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           allow="autoplay; encrypted-media"
           allowFullScreen
           title="Coding timelapse background"
         />
-        {/* Dark tint overlay */}
-        <div className="absolute inset-0 bg-background/85" />
+        {/* Reduced tint overlay */}
+        <div className="absolute inset-0 bg-background/70" />
       </div>
 
       {/* Content */}
