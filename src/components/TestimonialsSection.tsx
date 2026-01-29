@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import TypedHeader from "@/components/TypedHeader";
 
 const testimonials = [
   {
@@ -35,10 +36,8 @@ const TestimonialsSection = () => {
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <span className="section-label">Testimonials</span>
-            <h2 className="text-3xl md:text-4xl font-semibold mt-4">
-              Client Voices
-            </h2>
+            <span className="section-label font-mono">Testimonials</span>
+            <TypedHeader text="Client Voices" className="mt-4" />
           </div>
 
           {/* Testimonial */}
@@ -48,7 +47,7 @@ const TestimonialsSection = () => {
             </blockquote>
             <div className="mb-8">
               <p className="font-medium">{testimonials[currentIndex].author}</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-mono">
                 {testimonials[currentIndex].title}
               </p>
             </div>
