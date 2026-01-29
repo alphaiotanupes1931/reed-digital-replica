@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Instagram } from "lucide-react";
 import logo from "@/assets/rdg-header-logo.png";
 
 const Footer = () => {
@@ -6,31 +7,42 @@ const Footer = () => {
     <footer className="border-t border-border py-12">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          {/* Logo */}
+          {/* Logo & Social */}
           <div>
-            <Link to="/" className="inline-block">
+            <Link to="/" className="inline-block mb-4">
               <img 
                 src={logo} 
                 alt="Reed Digital Group" 
                 className="h-12 w-auto opacity-60 hover:opacity-100 transition-opacity"
               />
             </Link>
+            <div className="flex gap-3">
+              <a 
+                href="https://instagram.com/reeddigitalgroup" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center border border-border rounded hover:bg-muted hover:border-foreground/20 transition-all"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
+            </div>
           </div>
 
           {/* Company */}
           <div>
             <h4 className="text-sm font-medium mb-4">Company</h4>
             <nav className="flex flex-col gap-2">
-              <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 About
               </Link>
-              <Link to="/work" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/work" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Work
               </Link>
-              <Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Blog
               </Link>
-              <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Contact
               </Link>
             </nav>
@@ -40,13 +52,13 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-medium mb-4">Services</h4>
             <nav className="flex flex-col gap-2">
-              <Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Pricing
               </Link>
-              <Link to="/government" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/government" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Government
               </Link>
-              <Link to="/capability-statement" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/capability-statement" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Capability Statement
               </Link>
             </nav>
@@ -56,10 +68,10 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-medium mb-4">Resources</h4>
             <nav className="flex flex-col gap-2">
-              <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 FAQ
               </Link>
-              <Link to="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-underline inline-block w-fit">
                 Testimonials
               </Link>
             </nav>
