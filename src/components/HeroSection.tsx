@@ -54,8 +54,8 @@ const HeroSection = () => {
           allowFullScreen
           title="Coding timelapse background"
         />
-        {/* Reduced tint overlay */}
-        <div className="absolute inset-0 bg-background/70" />
+        {/* Lighter tint overlay */}
+        <div className="absolute inset-0 bg-background/50" />
       </div>
 
       {/* Content */}
