@@ -1,3 +1,4 @@
+import { Quote } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
@@ -112,6 +113,21 @@ const AboutPage = () => {
                     <span className="text-sm text-muted-foreground">{cert.name}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Client Quote */}
+          <ScrollReveal delay={0.3}>
+            <div className="max-w-3xl mx-auto mb-20">
+              <div className="text-center">
+                <Quote className="w-8 h-8 text-muted-foreground/30 mx-auto mb-6" />
+                <blockquote className="text-lg leading-relaxed text-muted-foreground mb-6">
+                  "Reed Digital Group is a highly professional web design company that delivers outstanding customer service and clear, consistent communication. Their onboarding process was smooth, their pricing was transparent with no hidden fees, and they delivered ahead of schedule. What truly set them apart was their continued follow-up weeks and even months after the website launch."
+                </blockquote>
+                <cite className="text-sm font-medium not-italic">
+                  — OQP Solutions
+                </cite>
               </div>
             </div>
           </ScrollReveal>
