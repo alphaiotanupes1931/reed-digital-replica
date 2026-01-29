@@ -7,9 +7,9 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1.5rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1280px",
       },
     },
     extend: {
@@ -47,19 +47,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        gold: {
-          DEFAULT: "hsl(var(--gold))",
-          dim: "hsl(var(--gold-dim))",
-        },
-        dark: {
-          100: "hsl(var(--dark-100))",
-          200: "hsl(var(--dark-200))",
-          300: "hsl(var(--dark-300))",
-          400: "hsl(var(--dark-400))",
-          500: "hsl(var(--dark-500))",
-        },
-        cyan: "hsl(var(--cyan))",
-        emerald: "hsl(var(--emerald))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -72,8 +59,14 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Space Grotesk", "sans-serif"],
-        sans: ["Inter", "sans-serif"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+      fontSize: {
+        "display-xl": ["4.5rem", { lineHeight: "1", letterSpacing: "-0.02em" }],
+        "display-lg": ["3.75rem", { lineHeight: "1", letterSpacing: "-0.02em" }],
+        "display": ["3rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        "display-sm": ["2.25rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -89,20 +82,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" },
-        },
-        "pulse-slow": {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "0.8" },
+        blink: {
+          "0%, 50%": { opacity: "1" },
+          "51%, 100%": { opacity: "0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        float: "float 6s ease-in-out infinite",
-        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        blink: "blink 1s step-end infinite",
       },
     },
   },
