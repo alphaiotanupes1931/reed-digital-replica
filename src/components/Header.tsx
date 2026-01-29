@@ -5,10 +5,10 @@ import logo from "@/assets/rdg-header-logo.png";
 
 const navItems = [
   { label: "Work", href: "/work" },
+  { label: "Portfolio", href: "/portfolio" },
   { label: "About", href: "/about" },
   { label: "Pricing", href: "/pricing" },
   { label: "Government", href: "/government" },
-  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 
