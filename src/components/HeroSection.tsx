@@ -44,9 +44,23 @@ const HeroSection = () => {
   }, [animateText]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center pt-24 pb-16">
-      <div className="container">
-        <div className="max-w-4xl mx-auto text-center">
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 w-full h-full">
+        <iframe
+          src="https://www.youtube.com/embed/ZVnjOPwW6zs?autoplay=1&mute=1&loop=1&playlist=ZVnjOPwW6zs&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+          className="absolute top-1/2 left-1/2 w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          title="Coding timelapse background"
+        />
+        {/* Dark tint overlay */}
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+
+      {/* Content */}
+      <div className="container relative z-10 pt-24 pb-16">
+        <div className="max-w-2xl">
           {/* Main Headline with Typing Animation */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-mono font-medium mb-8 animate-fade-up min-h-[1.5em]">
             {displayText}
@@ -54,7 +68,7 @@ const HeroSection = () => {
           </h1>
 
           {/* Tagline */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto animate-fade-up stagger-1 font-mono">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl animate-fade-up stagger-1 font-mono">
             Making digital dreams come true.
           </p>
         </div>
