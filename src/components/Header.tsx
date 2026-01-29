@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import logo from "@/assets/rdg-header-logo.png";
 
 const navItems = [
-  { label: "Work", href: "/work" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "About", href: "/about" },
   { label: "Pricing", href: "/pricing" },
