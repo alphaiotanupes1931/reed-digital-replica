@@ -1,12 +1,18 @@
 import TypedHeader from "@/components/TypedHeader";
+import rdgLogo from "@/assets/rdg-logo.png";
 
 const AboutSection = () => {
   return (
     <section id="about" className="py-24 md:py-32 border-t border-border">
       <div className="container">
         <div className="max-w-3xl mx-auto">
-          {/* Header */}
+          {/* Header with Logo */}
           <div className="text-center mb-12">
+            <img 
+              src={rdgLogo} 
+              alt="Reed Digital Group" 
+              className="h-20 mx-auto mb-8"
+            />
             <span className="section-label font-mono">About</span>
             <TypedHeader text="Who We Are" className="mt-4" />
           </div>
