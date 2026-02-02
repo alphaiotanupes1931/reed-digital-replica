@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 
 const phrases = [
   "We build websites.",
@@ -55,26 +56,70 @@ const HeroSection = () => {
           allowFullScreen
           title="Background video"
         />
-        {/* Lighter tint overlay */}
-        <div className="absolute inset-0 bg-background/50" />
+        {/* Gradient overlay instead of plain tint */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-primary/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
       </div>
+
+      {/* Decorative floating elements */}
+      <motion.div 
+        className="absolute top-1/4 right-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl"
+        animate={{ 
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3]
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-accent/20 rounded-full blur-3xl"
+        animate={{ 
+          scale: [1.2, 1, 1.2],
+          opacity: [0.3, 0.5, 0.3]
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
 
       {/* Content */}
       <div className="container relative z-10 pt-24 pb-16">
-        <div className="max-w-2xl">
-          {/* Glassmorphism backdrop */}
-          <div className="backdrop-blur-md bg-background/30 border border-white/10 rounded-lg p-8 md:p-12">
+        <div className="max-w-3xl">
+          {/* Glassmorphism backdrop with gradient border */}
+          <motion.div 
+            className="relative backdrop-blur-md bg-background/40 border border-white/20 rounded-2xl p-8 md:p-12 overflow-hidden"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {/* Animated gradient border */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/50 via-accent/50 to-secondary/50 opacity-50" style={{ padding: "1px" }}>
+              <div className="absolute inset-[1px] rounded-2xl bg-background/40 backdrop-blur-md" />
+            </div>
+            
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shimmer" />
+            
             {/* Main Headline with Typing Animation */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-mono font-medium mb-8 animate-fade-up min-h-[1.5em]">
-              {displayText}
-              <span className="typing-cursor" />
-            </h1>
+            <motion.h1 
+              className="relative z-10 text-4xl md:text-5xl lg:text-6xl font-mono font-medium mb-8 min-h-[1.5em]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <span className="bg-gradient-to-r from-foreground via-foreground to-primary bg-clip-text">
+                {displayText}
+              </span>
+              <span className="typing-cursor bg-gradient-to-b from-primary to-accent" />
+            </motion.h1>
 
             {/* Tagline */}
-            <p className="text-lg md:text-xl text-muted-foreground max-w-xl animate-fade-up stagger-1 font-mono">
+            <motion.p 
+              className="relative z-10 text-lg md:text-xl text-muted-foreground max-w-xl font-mono"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
               Making digital dreams come true.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </div>
       </div>
     </section>

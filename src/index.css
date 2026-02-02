@@ -7,43 +7,49 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 6%;
+    --foreground: 230 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 6%;
+    --card-foreground: 230 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 6%;
+    --popover-foreground: 230 15% 15%;
 
-    --primary: 0 0% 6%;
+    --primary: 250 100% 65%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 97%;
-    --secondary-foreground: 0 0% 6%;
+    --secondary: 190 100% 50%;
+    --secondary-foreground: 230 15% 15%;
 
-    --muted: 0 0% 97%;
-    --muted-foreground: 0 0% 42%;
+    --muted: 240 10% 96%;
+    --muted-foreground: 230 10% 45%;
 
-    --accent: 0 0% 6%;
+    --accent: 320 100% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 6%;
+    --border: 240 10% 90%;
+    --input: 240 10% 90%;
+    --ring: 250 100% 65%;
 
-    --radius: 0rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 6%;
-    --sidebar-primary: 0 0% 6%;
+    /* Gradient colors */
+    --gradient-start: 250 100% 65%;
+    --gradient-mid: 280 100% 60%;
+    --gradient-end: 320 100% 60%;
+    --gradient-cyan: 190 100% 50%;
+
+    --sidebar-background: 240 10% 98%;
+    --sidebar-foreground: 230 15% 15%;
+    --sidebar-primary: 250 100% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 0 0% 6%;
-    --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 0 0% 6%;
+    --sidebar-accent: 240 10% 96%;
+    --sidebar-accent-foreground: 230 15% 15%;
+    --sidebar-border: 240 10% 90%;
+    --sidebar-ring: 250 100% 65%;
   }
 }
 
@@ -98,9 +104,10 @@
     @apply scale-x-100 origin-left;
   }
 
-  /* Typing cursor */
+  /* Typing cursor with gradient */
   .typing-cursor {
-    @apply inline-block w-[2px] h-[1em] bg-foreground ml-1 align-baseline;
+    @apply inline-block w-[3px] h-[1em] ml-1 align-baseline rounded-full;
+    background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--accent)));
     animation: blink 1s step-end infinite;
   }
 

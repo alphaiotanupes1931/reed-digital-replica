@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const techLogos = [
   // Tech & Tools
   { name: "React", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" },
@@ -15,46 +17,54 @@ const techLogos = [
   { name: "AWS", logo: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" },
 ];
 
-const ClientLogo = ({ name, logo }: { name: string; logo: string }) => (
-  <div 
-    className="flex items-center justify-center w-20 h-12 transition-all duration-300 opacity-50 hover:opacity-100 hover:scale-110 cursor-pointer"
+const ClientLogo = ({ name, logo, index }: { name: string; logo: string; index: number }) => (
+  <motion.div 
+    className="flex items-center justify-center w-24 h-16 transition-all duration-500 group cursor-pointer relative"
     title={name}
+    whileHover={{ scale: 1.15, y: -5 }}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.05 }}
   >
+    {/* Glow effect on hover */}
+    <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-accent/0 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
     <img 
       src={logo} 
       alt={name}
-      className="max-w-full max-h-full object-contain transition-all duration-300"
+      className="max-w-full max-h-full object-contain transition-all duration-500 relative z-10 drop-shadow-lg group-hover:drop-shadow-2xl"
     />
-  </div>
+  </motion.div>
 );
 
 const ClientCarousel = () => {
   return (
-    <section className="py-12 border-t border-border overflow-hidden">
+    <section className="py-16 overflow-hidden relative">
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5" />
       
       {/* Infinite scroll container */}
       <div className="relative group">
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        {/* Fade edges with gradient */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
         
         <div className="flex animate-scroll-left items-center group-hover:[animation-play-state:paused]">
           {/* First set */}
           {techLogos.map((item, index) => (
             <div
               key={`first-${index}`}
-              className="flex-shrink-0 px-6 md:px-10"
+              className="flex-shrink-0 px-8 md:px-12"
             >
-              <ClientLogo name={item.name} logo={item.logo} />
+              <ClientLogo name={item.name} logo={item.logo} index={index} />
             </div>
           ))}
           {/* Duplicate set for seamless loop */}
           {techLogos.map((item, index) => (
             <div
               key={`second-${index}`}
-              className="flex-shrink-0 px-6 md:px-10"
+              className="flex-shrink-0 px-8 md:px-12"
             >
-              <ClientLogo name={item.name} logo={item.logo} />
+              <ClientLogo name={item.name} logo={item.logo} index={index + techLogos.length} />
             </div>
           ))}
         </div>
