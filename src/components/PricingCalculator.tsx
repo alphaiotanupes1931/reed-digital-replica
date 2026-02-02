@@ -17,6 +17,8 @@ const appFeatures = [
   { id: "push", label: "Push Notifications", price: 1000 },
   { id: "payments", label: "Payments", price: 2500 },
   { id: "api", label: "API Integrations", price: 2000 },
+  { id: "cms", label: "CMS", price: 2000 },
+  { id: "crm", label: "CRM", price: 3500 },
   { id: "offline", label: "Offline Mode", price: 1500 },
   { id: "admin", label: "Admin Panel", price: 3000 },
 ];
