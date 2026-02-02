@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/rdg-logo.png";
+import logo from "@/assets/rdg-header-logo.png";
 
 const CapabilityStatement = () => {
   return (
@@ -21,7 +21,7 @@ const CapabilityStatement = () => {
               <img 
                 src={logo} 
                 alt="Reed Digital Group" 
-                className="w-16 h-16 invert"
+                className="h-12 invert"
               />
               <div>
                 <h1 className="text-2xl font-medium tracking-tight">Reed Digital Group LLC</h1>

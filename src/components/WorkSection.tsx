@@ -6,27 +6,37 @@ import ScrollReveal from "@/components/ScrollReveal";
 const projects = [
   { 
     title: "Wright Shade Creations", 
-    category: "Art", 
+    category: "Art Portfolio", 
+    type: "Portfolio Website",
+    tools: ["React", "Tailwind CSS", "Framer Motion"],
     url: "https://wrightshadecreations.com/",
   },
   { 
     title: "OQP Solutions", 
-    category: "Government", 
+    category: "Government Contractor", 
+    type: "Business Website",
+    tools: ["Next.js", "TypeScript", "Vercel"],
     url: "https://oqpsolutions.com/",
   },
   { 
     title: "The Intern by Shilom", 
-    category: "Finance", 
+    category: "Finance Education", 
+    type: "Educational Platform",
+    tools: ["React", "Node.js", "Stripe"],
     url: "https://www.theinternbyshilom.com/",
   },
   { 
     title: "VisionHeartz", 
-    category: "Clothing", 
+    category: "Clothing Brand", 
+    type: "E-Commerce Store",
+    tools: ["Shopify", "Custom Theme", "JavaScript"],
     url: "https://visionheartz.github.io/",
   },
   { 
-    title: "Call Us First", 
-    category: "Government", 
+    title: "AI Nupes", 
+    category: "Fraternity Organization", 
+    type: "Community Website",
+    tools: ["React", "Supabase", "Tailwind CSS"],
     url: "https://callusfirst.world/",
   },
 ];
@@ -113,16 +123,37 @@ const WorkSection = () => {
               </div>
               
               {/* Project info */}
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <span className="text-xs text-muted-foreground">
-                    {project.category}
+              <div className="space-y-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-medium group-hover:text-primary transition-colors">
+                      {project.title}
+                    </h3>
+                    <span className="text-xs text-muted-foreground">
+                      {project.category}
+                    </span>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0 mt-1" />
+                </div>
+                
+                {/* Type badge */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded">
+                    {project.type}
                   </span>
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                
+                {/* Tools used */}
+                <div className="flex flex-wrap gap-1">
+                  {project.tools.map((tool) => (
+                    <span 
+                      key={tool} 
+                      className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground rounded"
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
               </div>
             </motion.a>
           ))}

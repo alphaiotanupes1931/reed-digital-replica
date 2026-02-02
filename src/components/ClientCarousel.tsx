@@ -24,7 +24,7 @@ const ClientLogo = ({ name, logo }: { name: string; logo: string }) => (
     <img 
       src={logo} 
       alt={name}
-      className="max-w-full max-h-full object-contain opacity-40 group-hover:opacity-100 transition-opacity duration-300 grayscale group-hover:grayscale-0"
+      className="max-w-full max-h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
     />
   </motion.div>
 );

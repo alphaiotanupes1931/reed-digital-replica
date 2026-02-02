@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const services = [
-  { title: "Custom Development", desc: "Bespoke web applications tailored to your needs" },
-  { title: "UI/UX Design", desc: "Intuitive interfaces that convert visitors" },
-  { title: "Web Applications", desc: "Scalable solutions built for growth" },
-  { title: "Mobile Development", desc: "Native iOS & Android experiences" },
-  { title: "Cloud Solutions", desc: "AWS & Azure infrastructure" },
-  { title: "Digital Strategy", desc: "Strategic consulting for digital success" },
+  { title: "Websites", desc: "Beautiful, fast websites that help you get more customers" },
+  { title: "Online Stores", desc: "Sell your products online with easy-to-use shopping sites" },
+  { title: "Mobile Apps", desc: "Apps for iPhone and Android that your customers will love" },
+  { title: "Booking Systems", desc: "Let customers schedule appointments online 24/7" },
+  { title: "Business Software", desc: "Custom tools to help your team work smarter" },
+  { title: "Website Updates", desc: "We keep your site running smooth and up-to-date" },
 ];
 
 const ServicesSection = () => {
