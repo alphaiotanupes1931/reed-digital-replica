@@ -6,27 +6,27 @@ import elegantEpoxyLogo from "@/assets/clients/elegant-epoxy.png";
 const clients = [
   { 
     name: "Prince George's County", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Seal_of_Prince_George%27s_County%2C_Maryland.svg/200px-Seal_of_Prince_George%27s_County%2C_Maryland.svg.png"
+    logo: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Seal_of_Prince_George%27s_County%2C_Maryland.svg"
   },
   { 
     name: "BGE", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Baltimore_Gas_and_Electric_Company_logo.svg/320px-Baltimore_Gas_and_Electric_Company_logo.svg.png"
+    logo: "https://npr.brightspotcdn.com/legacy/sites/weaa/files/201803/BGE-Logo_t750x550_1.png"
   },
   { 
     name: "Hilton", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Hilton_Hotels_%26_Resorts_logo.svg/320px-Hilton_Hotels_%26_Resorts_logo.svg.png"
+    logo: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Hilton_Worldwide_logo.svg"
   },
   { 
     name: "State Farm", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/State_Farm_logo.svg/320px-State_Farm_logo.svg.png"
+    logo: "https://1000logos.net/wp-content/uploads/2018/04/State-Farm-Logo.png"
   },
   { 
     name: "Kaiser Permanente", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Kaiser_Permanente_logo.svg/320px-Kaiser_Permanente_logo.svg.png"
+    logo: "https://messageofhopefoundation.org/wp-content/uploads/2019/08/kaiser-permanente-logo-png-transparent-e1529530831239.png"
   },
   { 
     name: "Morgan State University", 
-    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Morgan_State_University_seal.svg/200px-Morgan_State_University_seal.svg.png"
+    logo: "https://upload.wikimedia.org/wikipedia/en/6/63/Morgan_State_University_Logo.svg"
   },
   { 
     name: "OQP Solutions", 
