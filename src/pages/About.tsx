@@ -38,7 +38,7 @@ const awards = [
     title: "American Airlines Hackathon", 
     achievement: "Best Technical Solution",
     project: null,
-    logo: "https://static.wikia.nocookie.net/aviation-airport/images/6/61/American-Airlines-Logo.png/revision/latest?cb=20240425172154"
+    logo: "https://1000logos.net/wp-content/uploads/2016/10/American-Airliners-logo.jpg"
   },
   { 
     title: "Gener8tor Hackathon", 
@@ -69,7 +69,7 @@ const pressFeatures = [
   },
   {
     name: "MITRE Corporation",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Mitre_Corporation_logo.svg/320px-Mitre_Corporation_logo.svg.png",
+    logo: "https://uploads.concordia.net/2019/09/16093101/MITREW.png",
     url: "https://www.mitre.org/news-insights/mitre-360/mitre-360-october",
     year: "2023"
   },
