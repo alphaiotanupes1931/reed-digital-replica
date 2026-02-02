@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Award, Code, Shield, Users, Briefcase, GraduationCap } from "lucide-react";
+import { Award, Code, Shield, Users, Briefcase, GraduationCap, Linkedin, Trophy, Newspaper } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
@@ -9,6 +9,7 @@ import LeaveReviewSection from "@/components/LeaveReviewSection";
 import founderImage from "@/assets/founder.png";
 import comptiaLogo from "@/assets/comptia-logo.png";
 import ciscoLogo from "@/assets/cisco-logo.png";
+import gener8torLogo from "@/assets/awards/gener8tor.png";
 
 const timeline = [
   { year: "2020", title: "Founded", desc: "Started as a freelance web developer" },
@@ -22,7 +23,34 @@ const values = [
   { icon: Code, title: "Quality First", desc: "Every line of code matters" },
   { icon: Users, title: "Client Focus", desc: "Your success is our success" },
   { icon: Shield, title: "Reliability", desc: "On time, every time" },
-  { icon: Award, title: "Excellence", desc: "Award-nominated work" },
+  { icon: Award, title: "Excellence", desc: "Award-winning work" },
+];
+
+const awards = [
+  { 
+    title: "Lincoln Financial Hackathon", 
+    achievement: "2nd Place",
+    project: "WealthGenius",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Lincoln_National_Corporation_logo.svg/320px-Lincoln_National_Corporation_logo.svg.png"
+  },
+  { 
+    title: "American Airlines Hackathon", 
+    achievement: "Best Technical Solution",
+    project: null,
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/American_Airlines_logo_2013.svg/320px-American_Airlines_logo_2013.svg.png"
+  },
+  { 
+    title: "Gener8tor Hackathon", 
+    achievement: "2nd Place",
+    project: null,
+    logo: gener8torLogo
+  },
+  { 
+    title: "Morgan State University Hackathon", 
+    achievement: "3rd Place",
+    project: null,
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Morgan_State_University_seal.svg/200px-Morgan_State_University_seal.svg.png"
+  },
 ];
 
 const AboutPage = () => {
@@ -56,7 +84,7 @@ const AboutPage = () => {
                   { value: "2020", label: "Founded" },
                   { value: "50+", label: "Projects Delivered" },
                   { value: "100%", label: "Satisfaction Rate" },
-                  { value: "4+", label: "Award Nominations" },
+                  { value: "5+", label: "Awards Won" },
                 ].map((stat, index) => (
                   <motion.div
                     key={stat.label}
@@ -143,16 +171,29 @@ const AboutPage = () => {
 
                     {/* Info Side */}
                     <div className="space-y-6">
-                      <div>
-                        <h3 className="text-2xl font-medium mb-1">Terell Reed</h3>
-                        <p className="text-primary font-mono text-sm">Founder & CEO</p>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-2xl font-medium mb-1">Terell Reed</h3>
+                          <p className="text-primary font-mono text-sm">Founder & CEO</p>
+                        </div>
+                        <a 
+                          href="https://www.linkedin.com/in/terell-reed-140377263/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="p-2 border border-border rounded hover:border-primary hover:text-primary transition-colors"
+                          aria-label="LinkedIn Profile"
+                        >
+                          <Linkedin className="w-5 h-5" />
+                        </a>
                       </div>
                       
                       <p className="text-muted-foreground leading-relaxed">
-                        A Computer Science graduate from Morgan State University with a passion 
-                        for creating digital solutions that make a difference. Before founding 
-                        Reed Digital Group, I honed my skills as a System Administrator for 
-                        Prince George's County Council and as a Security Engineering intern at MITRE.
+                        A Computer Science graduate from Morgan State University with deep expertise 
+                        in both <strong>software development</strong> and <strong>cybersecurity</strong>. 
+                        Before founding Reed Digital Group, Terell served as a System Administrator 
+                        for Prince George's County Council managing critical government infrastructure, 
+                        and as a Security Engineer at MITRE Corporation where he worked on 
+                        security solutions for federal systems.
                       </p>
 
                       {/* Experience Pills */}
@@ -162,12 +203,16 @@ const AboutPage = () => {
                           Morgan State University
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
-                          <Briefcase className="w-4 h-4" />
-                          Former MITRE Intern
+                          <Shield className="w-4 h-4" />
+                          MITRE Corporation
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
-                          <Shield className="w-4 h-4" />
-                          Security Background
+                          <Briefcase className="w-4 h-4" />
+                          PG County Government
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
+                          <Code className="w-4 h-4" />
+                          Full-Stack Developer
                         </span>
                       </div>
 
@@ -181,6 +226,64 @@ const AboutPage = () => {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Awards Section */}
+            <ScrollReveal delay={0.22}>
+              <div className="mb-24">
+                <div className="flex items-center justify-center gap-2 mb-10">
+                  <Trophy className="w-4 h-4 text-primary" />
+                  <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center">
+                    Awards & Recognition
+                  </h2>
+                </div>
+                
+                {/* Featured in Baltimore Times badge */}
+                <motion.a
+                  href="https://baltimoretimes-online.com/latest-news/2023/04/28/morgan-state-university-students-take-home-prize-money-land-internships-after-hackathon/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 mb-10 p-4 bg-muted/50 rounded-lg border border-border hover:border-primary transition-colors max-w-md mx-auto"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <Newspaper className="w-5 h-5 text-primary" />
+                  <span className="text-sm">
+                    <span className="text-muted-foreground">Featured in </span>
+                    <span className="font-medium">The Baltimore Times</span>
+                    <span className="text-muted-foreground"> (2023)</span>
+                  </span>
+                </motion.a>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                  {awards.map((award, index) => (
+                    <motion.div
+                      key={award.title}
+                      className="text-center p-6 border border-border hover:border-primary transition-colors group rounded-lg"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ y: -4 }}
+                    >
+                      <div className="h-12 flex items-center justify-center mb-4">
+                        <img 
+                          src={award.logo} 
+                          alt={award.title}
+                          className="max-h-full w-auto object-contain opacity-70 group-hover:opacity-100 transition-opacity"
+                        />
+                      </div>
+                      <div className="text-lg font-medium text-primary mb-1">
+                        {award.achievement}
+                      </div>
+                      <div className="text-sm font-medium mb-1">{award.title}</div>
+                      {award.project && (
+                        <div className="text-xs text-muted-foreground">
+                          "{award.project}"
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </ScrollReveal>
