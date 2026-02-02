@@ -1,14 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const testimonials = [
-  { quote: "Very experienced and knowledgeable. Worth every penny.", author: "Tyrel Fuentes", role: "Business Owner" },
-  { quote: "They really listened to what I needed and delivered a clean, professional website.", author: "Chaz Crockett", role: "Entrepreneur" },
-  { quote: "Fast, reliable, and very communicative.", author: "Adetokunbo Awosanya", role: "Startup Founder" },
-  { quote: "Outstanding customer service and clear communication.", author: "OQP Solutions", role: "Government Contractor" },
-  { quote: "Transformed chaotic ideas into an organized, cohesive experience.", author: "Iyanna Wright", role: "Creative Director" },
+  { quote: "Very experienced and knowledgeable. Worth every penny.", author: "Tyrel Fuentes" },
+  { quote: "They really listened to what I needed and delivered a clean, professional website.", author: "Chaz Crockett" },
+  { quote: "Fast, reliable, and very communicative.", author: "Adetokunbo Awosanya" },
+  { quote: "Outstanding customer service and clear communication.", author: "OQP Solutions" },
+  { quote: "Transformed chaotic ideas into an organized, cohesive experience.", author: "Iyanna Wright" },
 ];
+
+const AnimatedCounter = ({ end, duration = 2 }: { end: number; duration?: number }) => {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          let start = 0;
+          const increment = end / (duration * 60);
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= end) {
+              setCount(end);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(start));
+            }
+          }, 1000 / 60);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [end, duration, hasAnimated]);
+
+  return <span ref={ref}>{count}</span>;
+};
 
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -22,91 +55,71 @@ const TestimonialsSection = () => {
 
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+      {/* Section divider line */}
+      <div className="section-line absolute top-0 left-0 right-0" />
       
-      {/* Decorative quote marks */}
-      <div className="absolute top-20 left-1/4 text-[200px] font-serif text-primary/5 leading-none select-none">"</div>
-      <div className="absolute bottom-10 right-1/4 text-[200px] font-serif text-accent/5 leading-none rotate-180 select-none">"</div>
+      {/* Large background text */}
+      <div className="bg-text right-0 top-1/2 -translate-y-1/2 text-right">
+        TRUST
+      </div>
       
       <div className="container relative z-10">
+        {/* Stats counter */}
+        <div className="flex justify-center gap-16 mb-20">
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-medium text-primary">
+              <AnimatedCounter end={50} />+
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">Projects Delivered</p>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-medium text-primary">
+              <AnimatedCounter end={100} />%
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">Client Satisfaction</p>
+          </div>
+        </div>
+
         <ScrollReveal>
           <motion.p 
-            className="text-sm font-mono tracking-widest uppercase text-center mb-4 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
           >
-            Client Love
+            Client Testimonials
           </motion.p>
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            Testimonials
-          </motion.h2>
         </ScrollReveal>
 
         <div className="max-w-2xl mx-auto text-center">
-          <div className="min-h-[200px] flex items-center justify-center">
+          <div className="min-h-[160px] flex items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
-                className="relative"
               >
-                {/* Quote card */}
-                <div className="relative p-8 rounded-2xl bg-background/80 backdrop-blur-sm border border-border/50 shadow-xl">
-                  {/* Gradient glow */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-secondary/20 rounded-2xl blur-xl opacity-50" />
-                  
-                  <div className="relative z-10">
-                    <blockquote className="text-xl md:text-2xl leading-relaxed mb-6 font-medium">
-                      "{testimonials[currentIndex].quote}"
-                    </blockquote>
-                    <div className="flex items-center justify-center gap-3">
-                      {/* Avatar placeholder with gradient */}
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold">
-                        {testimonials[currentIndex].author[0]}
-                      </div>
-                      <div className="text-left">
-                        <p className="font-semibold">{testimonials[currentIndex].author}</p>
-                        <p className="text-sm text-muted-foreground">{testimonials[currentIndex].role}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <blockquote className="text-xl md:text-2xl leading-relaxed mb-6 font-light">
+                  "{testimonials[currentIndex].quote}"
+                </blockquote>
+                <p className="text-sm text-muted-foreground">
+                  — {testimonials[currentIndex].author}
+                </p>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Animated dots */}
-          <div className="flex justify-center gap-3 mt-8">
+          <div className="flex justify-center gap-2 mt-8">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className="relative w-3 h-3 rounded-full transition-all duration-300"
+                className={`w-8 h-1 rounded-full transition-all duration-300 ${
+                  index === currentIndex ? "bg-primary" : "bg-border hover:bg-muted-foreground"
+                }`}
                 aria-label={`Go to testimonial ${index + 1}`}
-              >
-                <span className={`absolute inset-0 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
-                    ? "bg-gradient-to-r from-primary to-accent scale-100" 
-                    : "bg-border scale-75 hover:scale-100"
-                }`} />
-                {index === currentIndex && (
-                  <motion.span 
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent"
-                    layoutId="activeDot"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </button>
+              />
             ))}
           </div>
         </div>

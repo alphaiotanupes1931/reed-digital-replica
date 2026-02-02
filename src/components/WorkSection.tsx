@@ -1,74 +1,116 @@
+import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const projects = [
-  { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/", color: "from-pink-500 to-rose-500" },
-  { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/", color: "from-blue-500 to-cyan-500" },
-  { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/", color: "from-green-500 to-emerald-500" },
-  { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/", color: "from-purple-500 to-violet-500" },
-  { title: "Call Us First", category: "Government", url: "https://callusfirst.world/", color: "from-orange-500 to-amber-500" },
+  { 
+    title: "Wright Shade Creations", 
+    category: "Art", 
+    url: "https://wrightshadecreations.com/",
+    image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&h=600&fit=crop"
+  },
+  { 
+    title: "OQP Solutions", 
+    category: "Government", 
+    url: "https://oqpsolutions.com/",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop"
+  },
+  { 
+    title: "The Intern by Shilom", 
+    category: "Finance", 
+    url: "https://www.theinternbyshilom.com/",
+    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop"
+  },
+  { 
+    title: "VisionHeartz", 
+    category: "Clothing", 
+    url: "https://visionheartz.github.io/",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop"
+  },
+  { 
+    title: "Call Us First", 
+    category: "Government", 
+    url: "https://callusfirst.world/",
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop"
+  },
 ];
 
 const WorkSection = () => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   return (
     <section id="work" className="py-24 md:py-32 relative overflow-hidden">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background" />
+      {/* Section divider line */}
+      <div className="section-line absolute top-0 left-0 right-0" />
+      
+      {/* Large background text */}
+      <div className="bg-text left-0 top-1/2 -translate-y-1/2">
+        WORK
+      </div>
       
       <div className="container relative z-10">
         <ScrollReveal>
           <motion.p 
-            className="text-sm font-mono tracking-widest uppercase text-center mb-4 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
           >
             Our Work
           </motion.p>
           <motion.h2 
-            className="text-3xl md:text-4xl font-bold text-center mb-16"
+            className="text-2xl md:text-3xl font-medium text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
           >
             Portfolio
           </motion.h2>
         </ScrollReveal>
 
-        <div className="max-w-3xl mx-auto space-y-4">
+        <div className="max-w-3xl mx-auto relative">
+          {/* Floating preview image */}
+          <motion.div
+            className="fixed top-1/2 right-[10%] w-80 h-60 pointer-events-none z-50 hidden lg:block"
+            animate={{
+              opacity: hoveredIndex !== null ? 1 : 0,
+              scale: hoveredIndex !== null ? 1 : 0.8,
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            {hoveredIndex !== null && (
+              <img
+                src={projects[hoveredIndex].image}
+                alt={projects[hoveredIndex].title}
+                className="w-full h-full object-cover rounded-sm grayscale hover:grayscale-0 transition-all duration-500"
+              />
+            )}
+          </motion.div>
+
           {projects.map((project, index) => (
             <motion.a
               key={project.title}
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ x: 10 }}
-              className="group block relative"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className="group flex justify-between items-center py-5 border-b border-border hover:border-primary transition-colors duration-300"
             >
-              <div className="relative flex justify-between items-center py-5 px-6 rounded-xl border border-border/50 bg-background/80 backdrop-blur-sm hover:border-transparent transition-all duration-500 overflow-hidden">
-                {/* Animated gradient border on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${project.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                <div className={`absolute inset-[1px] bg-background rounded-xl`} />
-                
-                {/* Gradient line on left */}
-                <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                
-                <div className="relative z-10 flex items-center gap-4">
-                  {/* Color dot */}
-                  <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${project.color} opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300`} />
-                  <span className="font-medium text-lg group-hover:text-foreground transition-colors">
-                    {project.title}
-                  </span>
-                  <span className="text-xs text-muted-foreground font-mono px-2 py-1 rounded-full bg-muted/50">
-                    {project.category}
-                  </span>
-                </div>
-                <ArrowUpRight className="relative z-10 w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
+              <div className="flex items-baseline gap-4">
+                <span className="text-xs text-muted-foreground font-mono">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span className="font-medium text-lg group-hover:text-primary transition-colors">
+                  {project.title}
+                </span>
+                <span className="text-xs text-muted-foreground px-2 py-1 border border-border rounded-sm">
+                  {project.category}
+                </span>
               </div>
+              <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
             </motion.a>
           ))}
         </div>

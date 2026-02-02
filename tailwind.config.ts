@@ -65,14 +65,15 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        sans: ["JetBrains Mono", "monospace"],
         mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
-        "display-xl": ["4rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
-        "display-lg": ["3.25rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
+        "display-xl": ["4rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        "display-lg": ["3.25rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
         "display": ["2.5rem", { lineHeight: "1.15", letterSpacing: "-0.01em" }],
         "display-sm": ["2rem", { lineHeight: "1.2", letterSpacing: "0" }],
+        "bg-text": ["15vw", { lineHeight: "1", letterSpacing: "0.05em" }],
       },
       borderRadius: {
         lg: "var(--radius)",
