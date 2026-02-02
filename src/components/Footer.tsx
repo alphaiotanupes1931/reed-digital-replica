@@ -16,11 +16,8 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative border-t border-border py-16 overflow-hidden">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/5 via-transparent to-transparent" />
-      
-      <div className="container relative z-10">
+    <footer className="border-t border-border py-16 relative">
+      <div className="container">
         <div className="flex flex-col items-center text-center">
           {/* Logo */}
           <Link to="/" className="mb-8 group">
@@ -28,27 +25,21 @@ const Footer = () => {
               src={logo} 
               alt="Reed Digital Group" 
               className="h-10 w-auto opacity-60 group-hover:opacity-100 transition-opacity"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02 }}
             />
           </Link>
 
           {/* Navigation */}
           <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-8">
-            {links.map((link, index) => (
-              <motion.div
+            {links.map((link) => (
+              <Link 
                 key={link.to}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                to={link.to} 
+                className="text-sm text-muted-foreground hover:text-primary transition-colors relative group"
               >
-                <Link 
-                  to={link.to} 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors relative group"
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
-                </Link>
-              </motion.div>
+                {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300" />
+              </Link>
             ))}
           </nav>
 
@@ -57,25 +48,22 @@ const Footer = () => {
             href="https://instagram.com/reeddigitalgroup" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="relative w-12 h-12 flex items-center justify-center rounded-full overflow-hidden mb-10 group"
+            className="w-10 h-10 flex items-center justify-center border border-border rounded-sm hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all mb-10"
             aria-label="Follow us on Instagram"
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {/* Gradient background on hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute inset-0 border border-border group-hover:border-transparent rounded-full transition-colors" />
-            <Instagram className="relative z-10 w-5 h-5 text-muted-foreground group-hover:text-white transition-colors" />
+            <Instagram className="w-4 h-4" />
           </motion.a>
 
-          {/* Divider with gradient */}
-          <div className="w-24 h-px bg-gradient-to-r from-transparent via-border to-transparent mb-8" />
+          {/* Divider */}
+          <div className="w-16 h-px bg-border mb-8" />
 
           {/* Bottom */}
           <div className="flex flex-col sm:flex-row items-center gap-2 text-xs text-muted-foreground">
             <p>© {currentYear} Reed Digital Group LLC</p>
-            <span className="hidden sm:inline text-primary">·</span>
-            <p className="font-mono">Remote Based Agency</p>
+            <span className="hidden sm:inline">·</span>
+            <p>Remote Based Agency</p>
           </div>
         </div>
       </div>

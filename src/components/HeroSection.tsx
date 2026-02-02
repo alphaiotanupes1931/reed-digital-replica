@@ -56,72 +56,53 @@ const HeroSection = () => {
           allowFullScreen
           title="Background video"
         />
-        {/* Gradient overlay instead of plain tint */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-primary/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        {/* Warm overlay */}
+        <div className="absolute inset-0 bg-background/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
       </div>
 
-      {/* Decorative floating elements */}
-      <motion.div 
-        className="absolute top-1/4 right-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl"
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3]
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div 
-        className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-accent/20 rounded-full blur-3xl"
-        animate={{ 
-          scale: [1.2, 1, 1.2],
-          opacity: [0.3, 0.5, 0.3]
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      />
+      {/* Large background text */}
+      <div className="bg-text left-0 top-1/2 -translate-y-1/2">
+        BUILD
+      </div>
 
       {/* Content */}
       <div className="container relative z-10 pt-24 pb-16">
-        <div className="max-w-3xl">
-          {/* Glassmorphism backdrop with gradient border */}
-          <motion.div 
-            className="relative backdrop-blur-md bg-background/40 border border-white/20 rounded-2xl p-8 md:p-12 overflow-hidden"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            {/* Animated gradient border */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/50 via-accent/50 to-secondary/50 opacity-50" style={{ padding: "1px" }}>
-              <div className="absolute inset-[1px] rounded-2xl bg-background/40 backdrop-blur-md" />
-            </div>
-            
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shimmer" />
-            
+        <motion.div 
+          className="max-w-3xl"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          {/* Glassmorphism backdrop */}
+          <div className="backdrop-blur-sm bg-background/70 border border-border rounded-sm p-8 md:p-12">
             {/* Main Headline with Typing Animation */}
-            <motion.h1 
-              className="relative z-10 text-4xl md:text-5xl lg:text-6xl font-mono font-medium mb-8 min-h-[1.5em]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <span className="bg-gradient-to-r from-foreground via-foreground to-primary bg-clip-text">
-                {displayText}
-              </span>
-              <span className="typing-cursor bg-gradient-to-b from-primary to-accent" />
-            </motion.h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-medium mb-6 min-h-[1.5em] tracking-tight">
+              {displayText}
+              <span className="typing-cursor" />
+            </h1>
 
             {/* Tagline */}
-            <motion.p 
-              className="relative z-10 text-lg md:text-xl text-muted-foreground max-w-xl font-mono"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl">
               Making digital dreams come true.
-            </motion.p>
-          </motion.div>
-        </div>
+            </p>
+          </div>
+        </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <motion.div
+          className="w-px h-12 bg-foreground/20"
+          animate={{ scaleY: [1, 0.5, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </motion.div>
     </section>
   );
 };
