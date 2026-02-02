@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 
 const phrases = [
   "We build websites.",
@@ -8,46 +8,14 @@ const phrases = [
   "We build experiences.",
 ];
 
-const portfolioSites = [
-  "https://wrightshadecreations.com/",
-  "https://oqpsolutions.com/",
-  "https://www.theinternbyshilom.com/",
-];
-
 const HeroSection = () => {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
-  const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
-
-  // Parallax transforms for each device
-  const laptopX = useTransform(smoothMouseX, [-0.5, 0.5], [-20, 20]);
-  const laptopY = useTransform(smoothMouseY, [-0.5, 0.5], [-10, 10]);
-  
-  const phoneX = useTransform(smoothMouseX, [-0.5, 0.5], [30, -30]);
-  const phoneY = useTransform(smoothMouseY, [-0.5, 0.5], [20, -20]);
-  
-  const tabletX = useTransform(smoothMouseX, [-0.5, 0.5], [-15, 15]);
-  const tabletY = useTransform(smoothMouseY, [-0.5, 0.5], [-25, 25]);
 
   const typeSpeed = 80;
   const deleteSpeed = 40;
   const pauseTime = 2000;
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
 
   const animateText = useCallback(() => {
     const currentPhrase = phrases[currentPhraseIndex];
@@ -77,180 +45,175 @@ const HeroSection = () => {
   }, [animateText]);
 
   return (
-    <section 
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex items-center overflow-hidden"
-    >
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden">
-        <iframe
-          src="https://www.youtube.com/embed/B8jgJo4yrCk?autoplay=1&mute=1&loop=1&playlist=B8jgJo4yrCk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[177.78vh] min-w-full min-h-full aspect-video"
-          style={{ height: 'max(100%, 56.25vw)' }}
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          title="Background video"
-        />
-        <div className="absolute inset-0 bg-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
-      </div>
-
-      {/* Large background text */}
-      <div className="bg-text left-0 top-1/2 -translate-y-1/2">
-        BUILD
-      </div>
-
-      {/* Content */}
-      <div className="container relative z-10 pt-24 pb-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Text */}
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      <div className="container relative z-10">
+        <div className="grid lg:grid-cols-2 gap-0 min-h-screen items-center -mx-6 lg:-mx-0">
+          
+          {/* Left Side - Typography & CTA */}
           <motion.div 
-            initial={{ opacity: 0, x: -40 }}
+            className="flex flex-col justify-center px-6 lg:px-12 py-24 lg:py-0"
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="backdrop-blur-sm bg-background/50 border border-border rounded-sm p-8 md:p-10">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-medium mb-6 min-h-[1.5em] tracking-tight">
-                {displayText}
-                <span className="typing-cursor" />
-              </h1>
+            <motion.p 
+              className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Digital Agency
+            </motion.p>
+            
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium mb-6 min-h-[1.5em] tracking-tight leading-tight">
+              {displayText}
+              <span className="typing-cursor" />
+            </h1>
 
-              <p className="text-base md:text-lg text-muted-foreground max-w-md mb-8">
-                Making digital dreams come true.
-              </p>
+            <motion.p 
+              className="text-lg text-muted-foreground max-w-md mb-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Making digital dreams come true. We craft exceptional websites and applications for businesses that demand quality.
+            </motion.p>
 
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
               <a 
                 href="/contact"
                 data-magnetic
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-4 text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 Start Your Project
               </a>
-            </div>
+              <a 
+                href="/portfolio"
+                className="inline-flex items-center justify-center gap-2 border border-border px-8 py-4 text-sm font-medium hover:bg-secondary transition-colors"
+              >
+                View Our Work
+              </a>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div 
+              className="flex gap-12 mt-16 pt-8 border-t border-border"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div>
+                <div className="text-3xl font-medium text-primary">50+</div>
+                <div className="text-sm text-muted-foreground">Projects</div>
+              </div>
+              <div>
+                <div className="text-3xl font-medium text-primary">100%</div>
+                <div className="text-sm text-muted-foreground">Satisfaction</div>
+              </div>
+              <div>
+                <div className="text-3xl font-medium text-primary">5★</div>
+                <div className="text-sm text-muted-foreground">Rating</div>
+              </div>
+            </motion.div>
           </motion.div>
 
-          {/* Right side - Floating Devices */}
-          <div className="relative h-[500px] hidden lg:block">
-            {/* Laptop */}
-            <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
-              style={{ x: laptopX, y: laptopY }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              <div className="relative">
-                {/* Laptop frame */}
-                <div className="w-80 bg-foreground rounded-t-lg p-1">
-                  {/* Screen bezel */}
-                  <div className="bg-secondary rounded-t-md overflow-hidden">
-                    {/* Browser chrome */}
-                    <div className="h-5 bg-muted flex items-center px-2 gap-1">
-                      <div className="w-2 h-2 rounded-full bg-red-400/60" />
-                      <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
-                      <div className="w-2 h-2 rounded-full bg-green-400/60" />
-                    </div>
-                    {/* Website preview */}
-                    <div className="h-44 overflow-hidden">
-                      <iframe
-                        src={portfolioSites[0]}
-                        className="w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
-                        title="Portfolio preview"
-                      />
-                    </div>
-                  </div>
-                </div>
-                {/* Laptop base */}
-                <div className="w-96 h-3 bg-foreground rounded-b-lg mx-auto -mt-px" />
-                <div className="w-24 h-1 bg-muted-foreground/30 rounded-full mx-auto mt-0.5" />
-              </div>
-            </motion.div>
+          {/* Right Side - Video/Mockup */}
+          <motion.div 
+            className="relative h-full min-h-[400px] lg:min-h-screen"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          >
+            {/* Video Background */}
+            <div className="absolute inset-0 overflow-hidden">
+              <iframe
+                src="https://www.youtube.com/embed/B8jgJo4yrCk?autoplay=1&mute=1&loop=1&playlist=B8jgJo4yrCk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[200%] h-[200%] min-w-full min-h-full"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                title="Background video"
+              />
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
+              <div className="absolute inset-0 bg-primary/10" />
+            </div>
 
-            {/* Phone - Right */}
-            <motion.div
-              className="absolute top-1/4 right-0 z-30"
-              style={{ x: phoneX, y: phoneY }}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            >
-              <div className="relative">
-                {/* Phone frame */}
-                <div className="w-24 bg-foreground rounded-2xl p-1">
-                  {/* Notch */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1.5 bg-foreground rounded-full z-10" />
-                  {/* Screen */}
-                  <div className="bg-secondary rounded-xl overflow-hidden">
-                    <div className="h-48 overflow-hidden">
-                      <iframe
-                        src={portfolioSites[1]}
-                        className="w-[500%] h-[500%] origin-top-left scale-[0.20] pointer-events-none"
-                        title="Portfolio preview mobile"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Tablet - Left */}
-            <motion.div
-              className="absolute bottom-10 left-0 z-10"
-              style={{ x: tabletX, y: tabletY }}
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-            >
-              <div className="relative transform -rotate-6">
-                {/* Tablet frame */}
-                <div className="w-40 bg-foreground rounded-xl p-1">
-                  {/* Screen */}
-                  <div className="bg-secondary rounded-lg overflow-hidden">
-                    <div className="h-28 overflow-hidden">
-                      <iframe
-                        src={portfolioSites[2]}
-                        className="w-[500%] h-[500%] origin-top-left scale-[0.20] pointer-events-none"
-                        title="Portfolio preview tablet"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Decorative elements */}
+            {/* Floating Browser Mockup */}
             <motion.div 
-              className="absolute top-10 left-20 w-3 h-3 rounded-full bg-primary/40"
-              animate={{ y: [0, -10, 0] }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-lg"
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              <div className="bg-background/95 backdrop-blur-sm rounded-lg shadow-2xl border border-border overflow-hidden">
+                {/* Browser Chrome */}
+                <div className="h-10 bg-secondary flex items-center px-4 gap-2 border-b border-border">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                  </div>
+                  <div className="flex-1 mx-4">
+                    <div className="bg-background rounded px-3 py-1 text-xs text-muted-foreground">
+                      yourwebsite.com
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Website Preview */}
+                <div className="aspect-[4/3] overflow-hidden">
+                  <iframe
+                    src="https://wrightshadecreations.com/"
+                    className="w-[200%] h-[200%] origin-top-left scale-50 pointer-events-none"
+                    title="Portfolio preview"
+                  />
+                </div>
+              </div>
+
+              {/* Shadow/Glow Effect */}
+              <div className="absolute -inset-4 bg-primary/20 blur-3xl -z-10 rounded-3xl" />
+            </motion.div>
+
+            {/* Decorative Elements */}
+            <motion.div 
+              className="absolute top-20 right-10 w-20 h-20 border border-primary/20 rounded-lg"
+              animate={{ rotate: [0, 5, 0, -5, 0] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div 
+              className="absolute bottom-32 left-10 w-4 h-4 bg-primary/40 rounded-full"
+              animate={{ y: [0, -15, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div 
-              className="absolute bottom-20 right-20 w-2 h-2 rounded-full bg-primary/30"
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute top-1/3 left-20 w-2 h-2 bg-primary/30 rounded-full"
+              animate={{ scale: [1, 1.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             />
-            <motion.div 
-              className="absolute top-1/3 right-10 w-4 h-4 border border-primary/20 rotate-45"
-              animate={{ rotate: [45, 90, 45] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Scroll indicator */}
       <motion.div 
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="absolute bottom-8 left-8 lg:left-1/4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
+        transition={{ delay: 1.2 }}
       >
-        <motion.div
-          className="w-px h-12 bg-foreground/20"
-          animate={{ scaleY: [1, 0.5, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <div className="flex items-center gap-3">
+          <motion.div
+            className="w-px h-12 bg-foreground/30"
+            animate={{ scaleY: [1, 0.5, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll</span>
+        </div>
       </motion.div>
     </section>
   );
