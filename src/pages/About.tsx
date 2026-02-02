@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Award, Code, Shield, Users, Briefcase, GraduationCap, Linkedin, Trophy, Newspaper } from "lucide-react";
+import { Award, Code, Shield, Users, Briefcase, GraduationCap, Linkedin, Trophy, Newspaper, ExternalLink } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
@@ -10,6 +10,7 @@ import founderImage from "@/assets/founder.png";
 import comptiaLogo from "@/assets/comptia-logo.png";
 import ciscoLogo from "@/assets/cisco-logo.png";
 import gener8torLogo from "@/assets/awards/gener8tor.png";
+import mediumLogo from "@/assets/medium-logo.svg";
 
 const timeline = [
   { year: "2020", title: "Founded", desc: "Started as a freelance web developer" },
@@ -31,13 +32,13 @@ const awards = [
     title: "Lincoln Financial Hackathon", 
     achievement: "2nd Place",
     project: "WealthGenius",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Lincoln_National_Corporation_logo.svg/320px-Lincoln_National_Corporation_logo.svg.png"
+    logo: "https://epayments.web.lfg.com/assets/images/lfg-logo-new.svg"
   },
   { 
     title: "American Airlines Hackathon", 
     achievement: "Best Technical Solution",
     project: null,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/American_Airlines_logo_2013.svg/320px-American_Airlines_logo_2013.svg.png"
+    logo: "https://static.wikia.nocookie.net/aviation-airport/images/6/61/American-Airlines-Logo.png/revision/latest?cb=20240425172154"
   },
   { 
     title: "Gener8tor Hackathon", 
@@ -49,7 +50,28 @@ const awards = [
     title: "Morgan State University Hackathon", 
     achievement: "3rd Place",
     project: null,
-    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/Morgan_State_University_seal.svg/200px-Morgan_State_University_seal.svg.png"
+    logo: "https://upload.wikimedia.org/wikipedia/en/6/63/Morgan_State_University_Logo.svg"
+  },
+];
+
+const pressFeatures = [
+  {
+    name: "The Baltimore Times",
+    logo: "https://macpa.net/wp-content/uploads/2013/07/The-Baltimore-Times-Cover-Page-scaled-2502x2502.jpg",
+    url: "https://baltimoretimes-online.com/latest-news/2023/04/28/morgan-state-university-students-take-home-prize-money-land-internships-after-hackathon/",
+    year: "2023"
+  },
+  {
+    name: "Medium",
+    logo: mediumLogo,
+    url: "https://medium.com/@terellebony/how-i-got-into-cybersecurity-and-ai-with-no-roadmap-no-connections-and-no-blueprint-d89e731d2a8c",
+    year: "2024"
+  },
+  {
+    name: "MITRE Corporation",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Mitre_Corporation_logo.svg/320px-Mitre_Corporation_logo.svg.png",
+    url: "https://www.mitre.org/news-insights/mitre-360/mitre-360-october",
+    year: "2023"
   },
 ];
 
@@ -240,21 +262,33 @@ const AboutPage = () => {
                   </h2>
                 </div>
                 
-                {/* Featured in Baltimore Times badge */}
-                <motion.a
-                  href="https://baltimoretimes-online.com/latest-news/2023/04/28/morgan-state-university-students-take-home-prize-money-land-internships-after-hackathon/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 mb-10 p-4 bg-muted/50 rounded-lg border border-border hover:border-primary transition-colors max-w-md mx-auto"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <Newspaper className="w-5 h-5 text-primary" />
-                  <span className="text-sm">
-                    <span className="text-muted-foreground">Featured in </span>
-                    <span className="font-medium">The Baltimore Times</span>
-                    <span className="text-muted-foreground"> (2023)</span>
-                  </span>
-                </motion.a>
+                {/* Press Features */}
+                <div className="flex flex-wrap justify-center gap-4 mb-12">
+                  {pressFeatures.map((press, index) => (
+                    <motion.a
+                      key={press.name}
+                      href={press.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 px-5 py-3 bg-muted/50 rounded-lg border border-border hover:border-primary transition-colors group"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <img 
+                        src={press.logo} 
+                        alt={press.name}
+                        className="h-6 w-auto object-contain opacity-70 group-hover:opacity-100 transition-opacity"
+                      />
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Featured on </span>
+                        <span className="font-medium">{press.name}</span>
+                      </div>
+                      <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </motion.a>
+                  ))}
+                </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
                   {awards.map((award, index) => (
