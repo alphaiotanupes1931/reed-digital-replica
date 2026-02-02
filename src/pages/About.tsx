@@ -240,10 +240,38 @@ const AboutPage = () => {
 
                       {/* Certifications */}
                       <div>
-                        <p className="text-xs text-muted-foreground mb-3 font-mono">CERTIFICATIONS</p>
-                        <div className="flex gap-6 items-center">
+                        <p className="text-xs text-muted-foreground mb-3 font-mono">SECURITY CERTIFICATIONS</p>
+                        <div className="flex gap-6 items-center mb-6">
                           <img src={comptiaLogo} alt="CompTIA" className="h-10 opacity-70 hover:opacity-100 transition-opacity" />
                           <img src={ciscoLogo} alt="Cisco" className="h-8 opacity-70 hover:opacity-100 transition-opacity" />
+                        </div>
+                        
+                        <p className="text-xs text-muted-foreground mb-3 font-mono">PROGRAMMING CERTIFICATIONS</p>
+                        <div className="flex flex-wrap gap-4 items-center">
+                          <img 
+                            src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" 
+                            alt="Python" 
+                            className="h-8 opacity-70 hover:opacity-100 transition-opacity" 
+                            title="Python Institute Certified"
+                          />
+                          <img 
+                            src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" 
+                            alt="AWS" 
+                            className="h-6 opacity-70 hover:opacity-100 transition-opacity"
+                            title="AWS Certified"
+                          />
+                          <img 
+                            src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" 
+                            alt="Meta React" 
+                            className="h-8 opacity-70 hover:opacity-100 transition-opacity"
+                            title="Meta Front-End Developer"
+                          />
+                          <img 
+                            src="https://upload.wikimedia.org/wikipedia/commons/4/44/Google-flutter-logo.svg" 
+                            alt="Google Flutter" 
+                            className="h-6 opacity-70 hover:opacity-100 transition-opacity"
+                            title="Google Flutter Developer"
+                          />
                         </div>
                       </div>
                     </div>
