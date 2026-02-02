@@ -33,9 +33,9 @@ const projects = [
     url: "https://visionheartz.github.io/",
   },
   { 
-    title: "AI Nupes", 
-    category: "Fraternity Organization", 
-    type: "Community Website",
+    title: "Call Us First", 
+    category: "Government Agency", 
+    type: "Government Website",
     tools: ["React", "Supabase", "Tailwind CSS"],
     url: "https://callusfirst.world/",
   },
