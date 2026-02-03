@@ -50,11 +50,8 @@ const PricingPage = () => {
               <ScrollReveal delay={0.05}>
                 <div className="mb-12 p-6 border-2 border-primary bg-primary/5 text-center">
                   <h3 className="text-lg font-medium mb-3">We Work With Your Budget</h3>
-                  <p className="text-muted-foreground text-sm mb-4">
+                  <p className="text-muted-foreground text-sm">
                     Every project is unique. Tell us your budget and goals — we'll find a solution that works for you.
-                  </p>
-                  <p className="text-foreground font-bold text-lg">
-                    100% Money-Back Guarantee — If you're not fully satisfied, we'll refund every penny.
                   </p>
                 </div>
               </ScrollReveal>
