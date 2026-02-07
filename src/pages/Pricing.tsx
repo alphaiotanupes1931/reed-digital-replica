@@ -20,6 +20,23 @@ const mobilePackages = [
   { name: "Enterprise", price: "Custom", desc: "Multi-platform, advanced security" },
 ];
 
+const seoRetainers = [
+  { name: "Basic", price: "$500/mo", desc: "Keyword research, on-page optimization, monthly report" },
+  { name: "Growth", price: "$1,000/mo", desc: "Content creation, link building, local SEO", popular: true },
+  { name: "Premium", price: "$1,500/mo", desc: "Full-service SEO, competitive analysis" },
+];
+
+const socialMedia = [
+  { name: "Starter", price: "$300/mo", desc: "3 posts/week, 1 platform" },
+  { name: "Business", price: "$600/mo", desc: "5 posts/week, 2-3 platforms, stories", popular: true },
+  { name: "Pro", price: "$1,000/mo", desc: "Daily posts, ads management, analytics" },
+];
+
+const maintenance = [
+  { name: "Basic", price: "$100/mo", desc: "Updates, backups, security monitoring" },
+  { name: "Plus", price: "$200/mo", desc: "Includes content updates, SEO tweaks" },
+];
+
 const extras = [
   { service: "Landing Page", price: "$300 - $600" },
   { service: "Website Redesign", price: "50% of build" },
@@ -107,8 +124,81 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Extras */}
+              {/* Monthly Recurring Services */}
               <ScrollReveal delay={0.25}>
+                <div className="mb-16">
+                  <div className="text-center mb-8 p-4 border-2 border-primary bg-primary/5">
+                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider">
+                      Monthly Recurring Services
+                    </h3>
+                  </div>
+
+                  {/* SEO Retainers */}
+                  <div className="mb-10">
+                    <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
+                      SEO Retainer Packages
+                    </h4>
+                    <div className="space-y-0">
+                      {seoRetainers.map((pkg) => (
+                        <div 
+                          key={pkg.name} 
+                          className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
+                        >
+                          <div>
+                            <span className="font-medium">{pkg.name}</span>
+                            {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
+                            <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
+                          </div>
+                          <span className="font-mono text-sm">{pkg.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Social Media Management */}
+                  <div className="mb-10">
+                    <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
+                      Social Media Management
+                    </h4>
+                    <div className="space-y-0">
+                      {socialMedia.map((pkg) => (
+                        <div 
+                          key={pkg.name} 
+                          className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
+                        >
+                          <div>
+                            <span className="font-medium">{pkg.name}</span>
+                            {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
+                            <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
+                          </div>
+                          <span className="font-mono text-sm">{pkg.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Website Maintenance */}
+                  <div>
+                    <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
+                      Website Maintenance
+                    </h4>
+                    <div className="space-y-0">
+                      {maintenance.map((pkg) => (
+                        <div key={pkg.name} className="flex items-center justify-between py-4 border-b border-border">
+                          <div>
+                            <span className="font-medium">{pkg.name}</span>
+                            <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
+                          </div>
+                          <span className="font-mono text-sm">{pkg.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Extras */}
+              <ScrollReveal delay={0.3}>
                 <div className="mb-16">
                   <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
                     À La Carte
@@ -125,7 +215,7 @@ const PricingPage = () => {
               </ScrollReveal>
 
               {/* What's Included */}
-              <ScrollReveal delay={0.3}>
+              <ScrollReveal delay={0.35}>
                 <div className="text-center mb-16 py-8 border-y border-border">
                   <p className="text-sm text-muted-foreground">
                     All projects include: Free consultation · Free mockups · Training · 30-day support
@@ -134,7 +224,7 @@ const PricingPage = () => {
               </ScrollReveal>
 
               {/* CTA */}
-              <ScrollReveal delay={0.35}>
+              <ScrollReveal delay={0.4}>
                 <div className="text-center">
                   <Link 
                     to="/contact" 
