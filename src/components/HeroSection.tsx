@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const phrases = [
   "We build websites.",
@@ -96,18 +97,18 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <a 
-              href="/contact"
+            <Link 
+              to="/contact"
               className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-4 text-sm font-medium hover:bg-primary/90 transition-colors"
             >
               Start Your Project
-            </a>
-            <a 
-              href="/portfolio"
+            </Link>
+            <Link 
+              to="/portfolio"
               className="inline-flex items-center justify-center gap-2 border border-border px-8 py-4 text-sm font-medium hover:bg-secondary transition-colors"
             >
               View Our Work
-            </a>
+            </Link>
           </motion.div>
         </div>
       </div>

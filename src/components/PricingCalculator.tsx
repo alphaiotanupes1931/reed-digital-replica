@@ -38,13 +38,13 @@ const PricingCalculator = () => {
     setSelectedApp(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
   };
 
-  // Website pricing
-  const websiteBase = pages[0] <= 5 ? 1500 : pages[0] <= 10 ? 4000 : pages[0] <= 15 ? 8000 : 12000;
+  // Website pricing (matches Starter/Business/Professional/Enterprise tiers)
+  const websiteBase = pages[0] <= 5 ? 1500 : pages[0] <= 10 ? 3500 : pages[0] <= 15 ? 8000 : 15000;
   const websiteExtras = selectedWebsite.reduce((sum, id) => sum + (websiteFeatures.find(f => f.id === id)?.price || 0), 0);
   const websiteTotal = websiteBase + websiteExtras;
 
-  // App pricing
-  const appBase = screens[0] <= 5 ? 5000 : screens[0] <= 10 ? 12500 : screens[0] <= 15 ? 20000 : 30000;
+  // App pricing (matches MVP/Standard/Full-Featured/Enterprise tiers)
+  const appBase = screens[0] <= 5 ? 5000 : screens[0] <= 10 ? 12500 : screens[0] <= 15 ? 25000 : 50000;
   const appExtras = selectedApp.reduce((sum, id) => sum + (appFeatures.find(f => f.id === id)?.price || 0), 0);
   const appTotal = appBase + appExtras;
 
