@@ -14,16 +14,16 @@ const packages = [
 ];
 
 const mobilePackages = [
-  { name: "MVP", price: "$5k - $12.5k", desc: "Single platform, core features" },
-  { name: "Standard", price: "$12.5k - $25k", desc: "Auth, backend, push notifications" },
-  { name: "Full-Featured", price: "$25k - $50k", desc: "iOS & Android, payments, admin" },
-  { name: "Enterprise", price: "Custom", desc: "Multi-platform, advanced security" },
+  { name: "MVP", price: "$10k - $20k", desc: "Single platform, core features" },
+  { name: "Standard", price: "$20k - $40k", desc: "Auth, backend, push notifications" },
+  { name: "Full-Featured", price: "$40k - $75k", desc: "iOS & Android, payments, admin" },
+  { name: "Enterprise", price: "Custom Quote", desc: "Multi-platform, advanced security" },
 ];
 
 const seoRetainers = [
-  { name: "Basic", price: "$500/mo", desc: "Keyword research, on-page optimization, monthly report" },
-  { name: "Growth", price: "$1,000/mo", desc: "Content creation, link building, local SEO", popular: true },
-  { name: "Premium", price: "$1,500/mo", desc: "Full-service SEO, competitive analysis" },
+  { name: "Basic", price: "$300/mo", desc: "Keyword research, on-page optimization, monthly report" },
+  { name: "Growth", price: "$600/mo", desc: "Content creation, link building, local SEO", popular: true },
+  { name: "Premium", price: "$1,000/mo", desc: "Full-service SEO, competitive analysis" },
 ];
 
 const socialMedia = [
@@ -35,11 +35,13 @@ const socialMedia = [
 const maintenance = [
   { name: "Basic", price: "$100/mo", desc: "Updates, backups, security monitoring" },
   { name: "Plus", price: "$200/mo", desc: "Includes content updates, SEO tweaks" },
+  { name: "Premium", price: "$350/mo", desc: "Priority support, unlimited small changes, monthly strategy call" },
 ];
 
 const extras = [
   { service: "Landing Page", price: "$300 - $600" },
-  { service: "Website Redesign", price: "50% of build" },
+  { service: "Website Redesign", price: "50% of original build cost" },
+  { service: "Custom Business Apparel", price: "From $20/shirt (12-shirt min, $50 setup)" },
   { service: "Cybersecurity Audit", price: "From $1,500" },
   { service: "IT Consulting", price: "$150/hr" },
 ];
@@ -63,12 +65,12 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Budget & Refund Promise */}
+              {/* Transparent Pricing */}
               <ScrollReveal delay={0.05}>
                 <div className="mb-12 p-6 border-2 border-primary bg-primary/5 text-center">
-                  <h3 className="text-lg font-medium mb-3">We Work With Your Budget</h3>
+                  <h3 className="text-lg font-medium mb-3">Transparent Pricing</h3>
                   <p className="text-muted-foreground text-sm">
-                    Every project is unique. Tell us your budget and goals — we'll find a solution that works for you.
+                    Clear pricing based on scope. Schedule a free consultation to discuss your project needs and get an accurate quote.
                   </p>
                 </div>
               </ScrollReveal>
@@ -133,17 +135,14 @@ const PricingPage = () => {
                     </h3>
                   </div>
 
-                  {/* SEO Retainers */}
+                  {/* SEO */}
                   <div className="mb-10">
                     <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
                       SEO Retainer Packages
                     </h4>
                     <div className="space-y-0">
                       {seoRetainers.map((pkg) => (
-                        <div 
-                          key={pkg.name} 
-                          className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
-                        >
+                        <div key={pkg.name} className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}>
                           <div>
                             <span className="font-medium">{pkg.name}</span>
                             {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
@@ -155,17 +154,14 @@ const PricingPage = () => {
                     </div>
                   </div>
 
-                  {/* Social Media Management */}
+                  {/* Social Media */}
                   <div className="mb-10">
                     <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
                       Social Media Management
                     </h4>
                     <div className="space-y-0">
                       {socialMedia.map((pkg) => (
-                        <div 
-                          key={pkg.name} 
-                          className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
-                        >
+                        <div key={pkg.name} className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}>
                           <div>
                             <span className="font-medium">{pkg.name}</span>
                             {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
@@ -177,7 +173,7 @@ const PricingPage = () => {
                     </div>
                   </div>
 
-                  {/* Website Maintenance */}
+                  {/* Maintenance */}
                   <div>
                     <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
                       Website Maintenance
@@ -197,11 +193,11 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Extras */}
+              {/* À La Carte */}
               <ScrollReveal delay={0.3}>
                 <div className="mb-16">
                   <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
-                    À La Carte
+                    À La Carte Services
                   </h3>
                   <div className="space-y-0">
                     {extras.map((item) => (
@@ -218,7 +214,7 @@ const PricingPage = () => {
               <ScrollReveal delay={0.35}>
                 <div className="text-center mb-16 py-8 border-y border-border">
                   <p className="text-sm text-muted-foreground">
-                    All projects include: Free consultation · Free mockups · Training · 30-day support
+                    All projects include: Free consultation · Initial design concepts · Training session · 30-day bug fix support
                   </p>
                 </div>
               </ScrollReveal>
