@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
-import PricingCalculator from "@/components/PricingCalculator";
+
 
 const packages = [
   { name: "Starter", price: "$1.5k - $3k", desc: "1-5 pages, responsive, basic SEO" },
@@ -75,12 +75,6 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Calculator */}
-              <ScrollReveal delay={0.1}>
-                <div className="mb-20">
-                  <PricingCalculator />
-                </div>
-              </ScrollReveal>
 
               {/* Websites */}
               <ScrollReveal delay={0.15}>
