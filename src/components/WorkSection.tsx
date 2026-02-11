@@ -32,13 +32,6 @@ const projects = [
     tools: ["Shopify", "Custom Theme", "JavaScript"],
     url: "https://visionheartz.github.io/",
   },
-  { 
-    title: "Call Us First", 
-    category: "Government Agency", 
-    type: "Government Website",
-    tools: ["React", "Supabase", "Tailwind CSS"],
-    url: "https://callusfirst.world/",
-  },
 ];
 
 const WebsitePreview = ({ url, title }: { url: string; title: string }) => (
