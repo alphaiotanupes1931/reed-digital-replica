@@ -44,7 +44,7 @@ const PricingCalculator = () => {
   const websiteTotal = websiteBase + websiteExtras;
 
   // App pricing (matches MVP/Standard/Full-Featured/Enterprise tiers)
-  const appBase = screens[0] <= 5 ? 5000 : screens[0] <= 10 ? 12500 : screens[0] <= 15 ? 25000 : 50000;
+  const appBase = screens[0] <= 5 ? 10000 : screens[0] <= 10 ? 20000 : screens[0] <= 15 ? 40000 : 75000;
   const appExtras = selectedApp.reduce((sum, id) => sum + (appFeatures.find(f => f.id === id)?.price || 0), 0);
   const appTotal = appBase + appExtras;
 
