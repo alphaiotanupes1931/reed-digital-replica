@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const testimonials = [
-  { quote: "Very experienced and knowledgeable. Worth every penny.", author: "Tyrel Fuentes" },
-  { quote: "They really listened to what I needed and delivered a clean, professional website.", author: "Chaz Crockett" },
-  { quote: "Fast, reliable, and very communicative.", author: "Adetokunbo Awosanya" },
-  { quote: "Outstanding customer service and clear communication.", author: "OQP Solutions" },
-  { quote: "Transformed chaotic ideas into an organized, cohesive experience.", author: "Iyanna Wright" },
+  { quote: "I came to this project with very disjointed, chaotic ideas, and Reed Digital Group somehow transformed them into an organized, cohesive, and genuinely pleasurable experience. His team took my abstract thoughts and turned them into something tangible, professional, and perfectly suited to my art business.", author: "Iyanna Wright" },
+  { quote: "Best upcoming artist out right now. He takes the time to fully understand his clients' needs, which shows in the quality of his work. He stays up late, responds quickly, and pays attention to the smallest details—even fixing issues that are off by a single number.", author: "Kastle Wo'Mak" },
+  { quote: "Reed Digital Group is a highly professional web design company that delivers outstanding customer service and clear, consistent communication. Their onboarding process was smooth, their pricing was transparent with no hidden fees, and they delivered ahead of schedule.", author: "OQP Solutions" },
+  { quote: "Great experience working with them — fast, reliable, and very communicative.", author: "Adetokunbo Awosanya" },
+  { quote: "Reed Digital Group has an outstanding partnership in helping me build my insurance agency website, understanding the complexity of offering multiple insurance products and creating a strong, professional digital presence.", author: "Shelley Sanders" },
 ];
 
 const GOOGLE_REVIEW_URL = "https://share.google/X1nNcq7JiSRV1Bobv";

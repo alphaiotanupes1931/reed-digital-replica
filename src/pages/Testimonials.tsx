@@ -7,24 +7,24 @@ import PageTransition from "@/components/PageTransition";
 
 const testimonials = [
   {
-    quote: "Reed Digital Group is a highly professional web design company that delivers outstanding customer service and clear, consistent communication.",
-    author: "OQP Solutions",
-  },
-  {
-    quote: "I came to this project with very disjointed, chaotic ideas, and Reed Digital Group somehow transformed them into an organized, cohesive, and genuinely pleasurable experience.",
+    quote: "I came to this project with very disjointed, chaotic ideas, and Reed Digital Group somehow transformed them into an organized, cohesive, and genuinely pleasurable experience. His team took my abstract thoughts and turned them into something tangible, professional, and perfectly suited to my art business. He was also amazing at explaining every step of the process in a clear, patient way, especially for someone like me who isn't familiar with coding or computers. I felt supported, understood, and confident the entire time. I couldn't be happier with the final result.",
     author: "Iyanna Wright",
   },
   {
-    quote: "Very experienced and knowledgeable. Appreciate the time spent on my last project, worth every penny.",
-    author: "Tyrel Fuentes",
+    quote: "Best upcoming artist out right now. He takes the time to fully understand his clients' needs, which shows in the quality of his work. He stays up late, responds quickly, and pays attention to the smallest details—even fixing issues that are off by a single number. That level of dedication and precision is exactly why he's worth hiring.",
+    author: "Kastle Wo'Mak",
   },
   {
-    quote: "They really listened to what I needed and delivered a clean, professional website that exceeded my expectations.",
-    author: "Chaz Crockett",
+    quote: "Reed Digital Group is a highly professional web design company that delivers outstanding customer service and clear, consistent communication. After speaking with several other firms that quoted excessive pricing, our consultation with Reed Digital immediately felt like the right fit. Their onboarding process was smooth, their pricing was transparent with no hidden fees, and the projected timeline aligned perfectly with our expectations—if anything, they delivered ahead of schedule. What truly set them apart was their continued follow-up weeks and even months after the website launch to ensure we remained satisfied. I've already started recommending Reed Digital Group to several business partners and colleagues.",
+    author: "OQP Solutions",
   },
   {
     quote: "Great experience working with them — fast, reliable, and very communicative.",
     author: "Adetokunbo Awosanya",
+  },
+  {
+    quote: "Reed Digital Group has an outstanding partnership in helping me build my insurance agency website, understanding the complexity of offering multiple insurance products and creating a strong, professional digital presence that reflects the full scope of what we do. Their guidance, communication, and expertise may help the entire process move forward. I've been real. I've seen real improvement in visibility and engagement, and I highly recommend Reed Digital Group to any agency looking to elevate their brand and scale with confidence.",
+    author: "Shelley Sanders",
   },
 ];
 
