@@ -32,6 +32,13 @@ const projects = [
     tools: ["Shopify", "Custom Theme", "JavaScript"],
     url: "https://visionheartz.github.io/",
   },
+  { 
+    title: "Conation Fitness", 
+    category: "Fitness", 
+    type: "Business Website",
+    tools: ["React", "Tailwind CSS"],
+    url: "https://conationfitness.com/",
+  },
 ];
 
 const WebsitePreview = ({ url, title }: { url: string; title: string }) => (
