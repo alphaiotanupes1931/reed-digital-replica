@@ -5,7 +5,7 @@ const ARTICLE_URL = "https://baltimoretimes-online.com/latest-news/2023/04/28/mo
 
 const AsSeenOnSection = () => {
   return (
-    <section className="py-12 relative">
+    <section className="py-12 relative bg-black">
       <div className="section-line absolute top-0 left-0 right-0" />
       <div className="container">
         <ScrollReveal>
