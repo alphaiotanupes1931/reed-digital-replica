@@ -350,6 +350,36 @@ const AboutPage = () => {
               </div>
             </ScrollReveal>
 
+            {/* YouTube Channel */}
+            <ScrollReveal delay={0.23}>
+              <div className="mb-24">
+                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                  YouTube Channel
+                </h2>
+                <div className="max-w-3xl mx-auto">
+                  <div className="aspect-video border border-border rounded-lg overflow-hidden">
+                    <iframe
+                      src="https://www.youtube.com/embed?listType=user_uploads&list=UCQ9o6XsFFQY-EiUIRvUvE5Q"
+                      title="Reed Digital Group YouTube Channel"
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <div className="text-center mt-4">
+                    <a
+                      href="https://www.youtube.com/channel/UCQ9o6XsFFQY-EiUIRvUvE5Q"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 font-mono"
+                    >
+                      Visit our YouTube channel →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
             {/* Timeline */}
             <ScrollReveal delay={0.25}>
               <div className="mb-24">
