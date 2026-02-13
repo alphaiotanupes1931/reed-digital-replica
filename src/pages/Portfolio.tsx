@@ -20,7 +20,7 @@ const websiteProjects = [
   { title: "Lez Tea Shop", category: "E-Commerce", url: "https://leztea.shop/" },
   { title: "Kappa Alpha Psi Fraternity Inc.", category: "Organization", url: "https://ainupes1931.com/" },
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
-  
+  { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
 ];
 
 // Get unique categories
