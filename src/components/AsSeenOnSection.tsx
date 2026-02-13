@@ -1,4 +1,5 @@
 import ScrollReveal from "@/components/ScrollReveal";
+import baltimoreTimesLogo from "@/assets/baltimore-times-logo.png";
 
 const ARTICLE_URL = "https://baltimoretimes-online.com/latest-news/2023/04/28/morgan-state-university-students-take-home-prize-money-land-internships-after-hackathon/";
 
@@ -13,7 +14,7 @@ const AsSeenOnSection = () => {
               As Seen On
             </p>
             <img
-              src="https://baltimoretimes-online.com/wp-content/uploads/2020/05/bt-logo.png"
+              src={baltimoreTimesLogo}
               alt="The Baltimore Times"
               className="h-10 md:h-12 object-contain opacity-80"
             />
