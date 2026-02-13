@@ -11,6 +11,7 @@ import comptiaLogo from "@/assets/comptia-logo.png";
 import ciscoLogo from "@/assets/cisco-logo.png";
 import gener8torLogo from "@/assets/awards/gener8tor.png";
 import mediumLogo from "@/assets/medium-logo.svg";
+import baltimoreTimesLogo from "@/assets/baltimore-times-logo.png";
 
 const timeline = [
   { year: "2020", title: "Founded", desc: "Started as a freelance web developer" },
@@ -57,7 +58,7 @@ const awards = [
 const pressFeatures = [
   {
     name: "The Baltimore Times",
-    logo: "https://macpa.net/wp-content/uploads/2013/07/The-Baltimore-Times-Cover-Page-scaled-2502x2502.jpg",
+    logo: baltimoreTimesLogo,
     url: "https://baltimoretimes-online.com/latest-news/2023/04/28/morgan-state-university-students-take-home-prize-money-land-internships-after-hackathon/",
     year: "2023"
   },
