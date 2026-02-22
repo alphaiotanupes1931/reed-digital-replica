@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import TypedHeader from "@/components/TypedHeader";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
+import { motion } from "framer-motion";
+import { Mail, Phone, MapPin, Clock, ArrowDown } from "lucide-react";
 
 const ContactPage = () => {
   useEffect(() => {
-    // Load Calendly widget script
     const script = document.createElement("script");
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
@@ -21,87 +21,207 @@ const ContactPage = () => {
     };
   }, []);
 
+  const contactItems = [
+    { icon: Mail, label: "Email", value: "info@reeddigitalgroup.com", href: "mailto:info@reeddigitalgroup.com" },
+    { icon: Phone, label: "Phone", value: "(301) 332-4084", href: "tel:3013324084" },
+    { icon: MapPin, label: "Location", value: "Remote Based Agency" },
+    { icon: Clock, label: "Office Hours", value: "Mon – Sun: 9 AM – 5 PM EST" },
+  ];
+
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Header />
         <main className="pt-32 pb-24">
+          {/* Hero Thank You Section */}
+          <section className="relative overflow-hidden mb-24">
+            {/* Animated background text */}
+            <motion.div
+              className="bg-text top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            >
+              WELCOME
+            </motion.div>
+
+            <div className="container relative z-10">
+              <div className="max-w-3xl mx-auto text-center">
+                {/* Animated label */}
+                <motion.span
+                  className="section-label font-mono inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  Thank You for Visiting
+                </motion.span>
+
+                {/* Main heading with staggered words */}
+                <motion.h1
+                  className="text-5xl md:text-7xl font-semibold tracking-tight mt-6 mb-6"
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
+                >
+                  We're glad
+                  <br />
+                  <motion.span
+                    className="text-primary"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                  >
+                    you're here.
+                  </motion.span>
+                </motion.h1>
+
+                {/* Animated line */}
+                <motion.div
+                  className="h-px bg-primary mx-auto mb-8"
+                  initial={{ width: 0 }}
+                  animate={{ width: 120 }}
+                  transition={{ delay: 0.9, duration: 0.8, ease: "easeInOut" }}
+                />
+
+                {/* Description */}
+                <motion.p
+                  className="text-muted-foreground font-mono text-lg max-w-xl mx-auto mb-10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0 }}
+                >
+                  We appreciate you taking the time to explore Reed Digital Group.
+                  Let's turn your vision into reality.
+                </motion.p>
+
+                {/* Scroll indicator */}
+                <motion.div
+                  className="flex flex-col items-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.3 }}
+                >
+                  <span className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Reach Out</span>
+                  <motion.div
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <ArrowDown className="w-4 h-4 text-primary" />
+                  </motion.div>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Floating particles */}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-primary/20"
+                style={{
+                  left: `${10 + i * 12}%`,
+                  top: `${15 + (i % 4) * 20}%`,
+                }}
+                animate={{
+                  y: [0, -25, 0],
+                  opacity: [0.15, 0.5, 0.15],
+                }}
+                transition={{
+                  duration: 3 + i * 0.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+          </section>
+
+          {/* Contact Info Cards */}
           <div className="container">
             <div className="max-w-4xl mx-auto">
-              {/* Thank You Section */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+                {contactItems.map((item, index) => (
+                  <ScrollReveal key={item.label} delay={index * 0.1}>
+                    <motion.div
+                      className="group border border-border p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 relative overflow-hidden"
+                      whileHover={{ y: -4 }}
+                    >
+                      <motion.div
+                        className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      />
+                      <div className="relative z-10">
+                        <item.icon className="w-5 h-5 text-primary mx-auto mb-3" />
+                        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">{item.label}</h3>
+                        {item.href ? (
+                          <a
+                            href={item.href}
+                            className="text-sm font-mono hover:text-primary transition-colors break-all"
+                          >
+                            {item.value}
+                          </a>
+                        ) : (
+                          <p className="text-sm font-mono text-muted-foreground">{item.value}</p>
+                        )}
+                      </div>
+                    </motion.div>
+                  </ScrollReveal>
+                ))}
+              </div>
+
+              {/* Divider */}
               <ScrollReveal>
-                <div className="text-center mb-20">
-                  <span className="section-label font-mono">Welcome</span>
-                  <h1 className="text-4xl md:text-6xl font-semibold tracking-tight mt-4 mb-6">
-                    Thank you for visiting.
-                  </h1>
-                  <p className="text-muted-foreground font-mono text-lg max-w-xl mx-auto">
-                    We appreciate you taking the time to learn about Reed Digital Group. 
-                    We'd love to hear from you — reach out or book a call below.
-                  </p>
+                <div className="flex items-center justify-center mb-16">
+                  <motion.div
+                    className="h-px bg-border"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: 64 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                  />
+                  <span className="px-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">
+                    Book a Call
+                  </span>
+                  <motion.div
+                    className="h-px bg-border"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: 64 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                  />
                 </div>
               </ScrollReveal>
 
-              {/* Divider */}
-              <div className="flex items-center justify-center mb-16">
-                <div className="h-px w-16 bg-border" />
-                <span className="px-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">Get in Touch</span>
-                <div className="h-px w-16 bg-border" />
-              </div>
-
-              {/* Two Column Layout */}
-              <div className="grid md:grid-cols-2 gap-12 mb-16">
-                {/* Left - Contact Info */}
-                <ScrollReveal>
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Email</h3>
-                      <a 
-                        href="mailto:info@reeddigitalgroup.com" 
-                        className="text-xl hover:text-muted-foreground transition-colors font-mono"
-                      >
-                        info@reeddigitalgroup.com
-                      </a>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Phone</h3>
-                      <a 
-                        href="tel:3013324084"
-                        className="text-xl font-mono text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        (301) 332-4084
-                      </a>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Location</h3>
-                      <p className="text-muted-foreground font-mono">
-                        Remote Based Agency
-                      </p>
-                    </div>
-                    <div className="pt-4 border-t border-border">
-                      <h3 className="text-sm font-medium mb-3">Office Hours</h3>
-                      <p className="text-sm text-muted-foreground font-mono">
-                        Monday – Sunday: 9:00 AM – 5:00 PM EST
-                      </p>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      We typically respond within one business day.
+              {/* Calendly Section */}
+              <ScrollReveal>
+                <div className="max-w-3xl mx-auto">
+                  <motion.div
+                    className="text-center mb-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-3">
+                      Schedule a Consultation
+                    </h2>
+                    <p className="text-muted-foreground font-mono">
+                      Pick a time that works for you. We typically respond within one business day.
                     </p>
-                  </div>
-                </ScrollReveal>
-
-                {/* Right - Calendly */}
-                <ScrollReveal delay={0.1}>
-                  <div>
-                    <h3 className="text-sm font-medium mb-4">Schedule a Call</h3>
-                    <div 
-                      className="calendly-inline-widget border border-border" 
+                  </motion.div>
+                  <motion.div
+                    className="border border-border overflow-hidden"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div
+                      className="calendly-inline-widget"
                       data-url="https://calendly.com/terellebony/consultation-with-terell-reed?hide_event_type_details=1&hide_gdpr_banner=1"
-                      style={{ minWidth: '280px', height: '600px' }}
+                      style={{ minWidth: '280px', height: '650px' }}
                     />
-                  </div>
-                </ScrollReveal>
-              </div>
+                  </motion.div>
+                </div>
+              </ScrollReveal>
             </div>
           </div>
         </main>
