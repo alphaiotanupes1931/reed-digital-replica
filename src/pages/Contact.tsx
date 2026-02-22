@@ -28,13 +28,25 @@ const ContactPage = () => {
         <main className="pt-32 pb-24">
           <div className="container">
             <div className="max-w-4xl mx-auto">
-              {/* Header */}
-              <div className="text-center mb-16">
-                <span className="section-label font-mono">Contact</span>
-                <TypedHeader text="Let's talk." className="mt-4 mb-6" />
-                <p className="text-muted-foreground font-mono">
-                  Ready when you are.
-                </p>
+              {/* Thank You Section */}
+              <ScrollReveal>
+                <div className="text-center mb-20">
+                  <span className="section-label font-mono">Welcome</span>
+                  <h1 className="text-4xl md:text-6xl font-semibold tracking-tight mt-4 mb-6">
+                    Thank you for visiting.
+                  </h1>
+                  <p className="text-muted-foreground font-mono text-lg max-w-xl mx-auto">
+                    We appreciate you taking the time to learn about Reed Digital Group. 
+                    We'd love to hear from you — reach out or book a call below.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              {/* Divider */}
+              <div className="flex items-center justify-center mb-16">
+                <div className="h-px w-16 bg-border" />
+                <span className="px-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">Get in Touch</span>
+                <div className="h-px w-16 bg-border" />
               </div>
 
               {/* Two Column Layout */}
