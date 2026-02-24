@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
@@ -7,6 +8,16 @@ import { motion } from "framer-motion";
 import { CheckCircle, ArrowRight } from "lucide-react";
 
 const ThankYou = () => {
+  useEffect(() => {
+    if (typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", "conversion", {
+        send_to: "AW-17972613190/4CHtCLWh3P0bEMaggfpC",
+        value: 1.0,
+        currency: "USD",
+      });
+    }
+  }, []);
+
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
