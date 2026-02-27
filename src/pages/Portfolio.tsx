@@ -15,9 +15,9 @@ const websiteProjects = [
   { title: "DGM Consulting", category: "Consulting", url: "https://dgmconsulting.info/", slug: "dgm-consulting" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
   { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/" },
-  { title: "Evolve Connection", category: "Wellness", url: "https://www.evolveconnection.com/" },
+  
   { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/", slug: "oqp-solutions" },
-  { title: "Lez Tea Shop", category: "E-Commerce", url: "https://leztea.shop/" },
+  
   { title: "Kappa Alpha Psi Fraternity Inc.", category: "Organization", url: "https://ainupes1931.com/" },
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
   { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
@@ -42,9 +42,9 @@ const PortfolioPage = () => {
             {/* Header */}
             <div className="max-w-3xl mx-auto text-center mb-12">
               <span className="section-label font-mono">Portfolio</span>
-              <TypedHeader text="Our Work" className="mt-4 mb-6" />
+              <TypedHeader text="Featured Projects" className="mt-4 mb-6" />
               <p className="text-muted-foreground">
-                A showcase of projects we've brought to life.
+                A showcase of featured projects we've brought to life.
               </p>
             </div>
 
