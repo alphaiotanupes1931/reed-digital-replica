@@ -23,7 +23,7 @@ const websiteProjects = [
   { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
   { title: "Alpha Iota Merch", category: "E-Commerce", url: "https://alphaiotamerch.com/" },
-  { title: "Call Us First", category: "Technology", url: "https://www.callusfirst.world/" },
+  { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
 ];
 
 // Get unique categories
