@@ -280,7 +280,7 @@ const BlogPost = () => {
                 </p>
                 <Link 
                   to="/contact"
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center gap-2 bg-brand text-brand-foreground px-6 py-3 rounded hover:bg-brand/90 transition-colors"
                 >
                   Get in Touch
                 </Link>

@@ -65,7 +65,7 @@ const PricingCalculator = () => {
           onClick={() => setProjectType("website")}
           className={`flex items-center gap-2 px-4 py-2 text-sm border transition-all ${
             projectType === "website" 
-              ? "border-primary bg-primary text-primary-foreground" 
+              ? "border-brand bg-brand text-brand-foreground" 
               : "border-border hover:border-muted-foreground"
           }`}
         >
@@ -76,7 +76,7 @@ const PricingCalculator = () => {
           onClick={() => setProjectType("app")}
           className={`flex items-center gap-2 px-4 py-2 text-sm border transition-all ${
             projectType === "app" 
-              ? "border-primary bg-primary text-primary-foreground" 
+              ? "border-brand bg-brand text-brand-foreground" 
               : "border-border hover:border-muted-foreground"
           }`}
         >
