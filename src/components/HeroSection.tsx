@@ -49,17 +49,19 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <iframe
-          src="https://www.youtube.com/embed/B8jgJo4yrCk?autoplay=1&mute=1&loop=1&playlist=B8jgJo4yrCk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[200%] h-[200%] min-w-full min-h-full"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          title="Background video"
-        />
-        {/* Overlay gradient - darker for contrast */}
-        <div className="absolute inset-0 bg-background/90" />
-        <div className="absolute inset-0 bg-foreground/20" />
+      {/* White background on mobile, video on desktop */}
+      <div className="absolute inset-0 overflow-hidden bg-background">
+        <div className="hidden md:block absolute inset-0">
+          <iframe
+            src="https://www.youtube.com/embed/B8jgJo4yrCk?autoplay=1&mute=1&loop=1&playlist=B8jgJo4yrCk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[200%] h-[200%] min-w-full min-h-full"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            title="Background video"
+          />
+          <div className="absolute inset-0 bg-background/90" />
+          <div className="absolute inset-0 bg-foreground/20" />
+        </div>
       </div>
 
       <div className="container relative z-10">
