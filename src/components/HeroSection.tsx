@@ -100,7 +100,7 @@ const HeroSection = () => {
           >
             <Link 
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-4 text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-brand text-brand-foreground px-8 py-4 text-sm font-medium hover:bg-brand/90 transition-colors"
             >
               Start Your Project
             </Link>
