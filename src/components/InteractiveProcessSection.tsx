@@ -126,9 +126,9 @@ const InteractiveProcessSection = () => {
                 <motion.div 
                   className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 transition-all ${
                     activeStep === step.id 
-                      ? "border-primary bg-primary text-primary-foreground" 
+                      ? "border-brand bg-brand text-brand-foreground" 
                       : activeStep > step.id
-                        ? "border-primary bg-primary/10 text-primary"
+                        ? "border-brand bg-brand/10 text-brand"
                         : "border-border bg-background text-muted-foreground"
                   }`}
                   animate={activeStep === step.id ? { scale: [1, 1.1, 1] } : {}}
