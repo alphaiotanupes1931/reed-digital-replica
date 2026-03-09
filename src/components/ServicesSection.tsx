@@ -7,6 +7,7 @@ const services = [
   { title: "Mobile Apps", desc: "Apps for iPhone and Android that your customers will love" },
   { title: "Booking Systems", desc: "Let customers schedule appointments online 24/7" },
   { title: "Business Software", desc: "Custom tools to help your team work smarter" },
+  { title: "Cybersecurity Consulting", desc: "Protect your business from digital threats and vulnerabilities" },
   { title: "Website Updates", desc: "We keep your site running smooth and up-to-date" },
 ];
 

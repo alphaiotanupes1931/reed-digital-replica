@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Building2, HeartPulse, HandHeart, Dumbbell, Rocket, GraduationCap } from "lucide-react";
+import { Building2, HeartPulse, HandHeart, Dumbbell, Rocket, GraduationCap, Music } from "lucide-react";
 
 const industries = [
   { name: "Government & Municipal", icon: Building2 },
@@ -9,6 +9,7 @@ const industries = [
   { name: "Fitness & Personal Training", icon: Dumbbell },
   { name: "Small Business & Startups", icon: Rocket },
   { name: "Education", icon: GraduationCap },
+  { name: "Nightlife & Entertainment", icon: Music },
 ];
 
 const ClientLogosSection = () => {
