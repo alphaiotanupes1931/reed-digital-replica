@@ -123,7 +123,7 @@ const PricingPage = () => {
                   <div className="text-center mt-6">
                     <Link
                       to="/contact"
-                      className="inline-block bg-primary text-primary-foreground px-8 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
+                      className="inline-block bg-brand text-brand-foreground px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
                     >
                       Get a Quote →
                     </Link>

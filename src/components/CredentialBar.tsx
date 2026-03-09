@@ -32,7 +32,7 @@ const CredentialBar = () => {
 
   return (
     <motion.div 
-      className="py-4 bg-primary text-primary-foreground overflow-hidden"
+      className="py-4 bg-foreground text-brand overflow-hidden"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.2, duration: 0.5 }}

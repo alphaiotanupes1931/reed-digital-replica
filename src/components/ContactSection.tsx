@@ -48,7 +48,7 @@ const ContactSection = () => {
               <Link 
                 to="/contact"
                 data-magnetic
-                className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-sm font-medium hover:bg-primary/90 transition-all duration-300"
+                className="group inline-flex items-center gap-3 bg-brand text-brand-foreground px-8 py-4 text-sm font-medium hover:bg-brand/90 transition-all duration-300"
               >
                 Schedule a Call
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
