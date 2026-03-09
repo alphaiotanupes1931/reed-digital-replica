@@ -57,9 +57,9 @@ const HeroSection = () => {
           allowFullScreen
           title="Background video"
         />
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-background/80" />
-        <div className="absolute inset-0 bg-primary/5" />
+        {/* Overlay gradient - darker for contrast */}
+        <div className="absolute inset-0 bg-background/90" />
+        <div className="absolute inset-0 bg-foreground/20" />
       </div>
 
       <div className="container relative z-10">
