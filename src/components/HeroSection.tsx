@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 
 const phrases = [
   "We build websites.",
-  "We build applications.",
-  "We build solutions.",
-  "We build experiences.",
+  "We build mobile apps.",
+  "We build branding.",
+  "We build web applications.",
+  "We build digital solutions.",
 ];
 
 const HeroSection = () => {
