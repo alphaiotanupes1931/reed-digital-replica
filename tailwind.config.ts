@@ -63,6 +63,10 @@ export default {
           end: "hsl(var(--gradient-end))",
           cyan: "hsl(var(--gradient-cyan))",
         },
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          foreground: "hsl(var(--brand-foreground))",
+        },
       },
       fontFamily: {
         sans: ["JetBrains Mono", "monospace"],

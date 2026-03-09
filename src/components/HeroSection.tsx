@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 
 const phrases = [
   "We build websites.",
-  "We build applications.",
-  "We build solutions.",
-  "We build experiences.",
+  "We build mobile apps.",
+  "We build branding.",
+  "We build web applications.",
+  "We build digital solutions.",
 ];
 
 const HeroSection = () => {
@@ -56,9 +57,9 @@ const HeroSection = () => {
           allowFullScreen
           title="Background video"
         />
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-background/80" />
-        <div className="absolute inset-0 bg-primary/5" />
+        {/* Overlay gradient - darker for contrast */}
+        <div className="absolute inset-0 bg-background/90" />
+        <div className="absolute inset-0 bg-foreground/20" />
       </div>
 
       <div className="container relative z-10">
@@ -99,7 +100,7 @@ const HeroSection = () => {
           >
             <Link 
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-4 text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-brand text-brand-foreground px-8 py-4 text-sm font-medium hover:bg-brand/90 transition-colors"
             >
               Start Your Project
             </Link>
