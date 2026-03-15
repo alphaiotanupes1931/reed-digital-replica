@@ -5,6 +5,13 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 const projects = [
   { 
+    title: "Got Tint", 
+    category: "Automotive", 
+    type: "Business Website",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://got-tint-redesign.vercel.app/",
+  },
+  { 
     title: "Wright Shade Creations", 
     category: "Art Portfolio", 
     type: "Portfolio Website",
