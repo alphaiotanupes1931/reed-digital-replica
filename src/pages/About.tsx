@@ -267,12 +267,6 @@ const AboutPage = () => {
                             className="h-8 opacity-70 hover:opacity-100 transition-opacity"
                             title="Meta Front-End Developer"
                           />
-                          <img 
-                            src="https://upload.wikimedia.org/wikipedia/commons/4/44/Google-flutter-logo.svg" 
-                            alt="Google Flutter" 
-                            className="h-6 opacity-70 hover:opacity-100 transition-opacity"
-                            title="Google Flutter Developer"
-                          />
                         </div>
                       </div>
                     </div>

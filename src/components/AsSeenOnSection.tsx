@@ -5,7 +5,7 @@ const ARTICLE_URL = "https://baltimoretimes-online.com/latest-news/2023/04/28/mo
 
 const AsSeenOnSection = () => {
   return (
-    <section className="py-12 relative bg-foreground/95">
+    <section className="py-12 relative bg-background">
       <div className="section-line absolute top-0 left-0 right-0" />
       <div className="container">
         <ScrollReveal>
@@ -16,7 +16,7 @@ const AsSeenOnSection = () => {
             <img
               src={baltimoreTimesLogo}
               alt="The Baltimore Times"
-              className="h-10 md:h-12 object-contain opacity-80"
+              className="h-10 md:h-12 object-contain opacity-80 invert"
             />
             <a
               href={ARTICLE_URL}
