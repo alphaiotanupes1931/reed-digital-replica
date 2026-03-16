@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+
 import ScrollReveal from "@/components/ScrollReveal";
 
 const ContactSection = () => {
