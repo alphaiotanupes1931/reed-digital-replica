@@ -16,7 +16,7 @@ const AsSeenOnSection = () => {
             <img
               src={baltimoreTimesLogo}
               alt="The Baltimore Times"
-              className="h-10 md:h-12 object-contain opacity-80"
+              className="h-10 md:h-12 object-contain opacity-80 invert"
             />
             <a
               href={ARTICLE_URL}
