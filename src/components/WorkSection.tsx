@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
