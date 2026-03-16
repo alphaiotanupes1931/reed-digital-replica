@@ -21,7 +21,7 @@ const CapabilityStatement = () => {
               <img 
                 src={logo} 
                 alt="Reed Digital Group" 
-                className="h-12 invert"
+                className="h-12"
               />
               <div>
                 <h1 className="text-2xl font-medium tracking-tight">Reed Digital Group LLC</h1>
