@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Palette, Code, Rocket, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const steps = [
