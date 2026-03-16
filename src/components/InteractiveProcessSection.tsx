@@ -18,7 +18,6 @@ const steps = [
   },
   { 
     id: 2,
-    icon: Palette,
     label: "Design", 
     title: "We Create & Refine",
     description: "We translate your vision into visual designs. You'll see mockups of your website before any code is written, with unlimited revisions until you're thrilled.",
