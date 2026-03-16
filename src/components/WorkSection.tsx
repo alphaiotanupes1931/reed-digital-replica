@@ -98,14 +98,14 @@ const WorkSection = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
           >
-            Our Work
+            Recent Work
           </motion.p>
           <motion.h2 
             className="text-2xl md:text-3xl font-medium text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
           >
-            Portfolio
+            Recent Work
           </motion.h2>
         </ScrollReveal>
 
