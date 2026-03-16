@@ -6,7 +6,6 @@ import ScrollReveal from "@/components/ScrollReveal";
 const steps = [
   { 
     id: 1,
-    icon: MessageSquare,
     label: "Discovery", 
     title: "We Listen & Learn",
     description: "Every great project starts with understanding. We schedule a call to learn about your business, goals, and vision. No jargon, just a real conversation about what you need.",
