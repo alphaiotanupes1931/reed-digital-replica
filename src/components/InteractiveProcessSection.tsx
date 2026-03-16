@@ -42,7 +42,6 @@ const steps = [
   },
   { 
     id: 4,
-    icon: Rocket,
     label: "Launch", 
     title: "We Launch & Support",
     description: "When everything is perfect, we launch your site and make sure it performs flawlessly. We're here for you even after launch with ongoing support.",
