@@ -30,7 +30,6 @@ const steps = [
   },
   { 
     id: 3,
-    icon: Code,
     label: "Development", 
     title: "We Build & Test",
     description: "Our developers bring the designs to life using modern technology. We build fast, secure websites that work perfectly on every device.",
