@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+
 import ScrollReveal from "@/components/ScrollReveal";
 
 const GOOGLE_REVIEW_URL = "https://share.google/X1nNcq7JiSRV1Bobv";
