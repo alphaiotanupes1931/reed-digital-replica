@@ -1,15 +1,13 @@
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Building2, HeartPulse, HandHeart, Dumbbell, Rocket, GraduationCap, Music } from "lucide-react";
-
 const industries = [
-  { name: "Government & Municipal", icon: Building2 },
-  { name: "Healthcare & Wellness", icon: HeartPulse },
-  { name: "Nonprofit Organizations", icon: HandHeart },
-  { name: "Fitness & Personal Training", icon: Dumbbell },
-  { name: "Small Business & Startups", icon: Rocket },
-  { name: "Education", icon: GraduationCap },
-  { name: "Nightlife & Entertainment", icon: Music },
+  { name: "Government & Municipal" },
+  { name: "Healthcare & Wellness" },
+  { name: "Nonprofit Organizations" },
+  { name: "Fitness & Personal Training" },
+  { name: "Small Business & Startups" },
+  { name: "Education" },
+  { name: "Nightlife & Entertainment" },
 ];
 
 const ClientLogosSection = () => {
