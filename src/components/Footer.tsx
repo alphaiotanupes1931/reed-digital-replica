@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram } from "lucide-react";
+
 import { motion } from "framer-motion";
 import logo from "@/assets/rdg-header-logo.png";
 
