@@ -47,7 +47,6 @@ const ClientLogosSection = () => {
               transition={{ delay: index * 0.05 }}
               whileHover={{ y: -4 }}
             >
-              <industry.icon className="w-6 h-6 text-muted-foreground group-hover:text-foreground transition-colors" />
               <span className="text-sm text-center font-medium">{industry.name}</span>
             </motion.div>
           ))}

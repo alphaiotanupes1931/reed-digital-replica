@@ -130,11 +130,9 @@ const InteractiveProcessSection = () => {
                   animate={activeStep === step.id ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 0.3 }}
                 >
-                  {activeStep > step.id ? (
-                    <Check className="w-6 h-6" />
-                  ) : (
-                    <step.icon className="w-6 h-6" />
-                  )}
+                  <span className="text-sm font-mono font-medium">
+                    {activeStep > step.id ? "✓" : `0${step.id}`}
+                  </span>
                 </motion.div>
                 <span className={`text-xs font-mono ${
                   activeStep === step.id ? "text-primary" : "text-muted-foreground"
