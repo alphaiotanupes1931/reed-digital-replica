@@ -93,13 +93,6 @@ const WorkSection = () => {
       
       <div className="container relative z-10">
         <ScrollReveal>
-          <motion.p 
-            className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center mb-4"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-          >
-            Recent Work
-          </motion.p>
           <motion.h2 
             className="text-2xl md:text-3xl font-medium text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
