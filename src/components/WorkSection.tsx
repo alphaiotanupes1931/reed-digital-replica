@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
@@ -140,7 +140,7 @@ const WorkSection = () => {
                       {project.category}
                     </span>
                   </div>
-                  <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0 mt-1" />
+                  <span className="text-xs text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-1">↗</span>
                 </div>
                 
                 {/* Type badge */}

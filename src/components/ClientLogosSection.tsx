@@ -1,15 +1,13 @@
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Building2, HeartPulse, HandHeart, Dumbbell, Rocket, GraduationCap, Music } from "lucide-react";
-
 const industries = [
-  { name: "Government & Municipal", icon: Building2 },
-  { name: "Healthcare & Wellness", icon: HeartPulse },
-  { name: "Nonprofit Organizations", icon: HandHeart },
-  { name: "Fitness & Personal Training", icon: Dumbbell },
-  { name: "Small Business & Startups", icon: Rocket },
-  { name: "Education", icon: GraduationCap },
-  { name: "Nightlife & Entertainment", icon: Music },
+  { name: "Government & Municipal" },
+  { name: "Healthcare & Wellness" },
+  { name: "Nonprofit Organizations" },
+  { name: "Fitness & Personal Training" },
+  { name: "Small Business & Startups" },
+  { name: "Education" },
+  { name: "Nightlife & Entertainment" },
 ];
 
 const ClientLogosSection = () => {
@@ -49,7 +47,6 @@ const ClientLogosSection = () => {
               transition={{ delay: index * 0.05 }}
               whileHover={{ y: -4 }}
             >
-              <industry.icon className="w-6 h-6 text-muted-foreground group-hover:text-foreground transition-colors" />
               <span className="text-sm text-center font-medium">{industry.name}</span>
             </motion.div>
           ))}

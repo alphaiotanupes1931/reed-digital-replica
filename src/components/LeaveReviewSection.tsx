@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+
 import ScrollReveal from "@/components/ScrollReveal";
 
 const GOOGLE_REVIEW_URL = "https://share.google/X1nNcq7JiSRV1Bobv";
@@ -19,24 +19,6 @@ const LeaveReviewSection = () => {
       <div className="container">
         <ScrollReveal>
           <div className="max-w-xl mx-auto text-center">
-            <motion.div 
-              className="flex justify-center gap-1 mb-6"
-              initial={{ scale: 0.8, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ rotate: -30, opacity: 0 }}
-                  whileInView={{ rotate: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-                </motion.div>
-              ))}
-            </motion.div>
-            
             <h3 className="text-2xl font-medium mb-3">Enjoyed working with us?</h3>
             <p className="text-muted-foreground mb-8">
               Your feedback helps other businesses find the right partner. Leave us a review on Google!

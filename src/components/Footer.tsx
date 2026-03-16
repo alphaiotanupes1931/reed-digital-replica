@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram } from "lucide-react";
+
 import { motion } from "framer-motion";
 import logo from "@/assets/rdg-header-logo.png";
 
@@ -54,7 +54,7 @@ const Footer = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Instagram className="w-4 h-4" />
+            <span className="text-sm font-medium">IG</span>
           </motion.a>
 
           {/* Divider */}

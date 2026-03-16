@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Palette, Code, Rocket, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const steps = [
   { 
     id: 1,
-    icon: MessageSquare,
     label: "Discovery", 
     title: "We Listen & Learn",
     description: "Every great project starts with understanding. We schedule a call to learn about your business, goals, and vision. No jargon, just a real conversation about what you need.",
@@ -19,7 +18,6 @@ const steps = [
   },
   { 
     id: 2,
-    icon: Palette,
     label: "Design", 
     title: "We Create & Refine",
     description: "We translate your vision into visual designs. You'll see mockups of your website before any code is written, with unlimited revisions until you're thrilled.",
@@ -32,7 +30,6 @@ const steps = [
   },
   { 
     id: 3,
-    icon: Code,
     label: "Development", 
     title: "We Build & Test",
     description: "Our developers bring the designs to life using modern technology. We build fast, secure websites that work perfectly on every device.",
@@ -45,7 +42,6 @@ const steps = [
   },
   { 
     id: 4,
-    icon: Rocket,
     label: "Launch", 
     title: "We Launch & Support",
     description: "When everything is perfect, we launch your site and make sure it performs flawlessly. We're here for you even after launch with ongoing support.",
@@ -134,11 +130,9 @@ const InteractiveProcessSection = () => {
                   animate={activeStep === step.id ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 0.3 }}
                 >
-                  {activeStep > step.id ? (
-                    <Check className="w-6 h-6" />
-                  ) : (
-                    <step.icon className="w-6 h-6" />
-                  )}
+                  <span className="text-sm font-mono font-medium">
+                    {activeStep > step.id ? "✓" : `0${step.id}`}
+                  </span>
                 </motion.div>
                 <span className={`text-xs font-mono ${
                   activeStep === step.id ? "text-primary" : "text-muted-foreground"
