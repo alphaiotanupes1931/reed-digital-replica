@@ -304,11 +304,12 @@ const InvoicePortal = () => {
         </AnimatePresence>
       </div>
 
-      {/* Footer */}
+      {/* Branded footer */}
       <div className="border-t border-border mt-20">
-        <div className="max-w-3xl mx-auto px-6 py-6 text-center">
-          <p className="text-[10px] font-mono text-muted-foreground/40 uppercase tracking-[0.3em]">
-            Reed Digital Group © {new Date().getFullYear()}
+        <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
+          <img src={logo} alt="RDG" className="h-10 opacity-20" />
+          <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.3em] text-center">
+            System managed by Reed Digital Group
           </p>
         </div>
       </div>
