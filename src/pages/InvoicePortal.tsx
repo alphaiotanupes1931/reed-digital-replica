@@ -132,27 +132,20 @@ const InvoicePortal = () => {
               className="flex flex-col items-center justify-center min-h-[70vh]"
             >
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center"
               >
                 Invoices
               </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-sm font-mono text-muted-foreground mb-12 text-center"
-              >
-                Enter your email to access your invoices
-              </motion.p>
+              <PortalSubtext />
 
               <motion.form
                 onSubmit={handleEmailSubmit}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}
                 className="w-full max-w-sm"
               >
                 <div className="mb-4">
