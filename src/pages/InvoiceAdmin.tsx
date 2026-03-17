@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Check, Trash2, Lock } from "lucide-react";
+import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +33,16 @@ interface Invoice {
   created_at: string;
   clients?: Client;
 }
+
+const AdminSubtext = () => {
+  const { displayed, done } = useTypingEffect("Enter password to continue", 35, 800);
+  return (
+    <p className="text-sm font-mono text-muted-foreground mb-12 text-center h-6">
+      {displayed}
+      {!done && <span className="typing-cursor">|</span>}
+    </p>
+  );
+};
 
 const InvoiceAdmin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -164,14 +175,23 @@ const InvoiceAdmin = () => {
             transition={{ duration: 0.5 }}
             className="w-full max-w-sm"
           >
-            <h1 className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center"
+            >
               Admin
-            </h1>
-            <p className="text-sm font-mono text-muted-foreground mb-12 text-center">
-              Enter password to continue
-            </p>
+            </motion.h1>
+            <AdminSubtext />
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <motion.form
+              onSubmit={handleLogin}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="space-y-4"
+            >
               <Input
                 type="password"
                 value={password}
@@ -183,15 +203,15 @@ const InvoiceAdmin = () => {
                 <Lock className="mr-2 h-3.5 w-3.5" />
                 Enter
               </Button>
-            </form>
+            </motion.form>
           </motion.div>
         </div>
 
         {/* Branded footer */}
         <div className="border-t border-border">
           <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-            <img src={logo} alt="RDG" className="h-10 opacity-20" />
-            <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.3em] text-center">
+            <img src={logo} alt="RDG" className="h-10 opacity-30" />
+            <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-[0.3em] text-center">
               System managed by Reed Digital Group
             </p>
           </div>
@@ -490,8 +510,8 @@ const InvoiceAdmin = () => {
       {/* Branded footer */}
       <div className="border-t border-border mt-10">
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-          <img src={logo} alt="RDG" className="h-10 opacity-20" />
-          <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.3em] text-center">
+          <img src={logo} alt="RDG" className="h-10 opacity-30" />
+          <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>

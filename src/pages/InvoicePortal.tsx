@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle, CreditCard } from "lucide-react";
+import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,16 @@ interface Invoice {
   deposit_paid: boolean;
   created_at: string;
 }
+
+const PortalSubtext = () => {
+  const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
+  return (
+    <p className="text-sm font-mono text-muted-foreground mb-12 text-center h-6">
+      {displayed}
+      {!done && <span className="typing-cursor">|</span>}
+    </p>
+  );
+};
 
 const InvoicePortal = () => {
   const [email, setEmail] = useState("");
@@ -121,27 +132,20 @@ const InvoicePortal = () => {
               className="flex flex-col items-center justify-center min-h-[70vh]"
             >
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center"
               >
                 Invoices
               </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-sm font-mono text-muted-foreground mb-12 text-center"
-              >
-                Enter your email to access your invoices
-              </motion.p>
+              <PortalSubtext />
 
               <motion.form
                 onSubmit={handleEmailSubmit}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}
                 className="w-full max-w-sm"
               >
                 <div className="mb-4">
@@ -307,8 +311,8 @@ const InvoicePortal = () => {
       {/* Branded footer */}
       <div className="border-t border-border mt-20">
         <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-          <img src={logo} alt="RDG" className="h-10 opacity-20" />
-          <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.3em] text-center">
+          <img src={logo} alt="RDG" className="h-10 opacity-30" />
+          <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>
