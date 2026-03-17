@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          company_name: string
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          client_id: string
+          created_at: string
+          due_date: string
+          id: string
+          price: number
+          service: string
+          status: Database["public"]["Enums"]["invoice_status"]
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          due_date: string
+          id?: string
+          price: number
+          service: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          price?: number
+          service?: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +90,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      invoice_status: "draft" | "approved" | "sent" | "paid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +217,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      invoice_status: ["draft", "approved", "sent", "paid"],
+    },
   },
 } as const
