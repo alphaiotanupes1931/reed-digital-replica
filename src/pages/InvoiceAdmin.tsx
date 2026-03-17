@@ -149,34 +149,53 @@ const InvoiceAdmin = () => {
   // ── Login ──
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-foreground flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="w-full max-w-xs"
-        >
-          <img src={logo} alt="RDG" className="h-8 mx-auto mb-16 opacity-80" />
+      <div className="min-h-screen bg-background flex flex-col">
+        <div className="border-b border-border">
+          <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
+            <img src={logo} alt="RDG" className="h-6" />
+            <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">Admin</span>
+          </div>
+        </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-[10px] font-mono text-primary/60 uppercase tracking-[0.3em] mb-3">
-                Password
-              </label>
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-sm"
+          >
+            <h1 className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center">
+              Admin
+            </h1>
+            <p className="text-sm font-mono text-muted-foreground mb-12 text-center">
+              Enter password to continue
+            </p>
+
+            <form onSubmit={handleLogin} className="space-y-4">
               <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="h-14 bg-transparent border-0 border-b border-primary/20 rounded-none font-mono text-primary text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-primary/60 placeholder:text-primary/20"
+                className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-muted-foreground/40"
               />
-            </div>
-            <Button type="submit" variant="outline" className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] border-primary/30 text-primary hover:bg-primary/10 hover:text-primary rounded-none">
-              <Lock className="mr-2 h-3.5 w-3.5" />
-              Enter
-            </Button>
-          </form>
-        </motion.div>
+              <Button type="submit" variant="outline" className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent">
+                <Lock className="mr-2 h-3.5 w-3.5" />
+                Enter
+              </Button>
+            </form>
+          </motion.div>
+        </div>
+
+        {/* Branded footer */}
+        <div className="border-t border-border">
+          <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
+            <img src={logo} alt="RDG" className="h-10 opacity-20" />
+            <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.3em] text-center">
+              System managed by Reed Digital Group
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -465,6 +484,16 @@ const InvoiceAdmin = () => {
               })}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Branded footer */}
+      <div className="border-t border-border mt-10">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
+          <img src={logo} alt="RDG" className="h-10 opacity-20" />
+          <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.3em] text-center">
+            System managed by Reed Digital Group
+          </p>
         </div>
       </div>
     </div>
