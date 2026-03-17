@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const ADMIN_PASSWORD = "rdg2024admin";
+const ADMIN_PASSWORD = "admin123";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -31,7 +31,6 @@ serve(async (req) => {
     if (action === "create_invoice") {
       const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date } = data;
 
-      // Upsert client
       let { data: client } = await supabase
         .from("clients")
         .select("*")
