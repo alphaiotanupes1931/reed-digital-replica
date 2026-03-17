@@ -24,6 +24,7 @@ serve(async (req) => {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       const invoiceId = session.metadata?.invoice_id;
+      const isDeposit = session.metadata?.is_deposit === "true";
 
       if (invoiceId) {
         const supabase = createClient(
@@ -31,13 +32,25 @@ serve(async (req) => {
           Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
         );
 
-        await supabase
-          .from("invoices")
-          .update({
-            status: "paid",
-            stripe_payment_intent_id: session.payment_intent as string,
-          })
-          .eq("id", invoiceId);
+        if (isDeposit) {
+          // Mark deposit as paid
+          await supabase
+            .from("invoices")
+            .update({
+              deposit_paid: true,
+              stripe_payment_intent_id: session.payment_intent as string,
+            })
+            .eq("id", invoiceId);
+        } else {
+          // Full payment or remaining balance
+          await supabase
+            .from("invoices")
+            .update({
+              status: "paid",
+              stripe_payment_intent_id: session.payment_intent as string,
+            })
+            .eq("id", invoiceId);
+        }
       }
     }
 

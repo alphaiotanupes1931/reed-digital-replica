@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, FileText, CreditCard, CheckCircle, ArrowRight } from "lucide-react";
+import { Mail, FileText, CreditCard, CheckCircle, ArrowRight, AlertTriangle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,14 +21,12 @@ interface Invoice {
   price: number;
   due_date: string;
   status: "draft" | "approved" | "sent" | "paid";
+  deposit_required: boolean;
+  deposit_amount: number | null;
+  deposit_due_date: string | null;
+  deposit_paid: boolean;
   created_at: string;
 }
-
-const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  approved: { label: "Awaiting Payment", color: "bg-primary/10 text-primary", icon: <CreditCard className="h-3 w-3" /> },
-  sent: { label: "Awaiting Payment", color: "bg-primary/10 text-primary", icon: <CreditCard className="h-3 w-3" /> },
-  paid: { label: "Paid", color: "bg-green-100 text-green-700", icon: <CheckCircle className="h-3 w-3" /> },
-};
 
 const InvoicePortal = () => {
   const [email, setEmail] = useState("");
@@ -66,11 +64,19 @@ const InvoicePortal = () => {
     setLoading(false);
   };
 
-  const handlePay = async (invoice: Invoice) => {
-    setPayingId(invoice.id);
+  const isOverdue = (dateStr: string | null) => {
+    if (!dateStr) return false;
+    return new Date(dateStr) < new Date();
+  };
+
+  const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
+    setPayingId(invoice.id + (payDeposit ? "-dep" : ""));
     try {
       const res = await supabase.functions.invoke("create-checkout", {
-        body: { invoice_id: invoice.id },
+        body: {
+          invoice_id: invoice.id,
+          pay_deposit: payDeposit,
+        },
       });
 
       if (res.error) throw res.error;
@@ -168,9 +174,15 @@ const InvoicePortal = () => {
                   No invoices available yet.
                 </motion.p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {invoices.map((inv, i) => {
-                    const config = statusConfig[inv.status] || statusConfig.approved;
+                    const depositOverdue = inv.deposit_required && !inv.deposit_paid && isOverdue(inv.deposit_due_date);
+                    const remainingBalance = inv.deposit_required && inv.deposit_amount
+                      ? inv.price - inv.deposit_amount
+                      : inv.price;
+                    const isPaid = inv.status === "paid";
+                    const depositPending = inv.deposit_required && !inv.deposit_paid && !isPaid;
+
                     return (
                       <motion.div
                         key={inv.id}
@@ -178,33 +190,82 @@ const InvoicePortal = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.08 }}
                       >
-                        <Card className="hover:shadow-md transition-shadow">
+                        <Card className={`hover:shadow-md transition-shadow ${depositOverdue ? "border-destructive/50" : ""}`}>
                           <CardContent className="p-5">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <h3 className="font-mono font-medium text-foreground">{inv.service}</h3>
-                                  <Badge variant="secondary" className={config.color}>
-                                    {config.icon}
-                                    <span className="ml-1">{config.label}</span>
-                                  </Badge>
-                                </div>
-                                <div className="flex gap-4 text-xs text-muted-foreground font-mono">
-                                  <span>Amount: <strong className="text-foreground">${inv.price.toLocaleString()}</strong></span>
-                                  <span>Due: {new Date(inv.due_date).toLocaleDateString()}</span>
-                                </div>
-                              </div>
-                              {inv.status !== "paid" && (
-                                <Button
-                                  onClick={() => handlePay(inv)}
-                                  disabled={payingId === inv.id}
-                                  size="sm"
-                                >
-                                  <CreditCard className="mr-1 h-3 w-3" />
-                                  {payingId === inv.id ? "Processing..." : "Pay Now"}
-                                </Button>
+                            {/* Service header */}
+                            <div className="flex items-center gap-2 mb-3 flex-wrap">
+                              <h3 className="font-mono font-medium text-foreground">{inv.service}</h3>
+                              {isPaid && (
+                                <Badge variant="secondary" className="bg-green-100 text-green-700">
+                                  <CheckCircle className="h-3 w-3 mr-1" /> Paid
+                                </Badge>
+                              )}
+                              {depositOverdue && (
+                                <Badge variant="destructive" className="text-xs">
+                                  <AlertTriangle className="h-3 w-3 mr-1" /> Deposit Overdue
+                                </Badge>
+                              )}
+                              {depositPending && !depositOverdue && (
+                                <Badge variant="secondary" className="bg-primary/10 text-primary text-xs">
+                                  <Clock className="h-3 w-3 mr-1" /> Deposit Due
+                                </Badge>
                               )}
                             </div>
+
+                            {/* Price breakdown */}
+                            <div className="bg-muted rounded-md p-3 mb-3 space-y-1.5">
+                              <div className="flex justify-between text-xs font-mono">
+                                <span className="text-muted-foreground">Total Project Cost</span>
+                                <span className="text-foreground font-medium">${inv.price.toLocaleString()}</span>
+                              </div>
+                              {inv.deposit_required && inv.deposit_amount && (
+                                <>
+                                  <div className="flex justify-between text-xs font-mono">
+                                    <span className="text-muted-foreground">
+                                      Deposit {inv.deposit_paid ? "(Paid ✓)" : `(Due ${new Date(inv.deposit_due_date!).toLocaleDateString()})`}
+                                    </span>
+                                    <span className={inv.deposit_paid ? "text-green-600 font-medium" : "text-foreground font-medium"}>
+                                      ${inv.deposit_amount.toLocaleString()}
+                                    </span>
+                                  </div>
+                                  <div className="border-t border-border pt-1.5 flex justify-between text-xs font-mono">
+                                    <span className="text-muted-foreground">Due After Completion</span>
+                                    <span className="text-foreground font-semibold">${remainingBalance.toLocaleString()}</span>
+                                  </div>
+                                </>
+                              )}
+                              <div className="flex justify-between text-xs font-mono pt-1">
+                                <span className="text-muted-foreground">Project Due Date</span>
+                                <span className="text-foreground">{new Date(inv.due_date).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+
+                            {/* Actions */}
+                            {!isPaid && (
+                              <div className="flex gap-2 flex-wrap">
+                                {depositPending && (
+                                  <Button
+                                    onClick={() => handlePay(inv, true)}
+                                    disabled={payingId === inv.id + "-dep"}
+                                    size="sm"
+                                    className={depositOverdue ? "bg-destructive hover:bg-destructive/90" : ""}
+                                  >
+                                    <CreditCard className="mr-1 h-3 w-3" />
+                                    {payingId === inv.id + "-dep" ? "Processing..." : `Pay Deposit — $${inv.deposit_amount?.toLocaleString()}`}
+                                  </Button>
+                                )}
+                                {(!inv.deposit_required || inv.deposit_paid) && (
+                                  <Button
+                                    onClick={() => handlePay(inv, false)}
+                                    disabled={payingId === inv.id}
+                                    size="sm"
+                                  >
+                                    <CreditCard className="mr-1 h-3 w-3" />
+                                    {payingId === inv.id ? "Processing..." : `Pay Remaining — $${remainingBalance.toLocaleString()}`}
+                                  </Button>
+                                )}
+                              </div>
+                            )}
                           </CardContent>
                         </Card>
                       </motion.div>

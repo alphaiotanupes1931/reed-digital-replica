@@ -39,6 +39,10 @@ export type Database = {
         Row: {
           client_id: string
           created_at: string
+          deposit_amount: number | null
+          deposit_due_date: string | null
+          deposit_paid: boolean
+          deposit_required: boolean
           due_date: string
           id: string
           price: number
@@ -51,6 +55,10 @@ export type Database = {
         Insert: {
           client_id: string
           created_at?: string
+          deposit_amount?: number | null
+          deposit_due_date?: string | null
+          deposit_paid?: boolean
+          deposit_required?: boolean
           due_date: string
           id?: string
           price: number
@@ -63,6 +71,10 @@ export type Database = {
         Update: {
           client_id?: string
           created_at?: string
+          deposit_amount?: number | null
+          deposit_due_date?: string | null
+          deposit_paid?: boolean
+          deposit_required?: boolean
           due_date?: string
           id?: string
           price?: number
