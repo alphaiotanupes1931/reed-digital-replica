@@ -28,6 +28,16 @@ interface Invoice {
   created_at: string;
 }
 
+const PortalSubtext = () => {
+  const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
+  return (
+    <p className="text-sm font-mono text-muted-foreground mb-12 text-center h-6">
+      {displayed}
+      {!done && <span className="typing-cursor">|</span>}
+    </p>
+  );
+};
+
 const InvoicePortal = () => {
   const [email, setEmail] = useState("");
   const [client, setClient] = useState<Client | null>(null);
