@@ -29,10 +29,10 @@ serve(async (req) => {
     );
 
     if (action === "create_invoice") {
-      const { company_name, email, service, price, due_date } = data;
+      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date } = data;
 
       // Upsert client
-      let { data: client, error: clientError } = await supabase
+      let { data: client } = await supabase
         .from("clients")
         .select("*")
         .eq("email", email)
@@ -48,7 +48,6 @@ serve(async (req) => {
         if (insertError) throw insertError;
         client = newClient;
       } else {
-        // Update company name if changed
         await supabase.from("clients").update({ company_name }).eq("id", client.id);
       }
 
@@ -58,6 +57,9 @@ serve(async (req) => {
         price,
         due_date,
         status: "draft",
+        deposit_required: deposit_required || false,
+        deposit_amount: deposit_amount || null,
+        deposit_due_date: deposit_due_date || null,
       });
 
       if (invoiceError) throw invoiceError;

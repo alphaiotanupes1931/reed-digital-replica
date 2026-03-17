@@ -23,7 +23,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { invoice_id } = await req.json();
+    const { invoice_id, pay_deposit } = await req.json();
     if (!invoice_id) throw new Error("invoice_id is required");
 
     // Get invoice with client info
@@ -37,9 +37,23 @@ serve(async (req) => {
     if (invoice.status === "paid") throw new Error("Invoice already paid");
 
     const client = invoice.clients;
-
-    // Determine origin for redirect
     const origin = req.headers.get("origin") || "https://lovable.dev";
+
+    // Determine amount based on deposit or full payment
+    let paymentAmount: number;
+    let description: string;
+
+    if (pay_deposit && invoice.deposit_required && invoice.deposit_amount) {
+      paymentAmount = invoice.deposit_amount;
+      description = `Deposit for ${invoice.service}`;
+    } else if (invoice.deposit_required && invoice.deposit_paid && invoice.deposit_amount) {
+      // Paying remaining balance
+      paymentAmount = invoice.price - invoice.deposit_amount;
+      description = `Remaining balance for ${invoice.service}`;
+    } else {
+      paymentAmount = invoice.price;
+      description = invoice.service;
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -49,10 +63,10 @@ serve(async (req) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: `${invoice.service} - ${client.company_name}`,
+              name: `${description} - ${client.company_name}`,
               description: `Invoice due ${invoice.due_date}`,
             },
-            unit_amount: Math.round(invoice.price * 100),
+            unit_amount: Math.round(paymentAmount * 100),
           },
           quantity: 1,
         },
@@ -62,10 +76,10 @@ serve(async (req) => {
       cancel_url: `${origin}/invoice?payment=cancelled`,
       metadata: {
         invoice_id: invoice.id,
+        is_deposit: pay_deposit ? "true" : "false",
       },
     });
 
-    // Store the checkout session ID
     await supabase
       .from("invoices")
       .update({ stripe_checkout_session_id: session.id })
