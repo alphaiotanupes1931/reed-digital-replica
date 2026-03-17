@@ -34,6 +34,16 @@ interface Invoice {
   clients?: Client;
 }
 
+const AdminSubtext = () => {
+  const { displayed, done } = useTypingEffect("Enter password to continue", 35, 800);
+  return (
+    <p className="text-sm font-mono text-muted-foreground mb-12 text-center h-6">
+      {displayed}
+      {!done && <span className="typing-cursor">|</span>}
+    </p>
+  );
+};
+
 const InvoiceAdmin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
