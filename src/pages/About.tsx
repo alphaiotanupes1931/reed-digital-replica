@@ -226,11 +226,11 @@ const AboutPage = () => {
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
                           <Shield className="w-4 h-4" />
-                          MITRE Corporation
+                          Security Engineer
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
                           <Briefcase className="w-4 h-4" />
-                          PG County Government
+                          Government Infrastructure
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
                           <Code className="w-4 h-4" />
