@@ -70,6 +70,7 @@ const InvoiceAdmin = () => {
   const [password, setPassword] = useState("");
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
@@ -105,7 +106,10 @@ const InvoiceAdmin = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) fetchData();
+    if (isAuthenticated) {
+      // Sync payments from Stripe then load data
+      handleSyncPayments().then(() => fetchData());
+    }
   }, [isAuthenticated]);
 
   const handleCreateInvoice = async (e: React.FormEvent) => {
@@ -172,6 +176,22 @@ const InvoiceAdmin = () => {
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
+  };
+
+  const handleSyncPayments = async () => {
+    setSyncing(true);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "sync_payments", password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      const updated = res.data?.updated || 0;
+      toast({ title: updated > 0 ? `${updated} invoice(s) marked as paid` : "All invoices up to date" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Sync error", description: err.message, variant: "destructive" });
+    }
+    setSyncing(false);
   };
 
   const isOverdue = (dateStr: string | null) => {
@@ -256,13 +276,22 @@ const InvoiceAdmin = () => {
             <img src={logo} alt="RDG" className="h-6" />
             <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            New Invoice
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleSyncPayments}
+              disabled={syncing}
+              className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors"
+            >
+              {syncing ? "Syncing..." : "Sync Payments"}
+            </button>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              New Invoice
+            </button>
+          </div>
         </div>
       </div>
 
