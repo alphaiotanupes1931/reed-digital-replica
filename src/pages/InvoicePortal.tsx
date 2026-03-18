@@ -172,7 +172,7 @@ const InvoiceDocument = ({
       {/* Total */}
       <div className="p-6 md:p-8 flex justify-between items-center border-b-2 border-foreground">
         <span className="text-lg font-mono font-bold text-foreground uppercase tracking-[0.2em]">Total</span>
-        <span className="text-3xl font-mono font-bold text-foreground">${invoice.price.toLocaleString()}</span>
+        <span className="text-3xl font-mono font-bold text-foreground">${totalPrice.toLocaleString()}</span>
       </div>
 
       {/* Actions */}
