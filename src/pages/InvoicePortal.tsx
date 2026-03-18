@@ -79,9 +79,11 @@ const InvoiceDocument = ({
     ? Math.round((invoice.deposit_amount - baseDeposit) * 100) / 100
     : null;
 
-  const remainingBalance = invoice.deposit_required && invoice.deposit_amount
+  const remainingBase = invoice.deposit_required && invoice.deposit_amount
     ? invoice.price - invoice.deposit_amount
     : invoice.price;
+  const remainingFee = Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const remainingTotal = Math.round((remainingBase + remainingFee) * 100) / 100;
 
   return (
     <motion.div
