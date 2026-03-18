@@ -152,35 +152,56 @@ const InvoiceThankYou = () => {
           </p>
         </motion.div>
 
-        {/* 3. Referral Sticky Note */}
-        <motion.div
-          initial={{ opacity: 0, rotate: -2, y: 20 }}
-          animate={{ opacity: 1, rotate: -1.5, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-          className="relative mb-8 mx-auto max-w-md"
+      {/* Sticky Note — fixed to the side, follows scroll */}
+      <motion.div
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 1 }}
+        className="fixed top-32 right-4 z-50 hidden lg:block w-56"
+        style={{ transform: "rotate(2deg)" }}
+      >
+        <div className="bg-[hsl(45,80%,75%)] p-5 shadow-[4px_6px_16px_rgba(0,0,0,0.2)] relative">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-[hsl(45,20%,90%)] opacity-60" />
+          <p className="text-[10px] font-mono text-[hsl(30,20%,25%)] uppercase tracking-[0.2em] mb-2 font-bold">
+            📌 Referral Bonus
+          </p>
+          <p className="text-xs font-mono text-[hsl(30,20%,20%)] leading-relaxed mb-2">
+            Refer someone to us and earn{" "}
+            <span className="font-bold underline">15% of the project total</span> as a bonus!
+            Have them mention your name.
+          </p>
+          <p className="text-[10px] font-mono text-[hsl(30,20%,30%)]">
+            📧{" "}
+            <a href="mailto:reeddigitalgroup@gmail.com" className="underline">
+              reeddigitalgroup@gmail.com
+            </a>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Mobile referral note (inline, since fixed side doesn't work on small screens) */}
+      <div className="lg:hidden max-w-3xl mx-auto px-6 mb-8">
+        <div
+          className="bg-[hsl(45,80%,75%)] p-5 shadow-[4px_4px_12px_rgba(0,0,0,0.15)] relative mx-auto max-w-sm"
+          style={{ transform: "rotate(-1deg)" }}
         >
-          <div
-            className="bg-[hsl(45,80%,75%)] p-6 shadow-[4px_4px_12px_rgba(0,0,0,0.15)] relative"
-            style={{ transform: "rotate(-1deg)" }}
-          >
-            {/* Tape effect */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-[hsl(45,20%,90%)] opacity-60" />
-            <p className="text-xs font-mono text-[hsl(30,20%,25%)] uppercase tracking-[0.2em] mb-3 font-bold">
-              📌 Referral Bonus
-            </p>
-            <p className="text-sm font-mono text-[hsl(30,20%,20%)] leading-relaxed mb-3">
-              Know someone who could benefit from what we do? Refer them to us and we'll give you{" "}
-              <span className="font-bold underline">15% of the project total</span> as a referral
-              bonus. Just have them mention your name when they reach out!
-            </p>
-            <p className="text-xs font-mono text-[hsl(30,20%,30%)]">
-              📧{" "}
-              <a href="mailto:reeddigitalgroup@gmail.com" className="underline">
-                reeddigitalgroup@gmail.com
-              </a>
-            </p>
-          </div>
-        </motion.div>
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-[hsl(45,20%,90%)] opacity-60" />
+          <p className="text-[10px] font-mono text-[hsl(30,20%,25%)] uppercase tracking-[0.2em] mb-2 font-bold">
+            📌 Referral Bonus
+          </p>
+          <p className="text-xs font-mono text-[hsl(30,20%,20%)] leading-relaxed mb-2">
+            Refer someone to us and earn{" "}
+            <span className="font-bold underline">15% of the project total</span> as a bonus!
+            Have them mention your name.
+          </p>
+          <p className="text-[10px] font-mono text-[hsl(30,20%,30%)]">
+            📧{" "}
+            <a href="mailto:reeddigitalgroup@gmail.com" className="underline">
+              reeddigitalgroup@gmail.com
+            </a>
+          </p>
+        </div>
+      </div>
 
         {/* CTA */}
         <motion.div
