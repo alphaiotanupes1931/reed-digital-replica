@@ -5,7 +5,7 @@ import logo from "@/assets/rdg-header-logo.png";
 import kimoraPhoto from "@/assets/team/kimora-taylor.jpg";
 import seydinaPhoto from "@/assets/team/seydina-salla.jpg";
 import terellPhoto from "@/assets/team/terell-reed.jpg";
-import jadenPhoto from "@/assets/team/lawrence-wright.jpg";
+import jadenPhoto from "@/assets/team/jaden-koranteng.jpg";
 
 const team = [
   {
