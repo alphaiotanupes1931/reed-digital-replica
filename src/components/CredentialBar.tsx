@@ -32,14 +32,36 @@ const CredentialBar = () => {
 
   return (
     <motion.div 
-      className="py-4 bg-background text-foreground border-y border-border overflow-hidden"
+      className="relative py-20 md:py-28 border-y border-border overflow-hidden"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.2, duration: 0.5 }}
     >
-      <div className="container">
-        <div className="flex items-center justify-center text-center min-h-[24px]">
-          <p className="text-sm md:text-base font-mono">
+      {/* Background images */}
+      <div className="absolute inset-0 grid grid-cols-2">
+        <div
+          className="bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://cdn.sanity.io/images/5a711ubd/production/ff089a922705d67d382ee65cb68b5f2312edad00-3200x1800.jpg?w=1920')",
+          }}
+        />
+        <div
+          className="bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://framerusercontent.com/images/Ye1B4wvb8jENZTb6yccpjYGSbDk.png?width=1364&height=820')",
+          }}
+        />
+      </div>
+
+      {/* Dark tint overlay */}
+      <div className="absolute inset-0 bg-background/85" />
+
+      {/* Content */}
+      <div className="relative z-10 container">
+        <div className="flex items-center justify-center text-center">
+          <p className="text-lg md:text-2xl font-mono font-bold text-foreground tracking-tight">
             {displayText}
             {isTyping && displayText.length < fullText.length && (
               <span className="animate-pulse">|</span>
