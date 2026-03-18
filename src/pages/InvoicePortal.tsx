@@ -28,7 +28,8 @@ interface Invoice {
   created_at: string;
 }
 
-const PROCESSING_FEE_RATE = 0.035;
+const PROCESSING_FEE_RATE = 0.029;
+const PROCESSING_FEE_FLAT = 0.30;
 
 const PortalSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);

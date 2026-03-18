@@ -58,11 +58,11 @@ const AdminSubtext = () => {
 };
 
 const calculateFee = (amount: number) => {
-  return Math.round(amount * PROCESSING_FEE_RATE * 100) / 100;
+  return Math.round((amount * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
 };
 
 const calculateTotal = (amount: number) => {
-  return amount + calculateFee(amount);
+  return Math.round((amount + calculateFee(amount)) * 100) / 100;
 };
 
 const InvoiceAdmin = () => {
