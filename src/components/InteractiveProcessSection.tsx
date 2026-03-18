@@ -97,7 +97,7 @@ const InteractiveProcessSection = () => {
 
         <div className="max-w-5xl mx-auto">
           {/* Step Selector - Horizontal */}
-          <div className="flex justify-between items-center mb-12 relative">
+          <div className="flex justify-between items-center mb-8 md:mb-12 relative overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
             {/* Connecting line */}
             <div className="absolute left-0 right-0 top-1/2 h-px bg-border -translate-y-1/2 hidden md:block" />
             
@@ -113,14 +113,14 @@ const InteractiveProcessSection = () => {
               <motion.button
                 key={step.id}
                 onClick={() => setActiveStep(step.id)}
-                className={`relative z-10 flex flex-col items-center gap-2 p-2 md:p-4 transition-all ${
+                className={`relative z-10 flex flex-col items-center gap-1.5 md:gap-2 p-1.5 md:p-4 flex-shrink-0 transition-all ${
                   activeStep === step.id ? "scale-110" : "opacity-60 hover:opacity-100"
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <motion.div 
-                  className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 transition-all ${
+                  className={`w-11 h-11 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 transition-all ${
                     activeStep === step.id 
                       ? "border-brand bg-brand text-brand-foreground" 
                       : activeStep > step.id
