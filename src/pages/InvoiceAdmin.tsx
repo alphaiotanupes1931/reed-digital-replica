@@ -17,7 +17,8 @@ import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
 const ADMIN_PASSWORD = "admin123";
-const PROCESSING_FEE_RATE = 0.035; // 3.5% convenience fee
+const PROCESSING_FEE_RATE = 0.029; // 2.9%
+const PROCESSING_FEE_FLAT = 0.30; // + $0.30 per transaction
 
 const SERVICE_OPTIONS = [
   "Website Development",
