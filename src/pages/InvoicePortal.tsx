@@ -79,9 +79,11 @@ const InvoiceDocument = ({
     ? Math.round((invoice.deposit_amount - baseDeposit) * 100) / 100
     : null;
 
-  const remainingBalance = invoice.deposit_required && invoice.deposit_amount
+  const remainingBase = invoice.deposit_required && invoice.deposit_amount
     ? invoice.price - invoice.deposit_amount
     : invoice.price;
+  const remainingFee = Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const remainingTotal = Math.round((remainingBase + remainingFee) * 100) / 100;
 
   return (
     <motion.div
@@ -163,7 +165,7 @@ const InvoiceDocument = ({
           <div className="flex justify-between items-center py-2">
             <span className="text-sm font-mono text-foreground">Balance Due After Completion</span>
             <span className="text-sm font-mono font-bold text-foreground">
-              ${remainingBalance.toLocaleString()}
+              ${remainingTotal.toLocaleString()}
             </span>
           </div>
         </div>
@@ -197,7 +199,7 @@ const InvoiceDocument = ({
               disabled={payingId === invoice.id}
               className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
             >
-              {payingId === invoice.id ? "Processing..." : `Pay — $${remainingBalance.toLocaleString()}`}
+              {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
             </button>
           )}
         </div>
