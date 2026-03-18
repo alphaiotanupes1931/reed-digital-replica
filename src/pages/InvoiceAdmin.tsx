@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Trash2, Lock } from "lucide-react";
+import { Plus, Lock } from "lucide-react";
 import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -542,23 +542,21 @@ const InvoiceAdmin = () => {
                         <span className="text-3xl font-mono font-bold text-foreground tracking-tight">
                           ${inv.price.toLocaleString()}
                         </span>
-                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex gap-2">
                           {inv.status === "draft" && (
                             <button
                               onClick={() => handleApprove(inv.id)}
-                              className="h-9 w-9 flex items-center justify-center border border-border hover:border-foreground rounded-none transition-colors"
-                              title="Approve"
+                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-foreground rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
                             >
-                              <Check className="h-4 w-4" />
+                              Approve
                             </button>
                           )}
                           {inv.status !== "paid" && (
                             <button
                               onClick={() => handleDelete(inv.id)}
-                              className="h-9 w-9 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors"
-                              title="Delete"
+                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              Remove
                             </button>
                           )}
                         </div>
