@@ -273,13 +273,22 @@ const InvoiceAdmin = () => {
             <img src={logo} alt="RDG" className="h-6" />
             <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            New Invoice
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleSyncPayments}
+              disabled={syncing}
+              className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors"
+            >
+              {syncing ? "Syncing..." : "Sync Payments"}
+            </button>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              New Invoice
+            </button>
+          </div>
         </div>
       </div>
 
