@@ -384,6 +384,7 @@ const InvoicePortal = () => {
                     </div>
                   </div>
                 </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
