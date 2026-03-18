@@ -80,7 +80,54 @@ const InvoiceThankYou = () => {
           </p>
         </motion.div>
 
-        {/* 1. Team Section — Special Thanks FIRST */}
+        {/* Team Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="border-2 border-foreground p-8 md:p-12 mb-8"
+        >
+          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
+            A Special Thanks
+          </p>
+          <h2 className="text-2xl md:text-3xl font-mono font-bold text-foreground tracking-tight mb-8">
+            Meet the Team Behind Your Project
+          </h2>
+          <p className="text-base font-mono text-foreground leading-relaxed mb-10">
+            Every project at Reed Digital Group is powered by a team of dedicated young professionals
+            who care deeply about the work they do. We wanted to take a moment to introduce the
+            people who helped make your vision a reality.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {team.map((member, i) => (
+              <motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 + i * 0.15 }}
+                className="border border-border p-6"
+              >
+                <div className="w-20 h-20 mb-4 overflow-hidden border-2 border-foreground">
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-lg font-mono font-bold text-foreground mb-1">
+                  {member.name}
+                </h3>
+                <p className="text-xs font-mono text-primary uppercase tracking-[0.2em] mb-3">
+                  {member.title}
+                </p>
+                <p className="text-sm font-mono text-foreground leading-relaxed">
+                  {member.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
       {/* Sticky Note — fixed to the side, follows scroll */}
       <motion.div
