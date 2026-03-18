@@ -6,11 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
 const ADMIN_PASSWORD = "admin123";
+
+const SERVICE_OPTIONS = [
+  "Website Development",
+  "App Development",
+];
 
 interface Client {
   id: string;
@@ -37,7 +49,7 @@ interface Invoice {
 const AdminSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter password to continue", 35, 800);
   return (
-    <p className="text-sm font-mono text-muted-foreground mb-12 text-center h-6">
+    <p className="text-sm font-mono text-foreground/60 mb-12 text-center h-6">
       {displayed}
       {!done && <span className="typing-cursor">|</span>}
     </p>
@@ -55,7 +67,6 @@ const InvoiceAdmin = () => {
   const [email, setEmail] = useState("");
   const [service, setService] = useState("");
   const [price, setPrice] = useState("");
-  const [dueDate, setDueDate] = useState("");
   const [depositRequired, setDepositRequired] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
@@ -86,7 +97,7 @@ const InvoiceAdmin = () => {
 
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!companyName || !email || !service || !price || !dueDate) {
+    if (!companyName || !email || !service || !price) {
       toast({ title: "All fields are required", variant: "destructive" });
       return;
     }
@@ -102,7 +113,7 @@ const InvoiceAdmin = () => {
           email: email.toLowerCase().trim(),
           service,
           price: parseFloat(price),
-          due_date: dueDate,
+          due_date: depositRequired ? depositDueDate : new Date().toISOString().split("T")[0],
           deposit_required: depositRequired,
           deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
@@ -112,7 +123,7 @@ const InvoiceAdmin = () => {
       if (res.error) throw res.error;
       toast({ title: "Invoice created" });
       setShowForm(false);
-      setCompanyName(""); setEmail(""); setService(""); setPrice(""); setDueDate("");
+      setCompanyName(""); setEmail(""); setService(""); setPrice("");
       setDepositRequired(false); setDepositAmount(""); setDepositDueDate("");
       fetchData();
     } catch (err: any) {
@@ -151,10 +162,6 @@ const InvoiceAdmin = () => {
     return new Date(dateStr) < new Date();
   };
 
-  // Stats
-  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((s, i) => s + i.price, 0);
-  const pendingAmount = invoices.filter(i => i.status !== "paid" && i.status !== "draft").reduce((s, i) => s + i.price, 0);
-  const totalClients = new Set(invoices.map(i => i.client_id)).size;
   const paidCount = invoices.filter(i => i.status === "paid").length;
 
   // ── Login ──
@@ -164,7 +171,7 @@ const InvoiceAdmin = () => {
         <div className="border-b border-border">
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">Admin</span>
+            <span className="text-[10px] font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
         </div>
 
@@ -197,9 +204,9 @@ const InvoiceAdmin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-muted-foreground/40"
+                className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30"
               />
-              <Button type="submit" variant="outline" className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent">
+              <Button type="submit" variant="outline" className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground">
                 <Lock className="mr-2 h-3.5 w-3.5" />
                 Enter
               </Button>
@@ -210,8 +217,8 @@ const InvoiceAdmin = () => {
         {/* Branded footer */}
         <div className="border-t border-border">
           <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-            <img src={logo} alt="RDG" className="h-10 opacity-30" />
-            <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-[0.3em] text-center">
+            <img src={logo} alt="RDG" className="h-10 opacity-40" />
+            <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] text-center">
               System managed by Reed Digital Group
             </p>
           </div>
@@ -228,11 +235,11 @@ const InvoiceAdmin = () => {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">Admin</span>
+            <span className="text-[10px] font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+            className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <Plus className="h-3.5 w-3.5" />
             New Invoice
@@ -241,36 +248,6 @@ const InvoiceAdmin = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-6">
-        {/* Stats — oversized numbers */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="grid grid-cols-2 md:grid-cols-4 border-b border-border"
-        >
-          {[
-            { label: "Invoices", value: String(invoices.length).padStart(2, "0") },
-            { label: "Revenue", value: `$${totalRevenue.toLocaleString()}` },
-            { label: "Pending", value: `$${pendingAmount.toLocaleString()}` },
-            { label: "Clients", value: String(totalClients).padStart(2, "0") },
-          ].map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className={`py-10 px-1 ${i < 3 ? "md:border-r border-border" : ""} ${i < 2 ? "border-r border-border md:border-r" : ""}`}
-            >
-              <p className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight leading-none">
-                {stat.value}
-              </p>
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mt-3">
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
-
         {/* Create form */}
         <AnimatePresence>
           {showForm && (
@@ -281,34 +258,67 @@ const InvoiceAdmin = () => {
               className="overflow-hidden border-b border-border"
             >
               <div className="py-10">
-                <h2 className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mb-8">
+                <h2 className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] mb-8">
                   Create Invoice
                 </h2>
 
                 <form onSubmit={handleCreateInvoice} className="space-y-8">
                   <div className="grid gap-8 md:grid-cols-2">
-                    {[
-                      { label: "Company", value: companyName, setter: setCompanyName, placeholder: "Acme Corp", type: "text" },
-                      { label: "Email", value: email, setter: setEmail, placeholder: "client@company.com", type: "email" },
-                      { label: "Service", value: service, setter: setService, placeholder: "Website Development", type: "text" },
-                      { label: "Price", value: price, setter: setPrice, placeholder: "2500", type: "number" },
-                      { label: "Due Date", value: dueDate, setter: setDueDate, placeholder: "", type: "date" },
-                    ].map((field) => (
-                      <div key={field.label}>
-                        <label className="block text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mb-2">
-                          {field.label}
-                        </label>
-                        <Input
-                          type={field.type}
-                          value={field.value}
-                          onChange={(e) => field.setter(e.target.value)}
-                          placeholder={field.placeholder}
-                          step={field.type === "number" ? "0.01" : undefined}
-                          min={field.type === "number" ? "0" : undefined}
-                          className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0"
-                        />
-                      </div>
-                    ))}
+                    <div>
+                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                        Company
+                      </label>
+                      <Input
+                        type="text"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        placeholder="Acme Corp"
+                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                        Email
+                      </label>
+                      <Input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="client@company.com"
+                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                        Service
+                      </label>
+                      <Select value={service} onValueChange={setService}>
+                        <SelectTrigger className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus:ring-0 px-0 text-foreground">
+                          <SelectValue placeholder="Select a service" />
+                        </SelectTrigger>
+                        <SelectContent className="font-mono">
+                          {SERVICE_OPTIONS.map((opt) => (
+                            <SelectItem key={opt} value={opt} className="font-mono">
+                              {opt}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                        Price
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="2500"
+                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
                   </div>
 
                   {/* Deposit toggle */}
@@ -316,7 +326,7 @@ const InvoiceAdmin = () => {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <p className="text-xs font-mono font-medium text-foreground">Require Deposit</p>
-                        <p className="text-[10px] font-mono text-muted-foreground mt-1">Upfront payment before project begins</p>
+                        <p className="text-[10px] font-mono text-foreground/60 mt-1">Upfront payment before project begins</p>
                       </div>
                       <Switch checked={depositRequired} onCheckedChange={setDepositRequired} />
                     </div>
@@ -331,7 +341,7 @@ const InvoiceAdmin = () => {
                         >
                           <div className="grid gap-8 md:grid-cols-2 mb-6">
                             <div>
-                              <label className="block text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mb-2">
+                              <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
                                 Deposit Amount
                               </label>
                               <Input
@@ -341,28 +351,28 @@ const InvoiceAdmin = () => {
                                 value={depositAmount}
                                 onChange={(e) => setDepositAmount(e.target.value)}
                                 placeholder="500"
-                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0"
+                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
                               />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mb-2">
-                                Deposit Due
+                              <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                                Deposit Due Date
                               </label>
                               <Input
                                 type="date"
                                 value={depositDueDate}
                                 onChange={(e) => setDepositDueDate(e.target.value)}
-                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0"
+                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground"
                               />
                             </div>
                           </div>
 
                           {price && depositAmount && (
                             <div className="font-mono text-xs border-t border-dashed border-border pt-4 flex gap-8">
-                              <span className="text-muted-foreground">
+                              <span className="text-foreground/60">
                                 Deposit: <strong className="text-foreground">${parseFloat(depositAmount).toLocaleString()}</strong>
                               </span>
-                              <span className="text-muted-foreground">
+                              <span className="text-foreground/60">
                                 After completion: <strong className="text-foreground">${(parseFloat(price) - parseFloat(depositAmount)).toLocaleString()}</strong>
                               </span>
                             </div>
@@ -384,10 +394,10 @@ const InvoiceAdmin = () => {
         {/* Invoice list */}
         <div className="py-10">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
+            <h2 className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
               All Invoices
             </h2>
-            <span className="text-[10px] font-mono text-muted-foreground">
+            <span className="text-[10px] font-mono text-foreground/60">
               {paidCount}/{invoices.length} paid
             </span>
           </div>
@@ -397,12 +407,12 @@ const InvoiceAdmin = () => {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                className="h-5 w-5 border border-muted-foreground/30 border-t-foreground rounded-full"
+                className="h-5 w-5 border border-foreground/30 border-t-foreground rounded-full"
               />
             </div>
           ) : invoices.length === 0 ? (
             <div className="py-20 text-center border-t border-border">
-              <p className="text-sm font-mono text-muted-foreground">No invoices yet</p>
+              <p className="text-sm font-mono text-foreground/60">No invoices yet</p>
             </div>
           ) : (
             <div className="border-t border-border">
@@ -428,7 +438,7 @@ const InvoiceAdmin = () => {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       {/* Left: index + info */}
                       <div className="flex gap-6 items-start flex-1 min-w-0">
-                        <span className="text-3xl font-mono font-bold text-muted-foreground/20 leading-none pt-0.5 hidden md:block">
+                        <span className="text-3xl font-mono font-bold text-foreground/20 leading-none pt-0.5 hidden md:block">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         <div className="min-w-0 flex-1">
@@ -438,7 +448,7 @@ const InvoiceAdmin = () => {
                             </span>
                             <span className={`text-[10px] font-mono uppercase tracking-[0.15em] ${
                               inv.status === "paid" ? "text-emerald-500" :
-                              inv.status === "draft" ? "text-muted-foreground" :
+                              inv.status === "draft" ? "text-foreground/40" :
                               "text-primary"
                             }`}>
                               {statusMap[inv.status]}
@@ -450,18 +460,16 @@ const InvoiceAdmin = () => {
                             )}
                           </div>
 
-                          <div className="flex items-center gap-3 mt-1.5 text-xs font-mono text-muted-foreground flex-wrap">
+                          <div className="flex items-center gap-3 mt-1.5 text-xs font-mono text-foreground/60 flex-wrap">
                             <span>{inv.service}</span>
-                            <span className="text-border">—</span>
-                            <span>Due {new Date(inv.due_date).toLocaleDateString()}</span>
                           </div>
 
-                          <p className="text-[10px] font-mono text-muted-foreground/50 mt-1">
+                          <p className="text-[10px] font-mono text-foreground/40 mt-1">
                             {client?.email}
                           </p>
 
                           {inv.deposit_required && inv.deposit_amount && (
-                            <div className="flex gap-4 mt-2 text-[10px] font-mono text-muted-foreground">
+                            <div className="flex gap-4 mt-2 text-[10px] font-mono text-foreground/60">
                               <span>
                                 Deposit: ${inv.deposit_amount.toLocaleString()}
                                 {inv.deposit_paid ? " ✓" : ` · Due ${new Date(inv.deposit_due_date!).toLocaleDateString()}`}
@@ -510,8 +518,8 @@ const InvoiceAdmin = () => {
       {/* Branded footer */}
       <div className="border-t border-border mt-10">
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-          <img src={logo} alt="RDG" className="h-10 opacity-30" />
-          <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-[0.3em] text-center">
+          <img src={logo} alt="RDG" className="h-10 opacity-40" />
+          <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>

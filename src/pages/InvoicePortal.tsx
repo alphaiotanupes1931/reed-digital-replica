@@ -31,7 +31,7 @@ interface Invoice {
 const PortalSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
   return (
-    <p className="text-sm font-mono text-muted-foreground mb-12 text-center h-6">
+    <p className="text-sm font-mono text-foreground/60 mb-12 text-center h-6">
       {displayed}
       {!done && <span className="typing-cursor">|</span>}
     </p>
@@ -105,14 +105,14 @@ const InvoicePortal = () => {
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
+            <span className="text-[10px] font-mono text-foreground uppercase tracking-[0.3em]">
               Client Portal
             </span>
           </div>
           {client && (
             <button
               onClick={() => { setClient(null); setInvoices([]); setEmail(""); }}
-              className="text-[10px] font-mono text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em]"
+              className="text-[10px] font-mono text-foreground/60 hover:text-foreground transition-colors uppercase tracking-[0.2em]"
             >
               Sign out
             </button>
@@ -154,7 +154,7 @@ const InvoicePortal = () => {
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center focus-visible:ring-0 focus-visible:border-foreground placeholder:text-muted-foreground/40"
+                    className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
                     required
                   />
                 </div>
@@ -162,13 +162,13 @@ const InvoicePortal = () => {
                   type="submit"
                   disabled={loading}
                   variant="outline"
-                  className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent"
+                  className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
                 >
                   {loading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      className="h-4 w-4 border border-muted-foreground/30 border-t-foreground rounded-full"
+                      className="h-4 w-4 border border-foreground/30 border-t-foreground rounded-full"
                     />
                   ) : (
                     <>
@@ -188,7 +188,7 @@ const InvoicePortal = () => {
             >
               {/* Welcome */}
               <div className="py-10 border-b border-border">
-                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mb-2">
+                <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] mb-2">
                   Welcome back
                 </p>
                 <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight">
@@ -198,15 +198,15 @@ const InvoicePortal = () => {
 
               {invoices.length === 0 ? (
                 <div className="py-20 text-center">
-                  <p className="text-sm font-mono text-muted-foreground">No invoices available yet</p>
+                  <p className="text-sm font-mono text-foreground/60">No invoices available yet</p>
                 </div>
               ) : (
                 <div>
                   <div className="flex items-center justify-between py-6">
-                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
+                    <span className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
                       Your Invoices
                     </span>
-                    <span className="text-[10px] font-mono text-muted-foreground">
+                    <span className="text-[10px] font-mono text-foreground/60">
                       {invoices.filter(i => i.status === "paid").length}/{invoices.length} paid
                     </span>
                   </div>
@@ -239,9 +239,6 @@ const InvoicePortal = () => {
                                   {isPaid ? "PAID" : depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
                                 </span>
                               </div>
-                              <p className="text-[10px] font-mono text-muted-foreground/50 mt-1">
-                                Due {new Date(inv.due_date).toLocaleDateString()}
-                              </p>
                             </div>
                             <span className="text-2xl font-mono font-bold text-foreground tracking-tight">
                               ${inv.price.toLocaleString()}
@@ -250,7 +247,7 @@ const InvoicePortal = () => {
 
                           {/* Breakdown */}
                           {inv.deposit_required && inv.deposit_amount && (
-                            <div className="flex gap-6 text-[10px] font-mono text-muted-foreground mb-4 border-l-2 border-border pl-4 ml-0.5">
+                            <div className="flex gap-6 text-[10px] font-mono text-foreground/60 mb-4 border-l-2 border-border pl-4 ml-0.5">
                               <span>
                                 Deposit: ${inv.deposit_amount.toLocaleString()}
                                 {inv.deposit_paid && (
@@ -311,8 +308,8 @@ const InvoicePortal = () => {
       {/* Branded footer */}
       <div className="border-t border-border mt-20">
         <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-          <img src={logo} alt="RDG" className="h-10 opacity-30" />
-          <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-[0.3em] text-center">
+          <img src={logo} alt="RDG" className="h-10 opacity-40" />
+          <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>
