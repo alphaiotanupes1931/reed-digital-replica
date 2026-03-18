@@ -78,7 +78,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/invoice?payment=success`,
+      success_url: `${origin}/invoice/thank-you`,
       cancel_url: `${origin}/invoice?payment=cancelled`,
       metadata: {
         invoice_id: invoice.id,

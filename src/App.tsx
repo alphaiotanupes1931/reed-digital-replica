@@ -22,6 +22,7 @@ import Contact from "./pages/Contact";
 import CaseStudy from "./pages/CaseStudy";
 import ThankYou from "./pages/ThankYou";
 import InvoicePortal from "./pages/InvoicePortal";
+import InvoiceThankYou from "./pages/InvoiceThankYou";
 import InvoiceAdmin from "./pages/InvoiceAdmin";
 import NotFound from "./pages/NotFound";
 
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/case-study/:slug" element={<CaseStudy />} />
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/invoice" element={<InvoicePortal />} />
+            <Route path="/invoice/thank-you" element={<InvoiceThankYou />} />
             <Route path="/admin" element={<InvoiceAdmin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
