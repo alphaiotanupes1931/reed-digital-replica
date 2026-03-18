@@ -65,92 +65,22 @@ const InvoiceThankYou = () => {
           className="py-16 text-center"
         >
           <img src={logo} alt="Reed Digital Group" className="h-12 mx-auto mb-8" />
-          <h1 className="text-4xl md:text-6xl font-mono font-bold text-foreground tracking-tight mb-6">
+          <h1 className="text-4xl md:text-6xl font-mono font-bold text-foreground tracking-tight mb-4">
             <em>Thank You</em>
           </h1>
-          <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+          <div className="w-16 h-[2px] bg-primary mx-auto mb-4" />
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Heart className="w-4 h-4 text-primary fill-primary" />
+            <p className="text-sm font-mono text-muted-foreground">
+              For trusting us to bring your vision to life.
+            </p>
+          </div>
+          <p className="text-xs font-mono text-muted-foreground max-w-md mx-auto">
+            It's been an honor — your success is our success.
+          </p>
         </motion.div>
 
         {/* 1. Team Section — Special Thanks FIRST */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="border-2 border-foreground p-8 md:p-12 mb-8"
-        >
-          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
-            A Special Thanks
-          </p>
-          <h2 className="text-2xl md:text-3xl font-mono font-bold text-foreground tracking-tight mb-8">
-            Meet the Team Behind Your Project
-          </h2>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-10">
-            Every project at Reed Digital Group is powered by a team of dedicated young professionals
-            who care deeply about the work they do. We wanted to take a moment to introduce the
-            people who helped make your vision a reality.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {team.map((member, i) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 + i * 0.15 }}
-                className="border border-border p-6"
-              >
-                <div className="w-20 h-20 mb-4 overflow-hidden border-2 border-foreground">
-                  <img
-                    src={member.photo}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg font-mono font-bold text-foreground mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-xs font-mono text-primary uppercase tracking-[0.2em] mb-3">
-                  {member.title}
-                </p>
-                <p className="text-sm font-mono text-foreground leading-relaxed">
-                  {member.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* 2. Thank You Message with Heart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="border-2 border-foreground p-8 md:p-12 mb-8 relative"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <Heart className="w-6 h-6 text-primary fill-primary" />
-            <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">
-              From Our Team to You
-            </p>
-          </div>
-          <p className="text-lg md:text-xl font-mono text-foreground leading-relaxed mb-6">
-            Thank you for your payment and for trusting Reed Digital Group to bring your vision to life.
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-6">
-            It has been our sincere privilege to work alongside you. We hope that throughout this
-            journey, you have felt the care, professionalism, and dedication that we pour into every
-            project we touch. Your success is our success, and we take that responsibility to heart.
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-6">
-            From the very first conversation to the final deliverable, our goal has always been
-            simple: to treat every client the way we would want to be treated — with respect,
-            transparency, and an unwavering commitment to excellence. We hope that is exactly what
-            you experienced.
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed">
-            Thank you for making your dreams our mission. It has been an honor turning them into reality.
-          </p>
-        </motion.div>
 
       {/* Sticky Note — fixed to the side, follows scroll */}
       <motion.div
