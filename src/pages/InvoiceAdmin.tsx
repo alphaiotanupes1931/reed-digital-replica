@@ -72,8 +72,6 @@ const InvoiceAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
