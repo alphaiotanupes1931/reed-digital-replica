@@ -68,12 +68,6 @@ const pressFeatures = [
     url: "https://medium.com/@terellebony/how-i-got-into-cybersecurity-and-ai-with-no-roadmap-no-connections-and-no-blueprint-d89e731d2a8c",
     year: "2024"
   },
-  {
-    name: "MITRE Corporation",
-    logo: "https://uploads.concordia.net/2019/09/16093101/MITREW.png",
-    url: "https://www.mitre.org/news-insights/mitre-360/mitre-360-october",
-    year: "2023"
-  },
 ];
 
 const AboutPage = () => {
