@@ -97,7 +97,7 @@ const InteractiveProcessSection = () => {
 
         <div className="max-w-5xl mx-auto">
           {/* Step Selector - Horizontal */}
-          <div className="flex justify-between items-center mb-12 relative">
+          <div className="flex justify-between items-center mb-8 md:mb-12 relative overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
             {/* Connecting line */}
             <div className="absolute left-0 right-0 top-1/2 h-px bg-border -translate-y-1/2 hidden md:block" />
             
