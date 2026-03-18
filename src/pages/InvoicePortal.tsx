@@ -28,7 +28,8 @@ interface Invoice {
   created_at: string;
 }
 
-const PROCESSING_FEE_RATE = 0.035;
+const PROCESSING_FEE_RATE = 0.029;
+const PROCESSING_FEE_FLAT = 0.30;
 
 const PortalSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
@@ -65,8 +66,9 @@ const InvoiceDocument = ({
   const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
   const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
 
-  // Reverse-calculate the base price (price stored includes fee)
-  const basePrice = Math.round((invoice.price / (1 + PROCESSING_FEE_RATE)) * 100) / 100;
+  // Reverse-calculate: total = base + (base * 0.029 + 0.30)
+  // So total = base * 1.029 + 0.30, therefore base = (total - 0.30) / 1.029
+  const basePrice = Math.round(((invoice.price - PROCESSING_FEE_FLAT) / (1 + PROCESSING_FEE_RATE)) * 100) / 100;
   const feeAmount = Math.round((invoice.price - basePrice) * 100) / 100;
 
   const baseDeposit = invoice.deposit_amount
@@ -133,7 +135,7 @@ const InvoiceDocument = ({
           </span>
         </div>
         <div className="grid grid-cols-12 p-4 md:px-8 items-center">
-          <span className="col-span-8 text-sm font-mono text-foreground">Service Fee</span>
+          <span className="col-span-8 text-sm font-mono text-foreground">Infrastructure & Setup Fee</span>
           <span className="col-span-4 text-sm font-mono text-foreground text-right">
             ${feeAmount.toLocaleString()}
           </span>

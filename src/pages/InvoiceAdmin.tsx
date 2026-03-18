@@ -17,7 +17,8 @@ import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
 const ADMIN_PASSWORD = "admin123";
-const PROCESSING_FEE_RATE = 0.035; // 3.5% convenience fee
+const PROCESSING_FEE_RATE = 0.029; // 2.9%
+const PROCESSING_FEE_FLAT = 0.30; // + $0.30 per transaction
 
 const SERVICE_OPTIONS = [
   "Website Development",
@@ -57,11 +58,11 @@ const AdminSubtext = () => {
 };
 
 const calculateFee = (amount: number) => {
-  return Math.round(amount * PROCESSING_FEE_RATE * 100) / 100;
+  return Math.round((amount * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
 };
 
 const calculateTotal = (amount: number) => {
-  return amount + calculateFee(amount);
+  return Math.round((amount + calculateFee(amount)) * 100) / 100;
 };
 
 const InvoiceAdmin = () => {
@@ -368,7 +369,7 @@ const InvoiceAdmin = () => {
                       />
                       {price && (
                         <div className="mt-3 font-mono text-sm text-foreground">
-                          <span>Convenience Fee: </span>
+                          <span>Infrastructure & Setup Fee: </span>
                           <strong className="text-primary">${calculateFee(parseFloat(price)).toLocaleString()}</strong>
                           <span className="mx-3">·</span>
                           <span>Client Total: </span>
