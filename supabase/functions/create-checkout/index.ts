@@ -41,7 +41,7 @@ serve(async (req) => {
 
     // Fee calculation: 2.9% + $0.30
     const FEE_RATE = 0.029;
-    const FEE_FLAT = 0.30;
+    const FEE_FLAT = 1.30;
     const addFee = (amount: number) => Math.round((amount + amount * FEE_RATE + FEE_FLAT) * 100) / 100;
 
     // Determine amount based on deposit or full payment
