@@ -175,6 +175,22 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleSyncPayments = async () => {
+    setSyncing(true);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "sync_payments", password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      const updated = res.data?.updated || 0;
+      toast({ title: updated > 0 ? `${updated} invoice(s) marked as paid` : "All invoices up to date" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Sync error", description: err.message, variant: "destructive" });
+    }
+    setSyncing(false);
+  };
+
   const isOverdue = (dateStr: string | null) => {
     if (!dateStr) return false;
     return new Date(dateStr) < new Date();
