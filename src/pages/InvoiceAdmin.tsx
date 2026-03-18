@@ -124,7 +124,6 @@ const InvoiceAdmin = () => {
     }
 
     const basePrice = parseFloat(price);
-    const totalWithFee = calculateTotal(basePrice);
 
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
@@ -133,10 +132,10 @@ const InvoiceAdmin = () => {
           company_name: companyName,
           email: email.toLowerCase().trim(),
           service,
-          price: totalWithFee,
+          price: basePrice,
           due_date: depositRequired ? depositDueDate : new Date().toISOString().split("T")[0],
           deposit_required: depositRequired,
-          deposit_amount: depositRequired ? calculateTotal(parseFloat(depositAmount)) : null,
+          deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
           password: ADMIN_PASSWORD,
         },
