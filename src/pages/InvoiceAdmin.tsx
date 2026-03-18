@@ -609,11 +609,8 @@ const InvoiceAdmin = () => {
       </div>
 
       <div className="border-t border-border mt-20">
-        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center">
           <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] text-center">
-            System managed by Reed Digital Group
-          </p>
         </div>
       </div>
     </div>
