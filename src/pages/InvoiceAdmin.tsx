@@ -272,7 +272,11 @@ const InvoiceAdmin = () => {
 
   // ── Dashboard ──
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Faded background logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
+      </div>
       {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
