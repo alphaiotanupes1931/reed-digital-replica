@@ -22,6 +22,7 @@ import Contact from "./pages/Contact";
 import CaseStudy from "./pages/CaseStudy";
 import ThankYou from "./pages/ThankYou";
 import InvoicePortal from "./pages/InvoicePortal";
+import InvoiceThankYou from "./pages/InvoiceThankYou";
 import InvoiceAdmin from "./pages/InvoiceAdmin";
 import NotFound from "./pages/NotFound";
 
