@@ -113,7 +113,7 @@ const InteractiveProcessSection = () => {
               <motion.button
                 key={step.id}
                 onClick={() => setActiveStep(step.id)}
-                className={`relative z-10 flex flex-col items-center gap-2 p-2 md:p-4 transition-all ${
+                className={`relative z-10 flex flex-col items-center gap-1.5 md:gap-2 p-1.5 md:p-4 flex-shrink-0 transition-all ${
                   activeStep === step.id ? "scale-110" : "opacity-60 hover:opacity-100"
                 }`}
                 whileHover={{ scale: 1.05 }}
