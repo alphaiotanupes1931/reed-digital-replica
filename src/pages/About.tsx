@@ -68,12 +68,6 @@ const pressFeatures = [
     url: "https://medium.com/@terellebony/how-i-got-into-cybersecurity-and-ai-with-no-roadmap-no-connections-and-no-blueprint-d89e731d2a8c",
     year: "2024"
   },
-  {
-    name: "MITRE Corporation",
-    logo: "https://uploads.concordia.net/2019/09/16093101/MITREW.png",
-    url: "https://www.mitre.org/news-insights/mitre-360/mitre-360-october",
-    year: "2023"
-  },
 ];
 
 const AboutPage = () => {
@@ -213,9 +207,8 @@ const AboutPage = () => {
                       <p className="text-muted-foreground leading-relaxed">
                         A Computer Science graduate from Morgan State University with deep expertise 
                         in both <strong>software development</strong> and <strong>cybersecurity</strong>. 
-                        Before founding Reed Digital Group, Terell served as a System Administrator 
-                        for Prince George's County Council managing critical government infrastructure, 
-                        and as a Security Engineer at MITRE Corporation where he worked on 
+                        Before founding Reed Digital Group, Terell worked in government managing 
+                        critical infrastructure, and as a Security Engineer working on 
                         security solutions for federal systems.
                       </p>
 
@@ -227,11 +220,11 @@ const AboutPage = () => {
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
                           <Shield className="w-4 h-4" />
-                          MITRE Corporation
+                          Security Engineer
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
                           <Briefcase className="w-4 h-4" />
-                          PG County Government
+                          Government Infrastructure
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm rounded">
                           <Code className="w-4 h-4" />
