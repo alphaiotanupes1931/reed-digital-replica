@@ -199,7 +199,7 @@ const InvoiceDocument = ({
               disabled={payingId === invoice.id}
               className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
             >
-              {payingId === invoice.id ? "Processing..." : `Pay — $${remainingBalance.toLocaleString()}`}
+              {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
             </button>
           )}
         </div>
