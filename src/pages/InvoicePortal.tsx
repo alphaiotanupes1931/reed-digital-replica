@@ -353,8 +353,37 @@ const InvoicePortal = () => {
                       payingId={payingId}
                     />
                   ))}
+
+                  {/* Review & Support */}
+                  <div className="border border-border p-6 md:p-8 mt-8">
+                    <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-4">
+                      We'd love your feedback
+                    </p>
+                    <p className="text-base font-mono text-foreground mb-6">
+                      If you've enjoyed working with us, we'd really appreciate a review. It helps us grow and serve more businesses like yours.
+                    </p>
+                    <a
+                      href="https://share.google/QzA1ri46KnQyE0a4M"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border border-primary text-primary hover:bg-primary hover:text-background rounded-none transition-colors leading-[3rem] text-center"
+                    >
+                      Leave a Review
+                    </a>
+
+                    <div className="border-t border-border mt-8 pt-6">
+                      <p className="text-sm font-mono text-foreground">
+                        Need assistance? Reach out at{" "}
+                        <a
+                          href="mailto:reeddigitalgroup@gmail.com"
+                          className="text-primary hover:underline"
+                        >
+                          reeddigitalgroup@gmail.com
+                        </a>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
             </motion.div>
           )}
         </AnimatePresence>
