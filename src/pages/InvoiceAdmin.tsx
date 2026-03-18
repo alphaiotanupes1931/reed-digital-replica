@@ -261,8 +261,11 @@ const InvoiceAdmin = () => {
         <div className="border-t border-border">
           <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
             <img src={logo} alt="RDG" className="h-10 opacity-40" />
-            <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] text-center">
-              System managed by Reed Digital Group
+            <p className="text-xs font-mono text-muted-foreground text-center">
+              If you are having issues, please contact{" "}
+              <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
+              {" "}or{" "}
+              <a href="mailto:info@reeddigitalgroup.com" className="text-primary hover:underline">info@reeddigitalgroup.com</a>
             </p>
           </div>
         </div>
