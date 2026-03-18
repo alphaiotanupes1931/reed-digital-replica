@@ -213,9 +213,8 @@ const AboutPage = () => {
                       <p className="text-muted-foreground leading-relaxed">
                         A Computer Science graduate from Morgan State University with deep expertise 
                         in both <strong>software development</strong> and <strong>cybersecurity</strong>. 
-                        Before founding Reed Digital Group, Terell served as a System Administrator 
-                        for Prince George's County Council managing critical government infrastructure, 
-                        and as a Security Engineer at MITRE Corporation where he worked on 
+                        Before founding Reed Digital Group, Terell worked in government managing 
+                        critical infrastructure, and as a Security Engineer working on 
                         security solutions for federal systems.
                       </p>
 
