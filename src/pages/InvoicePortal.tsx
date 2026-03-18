@@ -135,7 +135,7 @@ const InvoiceDocument = ({
           </span>
         </div>
         <div className="grid grid-cols-12 p-4 md:px-8 items-center">
-          <span className="col-span-8 text-sm font-mono text-foreground">Service Fee</span>
+          <span className="col-span-8 text-sm font-mono text-foreground">Infrastructure & Setup Fee</span>
           <span className="col-span-4 text-sm font-mono text-foreground text-right">
             ${feeAmount.toLocaleString()}
           </span>
