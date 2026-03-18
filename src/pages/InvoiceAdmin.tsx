@@ -600,10 +600,10 @@ const InvoiceAdmin = () => {
         </div>
       </div>
 
-      <div className="border-t border-border mt-10">
+      <div className="border-t border-border mt-20">
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
           <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] text-center">
+          <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>
