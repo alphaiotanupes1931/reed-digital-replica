@@ -227,7 +227,8 @@ const InvoiceAdmin = () => {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center"
             >
-              <em>Admin</em>
+              <em>Admin</em>{" "}
+              <span className="text-lg md:text-2xl text-primary font-normal">by RDG</span>
             </motion.h1>
             <AdminSubtext />
 
