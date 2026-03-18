@@ -200,7 +200,7 @@ const InvoiceAdmin = () => {
   };
 
   const paidCount = invoices.filter(i => i.status === "paid").length;
-  const totalRevenue = invoices.reduce((sum, i) => sum + i.price, 0);
+  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((sum, i) => sum + i.price, 0);
   const pendingCount = invoices.filter(i => i.status !== "paid" && i.status !== "draft").length;
   const uniqueClients = new Set(invoices.map(i => i.client_id)).size;
 
