@@ -5,7 +5,7 @@ import logo from "@/assets/rdg-header-logo.png";
 import kimoraPhoto from "@/assets/team/kimora-taylor.jpg";
 import seydinaPhoto from "@/assets/team/seydina-salla.jpg";
 import terellPhoto from "@/assets/team/terell-reed.jpg";
-import jadenPhoto from "@/assets/team/lawrence-wright.jpg";
+import jadenPhoto from "@/assets/team/jaden-koranteng.jpg";
 
 const team = [
   {
@@ -85,7 +85,7 @@ const InvoiceThankYou = () => {
             Meet the Team Behind Your Project
           </h2>
           <p className="text-base font-mono text-foreground leading-relaxed mb-10">
-            Every project at Reed Digital Group is powered by a team of dedicated professionals
+            Every project at Reed Digital Group is powered by a team of dedicated young professionals
             who care deeply about the work they do. We wanted to take a moment to introduce the
             people who helped make your vision a reality.
           </p>
