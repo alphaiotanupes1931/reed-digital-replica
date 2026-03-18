@@ -28,6 +28,19 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    if (action === "list_invoices") {
+      const { data: invoices, error } = await supabase
+        .from("invoices")
+        .select("*, clients(*)")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ invoices }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "create_invoice") {
       const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date } = data;
 

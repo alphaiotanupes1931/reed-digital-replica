@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, CheckCircle, CreditCard } from "lucide-react";
+import { ArrowRight, CheckCircle, CreditCard, FileText } from "lucide-react";
 import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +31,148 @@ interface Invoice {
 const PortalSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
   return (
-    <p className="text-sm font-mono text-foreground/60 mb-12 text-center h-6">
+    <p className="text-lg font-mono text-foreground mb-12 text-center h-7">
       {displayed}
       {!done && <span className="typing-cursor">|</span>}
     </p>
+  );
+};
+
+const InvoiceDocument = ({
+  invoice,
+  client,
+  onPay,
+  payingId,
+}: {
+  invoice: Invoice;
+  client: Client;
+  onPay: (inv: Invoice, deposit: boolean) => void;
+  payingId: string | null;
+}) => {
+  const isPaid = invoice.status === "paid";
+  const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
+  const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
+  const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
+  const remainingBalance = invoice.deposit_required && invoice.deposit_amount
+    ? invoice.price - invoice.deposit_amount
+    : invoice.price;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="border border-border mb-8"
+    >
+      {/* Invoice header */}
+      <div className="border-b border-border p-6 md:p-8 flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <FileText className="h-5 w-5 text-primary" />
+            <span className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Invoice</span>
+          </div>
+          <p className="text-sm font-mono text-foreground mt-2">
+            {new Date(invoice.created_at).toLocaleDateString("en-US", {
+              year: "numeric", month: "long", day: "numeric",
+            })}
+          </p>
+        </div>
+        <div className={`text-sm font-mono font-bold uppercase tracking-[0.15em] ${
+          isPaid ? "text-emerald-500" : depositOverdue ? "text-destructive" : "text-primary"
+        }`}>
+          {isPaid ? "PAID" : depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
+        </div>
+      </div>
+
+      {/* Bill To */}
+      <div className="border-b border-border p-6 md:p-8 grid md:grid-cols-2 gap-6">
+        <div>
+          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">Bill To</p>
+          <p className="text-lg font-mono font-bold text-foreground">{client.company_name}</p>
+          <p className="text-sm font-mono text-foreground mt-1">{client.email}</p>
+        </div>
+        <div>
+          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">From</p>
+          <p className="text-lg font-mono font-bold text-foreground">Reed Digital Group</p>
+          <p className="text-sm font-mono text-foreground mt-1">hello@reeddigitalgroup.com</p>
+        </div>
+      </div>
+
+      {/* Line items */}
+      <div className="border-b border-border">
+        <div className="grid grid-cols-12 p-4 md:px-8 border-b border-border">
+          <span className="col-span-8 text-xs font-mono text-primary uppercase tracking-[0.2em]">Description</span>
+          <span className="col-span-4 text-xs font-mono text-primary uppercase tracking-[0.2em] text-right">Amount</span>
+        </div>
+        <div className="grid grid-cols-12 p-4 md:px-8 items-center">
+          <span className="col-span-8 text-base font-mono text-foreground">{invoice.service}</span>
+          <span className="col-span-4 text-base font-mono font-bold text-foreground text-right">
+            ${invoice.price.toLocaleString()}
+          </span>
+        </div>
+      </div>
+
+      {/* Deposit breakdown */}
+      {invoice.deposit_required && invoice.deposit_amount && (
+        <div className="border-b border-border p-4 md:px-8">
+          <div className="flex justify-between items-center py-2">
+            <span className="text-sm font-mono text-foreground flex items-center gap-2">
+              Deposit
+              {invoice.deposit_paid && <CheckCircle className="h-4 w-4 text-emerald-500" />}
+              {!invoice.deposit_paid && invoice.deposit_due_date && (
+                <span className={`text-xs ${depositOverdue ? "text-destructive font-bold" : "text-foreground"}`}>
+                  · Due {new Date(invoice.deposit_due_date).toLocaleDateString()}
+                </span>
+              )}
+            </span>
+            <span className="text-sm font-mono font-bold text-foreground">
+              ${invoice.deposit_amount.toLocaleString()}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-sm font-mono text-foreground">Balance Due After Completion</span>
+            <span className="text-sm font-mono font-bold text-foreground">
+              ${remainingBalance.toLocaleString()}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Total */}
+      <div className="p-6 md:p-8 flex justify-between items-center border-b border-border">
+        <span className="text-lg font-mono font-bold text-foreground uppercase tracking-[0.2em]">Total</span>
+        <span className="text-3xl font-mono font-bold text-foreground">${invoice.price.toLocaleString()}</span>
+      </div>
+
+      {/* Actions */}
+      {!isPaid && (
+        <div className="p-6 md:p-8 flex flex-wrap gap-3">
+          {depositPending && (
+            <button
+              onClick={() => onPay(invoice, true)}
+              disabled={payingId === invoice.id + "-dep"}
+              className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border rounded-none transition-colors flex items-center gap-3 ${
+                depositOverdue
+                  ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
+                  : "border-foreground text-foreground hover:bg-foreground hover:text-background"
+              } disabled:opacity-50`}
+            >
+              <CreditCard className="h-4 w-4" />
+              {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+            </button>
+          )}
+          {(!invoice.deposit_required || invoice.deposit_paid) && (
+            <button
+              onClick={() => onPay(invoice, false)}
+              disabled={payingId === invoice.id}
+              className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+            >
+              <CreditCard className="h-4 w-4" />
+              {payingId === invoice.id ? "Processing..." : `Pay — $${remainingBalance.toLocaleString()}`}
+            </button>
+          )}
+        </div>
+      )}
+    </motion.div>
   );
 };
 
@@ -79,11 +217,6 @@ const InvoicePortal = () => {
     setLoading(false);
   };
 
-  const isOverdue = (dateStr: string | null) => {
-    if (!dateStr) return false;
-    return new Date(dateStr) < new Date();
-  };
-
   const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
     setPayingId(invoice.id + (payDeposit ? "-dep" : ""));
     try {
@@ -105,14 +238,14 @@ const InvoicePortal = () => {
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-[10px] font-mono text-foreground uppercase tracking-[0.3em]">
+            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
               Client Portal
             </span>
           </div>
           {client && (
             <button
               onClick={() => { setClient(null); setInvoices([]); setEmail(""); }}
-              className="text-[10px] font-mono text-foreground/60 hover:text-foreground transition-colors uppercase tracking-[0.2em]"
+              className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.2em]"
             >
               Sign out
             </button>
@@ -154,7 +287,7 @@ const InvoicePortal = () => {
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
+                    className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-base focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
                     required
                   />
                 </div>
@@ -162,7 +295,7 @@ const InvoicePortal = () => {
                   type="submit"
                   disabled={loading}
                   variant="outline"
-                  className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
+                  className="w-full h-12 font-mono text-sm uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
                 >
                   {loading ? (
                     <motion.div
@@ -173,7 +306,7 @@ const InvoicePortal = () => {
                   ) : (
                     <>
                       Continue
-                      <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
                 </Button>
@@ -188,7 +321,7 @@ const InvoicePortal = () => {
             >
               {/* Welcome */}
               <div className="py-10 border-b border-border">
-                <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] mb-2">
+                <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">
                   Welcome back
                 </p>
                 <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight">
@@ -198,106 +331,28 @@ const InvoicePortal = () => {
 
               {invoices.length === 0 ? (
                 <div className="py-20 text-center">
-                  <p className="text-sm font-mono text-foreground/60">No invoices available yet</p>
+                  <p className="text-lg font-mono text-foreground">No invoices available yet</p>
                 </div>
               ) : (
                 <div>
                   <div className="flex items-center justify-between py-6">
-                    <span className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
+                    <span className="text-sm font-mono text-primary uppercase tracking-[0.3em]">
                       Your Invoices
                     </span>
-                    <span className="text-[10px] font-mono text-foreground/60">
+                    <span className="text-sm font-mono text-foreground">
                       {invoices.filter(i => i.status === "paid").length}/{invoices.length} paid
                     </span>
                   </div>
 
-                  <div className="border-t border-border">
-                    {invoices.map((inv, i) => {
-                      const depositOverdue = inv.deposit_required && !inv.deposit_paid && isOverdue(inv.deposit_due_date);
-                      const remainingBalance = inv.deposit_required && inv.deposit_amount
-                        ? inv.price - inv.deposit_amount
-                        : inv.price;
-                      const isPaid = inv.status === "paid";
-                      const depositPending = inv.deposit_required && !inv.deposit_paid && !isPaid;
-
-                      return (
-                        <motion.div
-                          key={inv.id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: i * 0.05 }}
-                          className="border-b border-border py-6"
-                        >
-                          {/* Row 1: Service + Price */}
-                          <div className="flex items-start justify-between gap-4 mb-3">
-                            <div>
-                              <div className="flex items-center gap-3">
-                                <h3 className="font-mono font-semibold text-foreground">{inv.service}</h3>
-                                <span className={`text-[10px] font-mono uppercase tracking-[0.15em] ${
-                                  isPaid ? "text-emerald-500" : depositOverdue ? "text-destructive" : "text-primary"
-                                }`}>
-                                  {isPaid ? "PAID" : depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
-                                </span>
-                              </div>
-                            </div>
-                            <span className="text-2xl font-mono font-bold text-foreground tracking-tight">
-                              ${inv.price.toLocaleString()}
-                            </span>
-                          </div>
-
-                          {/* Breakdown */}
-                          {inv.deposit_required && inv.deposit_amount && (
-                            <div className="flex gap-6 text-[10px] font-mono text-foreground/60 mb-4 border-l-2 border-border pl-4 ml-0.5">
-                              <span>
-                                Deposit: ${inv.deposit_amount.toLocaleString()}
-                                {inv.deposit_paid && (
-                                  <CheckCircle className="inline h-3 w-3 text-emerald-500 ml-1 -mt-0.5" />
-                                )}
-                                {!inv.deposit_paid && inv.deposit_due_date && (
-                                  <span className={depositOverdue ? " text-destructive" : ""}>
-                                    {" "}· Due {new Date(inv.deposit_due_date).toLocaleDateString()}
-                                  </span>
-                                )}
-                              </span>
-                              <span>
-                                After completion: <strong className="text-foreground">${remainingBalance.toLocaleString()}</strong>
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Actions */}
-                          {!isPaid && (
-                            <div className="flex gap-3">
-                              {depositPending && (
-                                <button
-                                  onClick={() => handlePay(inv, true)}
-                                  disabled={payingId === inv.id + "-dep"}
-                                  className={`h-9 px-5 text-[10px] font-mono uppercase tracking-[0.15em] border rounded-none transition-colors flex items-center gap-2 ${
-                                    depositOverdue
-                                      ? "border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                      : "border-foreground text-foreground hover:bg-foreground hover:text-background"
-                                  } disabled:opacity-50`}
-                                >
-                                  <CreditCard className="h-3 w-3" />
-                                  {payingId === inv.id + "-dep" ? "Processing..." : `Pay Deposit — $${inv.deposit_amount?.toLocaleString()}`}
-                                </button>
-                              )}
-                              {(!inv.deposit_required || inv.deposit_paid) && (
-                                <button
-                                  onClick={() => handlePay(inv, false)}
-                                  disabled={payingId === inv.id}
-                                  className="h-9 px-5 text-[10px] font-mono uppercase tracking-[0.15em] border border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2 disabled:opacity-50"
-                                >
-                                  <CreditCard className="h-3 w-3" />
-                                  {payingId === inv.id ? "Processing..." : `Pay — $${remainingBalance.toLocaleString()}`}
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+                  {invoices.map((inv, i) => (
+                    <InvoiceDocument
+                      key={inv.id}
+                      invoice={inv}
+                      client={client}
+                      onPay={handlePay}
+                      payingId={payingId}
+                    />
+                  ))}
                 </div>
               )}
             </motion.div>
@@ -309,7 +364,7 @@ const InvoicePortal = () => {
       <div className="border-t border-border mt-20">
         <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
           <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] text-center">
+          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>

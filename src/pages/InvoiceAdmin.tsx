@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Trash2, Lock } from "lucide-react";
+import { Plus, Check, Trash2, Lock, FileText, Users, DollarSign, Clock } from "lucide-react";
 import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -18,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
 const ADMIN_PASSWORD = "admin123";
+const PROCESSING_FEE_RATE = 0.035; // 3.5% convenience fee
 
 const SERVICE_OPTIONS = [
   "Website Development",
@@ -49,11 +49,19 @@ interface Invoice {
 const AdminSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter password to continue", 35, 800);
   return (
-    <p className="text-sm font-mono text-foreground/60 mb-12 text-center h-6">
+    <p className="text-lg font-mono text-foreground mb-12 text-center h-7">
       {displayed}
       {!done && <span className="typing-cursor">|</span>}
     </p>
   );
+};
+
+const calculateFee = (amount: number) => {
+  return Math.round(amount * PROCESSING_FEE_RATE * 100) / 100;
+};
+
+const calculateTotal = (amount: number) => {
+  return amount + calculateFee(amount);
 };
 
 const InvoiceAdmin = () => {
@@ -83,11 +91,15 @@ const InvoiceAdmin = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: inv } = await supabase
-      .from("invoices")
-      .select("*, clients(*)")
-      .order("created_at", { ascending: false });
-    if (inv) setInvoices(inv as unknown as Invoice[]);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "list_invoices", password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      if (res.data?.invoices) setInvoices(res.data.invoices as Invoice[]);
+    } catch (err: any) {
+      toast({ title: "Error loading invoices", description: err.message, variant: "destructive" });
+    }
     setLoading(false);
   };
 
@@ -105,6 +117,10 @@ const InvoiceAdmin = () => {
       toast({ title: "Deposit details required", variant: "destructive" });
       return;
     }
+
+    const basePrice = parseFloat(price);
+    const totalWithFee = calculateTotal(basePrice);
+
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
@@ -112,10 +128,10 @@ const InvoiceAdmin = () => {
           company_name: companyName,
           email: email.toLowerCase().trim(),
           service,
-          price: parseFloat(price),
+          price: totalWithFee,
           due_date: depositRequired ? depositDueDate : new Date().toISOString().split("T")[0],
           deposit_required: depositRequired,
-          deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
+          deposit_amount: depositRequired ? calculateTotal(parseFloat(depositAmount)) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
           password: ADMIN_PASSWORD,
         },
@@ -163,6 +179,9 @@ const InvoiceAdmin = () => {
   };
 
   const paidCount = invoices.filter(i => i.status === "paid").length;
+  const totalRevenue = invoices.reduce((sum, i) => sum + i.price, 0);
+  const pendingCount = invoices.filter(i => i.status !== "paid" && i.status !== "draft").length;
+  const uniqueClients = new Set(invoices.map(i => i.client_id)).size;
 
   // ── Login ──
   if (!isAuthenticated) {
@@ -171,7 +190,7 @@ const InvoiceAdmin = () => {
         <div className="border-b border-border">
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-[10px] font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
+            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
         </div>
 
@@ -214,11 +233,10 @@ const InvoiceAdmin = () => {
           </motion.div>
         </div>
 
-        {/* Branded footer */}
         <div className="border-t border-border">
           <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
             <img src={logo} alt="RDG" className="h-10 opacity-40" />
-            <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] text-center">
+            <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] text-center">
               System managed by Reed Digital Group
             </p>
           </div>
@@ -230,24 +248,66 @@ const InvoiceAdmin = () => {
   // ── Dashboard ──
   return (
     <div className="min-h-screen bg-background">
-      {/* Minimal top bar */}
+      {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-[10px] font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
+            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
+            className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4" />
             New Invoice
           </button>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-6">
+        {/* Welcome + Stats */}
+        <div className="py-10 border-b border-border">
+          <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">
+            Welcome back
+          </p>
+          <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight mb-8">
+            Mr. Reed
+          </h1>
+
+          {/* Stats - no containers, just clean numbers */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <FileText className="h-4 w-4 text-primary" />
+                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Invoices</span>
+              </div>
+              <p className="text-3xl font-mono font-bold text-foreground">{invoices.length}</p>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-4 w-4 text-primary" />
+                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Clients</span>
+              </div>
+              <p className="text-3xl font-mono font-bold text-foreground">{uniqueClients}</p>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="h-4 w-4 text-primary" />
+                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Revenue</span>
+              </div>
+              <p className="text-3xl font-mono font-bold text-foreground">${totalRevenue.toLocaleString()}</p>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Pending</span>
+              </div>
+              <p className="text-3xl font-mono font-bold text-foreground">{pendingCount}</p>
+            </div>
+          </div>
+        </div>
+
         {/* Create form */}
         <AnimatePresence>
           {showForm && (
@@ -258,14 +318,14 @@ const InvoiceAdmin = () => {
               className="overflow-hidden border-b border-border"
             >
               <div className="py-10">
-                <h2 className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] mb-8">
+                <h2 className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-8">
                   Create Invoice
                 </h2>
 
                 <form onSubmit={handleCreateInvoice} className="space-y-8">
                   <div className="grid gap-8 md:grid-cols-2">
                     <div>
-                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                      <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
                         Company
                       </label>
                       <Input
@@ -273,11 +333,11 @@ const InvoiceAdmin = () => {
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                         placeholder="Acme Corp"
-                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                      <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
                         Email
                       </label>
                       <Input
@@ -285,20 +345,20 @@ const InvoiceAdmin = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="client@company.com"
-                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                      <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
                         Service
                       </label>
                       <Select value={service} onValueChange={setService}>
-                        <SelectTrigger className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus:ring-0 px-0 text-foreground">
+                        <SelectTrigger className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base focus:ring-0 px-0 text-foreground">
                           <SelectValue placeholder="Select a service" />
                         </SelectTrigger>
                         <SelectContent className="font-mono">
                           {SERVICE_OPTIONS.map((opt) => (
-                            <SelectItem key={opt} value={opt} className="font-mono">
+                            <SelectItem key={opt} value={opt} className="font-mono text-base">
                               {opt}
                             </SelectItem>
                           ))}
@@ -306,7 +366,7 @@ const InvoiceAdmin = () => {
                       </Select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                      <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
                         Price
                       </label>
                       <Input
@@ -316,8 +376,17 @@ const InvoiceAdmin = () => {
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         placeholder="2500"
-                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                        className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
                       />
+                      {price && (
+                        <div className="mt-3 font-mono text-sm text-foreground">
+                          <span>Convenience Fee: </span>
+                          <strong className="text-primary">${calculateFee(parseFloat(price)).toLocaleString()}</strong>
+                          <span className="mx-3">·</span>
+                          <span>Client Total: </span>
+                          <strong className="text-foreground">${calculateTotal(parseFloat(price)).toLocaleString()}</strong>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -325,8 +394,8 @@ const InvoiceAdmin = () => {
                   <div className="border-t border-border pt-8">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <p className="text-xs font-mono font-medium text-foreground">Require Deposit</p>
-                        <p className="text-[10px] font-mono text-foreground/60 mt-1">Upfront payment before project begins</p>
+                        <p className="text-sm font-mono font-medium text-foreground">Require Deposit</p>
+                        <p className="text-xs font-mono text-foreground mt-1">Upfront payment before project begins</p>
                       </div>
                       <Switch checked={depositRequired} onCheckedChange={setDepositRequired} />
                     </div>
@@ -341,7 +410,7 @@ const InvoiceAdmin = () => {
                         >
                           <div className="grid gap-8 md:grid-cols-2 mb-6">
                             <div>
-                              <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                              <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
                                 Deposit Amount
                               </label>
                               <Input
@@ -351,29 +420,29 @@ const InvoiceAdmin = () => {
                                 value={depositAmount}
                                 onChange={(e) => setDepositAmount(e.target.value)}
                                 placeholder="500"
-                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
                               />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-mono text-foreground uppercase tracking-[0.3em] mb-2">
+                              <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
                                 Deposit Due Date
                               </label>
                               <Input
                                 type="date"
                                 value={depositDueDate}
                                 onChange={(e) => setDepositDueDate(e.target.value)}
-                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground"
+                                className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground"
                               />
                             </div>
                           </div>
 
                           {price && depositAmount && (
-                            <div className="font-mono text-xs border-t border-dashed border-border pt-4 flex gap-8">
-                              <span className="text-foreground/60">
-                                Deposit: <strong className="text-foreground">${parseFloat(depositAmount).toLocaleString()}</strong>
+                            <div className="font-mono text-sm border-t border-dashed border-border pt-4 flex gap-8">
+                              <span className="text-foreground">
+                                Deposit (w/ fee): <strong className="text-primary">${calculateTotal(parseFloat(depositAmount)).toLocaleString()}</strong>
                               </span>
-                              <span className="text-foreground/60">
-                                After completion: <strong className="text-foreground">${(parseFloat(price) - parseFloat(depositAmount)).toLocaleString()}</strong>
+                              <span className="text-foreground">
+                                After completion: <strong className="text-foreground">${calculateTotal(parseFloat(price) - parseFloat(depositAmount)).toLocaleString()}</strong>
                               </span>
                             </div>
                           )}
@@ -382,7 +451,7 @@ const InvoiceAdmin = () => {
                     </AnimatePresence>
                   </div>
 
-                  <Button type="submit" className="h-12 px-10 font-mono text-xs uppercase tracking-[0.2em] rounded-none">
+                  <Button type="submit" className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">
                     Create Draft
                   </Button>
                 </form>
@@ -394,10 +463,10 @@ const InvoiceAdmin = () => {
         {/* Invoice list */}
         <div className="py-10">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
+            <h2 className="text-sm font-mono text-primary uppercase tracking-[0.3em]">
               All Invoices
             </h2>
-            <span className="text-[10px] font-mono text-foreground/60">
+            <span className="text-sm font-mono text-foreground">
               {paidCount}/{invoices.length} paid
             </span>
           </div>
@@ -412,7 +481,7 @@ const InvoiceAdmin = () => {
             </div>
           ) : invoices.length === 0 ? (
             <div className="py-20 text-center border-t border-border">
-              <p className="text-sm font-mono text-foreground/60">No invoices yet</p>
+              <p className="text-lg font-mono text-foreground">No invoices yet</p>
             </div>
           ) : (
             <div className="border-t border-border">
@@ -433,75 +502,75 @@ const InvoiceAdmin = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: i * 0.03 }}
-                    className="border-b border-border py-5 group"
+                    className="border-b border-border py-6 group"
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      {/* Left: index + info */}
                       <div className="flex gap-6 items-start flex-1 min-w-0">
                         <span className="text-3xl font-mono font-bold text-foreground/20 leading-none pt-0.5 hidden md:block">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-3 flex-wrap">
-                            <span className="font-mono font-semibold text-foreground text-sm">
+                            <span className="font-mono font-semibold text-foreground text-lg">
                               {client?.company_name || "Unknown"}
                             </span>
-                            <span className={`text-[10px] font-mono uppercase tracking-[0.15em] ${
+                            <span className={`text-xs font-mono uppercase tracking-[0.15em] ${
                               inv.status === "paid" ? "text-emerald-500" :
-                              inv.status === "draft" ? "text-foreground/40" :
+                              inv.status === "draft" ? "text-foreground" :
                               "text-primary"
                             }`}>
                               {statusMap[inv.status]}
                             </span>
                             {depositOverdue && (
-                              <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-destructive">
+                              <span className="text-xs font-mono uppercase tracking-[0.15em] text-destructive">
                                 OVERDUE
                               </span>
                             )}
                           </div>
 
-                          <div className="flex items-center gap-3 mt-1.5 text-xs font-mono text-foreground/60 flex-wrap">
+                          <div className="flex items-center gap-3 mt-2 text-sm font-mono text-foreground flex-wrap">
                             <span>{inv.service}</span>
                           </div>
 
-                          <p className="text-[10px] font-mono text-foreground/40 mt-1">
+                          <p className="text-sm font-mono text-foreground mt-1">
                             {client?.email}
                           </p>
 
                           {inv.deposit_required && inv.deposit_amount && (
-                            <div className="flex gap-4 mt-2 text-[10px] font-mono text-foreground/60">
+                            <div className="flex gap-4 mt-3 text-sm font-mono text-foreground">
                               <span>
                                 Deposit: ${inv.deposit_amount.toLocaleString()}
                                 {inv.deposit_paid ? " ✓" : ` · Due ${new Date(inv.deposit_due_date!).toLocaleDateString()}`}
                               </span>
                               <span>
-                                Remaining: ${remainingBalance.toLocaleString()}
+                                Remaining: <strong>${remainingBalance.toLocaleString()}</strong>
                               </span>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Right: price + actions */}
                       <div className="flex items-center gap-6 shrink-0">
-                        <span className="text-2xl font-mono font-bold text-foreground tracking-tight">
+                        <span className="text-3xl font-mono font-bold text-foreground tracking-tight">
                           ${inv.price.toLocaleString()}
                         </span>
                         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           {inv.status === "draft" && (
                             <button
                               onClick={() => handleApprove(inv.id)}
-                              className="h-8 w-8 flex items-center justify-center border border-border hover:border-foreground rounded-none transition-colors"
+                              className="h-9 w-9 flex items-center justify-center border border-border hover:border-foreground rounded-none transition-colors"
+                              title="Approve"
                             >
-                              <Check className="h-3.5 w-3.5" />
+                              <Check className="h-4 w-4" />
                             </button>
                           )}
                           {inv.status !== "paid" && (
                             <button
                               onClick={() => handleDelete(inv.id)}
-                              className="h-8 w-8 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors"
+                              className="h-9 w-9 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors"
+                              title="Delete"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trash2 className="h-4 w-4" />
                             </button>
                           )}
                         </div>
@@ -515,11 +584,10 @@ const InvoiceAdmin = () => {
         </div>
       </div>
 
-      {/* Branded footer */}
       <div className="border-t border-border mt-10">
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
           <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] text-center">
+          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>
