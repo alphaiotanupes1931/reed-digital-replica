@@ -110,6 +110,60 @@ serve(async (req) => {
       });
     }
 
+    if (action === "sync_payments") {
+      const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
+      if (!STRIPE_SECRET_KEY) throw new Error("Stripe not configured");
+
+      const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
+
+      // Get all unpaid invoices that have a checkout session
+      const { data: unpaidInvoices, error: fetchErr } = await supabase
+        .from("invoices")
+        .select("*")
+        .neq("status", "paid")
+        .not("stripe_checkout_session_id", "is", null);
+
+      if (fetchErr) throw fetchErr;
+
+      let updatedCount = 0;
+
+      for (const inv of (unpaidInvoices || [])) {
+        try {
+          const session = await stripe.checkout.sessions.retrieve(inv.stripe_checkout_session_id);
+          
+          if (session.payment_status === "paid") {
+            const isDeposit = session.metadata?.is_deposit === "true";
+            
+            if (isDeposit) {
+              await supabase
+                .from("invoices")
+                .update({
+                  deposit_paid: true,
+                  stripe_payment_intent_id: session.payment_intent as string,
+                })
+                .eq("id", inv.id);
+            } else {
+              await supabase
+                .from("invoices")
+                .update({
+                  status: "paid",
+                  stripe_payment_intent_id: session.payment_intent as string,
+                })
+                .eq("id", inv.id);
+            }
+            updatedCount++;
+          }
+        } catch (e) {
+          // Skip invalid sessions
+          console.error(`Failed to check session for invoice ${inv.id}:`, e);
+        }
+      }
+
+      return new Response(JSON.stringify({ success: true, updated: updatedCount }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(JSON.stringify({ error: "Unknown action" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
