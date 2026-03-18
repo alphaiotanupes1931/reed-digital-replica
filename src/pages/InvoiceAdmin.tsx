@@ -70,6 +70,9 @@ const InvoiceAdmin = () => {
   const [password, setPassword] = useState("");
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
