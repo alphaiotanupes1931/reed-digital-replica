@@ -39,21 +39,27 @@ serve(async (req) => {
     const client = invoice.clients;
     const origin = req.headers.get("origin") || "https://lovable.dev";
 
+    // Fee calculation: 2.9% + $0.30
+    const FEE_RATE = 0.029;
+    const FEE_FLAT = 0.30;
+    const addFee = (amount: number) => Math.round((amount + amount * FEE_RATE + FEE_FLAT) * 100) / 100;
+
     // Determine amount based on deposit or full payment
-    let paymentAmount: number;
+    let baseAmount: number;
     let description: string;
 
     if (pay_deposit && invoice.deposit_required && invoice.deposit_amount) {
-      paymentAmount = invoice.deposit_amount;
+      baseAmount = invoice.deposit_amount;
       description = `Deposit for ${invoice.service}`;
     } else if (invoice.deposit_required && invoice.deposit_paid && invoice.deposit_amount) {
-      // Paying remaining balance
-      paymentAmount = invoice.price - invoice.deposit_amount;
+      baseAmount = invoice.price - invoice.deposit_amount;
       description = `Remaining balance for ${invoice.service}`;
     } else {
-      paymentAmount = invoice.price;
+      baseAmount = invoice.price;
       description = invoice.service;
     }
+
+    const paymentAmount = addFee(baseAmount);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
