@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
 import logo from "@/assets/rdg-header-logo.png";
 import kimoraPhoto from "@/assets/team/kimora-taylor.jpg";
 import seydinaPhoto from "@/assets/team/seydina-salla.jpg";
 import terellPhoto from "@/assets/team/terell-reed.jpg";
-import lawrencePhoto from "@/assets/team/lawrence-wright.jpg";
+import jadenPhoto from "@/assets/team/lawrence-wright.jpg";
 
 const team = [
   {
@@ -22,11 +23,11 @@ const team = [
     photo: kimoraPhoto,
   },
   {
-    name: "Lawrence Wright",
-    title: "Project Manager & Backend Developer",
+    name: "Jaden Koranteng",
+    title: "Backend Developer",
     description:
-      "Lawrence keeps every project on track and every system running smoothly. As both a project manager and backend developer, he bridges the gap between strategy and execution, ensuring timely delivery and technical excellence.",
-    photo: lawrencePhoto,
+      "Jaden ensures every system runs smoothly and every feature is built to last. As a backend developer, he brings technical excellence and reliability to every project he touches.",
+    photo: jadenPhoto,
   },
   {
     name: "Seydina Salla",
@@ -56,7 +57,7 @@ const InvoiceThankYou = () => {
       </div>
 
       <div className="max-w-3xl mx-auto px-6 relative z-10">
-        {/* Thank You Header */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -70,60 +71,11 @@ const InvoiceThankYou = () => {
           <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
         </motion.div>
 
-        {/* Message */}
+        {/* 1. Team Section — Special Thanks FIRST */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="border-2 border-foreground p-8 md:p-12 mb-8"
-        >
-          <p className="text-lg md:text-xl font-mono text-foreground leading-relaxed mb-6">
-            Thank you for your payment and for trusting Reed Digital Group to bring your vision to life.
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-6">
-            It has been our sincere privilege to work alongside you. We hope that throughout this
-            journey, you have felt the care, professionalism, and dedication that we pour into every
-            project we touch. Your success is our success, and we take that responsibility to heart.
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-6">
-            From the very first conversation to the final deliverable, our goal has always been
-            simple: to treat every client the way we would want to be treated — with respect,
-            transparency, and an unwavering commitment to excellence. We hope that is exactly what
-            you experienced.
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed">
-            Thank you for making your dreams our mission. It has been an honor turning them into reality.
-          </p>
-        </motion.div>
-
-        {/* Referral */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="border-2 border-foreground p-8 md:p-12 mb-8"
-        >
-          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-4">
-            Referral Program
-          </p>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-4">
-            Know someone who could benefit from what we do? We would love to help them too. As a
-            token of our gratitude, we offer a 15% referral discount to anyone you send our way.
-            Simply have them mention your name when they reach out, and we will take care of the rest.
-          </p>
-          <p className="text-sm font-mono text-foreground">
-            Reach us at{" "}
-            <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">
-              reeddigitalgroup@gmail.com
-            </a>
-          </p>
-        </motion.div>
-
-        {/* Team Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
           className="border-2 border-foreground p-8 md:p-12 mb-8"
         >
           <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
@@ -144,7 +96,7 @@ const InvoiceThankYou = () => {
                 key={member.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.9 + i * 0.15 }}
+                transition={{ duration: 0.6, delay: 0.5 + i * 0.15 }}
                 className="border border-border p-6"
               >
                 <div className="w-20 h-20 mb-4 overflow-hidden border-2 border-foreground">
@@ -168,11 +120,73 @@ const InvoiceThankYou = () => {
           </div>
         </motion.div>
 
+        {/* 2. Thank You Message with Heart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="border-2 border-foreground p-8 md:p-12 mb-8 relative"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <Heart className="w-6 h-6 text-primary fill-primary" />
+            <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">
+              From Our Team to You
+            </p>
+          </div>
+          <p className="text-lg md:text-xl font-mono text-foreground leading-relaxed mb-6">
+            Thank you for your payment and for trusting Reed Digital Group to bring your vision to life.
+          </p>
+          <p className="text-base font-mono text-foreground leading-relaxed mb-6">
+            It has been our sincere privilege to work alongside you. We hope that throughout this
+            journey, you have felt the care, professionalism, and dedication that we pour into every
+            project we touch. Your success is our success, and we take that responsibility to heart.
+          </p>
+          <p className="text-base font-mono text-foreground leading-relaxed mb-6">
+            From the very first conversation to the final deliverable, our goal has always been
+            simple: to treat every client the way we would want to be treated — with respect,
+            transparency, and an unwavering commitment to excellence. We hope that is exactly what
+            you experienced.
+          </p>
+          <p className="text-base font-mono text-foreground leading-relaxed">
+            Thank you for making your dreams our mission. It has been an honor turning them into reality.
+          </p>
+        </motion.div>
+
+        {/* 3. Referral Sticky Note */}
+        <motion.div
+          initial={{ opacity: 0, rotate: -2, y: 20 }}
+          animate={{ opacity: 1, rotate: -1.5, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+          className="relative mb-8 mx-auto max-w-md"
+        >
+          <div
+            className="bg-[hsl(45,80%,75%)] p-6 shadow-[4px_4px_12px_rgba(0,0,0,0.15)] relative"
+            style={{ transform: "rotate(-1deg)" }}
+          >
+            {/* Tape effect */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-[hsl(45,20%,90%)] opacity-60" />
+            <p className="text-xs font-mono text-[hsl(30,20%,25%)] uppercase tracking-[0.2em] mb-3 font-bold">
+              📌 Referral Bonus
+            </p>
+            <p className="text-sm font-mono text-[hsl(30,20%,20%)] leading-relaxed mb-3">
+              Know someone who could benefit from what we do? Refer them to us and we'll give you{" "}
+              <span className="font-bold underline">15% of the project total</span> as a referral
+              bonus. Just have them mention your name when they reach out!
+            </p>
+            <p className="text-xs font-mono text-[hsl(30,20%,30%)]">
+              📧{" "}
+              <a href="mailto:reeddigitalgroup@gmail.com" className="underline">
+                reeddigitalgroup@gmail.com
+              </a>
+            </p>
+          </div>
+        </motion.div>
+
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
           className="py-12 text-center"
         >
           <Link
