@@ -120,7 +120,7 @@ const InteractiveProcessSection = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <motion.div 
-                  className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 transition-all ${
+                  className={`w-11 h-11 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 transition-all ${
                     activeStep === step.id 
                       ? "border-brand bg-brand text-brand-foreground" 
                       : activeStep > step.id

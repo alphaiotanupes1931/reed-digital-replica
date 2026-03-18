@@ -49,16 +49,16 @@ const ServicesSection = () => {
               transition={{ delay: index * 0.1 }}
               className="group"
             >
-              <div className="flex justify-between items-baseline py-5 border-b border-border hover:border-primary transition-colors duration-300">
-                <div className="flex items-baseline gap-4">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-baseline py-4 md:py-5 border-b border-border hover:border-primary transition-colors duration-300">
+                <div className="flex items-baseline gap-3 md:gap-4">
                   <span className="text-xs text-muted-foreground font-mono">
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <span className="font-medium text-lg group-hover:text-primary transition-colors">
+                  <span className="font-medium text-base md:text-lg group-hover:text-primary transition-colors">
                     {service.title}
                   </span>
                 </div>
-                <span className="text-sm text-muted-foreground hidden md:block group-hover:text-foreground transition-colors">
+                <span className="text-xs md:text-sm text-muted-foreground mt-1 md:mt-0 pl-7 md:pl-0 group-hover:text-foreground transition-colors">
                   {service.desc}
                 </span>
               </div>
