@@ -68,7 +68,7 @@ serve(async (req) => {
         service,
         price,
         due_date,
-        status: "draft",
+        status: "approved",
         deposit_required: deposit_required || false,
         deposit_amount: deposit_amount || null,
         deposit_due_date: deposit_due_date || null,
