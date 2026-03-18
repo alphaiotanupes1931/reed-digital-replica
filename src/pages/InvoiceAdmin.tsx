@@ -440,7 +440,7 @@ const InvoiceAdmin = () => {
                   </div>
 
                   <Button type="submit" className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">
-                    Create Draft
+                    Send
                   </Button>
                 </form>
               </div>
