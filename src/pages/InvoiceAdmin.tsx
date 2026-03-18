@@ -200,7 +200,7 @@ const InvoiceAdmin = () => {
   };
 
   const paidCount = invoices.filter(i => i.status === "paid").length;
-  const totalRevenue = invoices.reduce((sum, i) => sum + i.price, 0);
+  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((sum, i) => sum + i.price, 0);
   const pendingCount = invoices.filter(i => i.status !== "paid" && i.status !== "draft").length;
   const uniqueClients = new Set(invoices.map(i => i.client_id)).size;
 
@@ -600,10 +600,10 @@ const InvoiceAdmin = () => {
         </div>
       </div>
 
-      <div className="border-t border-border mt-10">
+      <div className="border-t border-border mt-20">
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
           <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] text-center">
+          <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] text-center">
             System managed by Reed Digital Group
           </p>
         </div>
