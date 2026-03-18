@@ -106,7 +106,10 @@ const InvoiceAdmin = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) fetchData();
+    if (isAuthenticated) {
+      // Sync payments from Stripe then load data
+      handleSyncPayments().then(() => fetchData());
+    }
   }, [isAuthenticated]);
 
   const handleCreateInvoice = async (e: React.FormEvent) => {
