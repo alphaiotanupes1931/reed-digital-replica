@@ -206,7 +206,11 @@ const InvoiceAdmin = () => {
   // ── Login ──
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Faded background logo */}
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+          <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
+        </div>
         <div className="border-b border-border">
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
