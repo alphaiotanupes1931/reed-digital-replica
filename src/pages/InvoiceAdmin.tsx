@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Trash2, Lock, FileText, Users, DollarSign, Clock } from "lucide-react";
+import { Plus, Check, Trash2, Lock } from "lucide-react";
 import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -275,35 +275,23 @@ const InvoiceAdmin = () => {
             Mr. Reed
           </h1>
 
-          {/* Stats - no containers, just clean numbers */}
+          {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <FileText className="h-4 w-4 text-primary" />
-                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Invoices</span>
-              </div>
-              <p className="text-3xl font-mono font-bold text-foreground">{invoices.length}</p>
+              <span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Invoices</span>
+              <p className="text-3xl font-mono font-bold text-foreground mt-1">{invoices.length}</p>
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="h-4 w-4 text-primary" />
-                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Clients</span>
-              </div>
-              <p className="text-3xl font-mono font-bold text-foreground">{uniqueClients}</p>
+              <span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Clients</span>
+              <p className="text-3xl font-mono font-bold text-foreground mt-1">{uniqueClients}</p>
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-primary" />
-                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Revenue</span>
-              </div>
-              <p className="text-3xl font-mono font-bold text-foreground">${totalRevenue.toLocaleString()}</p>
+              <span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Revenue</span>
+              <p className="text-3xl font-mono font-bold text-foreground mt-1">${totalRevenue.toLocaleString()}</p>
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-4 w-4 text-primary" />
-                <span className="text-sm font-mono text-foreground uppercase tracking-[0.2em]">Pending</span>
-              </div>
-              <p className="text-3xl font-mono font-bold text-foreground">{pendingCount}</p>
+              <span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Pending</span>
+              <p className="text-3xl font-mono font-bold text-foreground mt-1">{pendingCount}</p>
             </div>
           </div>
         </div>
@@ -452,7 +440,7 @@ const InvoiceAdmin = () => {
                   </div>
 
                   <Button type="submit" className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">
-                    Create Draft
+                    Send
                   </Button>
                 </form>
               </div>
