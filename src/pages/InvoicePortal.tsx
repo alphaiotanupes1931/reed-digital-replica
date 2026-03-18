@@ -165,7 +165,7 @@ const InvoiceDocument = ({
           <div className="flex justify-between items-center py-2">
             <span className="text-sm font-mono text-foreground">Balance Due After Completion</span>
             <span className="text-sm font-mono font-bold text-foreground">
-              ${remainingBalance.toLocaleString()}
+              ${remainingTotal.toLocaleString()}
             </span>
           </div>
         </div>
