@@ -369,7 +369,7 @@ const InvoiceAdmin = () => {
                       />
                       {price && (
                         <div className="mt-3 font-mono text-sm text-foreground">
-                          <span>Convenience Fee: </span>
+                          <span>Infrastructure & Setup Fee: </span>
                           <strong className="text-primary">${calculateFee(parseFloat(price)).toLocaleString()}</strong>
                           <span className="mx-3">·</span>
                           <span>Client Total: </span>
