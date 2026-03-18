@@ -264,7 +264,11 @@ const InvoicePortal = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Faded background logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
+      </div>
       {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -302,7 +306,8 @@ const InvoicePortal = () => {
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center"
               >
-                <em>Invoices</em>
+                <em>Invoices</em>{" "}
+                <span className="text-lg md:text-2xl text-primary font-normal">by RDG</span>
               </motion.h1>
               <PortalSubtext />
 
@@ -425,11 +430,8 @@ const InvoicePortal = () => {
 
       {/* Branded footer */}
       <div className="border-t border-border mt-20">
-        <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
+        <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center">
           <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] text-center">
-            System managed by Reed Digital Group
-          </p>
         </div>
       </div>
     </div>
