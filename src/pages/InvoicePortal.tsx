@@ -66,12 +66,11 @@ const InvoiceDocument = ({
   const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
   const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
 
-  // Reverse-calculate base from stored total: total = base * 1.029 + 0.30
-  const basePrice = Math.round(((invoice.price - PROCESSING_FEE_FLAT) / (1 + PROCESSING_FEE_RATE)) * 100) / 100;
-  const feeAmount = Math.round((invoice.price - basePrice) * 100) / 100;
-
-  // The total the client pays is invoice.price (base + fee already included)
-  const totalPrice = invoice.price;
+  // The stored price IS the base service price
+  // Fee is calculated on top for display
+  const basePrice = invoice.price;
+  const feeAmount = Math.round((basePrice * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const totalPrice = Math.round((basePrice + feeAmount) * 100) / 100;
 
   const baseDeposit = invoice.deposit_amount
     ? Math.round((invoice.deposit_amount / (1 + PROCESSING_FEE_RATE)) * 100) / 100
