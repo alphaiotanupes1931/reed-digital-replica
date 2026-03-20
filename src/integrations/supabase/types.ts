@@ -35,6 +35,57 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          note_date: string
+          note_type: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          note_date?: string
+          note_type?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          note_date?: string
+          note_type?: string
+        }
+        Relationships: []
+      }
+      goals: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           client_id: string
