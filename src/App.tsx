@@ -24,6 +24,11 @@ import ThankYou from "./pages/ThankYou";
 import InvoicePortal from "./pages/InvoicePortal";
 import InvoiceThankYou from "./pages/InvoiceThankYou";
 import InvoiceAdmin from "./pages/InvoiceAdmin";
+import HomeOfficeLogin from "./pages/HomeOfficeLogin";
+import HomeOffice from "./pages/HomeOffice";
+import WorkAssistant from "./pages/WorkAssistant";
+import ROITracker from "./pages/ROITracker";
+import HomeOfficeHelp from "./pages/HomeOfficeHelp";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,6 +61,11 @@ const App = () => (
             <Route path="/invoice" element={<InvoicePortal />} />
             <Route path="/invoice/thank-you" element={<InvoiceThankYou />} />
             <Route path="/admin" element={<InvoiceAdmin />} />
+            <Route path="/home-office/login" element={<HomeOfficeLogin />} />
+            <Route path="/home-office" element={<HomeOffice />} />
+            <Route path="/home-office/work-assistant" element={<WorkAssistant />} />
+            <Route path="/home-office/roi-tracker" element={<ROITracker />} />
+            <Route path="/home-office/help" element={<HomeOfficeHelp />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
