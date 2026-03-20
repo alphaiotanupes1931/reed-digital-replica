@@ -165,7 +165,7 @@ const Header = () => {
                   to={item.href!}
                   className={`nav-link ${
                     location.pathname === item.href ? "text-foreground" : ""
-                  } ${item.label === "Client Portal" ? "font-bold text-primary" : ""}`}
+                  }`}
                 >
                   {item.label}
                 </Link>
