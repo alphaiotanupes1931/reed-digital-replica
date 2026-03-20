@@ -9,6 +9,7 @@ import TiltCard from "@/components/TiltCard";
 import PageTransition from "@/components/PageTransition";
 import PortfolioFilter from "@/components/PortfolioFilter";
 import PortfolioSkeleton from "@/components/PortfolioSkeleton";
+import jessicaPreview from "@/assets/jessica-showell-preview.jpg";
 // Website projects with live iframe previews
 const websiteProjects = [
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
