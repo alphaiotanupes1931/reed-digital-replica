@@ -1,1 +1,4 @@
 project_id = "lbcbrcsigtkjddsqnghw"
+
+[functions.home-office-auth]
+verify_jwt = false

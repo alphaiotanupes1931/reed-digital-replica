@@ -35,7 +35,13 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Government", href: "/government" },
-  { label: "Client Portal", href: "/invoice" },
+  {
+    label: "Tools",
+    children: [
+      { label: "Home Office", href: "/home-office/login", desc: "Internal workspace" },
+      { label: "Client Portal", href: "/invoice", desc: "View & pay invoices" },
+    ],
+  },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -159,7 +165,7 @@ const Header = () => {
                   to={item.href!}
                   className={`nav-link ${
                     location.pathname === item.href ? "text-foreground" : ""
-                  } ${item.label === "Client Portal" ? "font-bold text-primary" : ""}`}
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -244,12 +250,10 @@ const Header = () => {
                         key={item.label}
                         to={item.href!}
                         onClick={() => setMobileOpen(false)}
-                        className={`block px-5 py-3 text-sm transition-colors ${
-                          item.label === "Client Portal" ? "font-bold text-primary" : "font-medium"
-                        } ${
+                        className={`block px-5 py-3 text-sm font-medium transition-colors ${
                           location.pathname === item.href
                             ? "text-primary bg-primary/5"
-                            : item.label === "Client Portal" ? "" : "hover:bg-secondary"
+                            : "hover:bg-secondary"
                         }`}
                       >
                         {item.label}
