@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,8 +29,52 @@ interface Goal {
   created_at: string;
 }
 
-const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary"] as const;
+const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary", "Monthly Summary"] as const;
 type Tab = (typeof tabs)[number];
+
+const getWeekRange = (refDate: Date) => {
+  const d = new Date(refDate);
+  const dayOfWeek = d.getDay();
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - ((dayOfWeek + 6) % 7));
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  return {
+    start: monday.toISOString().split("T")[0],
+    end: sunday.toISOString().split("T")[0],
+    label: `${monday.toLocaleDateString("en-US", { month: "short", day: "numeric" })} — ${sunday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
+  };
+};
+
+const getMonthRange = (year: number, month: number) => {
+  const start = new Date(year, month, 1);
+  const end = new Date(year, month + 1, 0);
+  return {
+    start: start.toISOString().split("T")[0],
+    end: end.toISOString().split("T")[0],
+    label: start.toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+  };
+};
+
+const formatNotesAsSummary = (notes: Note[], title: string) => {
+  const byDate = notes.reduce<Record<string, Note[]>>((acc, n) => {
+    (acc[n.note_date] = acc[n.note_date] || []).push(n);
+    return acc;
+  }, {});
+  const lines = Object.entries(byDate)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, dayNotes]) => {
+      const dayLabel = new Date(date + "T12:00:00").toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+      });
+      const items = dayNotes.map((n) => `  - ${n.content}`).join("\n");
+      return `${dayLabel}\n${items}`;
+    })
+    .join("\n\n");
+  return `${title}\n\n${lines}`;
+};
 
 const WorkAssistant = () => {
   const navigate = useNavigate();
@@ -53,7 +97,41 @@ const WorkAssistant = () => {
   const [newGoalTitle, setNewGoalTitle] = useState("");
 
   // Weekly
+  const [weekOffset, setWeekOffset] = useState(0);
   const [weeklyNotes, setWeeklyNotes] = useState<Note[]>([]);
+
+  // Monthly
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() };
+  });
+  const [monthlyNotes, setMonthlyNotes] = useState<Note[]>([]);
+
+  const currentWeek = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + weekOffset * 7);
+    return getWeekRange(d);
+  }, [weekOffset]);
+
+  const currentMonth = useMemo(
+    () => getMonthRange(selectedMonth.year, selectedMonth.month),
+    [selectedMonth]
+  );
+
+  // Generate month options (current month + 11 months back)
+  const monthOptions = useMemo(() => {
+    const opts = [];
+    const now = new Date();
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      opts.push({
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        label: d.toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+      });
+    }
+    return opts;
+  }, []);
 
   useEffect(() => {
     if (!token) navigate("/home-office/login");
@@ -99,22 +177,28 @@ const WorkAssistant = () => {
   }, [api]);
 
   const fetchWeekly = useCallback(async () => {
-    const d = new Date();
-    const dayOfWeek = d.getDay();
-    const monday = new Date(d);
-    monday.setDate(d.getDate() - ((dayOfWeek + 6) % 7));
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
     try {
       const res = await api("get_notes_range", {
-        start_date: monday.toISOString().split("T")[0],
-        end_date: sunday.toISOString().split("T")[0],
+        start_date: currentWeek.start,
+        end_date: currentWeek.end,
       });
       setWeeklyNotes(res.notes || []);
     } catch (e: any) {
       console.error(e);
     }
-  }, [api]);
+  }, [api, currentWeek]);
+
+  const fetchMonthly = useCallback(async () => {
+    try {
+      const res = await api("get_notes_range", {
+        start_date: currentMonth.start,
+        end_date: currentMonth.end,
+      });
+      setMonthlyNotes(res.notes || []);
+    } catch (e: any) {
+      console.error(e);
+    }
+  }, [api, currentMonth]);
 
   useEffect(() => {
     if (!token) return;
@@ -125,7 +209,8 @@ const WorkAssistant = () => {
   useEffect(() => {
     if (activeTab === "History") fetchHistoryDates();
     if (activeTab === "Weekly Summary") fetchWeekly();
-  }, [activeTab, fetchHistoryDates, fetchWeekly]);
+    if (activeTab === "Monthly Summary") fetchMonthly();
+  }, [activeTab, fetchHistoryDates, fetchWeekly, fetchMonthly]);
 
   useEffect(() => {
     if (selectedDate) {
@@ -156,13 +241,7 @@ const WorkAssistant = () => {
     }
   };
 
-  const copyAll = () => {
-    const text = notes.map((n) => `[${new Date(n.created_at).toLocaleTimeString()}] ${n.content}`).join("\n");
-    navigator.clipboard.writeText(text);
-    toast({ title: "Copied to clipboard" });
-  };
-
-  const generateSummary = () => {
+  const copySummary = () => {
     const text = notes.map((n) => `- ${n.content}`).join("\n");
     const summary = `Daily Notes — ${today}\n\n${text}`;
     navigator.clipboard.writeText(summary);
@@ -173,6 +252,18 @@ const WorkAssistant = () => {
     const notesText = notes.map((n) => `- ${n.content}`).join("\n");
     navigator.clipboard.writeText(`${STANDUP_PROMPT}\n\nNotes:\n${notesText}`);
     toast({ title: "Standup prompt copied" });
+  };
+
+  const copyWeeklySummary = () => {
+    const text = formatNotesAsSummary(weeklyNotes, `Weekly Summary — ${currentWeek.label}`);
+    navigator.clipboard.writeText(text);
+    toast({ title: "Weekly summary copied" });
+  };
+
+  const copyMonthlySummary = () => {
+    const text = formatNotesAsSummary(monthlyNotes, `Monthly Summary — ${currentMonth.label}`);
+    navigator.clipboard.writeText(text);
+    toast({ title: "Monthly summary copied" });
   };
 
   const addGoal = async () => {
@@ -206,11 +297,33 @@ const WorkAssistant = () => {
 
   const formatTime = (ts: string) => new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-  // Group weekly notes by date
-  const weeklyByDate = weeklyNotes.reduce<Record<string, Note[]>>((acc, n) => {
-    (acc[n.note_date] = acc[n.note_date] || []).push(n);
-    return acc;
-  }, {});
+  const groupByDate = (notesList: Note[]) =>
+    notesList.reduce<Record<string, Note[]>>((acc, n) => {
+      (acc[n.note_date] = acc[n.note_date] || []).push(n);
+      return acc;
+    }, {});
+
+  const weeklyByDate = groupByDate(weeklyNotes);
+  const monthlyByDate = groupByDate(monthlyNotes);
+
+  const renderGroupedNotes = (grouped: Record<string, Note[]>) =>
+    Object.entries(grouped)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, dayNotes]) => (
+        <div key={date}>
+          <h3 className="text-xs uppercase tracking-widest font-bold mb-3 text-brand">
+            {new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
+          </h3>
+          <div className="space-y-2">
+            {dayNotes.map((n) => (
+              <div key={n.id} className="border-l-2 border-brand/30 pl-4 py-1">
+                <span className="text-xs text-muted-foreground">{formatTime(n.created_at)}</span>
+                <p className="text-sm">{n.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ));
 
   return (
     <div className="min-h-screen bg-background font-mono relative overflow-hidden">
@@ -246,7 +359,6 @@ const WorkAssistant = () => {
           {/* Daily Notes */}
           {activeTab === "Daily Notes" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-              {/* Input */}
               <div className="flex gap-3">
                 <input
                   value={newNote}
@@ -264,17 +376,16 @@ const WorkAssistant = () => {
                 </button>
               </div>
 
-              {/* Action buttons */}
               <div className="flex flex-wrap gap-3">
-                <button onClick={copyAll} className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors">
-                  Copy All
-                </button>
-                <button onClick={generateSummary} className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors">
-                  Generate Summary
+                <button
+                  onClick={copySummary}
+                  disabled={notes.length === 0}
+                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Copy Summary
                 </button>
               </div>
 
-              {/* Notes list */}
               <div className="space-y-3">
                 {notes.map((note) => (
                   <div key={note.id} className="border-2 border-foreground/20 p-4 flex justify-between items-start gap-4">
@@ -290,7 +401,6 @@ const WorkAssistant = () => {
                 {notes.length === 0 && <p className="text-sm text-muted-foreground">No notes yet today.</p>}
               </div>
 
-              {/* Standup Prompt */}
               <div className="border-2 border-brand/30 p-6 mt-8">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-xs uppercase tracking-widest font-bold">Standup Prompt for Claude</h3>
@@ -385,23 +495,73 @@ const WorkAssistant = () => {
 
           {/* Weekly Summary */}
           {activeTab === "Weekly Summary" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              {Object.keys(weeklyByDate).length === 0 && <p className="text-sm text-muted-foreground">No notes this week.</p>}
-              {Object.entries(weeklyByDate).map(([date, dayNotes]) => (
-                <div key={date}>
-                  <h3 className="text-xs uppercase tracking-widest font-bold mb-3 text-brand">
-                    {new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
-                  </h3>
-                  <div className="space-y-2">
-                    {dayNotes.map((n) => (
-                      <div key={n.id} className="border-l-2 border-brand/30 pl-4 py-1">
-                        <span className="text-xs text-muted-foreground">{formatTime(n.created_at)}</span>
-                        <p className="text-sm">{n.content}</p>
-                      </div>
-                    ))}
-                  </div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setWeekOffset((o) => o - 1)}
+                    className="border-2 border-foreground px-3 py-2 text-xs hover:bg-foreground hover:text-background transition-colors"
+                  >
+                    ←
+                  </button>
+                  <span className="text-sm font-bold">{currentWeek.label}</span>
+                  <button
+                    onClick={() => setWeekOffset((o) => Math.min(o + 1, 0))}
+                    disabled={weekOffset >= 0}
+                    className="border-2 border-foreground px-3 py-2 text-xs hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    →
+                  </button>
                 </div>
-              ))}
+                <button
+                  onClick={copyWeeklySummary}
+                  disabled={weeklyNotes.length === 0}
+                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Copy Summary
+                </button>
+              </div>
+              <div className="space-y-8">
+                {Object.keys(weeklyByDate).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No notes for this week.</p>
+                )}
+                {renderGroupedNotes(weeklyByDate)}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Monthly Summary */}
+          {activeTab === "Monthly Summary" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <select
+                  value={`${selectedMonth.year}-${selectedMonth.month}`}
+                  onChange={(e) => {
+                    const [y, m] = e.target.value.split("-").map(Number);
+                    setSelectedMonth({ year: y, month: m });
+                  }}
+                  className="border-2 border-foreground bg-background px-4 py-2 font-mono text-sm focus:outline-none focus:border-brand"
+                >
+                  {monthOptions.map((opt) => (
+                    <option key={`${opt.year}-${opt.month}`} value={`${opt.year}-${opt.month}`}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={copyMonthlySummary}
+                  disabled={monthlyNotes.length === 0}
+                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Copy Summary
+                </button>
+              </div>
+              <div className="space-y-8">
+                {Object.keys(monthlyByDate).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No notes for {currentMonth.label}.</p>
+                )}
+                {renderGroupedNotes(monthlyByDate)}
+              </div>
             </motion.div>
           )}
         </div>
