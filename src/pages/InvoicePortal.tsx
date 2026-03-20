@@ -193,25 +193,31 @@ const InvoiceDocument = ({
       </div>
 
       {/* Deliverables section for paid invoices */}
-      {isPaid && invoice.deliverables && invoice.deliverables.length > 0 && (
+      {isPaid && (
         <div className="border-t-2 border-foreground p-6 md:p-8">
           <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-4">
             Project Deliverables
           </p>
-          <div className="space-y-3">
-            {invoice.deliverables.map((d, i) => (
-              <a
-                key={i}
-                href={d.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm font-mono text-foreground hover:text-primary transition-colors group"
-              >
-                <span className="w-6 h-6 border border-foreground group-hover:border-primary flex items-center justify-center text-xs">↗</span>
-                {d.label}
-              </a>
-            ))}
-          </div>
+          {invoice.deliverables && invoice.deliverables.length > 0 ? (
+            <div className="space-y-3">
+              {invoice.deliverables.map((d, i) => (
+                <a
+                  key={i}
+                  href={d.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-sm font-mono text-foreground hover:text-primary transition-colors group"
+                >
+                  <span className="w-6 h-6 border border-foreground group-hover:border-primary flex items-center justify-center text-xs">↗</span>
+                  {d.label}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm font-mono text-muted-foreground">
+              Your project deliverables (source code, documentation, assets, etc.) will appear here once they are ready.
+            </p>
+          )}
         </div>
       )}
 
