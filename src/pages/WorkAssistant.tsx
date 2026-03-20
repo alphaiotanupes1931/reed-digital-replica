@@ -335,8 +335,10 @@ const WorkAssistant = () => {
       <main className="pt-32 pb-20 relative z-10">
         <div className="container max-w-5xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Work Assistant</h1>
-            <p className="text-sm text-brand italic mt-1">by RDG</p>
+            <Link to="/home-office" className="inline-block">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight hover:text-brand transition-colors">Work Assistant</h1>
+              <p className="text-sm text-brand italic mt-1">by RDG</p>
+            </Link>
           </motion.div>
 
           {/* Tabs */}
