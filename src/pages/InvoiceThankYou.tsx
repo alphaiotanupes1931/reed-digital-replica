@@ -75,9 +75,22 @@ const InvoiceThankYou = () => {
               For trusting us to bring your vision to life.
             </p>
           </div>
-          <p className="text-xs font-mono text-muted-foreground max-w-md mx-auto">
+          <p className="text-xs font-mono text-muted-foreground max-w-md mx-auto mb-6">
             It's been an honor — your success is our success.
           </p>
+          <div className="border-2 border-primary/30 p-6 max-w-lg mx-auto text-left">
+            <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
+              What Happens Next
+            </p>
+            <p className="text-sm font-mono text-foreground leading-relaxed">
+              All of your property — including source code, documentation, design assets, and any other tools
+              or tech stack used for this project — will be delivered to you within the next week.
+              You'll receive everything via the links section on your invoice portal.
+            </p>
+            <p className="text-sm font-mono text-foreground leading-relaxed mt-3">
+              Thank you for choosing Reed Digital Group. We're honored to have been part of your journey.
+            </p>
+          </div>
         </motion.div>
 
         {/* Team Section */}

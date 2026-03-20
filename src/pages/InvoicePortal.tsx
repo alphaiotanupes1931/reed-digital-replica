@@ -15,6 +15,11 @@ interface Client {
   email: string;
 }
 
+interface Deliverable {
+  label: string;
+  url: string;
+}
+
 interface Invoice {
   id: string;
   service: string;
@@ -27,6 +32,7 @@ interface Invoice {
   deposit_paid: boolean;
   created_at: string;
   message: string | null;
+  deliverables: Deliverable[] | null;
 }
 
 const PROCESSING_FEE_RATE = 0.029;
@@ -105,11 +111,19 @@ const InvoiceDocument = ({
             </p>
           </div>
         </div>
-        <div className={`text-sm font-mono font-bold uppercase tracking-[0.15em] ${
-          isPaid ? "text-emerald-500" : depositOverdue ? "text-destructive" : "text-foreground"
-        }`}>
-          {isPaid ? "PAID" : depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
-        </div>
+        {isPaid ? (
+          <div className="border-4 border-red-600 rounded-sm px-4 py-1 transform rotate-[-8deg]">
+            <span className="text-2xl font-mono font-black uppercase tracking-[0.2em] text-red-600">
+              PAID
+            </span>
+          </div>
+        ) : (
+          <div className={`text-sm font-mono font-bold uppercase tracking-[0.15em] ${
+            depositOverdue ? "text-destructive" : "text-foreground"
+          }`}>
+            {depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
+          </div>
+        )}
       </div>
 
       {/* Bill To / From */}
@@ -177,6 +191,29 @@ const InvoiceDocument = ({
         <span className="text-lg font-mono font-bold text-foreground uppercase tracking-[0.2em]">Total</span>
         <span className="text-3xl font-mono font-bold text-foreground">${totalPrice.toLocaleString()}</span>
       </div>
+
+      {/* Deliverables section for paid invoices */}
+      {isPaid && invoice.deliverables && invoice.deliverables.length > 0 && (
+        <div className="border-t-2 border-foreground p-6 md:p-8">
+          <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-4">
+            Project Deliverables
+          </p>
+          <div className="space-y-3">
+            {invoice.deliverables.map((d, i) => (
+              <a
+                key={i}
+                href={d.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm font-mono text-foreground hover:text-primary transition-colors group"
+              >
+                <span className="w-6 h-6 border border-foreground group-hover:border-primary flex items-center justify-center text-xs">↗</span>
+                {d.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       {!isPaid && (
@@ -246,7 +283,7 @@ const InvoicePortal = () => {
       .in("status", ["approved", "sent", "paid"])
       .order("created_at", { ascending: false });
 
-    setInvoices((invData as Invoice[]) || []);
+    setInvoices((invData as unknown as Invoice[]) || []);
     setLoading(false);
   };
 

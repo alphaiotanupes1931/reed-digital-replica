@@ -33,6 +33,11 @@ interface Client {
   created_at: string;
 }
 
+interface Deliverable {
+  label: string;
+  url: string;
+}
+
 interface Invoice {
   id: string;
   client_id: string;
@@ -46,6 +51,7 @@ interface Invoice {
   deposit_paid: boolean;
   created_at: string;
   message: string | null;
+  deliverables: Deliverable[] | null;
   clients?: Client;
 }
 
@@ -83,7 +89,9 @@ const InvoiceAdmin = () => {
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
   const [message, setMessage] = useState("");
-
+  const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);
+  const [newDelLabel, setNewDelLabel] = useState("");
+  const [newDelUrl, setNewDelUrl] = useState("");
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
@@ -195,6 +203,39 @@ const InvoiceAdmin = () => {
       toast({ title: "Sync error", description: err.message, variant: "destructive" });
     }
     setSyncing(false);
+  };
+
+  const handleAddDeliverable = async (invoiceId: string) => {
+    if (!newDelLabel || !newDelUrl) return;
+    const inv = invoices.find(i => i.id === invoiceId);
+    const current = (inv?.deliverables || []) as Deliverable[];
+    const updated = [...current, { label: newDelLabel, url: newDelUrl }];
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Deliverable added" });
+      setNewDelLabel(""); setNewDelUrl("");
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleRemoveDeliverable = async (invoiceId: string, index: number) => {
+    const inv = invoices.find(i => i.id === invoiceId);
+    const current = (inv?.deliverables || []) as Deliverable[];
+    const updated = current.filter((_, i) => i !== index);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
   };
 
   const isOverdue = (dateStr: string | null) => {
@@ -621,6 +662,63 @@ const InvoiceAdmin = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Deliverables management for paid invoices */}
+                    {inv.status === "paid" && (
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-mono text-primary uppercase tracking-[0.2em]">
+                            Deliverables ({(inv.deliverables || []).length})
+                          </span>
+                          <button
+                            onClick={() => setEditingDeliverables(editingDeliverables === inv.id ? null : inv.id)}
+                            className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.1em]"
+                          >
+                            {editingDeliverables === inv.id ? "Close" : "Manage"}
+                          </button>
+                        </div>
+                        {(inv.deliverables || []).length > 0 && (
+                          <div className="space-y-1 mb-3">
+                            {(inv.deliverables as Deliverable[]).map((d, di) => (
+                              <div key={di} className="flex items-center gap-3 text-sm font-mono text-foreground">
+                                <span className="truncate">↗ {d.label}</span>
+                                <span className="text-xs text-muted-foreground truncate max-w-[200px]">{d.url}</span>
+                                {editingDeliverables === inv.id && (
+                                  <button
+                                    onClick={() => handleRemoveDeliverable(inv.id, di)}
+                                    className="text-xs text-destructive hover:underline ml-auto shrink-0"
+                                  >
+                                    remove
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {editingDeliverables === inv.id && (
+                          <div className="flex gap-2 items-end">
+                            <Input
+                              placeholder="Label (e.g. GitHub Repo)"
+                              value={newDelLabel}
+                              onChange={(e) => setNewDelLabel(e.target.value)}
+                              className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                            />
+                            <Input
+                              placeholder="URL"
+                              value={newDelUrl}
+                              onChange={(e) => setNewDelUrl(e.target.value)}
+                              className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                            />
+                            <button
+                              onClick={() => handleAddDeliverable(inv.id)}
+                              className="h-9 px-4 border border-border hover:border-foreground rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground shrink-0"
+                            >
+                              Add
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 );
               })}
