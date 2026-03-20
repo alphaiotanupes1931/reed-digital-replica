@@ -662,6 +662,63 @@ const InvoiceAdmin = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Deliverables management for paid invoices */}
+                    {inv.status === "paid" && (
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-mono text-primary uppercase tracking-[0.2em]">
+                            Deliverables ({(inv.deliverables || []).length})
+                          </span>
+                          <button
+                            onClick={() => setEditingDeliverables(editingDeliverables === inv.id ? null : inv.id)}
+                            className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.1em]"
+                          >
+                            {editingDeliverables === inv.id ? "Close" : "Manage"}
+                          </button>
+                        </div>
+                        {(inv.deliverables || []).length > 0 && (
+                          <div className="space-y-1 mb-3">
+                            {(inv.deliverables as Deliverable[]).map((d, di) => (
+                              <div key={di} className="flex items-center gap-3 text-sm font-mono text-foreground">
+                                <span className="truncate">↗ {d.label}</span>
+                                <span className="text-xs text-muted-foreground truncate max-w-[200px]">{d.url}</span>
+                                {editingDeliverables === inv.id && (
+                                  <button
+                                    onClick={() => handleRemoveDeliverable(inv.id, di)}
+                                    className="text-xs text-destructive hover:underline ml-auto shrink-0"
+                                  >
+                                    remove
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {editingDeliverables === inv.id && (
+                          <div className="flex gap-2 items-end">
+                            <Input
+                              placeholder="Label (e.g. GitHub Repo)"
+                              value={newDelLabel}
+                              onChange={(e) => setNewDelLabel(e.target.value)}
+                              className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                            />
+                            <Input
+                              placeholder="URL"
+                              value={newDelUrl}
+                              onChange={(e) => setNewDelUrl(e.target.value)}
+                              className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30"
+                            />
+                            <button
+                              onClick={() => handleAddDeliverable(inv.id)}
+                              className="h-9 px-4 border border-border hover:border-foreground rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground shrink-0"
+                            >
+                              Add
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 );
               })}
