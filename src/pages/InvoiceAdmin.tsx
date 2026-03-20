@@ -422,6 +422,20 @@ const InvoiceAdmin = () => {
                     </div>
                   </div>
 
+                  {/* Message */}
+                  <div className="border-t border-border pt-8">
+                    <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
+                      Message to Client (optional)
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Add a personal message for your client..."
+                      rows={3}
+                      className="w-full bg-transparent border-0 border-b border-border font-mono text-base focus-visible:ring-0 focus-visible:outline-none focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30 resize-none"
+                    />
+                  </div>
+
                   {/* Deposit toggle */}
                   <div className="border-t border-border pt-8">
                     <div className="flex items-center justify-between mb-6">
