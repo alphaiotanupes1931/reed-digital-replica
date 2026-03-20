@@ -287,10 +287,10 @@ const InvoiceAdmin = () => {
       {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <Link to="/home-office" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
             <img src={logo} alt="RDG" className="h-6" />
             <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-4">
             <button
               onClick={handleSyncPayments}
