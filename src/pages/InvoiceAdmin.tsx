@@ -89,7 +89,9 @@ const InvoiceAdmin = () => {
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
   const [message, setMessage] = useState("");
-
+  const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);
+  const [newDelLabel, setNewDelLabel] = useState("");
+  const [newDelUrl, setNewDelUrl] = useState("");
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
