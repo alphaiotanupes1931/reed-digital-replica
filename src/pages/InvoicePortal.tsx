@@ -419,6 +419,47 @@ const InvoicePortal = () => {
                     />
                   ))}
 
+                  {/* Project Deliverables — separate section */}
+                  {invoices.some(inv => inv.status === "paid") && (
+                    <div className="border-2 border-foreground p-6 md:p-8 mt-8">
+                      <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
+                        Project Deliverables
+                      </p>
+                      <h2 className="text-2xl font-mono font-bold text-foreground tracking-tight mb-4">
+                        Your Files & Links
+                      </h2>
+                      {(() => {
+                        const allDeliverables = invoices
+                          .filter(inv => inv.status === "paid" && inv.deliverables && inv.deliverables.length > 0)
+                          .flatMap(inv => inv.deliverables!.map(d => ({ ...d, service: inv.service })));
+                        
+                        return allDeliverables.length > 0 ? (
+                          <div className="space-y-3">
+                            {allDeliverables.map((d, i) => (
+                              <a
+                                key={i}
+                                href={d.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-4 p-4 border border-border hover:border-foreground transition-colors group"
+                              >
+                                <span className="w-8 h-8 border-2 border-foreground group-hover:border-primary group-hover:text-primary flex items-center justify-center text-sm font-bold shrink-0">↗</span>
+                                <div>
+                                  <span className="text-sm font-mono font-bold text-foreground group-hover:text-primary transition-colors">{d.label}</span>
+                                  <p className="text-xs font-mono text-muted-foreground mt-0.5">{d.service}</p>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm font-mono text-muted-foreground">
+                            Your project deliverables (source code, documentation, design assets, etc.) will appear here once they are ready.
+                          </p>
+                        );
+                      })()}
+                    </div>
+                  )}
+
                   {/* Review & Support */}
                   <div className="border-2 border-foreground p-6 md:p-8 mt-8">
                     <p className="text-sm font-mono text-foreground uppercase tracking-[0.3em] mb-4">
