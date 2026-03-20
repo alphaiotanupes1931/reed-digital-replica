@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import logo from "@/assets/rdg-header-logo.png";
 
 interface Client {
@@ -273,12 +273,12 @@ const InvoicePortal = () => {
       {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <Link to="/home-office" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
             <img src={logo} alt="RDG" className="h-6" />
             <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
               Client Portal
             </span>
-          </div>
+          </Link>
           {client && (
             <button
               onClick={() => { setClient(null); setInvoices([]); setEmail(""); }}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
-const ADMIN_PASSWORD = "admin123";
+const ADMIN_PASSWORD = "shell0423";
 const PROCESSING_FEE_RATE = 0.029; // 2.9%
 const PROCESSING_FEE_FLAT = 0.30; // + $0.30 per transaction
 
@@ -286,10 +287,10 @@ const InvoiceAdmin = () => {
       {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <Link to="/home-office" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
             <img src={logo} alt="RDG" className="h-6" />
             <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-4">
             <button
               onClick={handleSyncPayments}
