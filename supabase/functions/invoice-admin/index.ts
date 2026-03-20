@@ -43,7 +43,7 @@ serve(async (req) => {
     }
 
     if (action === "create_invoice") {
-      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date } = data;
+      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message } = data;
 
       let { data: client } = await supabase
         .from("clients")
@@ -73,6 +73,7 @@ serve(async (req) => {
         deposit_required: deposit_required || false,
         deposit_amount: deposit_amount || null,
         deposit_due_date: deposit_due_date || null,
+        message: message || null,
       });
 
       if (invoiceError) throw invoiceError;

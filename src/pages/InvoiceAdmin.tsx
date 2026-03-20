@@ -44,6 +44,7 @@ interface Invoice {
   deposit_due_date: string | null;
   deposit_paid: boolean;
   created_at: string;
+  message: string | null;
   clients?: Client;
 }
 
@@ -80,6 +81,7 @@ const InvoiceAdmin = () => {
   const [depositRequired, setDepositRequired] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,6 +139,7 @@ const InvoiceAdmin = () => {
           deposit_required: depositRequired,
           deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
+          message: message.trim() || null,
           password: ADMIN_PASSWORD,
         },
       });
@@ -144,7 +147,7 @@ const InvoiceAdmin = () => {
       toast({ title: "Invoice created" });
       setShowForm(false);
       setCompanyName(""); setEmail(""); setService(""); setPrice("");
-      setDepositRequired(false); setDepositAmount(""); setDepositDueDate("");
+      setDepositRequired(false); setDepositAmount(""); setDepositDueDate(""); setMessage("");
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -417,6 +420,20 @@ const InvoiceAdmin = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="border-t border-border pt-8">
+                    <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">
+                      Message to Client (optional)
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Add a personal message for your client..."
+                      rows={3}
+                      className="w-full bg-transparent border-0 border-b border-border font-mono text-base focus-visible:ring-0 focus-visible:outline-none focus-visible:border-foreground px-0 text-foreground placeholder:text-foreground/30 resize-none"
+                    />
                   </div>
 
                   {/* Deposit toggle */}

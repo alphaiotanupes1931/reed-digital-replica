@@ -26,6 +26,7 @@ interface Invoice {
   deposit_due_date: string | null;
   deposit_paid: boolean;
   created_at: string;
+  message: string | null;
 }
 
 const PROCESSING_FEE_RATE = 0.029;
@@ -364,6 +365,19 @@ const InvoicePortal = () => {
                 <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight">
                   {client.company_name}
                 </h1>
+                {/* Check if any invoice has a message */}
+                {invoices.some(inv => inv.message) && (
+                  <div className="mt-6 border-2 border-primary/30 p-5">
+                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
+                      You have a special message
+                    </p>
+                    {invoices.filter(inv => inv.message).map(inv => (
+                      <p key={inv.id} className="text-sm font-mono text-foreground leading-relaxed">
+                        {inv.message}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {invoices.length === 0 ? (
