@@ -205,6 +205,39 @@ const InvoiceAdmin = () => {
     setSyncing(false);
   };
 
+  const handleAddDeliverable = async (invoiceId: string) => {
+    if (!newDelLabel || !newDelUrl) return;
+    const inv = invoices.find(i => i.id === invoiceId);
+    const current = (inv?.deliverables || []) as Deliverable[];
+    const updated = [...current, { label: newDelLabel, url: newDelUrl }];
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Deliverable added" });
+      setNewDelLabel(""); setNewDelUrl("");
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleRemoveDeliverable = async (invoiceId: string, index: number) => {
+    const inv = invoices.find(i => i.id === invoiceId);
+    const current = (inv?.deliverables || []) as Deliverable[];
+    const updated = current.filter((_, i) => i !== index);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const isOverdue = (dateStr: string | null) => {
     if (!dateStr) return false;
     return new Date(dateStr) < new Date();
