@@ -83,6 +83,20 @@ serve(async (req) => {
       });
     }
 
+    if (action === "update_deliverables") {
+      const { invoice_id, deliverables } = data;
+      const { error } = await supabase
+        .from("invoices")
+        .update({ deliverables })
+        .eq("id", invoice_id);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "approve_invoice") {
       const { invoice_id } = data;
       const { error } = await supabase
