@@ -139,6 +139,7 @@ const InvoiceAdmin = () => {
           deposit_required: depositRequired,
           deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
+          message: message.trim() || null,
           password: ADMIN_PASSWORD,
         },
       });
