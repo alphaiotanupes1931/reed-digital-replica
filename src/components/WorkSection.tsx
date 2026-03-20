@@ -31,6 +31,7 @@ const projects = [
     type: "Campaign Website",
     tools: ["React", "Tailwind CSS", "Vercel"],
     url: "https://friendsofjessicashowell.com/",
+    image: jessicaPreview,
   },
   { 
     title: "VisionHeartz", 
