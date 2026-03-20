@@ -252,7 +252,7 @@ const InvoicePortal = () => {
       .in("status", ["approved", "sent", "paid"])
       .order("created_at", { ascending: false });
 
-    setInvoices((invData as Invoice[]) || []);
+    setInvoices((invData as unknown as Invoice[]) || []);
     setLoading(false);
   };
 
