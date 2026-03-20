@@ -50,7 +50,7 @@ const projects = [
   },
 ];
 
-const WebsitePreview = ({ url, title }: { url: string; title: string }) => (
+const WebsitePreview = ({ url, title, image }: { url: string; title: string; image?: string }) => (
   <div className="relative w-full aspect-[16/10] bg-muted rounded-sm overflow-hidden border border-border">
     {/* Browser chrome */}
     <div className="absolute top-0 left-0 right-0 h-6 bg-secondary/80 backdrop-blur-sm flex items-center px-2 gap-1.5 z-10">
@@ -64,15 +64,19 @@ const WebsitePreview = ({ url, title }: { url: string; title: string }) => (
       </div>
     </div>
     
-    {/* Iframe container */}
+    {/* Content */}
     <div className="absolute top-6 left-0 right-0 bottom-0 overflow-hidden">
-      <iframe
-        src={url}
-        title={title}
-        className="w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin"
-      />
+      {image ? (
+        <img src={image} alt={title} className="w-full h-full object-cover object-top" />
+      ) : (
+        <iframe
+          src={url}
+          title={title}
+          className="w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin"
+        />
+      )}
     </div>
     
     {/* Hover overlay */}
