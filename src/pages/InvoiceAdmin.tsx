@@ -81,6 +81,7 @@ const InvoiceAdmin = () => {
   const [depositRequired, setDepositRequired] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
