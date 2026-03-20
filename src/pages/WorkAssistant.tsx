@@ -77,11 +77,17 @@ const formatNotesAsSummary = (notes: Note[], title: string) => {
   return `${title}\n\n${lines}`;
 };
 
+const WA_PASSCODE = "0616";
+
 const WorkAssistant = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const token = sessionStorage.getItem("ho-token");
   const today = new Date().toISOString().split("T")[0];
+
+  const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem("wa-unlocked") === "true");
+  const [passcode, setPasscode] = useState(["", "", "", ""]);
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [activeTab, setActiveTab] = useState<Tab>("Daily Notes");
   const [notes, setNotes] = useState<Note[]>([]);
