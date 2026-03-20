@@ -96,6 +96,7 @@ export type Database = {
           deposit_required: boolean
           due_date: string
           id: string
+          message: string | null
           price: number
           service: string
           status: Database["public"]["Enums"]["invoice_status"]
@@ -112,6 +113,7 @@ export type Database = {
           deposit_required?: boolean
           due_date: string
           id?: string
+          message?: string | null
           price: number
           service: string
           status?: Database["public"]["Enums"]["invoice_status"]
@@ -128,6 +130,7 @@ export type Database = {
           deposit_required?: boolean
           due_date?: string
           id?: string
+          message?: string | null
           price?: number
           service?: string
           status?: Database["public"]["Enums"]["invoice_status"]
