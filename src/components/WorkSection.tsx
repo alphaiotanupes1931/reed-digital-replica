@@ -26,11 +26,11 @@ const projects = [
     url: "https://oqpsolutions.com/",
   },
   { 
-    title: "The Intern by Shilom", 
-    category: "Finance Education", 
-    type: "Educational Platform",
-    tools: ["React", "Node.js", "Stripe"],
-    url: "https://www.theinternbyshilom.com/",
+    title: "Friends of Jessica Showell", 
+    category: "Political Campaign", 
+    type: "Campaign Website",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://friendsofjessicashowell.com/",
   },
   { 
     title: "VisionHeartz", 
