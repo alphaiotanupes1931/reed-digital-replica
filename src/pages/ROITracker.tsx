@@ -20,6 +20,9 @@ const ROITracker = () => {
       <main className="pt-32 pb-20 relative z-10">
         <div className="container max-w-3xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Link to="/home-office" className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-brand transition-colors mb-6">
+              ← Back to Home Office
+            </Link>
             <Link to="/home-office" className="inline-block">
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight hover:text-brand transition-colors">ROI Tracker</h1>
               <p className="text-sm text-brand italic mt-1">by RDG</p>
