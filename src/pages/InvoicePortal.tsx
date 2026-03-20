@@ -310,7 +310,7 @@ const InvoicePortal = () => {
       {/* Top bar */}
       <div className="border-b border-border">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/home-office" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
+          <Link to="/" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
             <img src={logo} alt="RDG" className="h-6" />
             <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
               Client Portal

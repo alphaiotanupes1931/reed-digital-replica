@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -76,11 +77,17 @@ const formatNotesAsSummary = (notes: Note[], title: string) => {
   return `${title}\n\n${lines}`;
 };
 
+const WA_PASSCODE = "0616";
+
 const WorkAssistant = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const token = sessionStorage.getItem("ho-token");
   const today = new Date().toISOString().split("T")[0];
+
+  const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem("wa-unlocked") === "true");
+  const [passcode, setPasscode] = useState(["", "", "", ""]);
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [activeTab, setActiveTab] = useState<Tab>("Daily Notes");
   const [notes, setNotes] = useState<Note[]>([]);
@@ -324,6 +331,77 @@ const WorkAssistant = () => {
           </div>
         </div>
       ));
+
+  const handlePinChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const newCode = [...passcode];
+    newCode[index] = value.slice(-1);
+    setPasscode(newCode);
+    if (value && index < 3) {
+      pinRefs.current[index + 1]?.focus();
+    }
+    const full = newCode.join("");
+    if (full.length === 4) {
+      if (full === WA_PASSCODE) {
+        sessionStorage.setItem("wa-unlocked", "true");
+        setIsUnlocked(true);
+      } else {
+        toast({ title: "Incorrect passcode", variant: "destructive" });
+        setPasscode(["", "", "", ""]);
+        pinRefs.current[0]?.focus();
+      }
+    }
+  };
+
+  const handlePinKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !passcode[index] && index > 0) {
+      pinRefs.current[index - 1]?.focus();
+    }
+  };
+
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-screen bg-background font-mono relative overflow-hidden">
+        <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+          <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
+        </div>
+        <Header />
+        <main className="pt-32 pb-20 relative z-10">
+          <div className="flex flex-col items-center justify-center min-h-[60vh]">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center"
+            >
+              <Lock className="w-8 h-8 text-brand mx-auto mb-6" />
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Work Assistant</h1>
+              <p className="text-sm text-brand italic mb-8">by RDG</p>
+              <p className="text-sm text-muted-foreground mb-6">Enter 4-digit passcode</p>
+              <div className="flex gap-3 justify-center">
+                {passcode.map((digit, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => { pinRefs.current[i] = el; }}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handlePinChange(i, e.target.value)}
+                    onKeyDown={(e) => handlePinKeyDown(i, e)}
+                    className="w-14 h-16 text-center text-2xl font-bold bg-transparent border-2 border-border focus:border-brand outline-none transition-colors text-foreground"
+                    autoFocus={i === 0}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background font-mono relative overflow-hidden">
