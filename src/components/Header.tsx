@@ -35,7 +35,13 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Government", href: "/government" },
-  { label: "Client Portal", href: "/invoice" },
+  {
+    label: "Tools",
+    children: [
+      { label: "Home Office", href: "/home-office/login", desc: "Internal workspace" },
+      { label: "Client Portal", href: "/invoice", desc: "View & pay invoices" },
+    ],
+  },
   { label: "Contact", href: "/contact" },
 ];
 
