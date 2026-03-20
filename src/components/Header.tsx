@@ -250,12 +250,10 @@ const Header = () => {
                         key={item.label}
                         to={item.href!}
                         onClick={() => setMobileOpen(false)}
-                        className={`block px-5 py-3 text-sm transition-colors ${
-                          item.label === "Client Portal" ? "font-bold text-primary" : "font-medium"
-                        } ${
+                        className={`block px-5 py-3 text-sm font-medium transition-colors ${
                           location.pathname === item.href
                             ? "text-primary bg-primary/5"
-                            : item.label === "Client Portal" ? "" : "hover:bg-secondary"
+                            : "hover:bg-secondary"
                         }`}
                       >
                         {item.label}
