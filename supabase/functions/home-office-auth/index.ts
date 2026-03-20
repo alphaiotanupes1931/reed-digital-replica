@@ -7,8 +7,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "rdg2024";
+const ADMIN_USERNAME = "terell.reed";
+const ADMIN_PASSWORD = "shell0423";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
