@@ -147,7 +147,7 @@ const InvoiceAdmin = () => {
       toast({ title: "Invoice created" });
       setShowForm(false);
       setCompanyName(""); setEmail(""); setService(""); setPrice("");
-      setDepositRequired(false); setDepositAmount(""); setDepositDueDate("");
+      setDepositRequired(false); setDepositAmount(""); setDepositDueDate(""); setMessage("");
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
