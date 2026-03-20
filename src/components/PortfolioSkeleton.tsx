@@ -3,10 +3,11 @@ import { useState } from "react";
 interface PortfolioSkeletonProps {
   src: string;
   title: string;
+  image?: string;
   children?: React.ReactNode;
 }
 
-const PortfolioSkeleton = ({ src, title, children }: PortfolioSkeletonProps) => {
+const PortfolioSkeleton = ({ src, title, image, children }: PortfolioSkeletonProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -21,18 +22,28 @@ const PortfolioSkeleton = ({ src, title, children }: PortfolioSkeletonProps) => 
         </div>
       )}
       
-      {/* Iframe */}
-      <iframe
-        src={src}
-        title={title}
-        className={`w-full h-full pointer-events-none scale-[0.5] origin-top-left transition-opacity duration-500 ${
-          isLoaded ? "opacity-100" : "opacity-0"
-        }`}
-        style={{ width: '200%', height: '200%' }}
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin"
-        onLoad={() => setIsLoaded(true)}
-      />
+      {image ? (
+        <img
+          src={image}
+          alt={title}
+          className={`w-full h-full object-cover object-top transition-opacity duration-500 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          onLoad={() => setIsLoaded(true)}
+        />
+      ) : (
+        <iframe
+          src={src}
+          title={title}
+          className={`w-full h-full pointer-events-none scale-[0.5] origin-top-left transition-opacity duration-500 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ width: '200%', height: '200%' }}
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin"
+          onLoad={() => setIsLoaded(true)}
+        />
+      )}
       
       {/* Hover overlay */}
       {children}
