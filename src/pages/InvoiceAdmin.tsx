@@ -44,6 +44,7 @@ interface Invoice {
   deposit_due_date: string | null;
   deposit_paid: boolean;
   created_at: string;
+  message: string | null;
   clients?: Client;
 }
 
