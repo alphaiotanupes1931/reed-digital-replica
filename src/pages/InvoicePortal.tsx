@@ -111,11 +111,19 @@ const InvoiceDocument = ({
             </p>
           </div>
         </div>
-        <div className={`text-sm font-mono font-bold uppercase tracking-[0.15em] ${
-          isPaid ? "text-emerald-500" : depositOverdue ? "text-destructive" : "text-foreground"
-        }`}>
-          {isPaid ? "PAID" : depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
-        </div>
+        {isPaid ? (
+          <div className="border-4 border-red-600 rounded-sm px-4 py-1 transform rotate-[-8deg]">
+            <span className="text-2xl font-mono font-black uppercase tracking-[0.2em] text-red-600">
+              PAID
+            </span>
+          </div>
+        ) : (
+          <div className={`text-sm font-mono font-bold uppercase tracking-[0.15em] ${
+            depositOverdue ? "text-destructive" : "text-foreground"
+          }`}>
+            {depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
+          </div>
+        )}
       </div>
 
       {/* Bill To / From */}
