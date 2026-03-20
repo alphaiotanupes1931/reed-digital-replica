@@ -125,7 +125,7 @@ const WorkSection = () => {
             >
               {/* Website Preview */}
               <div className="mb-4 overflow-hidden rounded-sm transform group-hover:scale-[1.02] transition-transform duration-300">
-                <WebsitePreview url={project.url} title={project.title} />
+                <WebsitePreview url={project.url} title={project.title} image={(project as any).image} />
               </div>
               
               {/* Project info */}
