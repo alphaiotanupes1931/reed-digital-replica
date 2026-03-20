@@ -38,8 +38,10 @@ const HomeOffice = () => {
             animate={{ opacity: 1, y: 0 }}
             className="mb-16"
           >
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Home Office</h1>
-            <p className="text-sm text-brand italic mt-1">by RDG</p>
+            <Link to="/home-office" className="inline-block">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight hover:text-brand transition-colors">Home Office</h1>
+              <p className="text-sm text-brand italic mt-1">by RDG</p>
+            </Link>
             <p className="text-muted-foreground text-sm mt-4">Welcome, Mr. Reed</p>
           </motion.div>
 
