@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
-const ADMIN_PASSWORD = "admin123";
+const ADMIN_PASSWORD = "shell0423";
 const PROCESSING_FEE_RATE = 0.029; // 2.9%
 const PROCESSING_FEE_FLAT = 0.30; // + $0.30 per transaction
 
