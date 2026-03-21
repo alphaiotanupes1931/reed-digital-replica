@@ -246,7 +246,8 @@ const WorkAssistant = () => {
     if (activeTab === "History") fetchHistoryDates();
     if (activeTab === "Weekly Summary") fetchWeekly();
     if (activeTab === "Monthly Summary") fetchMonthly();
-  }, [activeTab, fetchHistoryDates, fetchWeekly, fetchMonthly]);
+    if (activeTab === "Yearly Summary") fetchYearly();
+  }, [activeTab, fetchHistoryDates, fetchWeekly, fetchMonthly, fetchYearly]);
 
   useEffect(() => {
     if (selectedDate) {
