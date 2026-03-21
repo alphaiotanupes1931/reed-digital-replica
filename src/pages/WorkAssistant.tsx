@@ -30,8 +30,14 @@ interface Goal {
   created_at: string;
 }
 
-const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary", "Monthly Summary"] as const;
+const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary", "Monthly Summary", "Yearly Summary"] as const;
 type Tab = (typeof tabs)[number];
+
+const getYearRange = (year: number) => ({
+  start: `${year}-01-01`,
+  end: `${year}-12-31`,
+  label: `${year}`,
+});
 
 const getWeekRange = (refDate: Date) => {
   const d = new Date(refDate);
