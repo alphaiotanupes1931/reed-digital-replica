@@ -681,6 +681,36 @@ const WorkAssistant = () => {
               </div>
             </motion.div>
           )}
+
+          {/* Yearly Summary */}
+          {activeTab === "Yearly Summary" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="border-2 border-foreground bg-background px-4 py-2 font-mono text-sm focus:outline-none focus:border-brand"
+                >
+                  {yearOptions.map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={copyYearlySummary}
+                  disabled={yearlyNotes.length === 0}
+                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Copy Summary
+                </button>
+              </div>
+              <div className="space-y-8">
+                {Object.keys(yearlyByDate).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No notes for {currentYear.label}.</p>
+                )}
+                {renderGroupedNotes(yearlyByDate)}
+              </div>
+            </motion.div>
+          )}
         </div>
       </main>
       <Footer />
