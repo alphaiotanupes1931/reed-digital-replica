@@ -120,6 +120,17 @@ const WorkAssistant = () => {
   });
   const [monthlyNotes, setMonthlyNotes] = useState<Note[]>([]);
 
+  // Yearly
+  const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear());
+  const [yearlyNotes, setYearlyNotes] = useState<Note[]>([]);
+
+  const currentYear = useMemo(() => getYearRange(selectedYear), [selectedYear]);
+
+  const yearOptions = useMemo(() => {
+    const now = new Date().getFullYear();
+    return Array.from({ length: 5 }, (_, i) => now - i);
+  }, []);
+
   const currentWeek = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + weekOffset * 7);
