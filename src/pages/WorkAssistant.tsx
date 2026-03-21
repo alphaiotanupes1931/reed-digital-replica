@@ -481,7 +481,7 @@ const WorkAssistant = () => {
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addNote()}
-                  placeholder="Add a note..."
+                  placeholder="What did you do today?"
                   className="flex-1 border-2 border-foreground bg-background px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand"
                 />
                 <button
