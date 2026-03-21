@@ -1,5 +1,5 @@
 import { useState } from "react";
-import jessicaPreview from "@/assets/jessica-showell-preview.jpg";
+
 
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
