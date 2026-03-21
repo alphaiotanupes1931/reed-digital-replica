@@ -348,6 +348,7 @@ const WorkAssistant = () => {
 
   const weeklyByDate = groupByDate(weeklyNotes);
   const monthlyByDate = groupByDate(monthlyNotes);
+  const yearlyByDate = groupByDate(yearlyNotes);
 
   const renderGroupedNotes = (grouped: Record<string, Note[]>) =>
     Object.entries(grouped)
