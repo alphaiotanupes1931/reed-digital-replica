@@ -224,6 +224,18 @@ const WorkAssistant = () => {
     }
   }, [api, currentMonth]);
 
+  const fetchYearly = useCallback(async () => {
+    try {
+      const res = await api("get_notes_range", {
+        start_date: currentYear.start,
+        end_date: currentYear.end,
+      });
+      setYearlyNotes(res.notes || []);
+    } catch (e: any) {
+      console.error(e);
+    }
+  }, [api, currentYear]);
+
   useEffect(() => {
     if (!token) return;
     fetchNotes();
