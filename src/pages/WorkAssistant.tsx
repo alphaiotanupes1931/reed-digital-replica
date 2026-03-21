@@ -30,8 +30,14 @@ interface Goal {
   created_at: string;
 }
 
-const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary", "Monthly Summary"] as const;
+const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary", "Monthly Summary", "Yearly Summary"] as const;
 type Tab = (typeof tabs)[number];
+
+const getYearRange = (year: number) => ({
+  start: `${year}-01-01`,
+  end: `${year}-12-31`,
+  label: `${year}`,
+});
 
 const getWeekRange = (refDate: Date) => {
   const d = new Date(refDate);
@@ -113,6 +119,17 @@ const WorkAssistant = () => {
     return { year: now.getFullYear(), month: now.getMonth() };
   });
   const [monthlyNotes, setMonthlyNotes] = useState<Note[]>([]);
+
+  // Yearly
+  const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear());
+  const [yearlyNotes, setYearlyNotes] = useState<Note[]>([]);
+
+  const currentYear = useMemo(() => getYearRange(selectedYear), [selectedYear]);
+
+  const yearOptions = useMemo(() => {
+    const now = new Date().getFullYear();
+    return Array.from({ length: 5 }, (_, i) => now - i);
+  }, []);
 
   const currentWeek = useMemo(() => {
     const d = new Date();
@@ -207,6 +224,18 @@ const WorkAssistant = () => {
     }
   }, [api, currentMonth]);
 
+  const fetchYearly = useCallback(async () => {
+    try {
+      const res = await api("get_notes_range", {
+        start_date: currentYear.start,
+        end_date: currentYear.end,
+      });
+      setYearlyNotes(res.notes || []);
+    } catch (e: any) {
+      console.error(e);
+    }
+  }, [api, currentYear]);
+
   useEffect(() => {
     if (!token) return;
     fetchNotes();
@@ -217,7 +246,8 @@ const WorkAssistant = () => {
     if (activeTab === "History") fetchHistoryDates();
     if (activeTab === "Weekly Summary") fetchWeekly();
     if (activeTab === "Monthly Summary") fetchMonthly();
-  }, [activeTab, fetchHistoryDates, fetchWeekly, fetchMonthly]);
+    if (activeTab === "Yearly Summary") fetchYearly();
+  }, [activeTab, fetchHistoryDates, fetchWeekly, fetchMonthly, fetchYearly]);
 
   useEffect(() => {
     if (selectedDate) {
@@ -273,6 +303,12 @@ const WorkAssistant = () => {
     toast({ title: "Monthly summary copied" });
   };
 
+  const copyYearlySummary = () => {
+    const text = formatNotesAsSummary(yearlyNotes, `Yearly Summary — ${currentYear.label}`);
+    navigator.clipboard.writeText(text);
+    toast({ title: "Yearly summary copied" });
+  };
+
   const addGoal = async () => {
     if (!newGoalTitle.trim()) return;
     try {
@@ -312,6 +348,7 @@ const WorkAssistant = () => {
 
   const weeklyByDate = groupByDate(weeklyNotes);
   const monthlyByDate = groupByDate(monthlyNotes);
+  const yearlyByDate = groupByDate(yearlyNotes);
 
   const renderGroupedNotes = (grouped: Record<string, Note[]>) =>
     Object.entries(grouped)
@@ -641,6 +678,36 @@ const WorkAssistant = () => {
                   <p className="text-sm text-muted-foreground">No notes for {currentMonth.label}.</p>
                 )}
                 {renderGroupedNotes(monthlyByDate)}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Yearly Summary */}
+          {activeTab === "Yearly Summary" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="border-2 border-foreground bg-background px-4 py-2 font-mono text-sm focus:outline-none focus:border-brand"
+                >
+                  {yearOptions.map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={copyYearlySummary}
+                  disabled={yearlyNotes.length === 0}
+                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Copy Summary
+                </button>
+              </div>
+              <div className="space-y-8">
+                {Object.keys(yearlyByDate).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No notes for {currentYear.label}.</p>
+                )}
+                {renderGroupedNotes(yearlyByDate)}
               </div>
             </motion.div>
           )}
