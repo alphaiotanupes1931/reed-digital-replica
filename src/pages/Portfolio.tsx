@@ -9,11 +9,10 @@ import TiltCard from "@/components/TiltCard";
 import PageTransition from "@/components/PageTransition";
 import PortfolioFilter from "@/components/PortfolioFilter";
 import PortfolioSkeleton from "@/components/PortfolioSkeleton";
-import jessicaPreview from "@/assets/jessica-showell-preview.jpg";
 // Website projects with live iframe previews
 const websiteProjects = [
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
-  { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
+  { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/" },
   { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/", slug: "shilom-ai" },
   { title: "DGM Consulting", category: "Consulting", url: "https://dgmconsulting.info/", slug: "dgm-consulting" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
