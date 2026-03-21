@@ -303,6 +303,12 @@ const WorkAssistant = () => {
     toast({ title: "Monthly summary copied" });
   };
 
+  const copyYearlySummary = () => {
+    const text = formatNotesAsSummary(yearlyNotes, `Yearly Summary — ${currentYear.label}`);
+    navigator.clipboard.writeText(text);
+    toast({ title: "Yearly summary copied" });
+  };
+
   const addGoal = async () => {
     if (!newGoalTitle.trim()) return;
     try {
