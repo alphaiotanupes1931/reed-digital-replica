@@ -76,7 +76,7 @@ const PortfolioPage = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <PortfolioSkeleton src={project.url} title={project.title}>
+                        <PortfolioSkeleton src={project.url} title={project.title} image={(project as any).image}>
                           <div className="absolute inset-0 bg-transparent group-hover:bg-foreground/5 transition-colors" />
                         </PortfolioSkeleton>
                       </a>
