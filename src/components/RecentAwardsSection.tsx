@@ -3,8 +3,9 @@ import awardImage from "@/assets/website-of-year-award.jpg";
 
 const RecentAwardsSection = () => {
   return (
-    <section className="py-20 md:py-28 border-b border-border">
-      <div className="container">
+    <section className="relative py-20 md:py-28 border-b border-border overflow-hidden">
+      <span className="bg-text top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">Awards</span>
+      <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
