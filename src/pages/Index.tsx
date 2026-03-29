@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import CredentialBar from "@/components/CredentialBar";
+import RecentAwardsSection from "@/components/RecentAwardsSection";
 import ClientCarousel from "@/components/ClientCarousel";
 import AsSeenOnSection from "@/components/AsSeenOnSection";
 import ClientLogosSection from "@/components/ClientLogosSection";
@@ -24,6 +25,7 @@ const Index = () => {
           <HeroSection />
         </div>
         <CredentialBar />
+        <RecentAwardsSection />
         <ClientCarousel />
         <AsSeenOnSection />
         <ClientLogosSection />
