@@ -6,11 +6,11 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 const projects = [
   { 
-    title: "Got Tint", 
-    category: "Automotive", 
-    type: "Business Website",
-    tools: ["React", "Tailwind CSS", "Vercel"],
-    url: "https://got-tint-redesign.vercel.app/",
+    title: "Alpha Iota Merch", 
+    category: "E-Commerce", 
+    type: "E-Commerce Store",
+    tools: ["React", "Tailwind CSS", "Stripe"],
+    url: "https://alphaiotamerch.com/",
   },
   { 
     title: "Wright Shade Creations", 
