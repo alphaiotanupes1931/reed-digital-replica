@@ -1,50 +1,46 @@
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
 import awardImage from "@/assets/website-of-year-award.jpg";
 
 const RecentAwardsSection = () => {
   return (
-    <section className="py-16 md:py-20 border-b border-border bg-muted/30">
+    <section className="py-20 md:py-28 border-b border-border">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className="mb-12"
         >
-          <span className="section-label font-mono flex items-center justify-center gap-2">
-            <Trophy className="w-4 h-4 text-primary" />
-            Recent Awards
-          </span>
+          <span className="section-label font-mono">Recent Awards</span>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-3xl mx-auto"
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-border"
         >
-          <div className="border border-border bg-card overflow-hidden">
-            <div className="aspect-video overflow-hidden">
-              <img
-                src={awardImage}
-                alt="Website of the Year Award 2026 - Eastern Province Ronald R. Young Award"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-6 md:p-8 text-center">
-              <div className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-mono uppercase tracking-widest mb-4">
-                2026 Winner
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-3">
-                Website of the Year Award
-              </h3>
-              <p className="text-sm text-muted-foreground font-mono leading-relaxed">
-                Won the Website of the Year Award 2026 for the Eastern Province — Ronald R. Young Website of the Year Award.
-              </p>
-            </div>
+          <div className="overflow-hidden">
+            <img
+              src={awardImage}
+              alt="Website of the Year Award 2026"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+
+          <div className="flex flex-col justify-center p-8 md:p-12">
+            <span className="text-xs font-mono text-muted-foreground uppercase tracking-[0.2em] mb-4">
+              2026 Winner
+            </span>
+            <h3 className="text-xl md:text-2xl font-semibold tracking-tight mb-4">
+              Website of the Year
+            </h3>
+            <p className="text-sm text-muted-foreground font-mono leading-relaxed">
+              Won the Website of the Year Award 2026 for the Eastern Province — Ronald R. Young Website of the Year Award.
+            </p>
           </div>
         </motion.div>
       </div>
