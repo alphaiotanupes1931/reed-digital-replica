@@ -12,21 +12,20 @@ import PortfolioSkeleton from "@/components/PortfolioSkeleton";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 // Website projects with live iframe previews
 const websiteProjects = [
-  { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
   { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/", slug: "shilom-ai" },
   { title: "DGM Consulting", category: "Consulting", url: "https://dgmconsulting.info/", slug: "dgm-consulting" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
   { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/" },
-  
   { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/", slug: "oqp-solutions" },
-  
   { title: "Kappa Alpha Psi Fraternity Inc.", category: "Organization", url: "https://ainupes1931.com/" },
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
   { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
   { title: "Alpha Iota Merch", category: "E-Commerce", url: "https://alphaiotamerch.com/" },
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
+  { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
+  { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
 ];
 
 // Get unique categories
