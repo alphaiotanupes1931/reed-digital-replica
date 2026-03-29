@@ -3,21 +3,51 @@ import baltimoreTimesLogo from "@/assets/baltimore-times-logo.png";
 
 const ARTICLE_URL = "https://baltimoretimes-online.com/latest-news/2023/04/28/morgan-state-university-students-take-home-prize-money-land-internships-after-hackathon/";
 
+const features = [
+  {
+    name: "The Baltimore Times",
+    logo: baltimoreTimesLogo,
+    isLocal: true,
+    invert: true,
+    url: ARTICLE_URL,
+  },
+  {
+    name: "Medium",
+    logo: "https://miro.medium.com/v2/resize:fit:1400/1*n1Wi1QF6mloAinEGxiWNxA.gif",
+    isLocal: false,
+    invert: false,
+    url: null,
+  },
+  {
+    name: "MITRE",
+    logo: "https://www.mitre.org/themes/mitre/img/MITRE-logo_Blue.png",
+    isLocal: false,
+    invert: false,
+    url: null,
+  },
+];
+
 const AsSeenOnSection = () => {
   return (
     <section className="py-12 relative bg-background">
       <div className="section-line absolute top-0 left-0 right-0" />
       <div className="container">
         <ScrollReveal>
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-6">
             <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground">
               As Seen On
             </p>
-            <img
-              src={baltimoreTimesLogo}
-              alt="The Baltimore Times"
-              className="h-10 md:h-12 object-contain opacity-80 invert"
-            />
+            <div className="flex items-center gap-10 md:gap-16 flex-wrap justify-center">
+              {features.map((item) => (
+                <img
+                  key={item.name}
+                  src={item.logo}
+                  alt={item.name}
+                  className={`h-8 md:h-10 object-contain opacity-80 ${item.invert ? "invert" : ""}`}
+                  loading="lazy"
+                />
+              ))}
+            </div>
             <a
               href={ARTICLE_URL}
               target="_blank"
