@@ -13,7 +13,7 @@ const features = [
   },
   {
     name: "Medium",
-    logo: "https://miro.medium.com/v2/resize:fit:1400/1*n1Wi1QF6mloAinEGxiWNxA.gif",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Medium_%28website%29_logo.svg",
     isLocal: false,
     invert: false,
     url: null,
