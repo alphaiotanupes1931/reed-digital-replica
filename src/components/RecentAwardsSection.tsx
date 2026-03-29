@@ -21,7 +21,7 @@ const RecentAwardsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-0 border border-border"
+          className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-border"
         >
           <div className="overflow-hidden">
             <img
