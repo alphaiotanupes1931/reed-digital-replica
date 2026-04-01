@@ -194,29 +194,62 @@ const InvoiceDocument = ({
 
       {/* Actions */}
       {!isPaid && (
-        <div className="p-6 md:p-8 flex flex-wrap gap-3">
-          {depositPending && (
-            <button
-              onClick={() => onPay(invoice, true)}
-              disabled={payingId === invoice.id + "-dep"}
-              className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
-                depositOverdue
-                  ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
-                  : "border-foreground text-foreground hover:bg-foreground hover:text-background"
-              } disabled:opacity-50`}
-            >
-              {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
-            </button>
-          )}
-          {(!invoice.deposit_required || invoice.deposit_paid) && (
-            <button
-              onClick={() => onPay(invoice, false)}
-              disabled={payingId === invoice.id}
-              className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-            >
-              {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
-            </button>
-          )}
+        <div className="p-6 md:p-8 space-y-4">
+          <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Pay with Card</p>
+          <div className="flex flex-wrap gap-3">
+            {depositPending && (
+              <button
+                onClick={() => onPay(invoice, true)}
+                disabled={payingId === invoice.id + "-dep"}
+                className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
+                  depositOverdue
+                    ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
+                    : "border-foreground text-foreground hover:bg-foreground hover:text-background"
+                } disabled:opacity-50`}
+              >
+                {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+              </button>
+            )}
+            {(!invoice.deposit_required || invoice.deposit_paid) && (
+              <button
+                onClick={() => onPay(invoice, false)}
+                disabled={payingId === invoice.id}
+                className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+              >
+                {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
+              </button>
+            )}
+          </div>
+
+          <div className="border-t border-foreground/20 pt-4">
+            <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-3">Or Pay via Zelle / CashApp</p>
+            <div className="bg-foreground/5 border border-foreground/20 p-4 space-y-2">
+              <p className="text-sm font-mono text-foreground">
+                Send payment to: <span className="font-bold">info@reeddigitalgroup.com</span>
+              </p>
+              <p className="text-xs font-mono text-foreground/70">
+                Please include your company name and invoice service in the memo. Once payment is received, your invoice will be updated within 1–2 business days.
+              </p>
+              <div className="flex gap-3 pt-2">
+                <a
+                  href="https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiUkVFRCBESUdJVEFMIEdST1VQIiwidG9rZW4iOiJpbmZvQHJlZWRkaWdpdGFsZ3JvdXAuY29tIiwiYWN0aW9uIjoicGF5bWVudCJ9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 px-6 text-xs font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2"
+                >
+                  Zelle
+                </a>
+                <a
+                  href="https://cash.app/$FriendsofJShowell"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 px-6 text-xs font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2"
+                >
+                  CashApp
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </motion.div>
