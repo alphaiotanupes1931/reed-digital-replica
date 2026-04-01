@@ -240,7 +240,7 @@ const InvoiceDocument = ({
                   Zelle
                 </a>
                 <a
-                  href="https://cash.app/$reeddigitalgroup"
+                  href="https://cash.app/login?email=info@reeddigitalgroup.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="h-10 px-6 text-xs font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2"
