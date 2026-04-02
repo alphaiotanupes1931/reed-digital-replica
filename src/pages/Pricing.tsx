@@ -33,6 +33,7 @@ const socialMedia = [
 ];
 
 const maintenance = [
+  { name: "As-Needed", price: "$75/hr", desc: "Pay only when you need help — no commitment required" },
   { name: "Basic", price: "$100/mo", desc: "Updates, backups, security monitoring" },
   { name: "Plus", price: "$200/mo", desc: "Includes content updates, SEO tweaks" },
   { name: "Premium", price: "$350/mo", desc: "Priority support, unlimited small changes, monthly strategy call" },
