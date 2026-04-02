@@ -33,9 +33,9 @@ const socialMedia = [
 ];
 
 const maintenance = [
-  { name: "Basic", price: "$100/mo", desc: "Hosting & monitoring only, 1 major change included (month-to-month)" },
-  { name: "Plus", price: "$200/mo", desc: "Up to 3 fixes or changes per month, 24hr response time" },
-  { name: "Premium", price: "$350/mo", desc: "Unlimited minor/major changes, proactive monitoring, same-day to 24hr response" },
+  { name: "Basic", price: "$100/mo", features: ["Website hosting & uptime monitoring", "Security updates & backups", "1 major change per month", "Month-to-month — no long-term contract"] },
+  { name: "Plus", price: "$200/mo", features: ["Everything in Basic", "Up to 3 fixes or changes per month", "24-hour response time", "Content & design updates"] },
+  { name: "Premium", price: "$350/mo", features: ["Everything in Plus", "Unlimited minor & major changes", "Proactive performance monitoring", "Same-day to 24hr response based on urgency"] },
 ];
 
 const extras = [
