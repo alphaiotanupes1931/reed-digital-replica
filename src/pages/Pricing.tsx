@@ -185,12 +185,16 @@ const PricingPage = () => {
                     </h4>
                     <div className="space-y-0">
                       {maintenance.map((pkg) => (
-                        <div key={pkg.name} className="flex items-center justify-between py-4 border-b border-border">
+                        <div key={pkg.name} className="flex items-start justify-between py-4 border-b border-border">
                           <div>
                             <span className="font-medium">{pkg.name}</span>
-                            <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
+                            <ul className="mt-1.5 space-y-0.5">
+                              {pkg.features.map((f) => (
+                                <li key={f} className="text-xs text-muted-foreground">· {f}</li>
+                              ))}
+                            </ul>
                           </div>
-                          <span className="font-mono text-sm">{pkg.price}</span>
+                          <span className="font-mono text-sm mt-1">{pkg.price}</span>
                         </div>
                       ))}
                     </div>
