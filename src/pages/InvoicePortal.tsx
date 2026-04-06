@@ -225,7 +225,7 @@ const InvoiceDocument = ({
             <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-3">Or Pay via Zelle / CashApp</p>
             <div className="bg-foreground/5 border border-foreground/20 p-4 space-y-2">
               <p className="text-sm font-mono text-foreground">
-                Send payment to: <span className="font-bold">info@reeddigitalgroup.com</span>
+                Send payment to: <span className="font-bold">reeddigitalgroup@gmail.com</span>
               </p>
               <p className="text-xs font-mono text-foreground/70">
                 Please include your company name and invoice service in the memo. Once payment is received, your invoice will be updated within 1–2 business days.
