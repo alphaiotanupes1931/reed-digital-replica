@@ -277,25 +277,17 @@ const AboutPage = () => {
                 <div className="grid md:grid-cols-2 gap-10 items-center">
                   <div className="space-y-4">
                     <p className="text-muted-foreground leading-relaxed">
-                      Beyond web and cybersecurity, Terell brings hands-on expertise in 
-                      <strong> robotics, embedded systems, and autonomous control architectures</strong>. 
-                      From designing sensor-fusion pipelines and PID control loops to programming 
-                      microcontrollers for real-time actuation, his work spans the full hardware-software stack.
+                      Our technical depth goes far beyond websites. We have direct, hands-on experience 
+                      building <strong>robotic systems, embedded controllers, and autonomous machines</strong> — 
+                      the kind of engineering that demands precision at every level of the stack.
                     </p>
                     <p className="text-muted-foreground leading-relaxed">
-                      His projects have involved <strong>computer vision-guided navigation</strong>, 
-                      custom PCB integration, servo orchestration, and building autonomous systems 
-                      that operate with sub-millisecond decision cycles. This low-level systems 
-                      thinking directly informs how he architects resilient, high-performance software 
-                      — from embedded firmware to production-grade web infrastructure.
+                      From programming microcontrollers and designing sensor-fusion pipelines to 
+                      implementing computer vision and real-time control systems, we understand how 
+                      complex systems actually work. That depth of knowledge is what allows us to 
+                      build software that's <strong>reliable, performant, and architected to scale</strong> — 
+                      whether it's a business web app, a secure portal, or an enterprise platform.
                     </p>
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {["Embedded C/C++", "Sensor Fusion", "PID Control", "Computer Vision", "Microcontrollers", "ROS"].map((skill) => (
-                        <span key={skill} className="px-3 py-1 bg-muted text-xs font-mono rounded">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                   <motion.div 
                     className="rounded-lg overflow-hidden border border-border"
