@@ -265,7 +265,7 @@ const Header = () => {
                 {/* Mobile footer */}
                 <div className="p-5 border-t border-border">
                   <p className="text-xs text-muted-foreground">
-                    info@reeddigitalgroup.com
+                    reeddigitalgroup@gmail.com
                   </p>
                 </div>
               </div>

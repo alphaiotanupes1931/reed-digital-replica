@@ -60,7 +60,7 @@ const ContactSection = () => {
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              info@reeddigitalgroup.com
+              reeddigitalgroup@gmail.com
             </motion.p>
           </ScrollReveal>
         </div>

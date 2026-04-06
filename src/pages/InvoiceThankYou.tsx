@@ -220,8 +220,8 @@ const InvoiceThankYou = () => {
               reeddigitalgroup@gmail.com
             </a>
             {" "}or{" "}
-            <a href="mailto:info@reeddigitalgroup.com" className="text-primary hover:underline">
-              info@reeddigitalgroup.com
+            <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">
+              reeddigitalgroup@gmail.com
             </a>
           </p>
         </div>

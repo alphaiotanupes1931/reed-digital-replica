@@ -32,8 +32,8 @@ const HomeOfficeHelp = () => {
                   <a href="mailto:reeddigitalgroup@gmail.com" className="block text-sm hover:text-brand transition-colors">
                     reeddigitalgroup@gmail.com
                   </a>
-                  <a href="mailto:info@reeddigitalgroup.com" className="block text-sm hover:text-brand transition-colors">
-                    info@reeddigitalgroup.com
+                  <a href="mailto:reeddigitalgroup@gmail.com" className="block text-sm hover:text-brand transition-colors">
+                    reeddigitalgroup@gmail.com
                   </a>
                 </div>
               </div>

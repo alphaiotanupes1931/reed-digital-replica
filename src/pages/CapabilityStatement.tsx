@@ -173,7 +173,7 @@ const CapabilityStatement = () => {
                 <p className="font-medium">Terell Reed</p>
                 <p className="text-muted-foreground text-xs">Founder & CEO</p>
                 <div className="space-y-1 mt-3 text-xs text-muted-foreground">
-                  <p>info@reeddigitalgroup.com</p>
+                  <p>reeddigitalgroup@gmail.com</p>
                   <p>(301) 332-4084</p>
                   <p>reeddigitalgroup.com</p>
                   <p>Brandywine, MD</p>

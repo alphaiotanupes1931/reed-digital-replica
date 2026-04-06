@@ -22,7 +22,7 @@ const ContactPage = () => {
   }, []);
 
   const contactItems = [
-    { icon: Mail, label: "Email", value: "info@reeddigitalgroup.com", href: "mailto:info@reeddigitalgroup.com" },
+    { icon: Mail, label: "Email", value: "reeddigitalgroup@gmail.com", href: "mailto:reeddigitalgroup@gmail.com" },
     { icon: Phone, label: "Phone", value: "(301) 332-4084", href: "tel:3013324084" },
     { icon: MapPin, label: "Location", value: "Remote Based Agency" },
     { icon: Clock, label: "Office Hours", value: "Mon – Sun: 9 AM – 5 PM EST" },
