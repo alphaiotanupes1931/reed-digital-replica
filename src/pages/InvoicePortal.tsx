@@ -225,7 +225,7 @@ const InvoiceDocument = ({
             <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-3">Or Pay via Zelle / CashApp</p>
             <div className="bg-foreground/5 border border-foreground/20 p-4 space-y-2">
               <p className="text-sm font-mono text-foreground">
-                Send payment to: <span className="font-bold">info@reeddigitalgroup.com</span>
+                Send payment to: <span className="font-bold">reeddigitalgroup@gmail.com</span>
               </p>
               <p className="text-xs font-mono text-foreground/70">
                 Please include your company name and invoice service in the memo. Once payment is received, your invoice will be updated within 1–2 business days.
@@ -240,7 +240,7 @@ const InvoiceDocument = ({
                   Zelle
                 </a>
                 <a
-                  href="https://cash.app/login?email=info@reeddigitalgroup.com"
+                  href="https://cash.app/login?email=reeddigitalgroup@gmail.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="h-10 px-6 text-xs font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2"
@@ -538,7 +538,7 @@ const InvoicePortal = () => {
             If you are having issues, please contact{" "}
             <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
             {" "}or{" "}
-            <a href="mailto:info@reeddigitalgroup.com" className="text-primary hover:underline">info@reeddigitalgroup.com</a>
+            <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
           </p>
         </div>
       </div>
