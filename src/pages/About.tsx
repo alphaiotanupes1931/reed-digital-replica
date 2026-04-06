@@ -268,6 +268,53 @@ const AboutPage = () => {
               </div>
             </ScrollReveal>
 
+            {/* Robotics & Engineering */}
+            <ScrollReveal delay={0.21}>
+              <div className="mb-24 max-w-4xl mx-auto">
+                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                  Robotics & Embedded Systems
+                </h2>
+                <div className="grid md:grid-cols-2 gap-10 items-center">
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground leading-relaxed">
+                      Beyond web and cybersecurity, Terell brings hands-on expertise in 
+                      <strong> robotics, embedded systems, and autonomous control architectures</strong>. 
+                      From designing sensor-fusion pipelines and PID control loops to programming 
+                      microcontrollers for real-time actuation, his work spans the full hardware-software stack.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      His projects have involved <strong>computer vision-guided navigation</strong>, 
+                      custom PCB integration, servo orchestration, and building autonomous systems 
+                      that operate with sub-millisecond decision cycles. This low-level systems 
+                      thinking directly informs how he architects resilient, high-performance software 
+                      — from embedded firmware to production-grade web infrastructure.
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {["Embedded C/C++", "Sensor Fusion", "PID Control", "Computer Vision", "Microcontrollers", "ROS"].map((skill) => (
+                        <span key={skill} className="px-3 py-1 bg-muted text-xs font-mono rounded">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <motion.div 
+                    className="rounded-lg overflow-hidden border border-border"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <video
+                      src="/videos/robotics-demo.mp4"
+                      className="w-full h-auto"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                    />
+                  </motion.div>
+                </div>
+              </div>
+            </ScrollReveal>
+
             {/* Awards Section */}
             <ScrollReveal delay={0.22}>
               <div className="mb-24">
