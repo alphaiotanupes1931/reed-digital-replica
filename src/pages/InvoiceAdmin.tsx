@@ -177,12 +177,28 @@ const InvoiceAdmin = () => {
   };
 
   const handleDelete = async (invoiceId: string) => {
+    if (!confirm("Permanently remove this invoice? This cannot be undone.")) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "delete_invoice", invoice_id: invoiceId, password: ADMIN_PASSWORD },
       });
       if (res.error) throw res.error;
       toast({ title: "Invoice deleted" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleSetStatus = async (invoiceId: string, status: "approved" | "paid") => {
+    const label = status === "paid" ? "Mark this invoice as PAID?" : "Mark this invoice as UNPAID?";
+    if (!confirm(label)) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_status", invoice_id: invoiceId, status, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: status === "paid" ? "Marked as paid" : "Marked as unpaid" });
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
