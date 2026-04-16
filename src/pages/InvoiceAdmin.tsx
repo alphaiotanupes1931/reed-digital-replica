@@ -658,7 +658,7 @@ const InvoiceAdmin = () => {
                         <span className="text-3xl font-mono font-bold text-foreground tracking-tight">
                           ${inv.price.toLocaleString()}
                         </span>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap justify-end">
                           {inv.status === "draft" && (
                             <button
                               onClick={() => handleApprove(inv.id)}
@@ -667,14 +667,27 @@ const InvoiceAdmin = () => {
                               Approve
                             </button>
                           )}
-                          {inv.status !== "paid" && (
+                          {inv.status !== "paid" ? (
                             <button
-                              onClick={() => handleDelete(inv.id)}
-                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
+                              onClick={() => handleSetStatus(inv.id, "paid")}
+                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-emerald-500 hover:text-emerald-500 rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
                             >
-                              Remove
+                              Mark Paid
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleSetStatus(inv.id, "approved")}
+                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-foreground rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
+                            >
+                              Mark Unpaid
                             </button>
                           )}
+                          <button
+                            onClick={() => handleDelete(inv.id)}
+                            className="h-9 px-4 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                     </div>
