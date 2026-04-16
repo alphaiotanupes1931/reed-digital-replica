@@ -177,12 +177,28 @@ const InvoiceAdmin = () => {
   };
 
   const handleDelete = async (invoiceId: string) => {
+    if (!confirm("Permanently remove this invoice? This cannot be undone.")) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "delete_invoice", invoice_id: invoiceId, password: ADMIN_PASSWORD },
       });
       if (res.error) throw res.error;
       toast({ title: "Invoice deleted" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleSetStatus = async (invoiceId: string, status: "approved" | "paid") => {
+    const label = status === "paid" ? "Mark this invoice as PAID?" : "Mark this invoice as UNPAID?";
+    if (!confirm(label)) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_status", invoice_id: invoiceId, status, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: status === "paid" ? "Marked as paid" : "Marked as unpaid" });
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -642,7 +658,7 @@ const InvoiceAdmin = () => {
                         <span className="text-3xl font-mono font-bold text-foreground tracking-tight">
                           ${inv.price.toLocaleString()}
                         </span>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap justify-end">
                           {inv.status === "draft" && (
                             <button
                               onClick={() => handleApprove(inv.id)}
@@ -651,14 +667,27 @@ const InvoiceAdmin = () => {
                               Approve
                             </button>
                           )}
-                          {inv.status !== "paid" && (
+                          {inv.status !== "paid" ? (
                             <button
-                              onClick={() => handleDelete(inv.id)}
-                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
+                              onClick={() => handleSetStatus(inv.id, "paid")}
+                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-emerald-500 hover:text-emerald-500 rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
                             >
-                              Remove
+                              Mark Paid
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleSetStatus(inv.id, "approved")}
+                              className="h-9 px-4 flex items-center justify-center border border-border hover:border-foreground rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
+                            >
+                              Mark Unpaid
                             </button>
                           )}
+                          <button
+                            onClick={() => handleDelete(inv.id)}
+                            className="h-9 px-4 flex items-center justify-center border border-border hover:border-destructive hover:text-destructive rounded-none transition-colors text-xs font-mono uppercase tracking-[0.1em] text-foreground"
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                     </div>
