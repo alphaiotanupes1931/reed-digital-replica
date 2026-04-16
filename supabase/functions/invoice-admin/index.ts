@@ -111,6 +111,24 @@ serve(async (req) => {
       });
     }
 
+    if (action === "set_status") {
+      const { invoice_id, status } = data;
+      const updates: Record<string, unknown> = { status };
+      if (status === "paid") {
+        updates.deposit_paid = true;
+      }
+      const { error } = await supabase
+        .from("invoices")
+        .update(updates)
+        .eq("id", invoice_id);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "delete_invoice") {
       const { invoice_id } = data;
       const { error } = await supabase
