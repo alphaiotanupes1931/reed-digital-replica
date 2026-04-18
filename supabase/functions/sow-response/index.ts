@@ -16,7 +16,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { email, action, message, status } = await req.json();
+    const { email, action, message, status, comment_index } = await req.json();
     if (!email) throw new Error("Email required");
 
     const supabase = createClient(
@@ -30,6 +30,7 @@ serve(async (req) => {
     if (!client) throw new Error("Client not found");
 
     const updates: Record<string, unknown> = {};
+    const existing: Comment[] = Array.isArray(client.sow_comments) ? client.sow_comments : [];
 
     if (action === "set_status") {
       if (!["approved", "rejected", "pending"].includes(status)) throw new Error("Invalid status");
@@ -38,12 +39,23 @@ serve(async (req) => {
 
     if (action === "add_comment") {
       if (!message || typeof message !== "string" || !message.trim()) throw new Error("Message required");
-      const existing: Comment[] = Array.isArray(client.sow_comments) ? client.sow_comments : [];
       existing.push({
         author: "client",
         message: message.trim().slice(0, 2000),
         created_at: new Date().toISOString(),
       });
+      updates.sow_comments = existing;
+    }
+
+    if (action === "delete_comment") {
+      if (typeof comment_index !== "number" || comment_index < 0 || comment_index >= existing.length) {
+        throw new Error("Invalid comment index");
+      }
+      // Clients can only delete their own comments
+      if (existing[comment_index].author !== "client") {
+        throw new Error("You can only delete your own comments");
+      }
+      existing.splice(comment_index, 1);
       updates.sow_comments = existing;
     }
 

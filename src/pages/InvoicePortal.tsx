@@ -390,6 +390,11 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
     setComment("");
     toast({ title: "Comment sent" });
   };
+  const handleDeleteComment = async (index: number) => {
+    if (!confirm("Delete this comment?")) return;
+    await callApi({ action: "delete_comment", comment_index: index });
+    toast({ title: "Comment deleted" });
+  };
 
   const statusBadge =
     status === "approved"
@@ -476,6 +481,15 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
                   <span className="text-xs font-mono text-muted-foreground">
                     {new Date(c.created_at).toLocaleString()}
                   </span>
+                  {c.author === "client" && (
+                    <button
+                      onClick={() => handleDeleteComment(i)}
+                      disabled={submitting}
+                      className="ml-auto text-xs font-mono text-muted-foreground hover:text-destructive transition-colors uppercase tracking-[0.15em]"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
                 <p className="text-base font-mono text-foreground leading-relaxed whitespace-pre-wrap">{c.message}</p>
               </div>
@@ -662,6 +676,16 @@ const InvoicePortal = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
+              {/* Desktop viewing notice (mobile only) */}
+              <div className="md:hidden mt-6 border-2 border-primary/40 bg-primary/5 p-4">
+                <p className="text-xs font-mono text-primary uppercase tracking-[0.2em] mb-1 font-bold">
+                  Tip
+                </p>
+                <p className="text-sm font-mono text-foreground leading-relaxed">
+                  For the best experience, we recommend viewing this portal on a desktop or laptop computer.
+                </p>
+              </div>
+
               {/* Welcome */}
               <div className="py-10 border-b border-border">
                 <WelcomeBlock client={client} />

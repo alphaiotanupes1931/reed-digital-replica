@@ -306,6 +306,21 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleDeleteSowComment = async (commentIndex: number) => {
+    if (!selectedClientId) return;
+    if (!confirm("Delete this comment?")) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "delete_sow_comment", client_id: selectedClientId, comment_index: commentIndex, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Comment deleted" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleSetStatus = async (invoiceId: string, status: "approved" | "paid") => {
     const label = status === "paid" ? "Mark this invoice as PAID?" : "Mark this invoice as UNPAID?";
     if (!confirm(label)) return;
@@ -466,11 +481,17 @@ const InvoiceAdmin = () => {
                       <div className="mt-4 space-y-3 max-h-72 overflow-y-auto pr-2">
                         {comments.map((c, i) => (
                           <div key={i} className="border-l-2 border-foreground/30 pl-4">
-                            <div className="flex items-baseline gap-2 mb-1">
+                            <div className="flex items-baseline gap-2 mb-1 flex-wrap">
                               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
                                 {c.author === "admin" ? "You" : selectedClient?.owner_name || selectedClient?.company_name || "Client"}
                               </span>
                               <span className="text-[10px] font-mono text-foreground/40">{new Date(c.created_at).toLocaleString()}</span>
+                              <button
+                                onClick={() => handleDeleteSowComment(i)}
+                                className="ml-auto text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 hover:text-destructive transition-colors"
+                              >
+                                Delete
+                              </button>
                             </div>
                             <p className="text-sm font-mono text-foreground whitespace-pre-wrap">{c.message}</p>
                           </div>

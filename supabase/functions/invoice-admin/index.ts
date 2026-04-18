@@ -91,6 +91,21 @@ serve(async (req) => {
       });
     }
 
+    if (action === "delete_sow_comment") {
+      const { client_id, comment_index } = data;
+      const { data: c } = await supabase.from("clients").select("sow_comments").eq("id", client_id).maybeSingle();
+      const existing: Array<{ author: string; message: string; created_at: string }> = Array.isArray(c?.sow_comments) ? c!.sow_comments : [];
+      if (typeof comment_index !== "number" || comment_index < 0 || comment_index >= existing.length) {
+        throw new Error("Invalid comment index");
+      }
+      existing.splice(comment_index, 1);
+      const { error } = await supabase.from("clients").update({ sow_comments: existing }).eq("id", client_id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "create_invoice") {
       const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id } = data;
 
