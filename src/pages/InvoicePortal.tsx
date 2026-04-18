@@ -366,19 +366,17 @@ const InvoicePortal = () => {
     }
   }, [searchParams]);
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const loadClientData = async (emailAddr: string, showError = true) => {
+    const addr = emailAddr.toLowerCase().trim();
     const { data: clientData } = await supabase
       .from("clients")
       .select("*")
-      .eq("email", email.toLowerCase().trim())
+      .eq("email", addr)
       .maybeSingle();
 
     if (!clientData) {
-      toast({ title: "No account found", variant: "destructive" });
-      setLoading(false);
-      return;
+      if (showError) toast({ title: "No account found", variant: "destructive" });
+      return false;
     }
 
     setClient(clientData as unknown as Client);
@@ -390,7 +388,18 @@ const InvoicePortal = () => {
       .order("created_at", { ascending: false });
 
     setInvoices((invData as unknown as Invoice[]) || []);
+    return true;
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    await loadClientData(email);
     setLoading(false);
+  };
+
+  const refreshClient = async () => {
+    if (client?.email) await loadClientData(client.email, false);
   };
 
   const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
