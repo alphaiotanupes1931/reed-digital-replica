@@ -185,6 +185,10 @@ const InvoiceAdmin = () => {
             ? c.phases
             : DEFAULT_PHASES) as Phase[]
         );
+        setProjectType(c.project_type || "");
+        setProjectBuildCost(c.project_build_cost || "");
+        setProjectMaintenanceCost(c.project_maintenance_cost || "");
+        setProjectEstimatedTotal(c.project_estimated_total || "");
       }
     }
   }, [selectedClientId, clients]);
