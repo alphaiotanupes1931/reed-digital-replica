@@ -518,6 +518,51 @@ const InvoiceAdmin = () => {
                 );
               })()}
 
+              {/* Project summary */}
+              <div className="border border-border p-5">
+                <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-4">Project Summary (shown at top of client portal)</label>
+                <div className="grid gap-4">
+                  <div>
+                    <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Project Type</span>
+                    <input
+                      value={projectType}
+                      onChange={(e) => setProjectType(e.target.value)}
+                      placeholder="e.g. Landing Page, E-commerce Website, Mobile App"
+                      className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <div>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Build Cost</span>
+                      <input
+                        value={projectBuildCost}
+                        onChange={(e) => setProjectBuildCost(e.target.value)}
+                        placeholder="$500–800"
+                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Maintenance / mo</span>
+                      <input
+                        value={projectMaintenanceCost}
+                        onChange={(e) => setProjectMaintenanceCost(e.target.value)}
+                        placeholder="$200–300"
+                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Estimated Total</span>
+                      <input
+                        value={projectEstimatedTotal}
+                        onChange={(e) => setProjectEstimatedTotal(e.target.value)}
+                        placeholder="$700–1,100"
+                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Scope of Work</label>
                 <textarea
