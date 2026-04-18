@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
     label: "Tools",
     children: [
       { label: "Home Office", href: "/home-office/login", desc: "Internal workspace" },
-      { label: "Client Portal", href: "/invoice", desc: "View & pay invoices" },
+      { label: "Client Portal", href: "/portal", desc: "View & pay invoices" },
     ],
   },
   { label: "Contact", href: "/contact" },
