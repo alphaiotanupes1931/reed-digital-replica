@@ -529,7 +529,7 @@ const InvoicePortal = () => {
 
                 {/* Scope of Work + Review */}
                 {client.scope_of_work && (
-                  <SowReview client={client} onChange={loadInvoices} />
+                  <SowReview client={client} onChange={refreshClient} />
                 )}
 
                 {/* Phase Progress Tracker */}
