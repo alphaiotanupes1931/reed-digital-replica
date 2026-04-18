@@ -728,6 +728,28 @@ const InvoicePortal = () => {
                     <p className="text-xs font-mono text-muted-foreground mt-4 italic">
                       These are estimates. Final pricing is confirmed in your invoice.
                     </p>
+
+                    {/* Maintenance Plans Callout */}
+                    <div className="mt-6 border-t-2 border-foreground pt-6">
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-3 font-bold">
+                        About Your Monthly Maintenance
+                      </p>
+                      <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-4">
+                        After your site launches, you'll need a monthly maintenance plan to keep it online, secure, and updated. Take your time looking through the options — <span className="font-bold">you don't have to decide right now.</span>
+                      </p>
+                      <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
+                        About midway through the project, we'll check in and ask which plan you're leaning toward. That way we can finish building your site around the right plan (for example, setting up newsletter tools or analytics if your plan includes them) so everything is ready on launch day.
+                      </p>
+                      <a
+                        href="/maintenance-plans"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 font-mono text-xs uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        View Maintenance Plans
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    </div>
                   </div>
                 )}
 
