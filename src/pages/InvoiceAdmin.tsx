@@ -697,12 +697,12 @@ const InvoiceAdmin = () => {
                 const cPaid = cInvoices.filter((inv) => inv.status === "paid").length;
                 const cTotal = cInvoices.reduce((s, inv) => s + inv.price, 0);
                 return (
-                  <button
+                  <div
                     key={c.id}
                     onClick={() => setSelectedClientId(c.id)}
-                    className="w-full text-left border-b border-border py-6 hover:bg-foreground/5 transition-colors group"
+                    className="w-full text-left border-b border-border py-6 hover:bg-foreground/5 transition-colors group cursor-pointer"
                   >
-                    <div className="flex items-center justify-between gap-6">
+                    <div className="flex items-center justify-between gap-6 px-1">
                       <div className="flex gap-6 items-start flex-1 min-w-0">
                         <span className="text-3xl font-mono font-bold text-foreground/20 leading-none pt-1 hidden md:block">{String(i + 1).padStart(2, "0")}</span>
                         <div className="min-w-0 flex-1">
@@ -714,12 +714,18 @@ const InvoiceAdmin = () => {
                           <p className="text-xs font-mono text-foreground/50 mt-1">{cInvoices.length} invoices · {cPaid} paid</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-6 shrink-0">
+                      <div className="flex items-center gap-4 shrink-0">
                         <span className="text-2xl font-mono font-bold">${cTotal.toLocaleString()}</span>
+                        <button
+                          onClick={(e) => handleDeleteClient(e, c.id, c.company_name)}
+                          className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]"
+                        >
+                          Remove
+                        </button>
                         <ChevronRight className="h-5 w-5 text-foreground/40 group-hover:text-foreground transition-colors" />
                       </div>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
