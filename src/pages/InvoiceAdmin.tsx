@@ -306,6 +306,21 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleDeleteSowComment = async (commentIndex: number) => {
+    if (!selectedClientId) return;
+    if (!confirm("Delete this comment?")) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "delete_sow_comment", client_id: selectedClientId, comment_index: commentIndex, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Comment deleted" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleSetStatus = async (invoiceId: string, status: "approved" | "paid") => {
     const label = status === "paid" ? "Mark this invoice as PAID?" : "Mark this invoice as UNPAID?";
     if (!confirm(label)) return;
