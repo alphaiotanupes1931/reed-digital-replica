@@ -118,6 +118,10 @@ const InvoiceAdmin = () => {
   // SOW editing
   const [sowText, setSowText] = useState("");
   const [phases, setPhases] = useState<Phase[]>(DEFAULT_PHASES);
+  const [projectType, setProjectType] = useState("");
+  const [projectBuildCost, setProjectBuildCost] = useState("");
+  const [projectMaintenanceCost, setProjectMaintenanceCost] = useState("");
+  const [projectEstimatedTotal, setProjectEstimatedTotal] = useState("");
 
   // Invoice creation (per-client)
   const [showInvoiceForm, setShowInvoiceForm] = useState(false);
