@@ -395,12 +395,16 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
 
   return (
     <div className="mt-10 border-2 border-foreground p-6 md:p-8">
-      <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+      <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
         <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Scope of Work</p>
         <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${statusBadge}`}>
           {statusLabel}
         </span>
       </div>
+
+      <p className="text-[11px] font-mono text-muted-foreground leading-relaxed mb-5 italic">
+        A Scope of Work (SOW) outlines what we'll build for you — the deliverables, features, and project boundaries. Review it below, leave comments if anything needs adjusting, and approve when you're ready for us to begin.
+      </p>
 
       <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
         {client.scope_of_work}
