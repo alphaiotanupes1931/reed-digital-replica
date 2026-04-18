@@ -272,8 +272,18 @@ const InvoiceDocument = ({
   );
 };
 
+const extractFirstName = (client: Client): string => {
+  const raw = (client.owner_name || client.company_name || "").trim();
+  if (!raw) return "there";
+  // Strip common honorifics so "Ms. Sam" -> "Sam"
+  const honorifics = /^(mr|mrs|ms|miss|mx|dr|prof|sir|madam|mister)\.?\s+/i;
+  const cleaned = raw.replace(honorifics, "").trim();
+  const first = cleaned.split(/\s+/)[0];
+  return first || raw.split(/\s+/)[0] || "there";
+};
+
 const WelcomeBlock = ({ client }: { client: Client }) => {
-  const firstName = (client.owner_name || client.company_name || "").trim().split(" ")[0] || "there";
+  const firstName = extractFirstName(client);
   const greeting = `Welcome, ${firstName}`;
   const { displayed, done } = useTypingEffect(greeting, 60, 200);
   return (
