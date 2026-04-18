@@ -413,33 +413,49 @@ const InvoicePortal = () => {
               transition={{ duration: 0.5 }}
             >
               {/* Welcome */}
-              <div className="py-10 border-b border-border">
-                <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                  Welcome back
-                </p>
-                <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight">
-                  {client.company_name}
-                </h1>
-                {/* Check if any invoice has a message */}
-                {invoices.some(inv => inv.message) && (
-                  <div className="mt-6 border-2 border-primary/30 p-5">
-                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
-                      You have a special message
-                    </p>
-                    {invoices.filter(inv => inv.message).map(inv => (
-                      <p key={inv.id} className="text-sm font-mono text-foreground leading-relaxed">
-                        {inv.message}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <WelcomeBlock client={client} />
 
-              {invoices.length === 0 ? (
-                <div className="py-20 text-center">
-                  <p className="text-lg font-mono text-foreground">No invoices available yet</p>
+              {/* Special message */}
+              {invoices.some(inv => inv.message) && (
+                <div className="mt-6 border-2 border-primary/30 p-5">
+                  <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
+                    You have a special message
+                  </p>
+                  {invoices.filter(inv => inv.message).map(inv => (
+                    <p key={inv.id} className="text-sm font-mono text-foreground leading-relaxed">
+                      {inv.message}
+                    </p>
+                  ))}
                 </div>
-              ) : (
+              )}
+
+              {/* Scope of Work */}
+              {client.scope_of_work && (
+                <div className="mt-10 border-2 border-foreground p-6 md:p-8">
+                  <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
+                    Scope of Work
+                  </p>
+                  <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
+                    {client.scope_of_work}
+                  </p>
+                </div>
+              )}
+
+              {/* Phase Progress Tracker */}
+              {client.phases && client.phases.length > 0 && (
+                <PhaseTracker phases={client.phases} />
+              )}
+            </div>
+
+            {invoices.length === 0 ? (
+              <div className="py-20 text-center border-2 border-dashed border-border mt-8">
+                <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">Status</p>
+                <p className="text-2xl font-mono font-bold text-foreground">Invoice is not ready</p>
+                <p className="text-sm font-mono text-muted-foreground mt-3 max-w-md mx-auto">
+                  Your invoice hasn't been issued yet. You'll see it here as soon as it's prepared. Check back soon.
+                </p>
+              </div>
+            ) : (
                 <div>
                   <div className="flex items-center justify-between py-6">
                     <span className="text-sm font-mono text-foreground uppercase tracking-[0.3em]">
