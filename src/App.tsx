@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import CustomCursor from "./components/CustomCursor";
 import PageLoader from "./components/PageLoader";
@@ -62,8 +62,8 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/portal" element={<InvoicePortal />} />
             <Route path="/portal/thank-you" element={<InvoiceThankYou />} />
-            <Route path="/invoice" element={<InvoicePortal />} />
-            <Route path="/invoice/thank-you" element={<InvoiceThankYou />} />
+            <Route path="/invoice" element={<Navigate to="/portal" replace />} />
+            <Route path="/invoice/thank-you" element={<Navigate to="/portal/thank-you" replace />} />
             <Route path="/admin" element={<InvoiceAdmin />} />
             <Route path="/home-office/login" element={<HomeOfficeLogin />} />
             <Route path="/home-office" element={<HomeOffice />} />
