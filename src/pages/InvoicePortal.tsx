@@ -518,16 +518,9 @@ const InvoicePortal = () => {
                   </div>
                 )}
 
-                {/* Scope of Work */}
+                {/* Scope of Work + Review */}
                 {client.scope_of_work && (
-                  <div className="mt-10 border-2 border-foreground p-6 md:p-8">
-                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
-                      Scope of Work
-                    </p>
-                    <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
-                      {client.scope_of_work}
-                    </p>
-                  </div>
+                  <SowReview client={client} onChange={loadInvoices} />
                 )}
 
                 {/* Phase Progress Tracker */}
