@@ -229,6 +229,10 @@ const InvoiceAdmin = () => {
           client_id: selectedClientId,
           scope_of_work: sowText,
           phases,
+          project_type: projectType,
+          project_build_cost: projectBuildCost,
+          project_maintenance_cost: projectMaintenanceCost,
+          project_estimated_total: projectEstimatedTotal,
           password: ADMIN_PASSWORD,
         },
       });
