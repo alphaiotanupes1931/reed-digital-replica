@@ -199,6 +199,18 @@ serve(async (req) => {
       });
     }
 
+    if (action === "delete_client") {
+      const { client_id } = data;
+      // Delete invoices first (no FK cascade configured)
+      const { error: invErr } = await supabase.from("invoices").delete().eq("client_id", client_id);
+      if (invErr) throw invErr;
+      const { error } = await supabase.from("clients").delete().eq("id", client_id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "sync_payments") {
       const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
       if (!STRIPE_SECRET_KEY) throw new Error("Stripe not configured");
