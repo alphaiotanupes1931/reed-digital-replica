@@ -9,10 +9,18 @@ import { toast } from "@/hooks/use-toast";
 import { useSearchParams, Link } from "react-router-dom";
 import logo from "@/assets/rdg-header-logo.png";
 
+interface Phase {
+  name: string;
+  status: "pending" | "in_progress" | "complete";
+}
+
 interface Client {
   id: string;
   company_name: string;
   email: string;
+  owner_name: string | null;
+  scope_of_work: string | null;
+  phases: Phase[] | null;
 }
 
 interface Deliverable {
