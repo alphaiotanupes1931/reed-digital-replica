@@ -676,6 +676,16 @@ const InvoicePortal = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
+              {/* Desktop viewing notice (mobile only) */}
+              <div className="md:hidden mt-6 border-2 border-primary/40 bg-primary/5 p-4">
+                <p className="text-xs font-mono text-primary uppercase tracking-[0.2em] mb-1 font-bold">
+                  Tip
+                </p>
+                <p className="text-sm font-mono text-foreground leading-relaxed">
+                  For the best experience, we recommend viewing this portal on a desktop or laptop computer.
+                </p>
+              </div>
+
               {/* Welcome */}
               <div className="py-10 border-b border-border">
                 <WelcomeBlock client={client} />
