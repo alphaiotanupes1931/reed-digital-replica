@@ -565,11 +565,11 @@ const InvoiceAdmin = () => {
                       />
                     </div>
                     <div>
-                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Maintenance / mo</span>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Maintenance / mo (or N/A)</span>
                       <input
                         value={projectMaintenanceCost}
                         onChange={(e) => setProjectMaintenanceCost(e.target.value)}
-                        placeholder="$200–300"
+                        placeholder="$200–300 or N/A"
                         className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
                       />
                     </div>
