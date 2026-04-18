@@ -399,59 +399,85 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
       : "bg-foreground text-background";
   const statusLabel = status === "approved" ? "Approved" : status === "rejected" ? "Changes Requested" : "Awaiting Review";
 
+  const sowText = client.scope_of_work || "";
+  const isLong = sowText.length > 320;
+  const [expanded, setExpanded] = useState(!isLong);
+
   return (
-    <div className="mt-10 border-2 border-foreground p-6 md:p-8">
-      <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
+    <div className="mt-10 border-2 border-foreground p-6 md:p-10 bg-background">
+      <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
         <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Scope of Work</p>
-        <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${statusBadge}`}>
+        <span className={`text-[11px] font-mono uppercase tracking-[0.2em] px-3 py-1.5 ${statusBadge}`}>
           {statusLabel}
         </span>
       </div>
 
-      <p className="text-[11px] font-mono text-muted-foreground leading-relaxed mb-5 italic">
-        A Scope of Work (SOW) outlines what we'll build for you — the deliverables, features, and project boundaries. Review it below, leave comments if anything needs adjusting, and approve when you're ready for us to begin.
+      <p className="text-base font-mono text-muted-foreground leading-relaxed mb-6">
+        This is the plan for your project — what we'll build, what's included, and what to expect. Read it over, leave a comment if anything is unclear, and approve when you're happy.
       </p>
 
-      <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
-        {client.scope_of_work}
-      </p>
-
-      <div className="mt-6 flex flex-wrap gap-3">
-        <Button
-          onClick={handleApprove}
-          disabled={submitting || status === "approved"}
-          className="h-11 px-6 font-mono text-xs uppercase tracking-[0.2em] rounded-none bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40"
-        >
-          {status === "approved" ? "Approved" : "Approve"}
-        </Button>
-        <Button
-          onClick={handleReject}
-          disabled={submitting || status === "rejected"}
-          variant="outline"
-          className="h-11 px-6 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-foreground hover:border-destructive hover:text-destructive disabled:opacity-40"
-        >
-          {status === "rejected" ? "Changes Requested" : "Request Changes"}
-        </Button>
+      <div className={`relative ${!expanded && isLong ? "max-h-48 overflow-hidden" : ""}`}>
+        <p className="text-lg font-mono text-foreground leading-[1.85] whitespace-pre-wrap">
+          {sowText}
+        </p>
+        {!expanded && isLong && (
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+        )}
       </div>
 
-      <div className="mt-8 border-t border-border pt-6">
-        <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-4">
-          Comments {comments.length > 0 && <span className="text-foreground/40">({comments.length})</span>}
+      {isLong && (
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          className="mt-4 text-base font-mono text-primary hover:text-foreground transition-colors underline underline-offset-4"
+        >
+          {expanded ? "Show less" : "Read full scope →"}
+        </button>
+      )}
+
+      <div className="mt-8 pt-6 border-t border-border">
+        <p className="text-base font-mono text-foreground mb-4">
+          Ready to move forward?
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button
+            onClick={handleApprove}
+            disabled={submitting || status === "approved"}
+            className="h-14 px-8 font-mono text-base rounded-none bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40"
+          >
+            {status === "approved" ? "✓ Approved" : "Approve Scope"}
+          </Button>
+          <Button
+            onClick={handleReject}
+            disabled={submitting || status === "rejected"}
+            variant="outline"
+            className="h-14 px-8 font-mono text-base rounded-none border-2 border-foreground hover:border-destructive hover:text-destructive disabled:opacity-40"
+          >
+            {status === "rejected" ? "Changes Requested" : "Request Changes"}
+          </Button>
+        </div>
+      </div>
+
+      <div className="mt-10 border-t border-border pt-8">
+        <p className="text-base font-mono text-foreground mb-2 font-bold">
+          Questions or comments?
+        </p>
+        <p className="text-sm font-mono text-muted-foreground mb-5">
+          Leave a note below and we'll respond as soon as possible.
         </p>
 
         {comments.length > 0 && (
-          <div className="space-y-4 mb-6 max-h-72 overflow-y-auto pr-2">
+          <div className="space-y-5 mb-6 max-h-80 overflow-y-auto pr-2">
             {comments.map((c, i) => (
-              <div key={i} className="border-l-2 border-foreground/30 pl-4">
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
+              <div key={i} className="border-l-2 border-primary pl-5 py-1">
+                <div className="flex items-baseline gap-3 mb-2 flex-wrap">
+                  <span className="text-xs font-mono uppercase tracking-[0.2em] text-primary font-bold">
                     {c.author === "admin" ? "Reed Digital Group" : "You"}
                   </span>
-                  <span className="text-[10px] font-mono text-foreground/40">
+                  <span className="text-xs font-mono text-muted-foreground">
                     {new Date(c.created_at).toLocaleString()}
                   </span>
                 </div>
-                <p className="text-sm font-mono text-foreground whitespace-pre-wrap">{c.message}</p>
+                <p className="text-base font-mono text-foreground leading-relaxed whitespace-pre-wrap">{c.message}</p>
               </div>
             ))}
           </div>
@@ -461,15 +487,15 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Leave a comment or question about the scope..."
-            rows={3}
+            placeholder="Type your question or comment here..."
+            rows={4}
             maxLength={2000}
-            className="w-full bg-transparent border border-border focus:border-foreground p-3 font-mono text-sm text-foreground placeholder:text-foreground/40 focus:outline-none resize-none"
+            className="w-full bg-transparent border-2 border-border focus:border-foreground p-4 font-mono text-base text-foreground placeholder:text-foreground/40 focus:outline-none resize-none leading-relaxed"
           />
           <Button
             type="submit"
             disabled={submitting || !comment.trim()}
-            className="h-11 px-6 font-mono text-xs uppercase tracking-[0.2em] rounded-none disabled:opacity-40"
+            className="h-14 px-8 font-mono text-base rounded-none disabled:opacity-40"
           >
             {submitting ? "Sending..." : "Send Comment"}
           </Button>
