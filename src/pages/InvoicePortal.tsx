@@ -705,38 +705,48 @@ const InvoicePortal = () => {
                         {client.project_type}
                       </h2>
                     )}
-                    <div className="grid sm:grid-cols-3 gap-4">
-                      {client.project_build_cost && (
-                        <div className="border border-border p-4">
-                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Build</p>
-                          <p className="text-xl font-mono font-bold text-foreground">{client.project_build_cost}</p>
-                        </div>
-                      )}
-                      {client.project_maintenance_cost && (
-                        <div className="border border-border p-4">
-                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Maintenance / mo</p>
-                          <p className="text-xl font-mono font-bold text-foreground">{client.project_maintenance_cost}</p>
-                        </div>
-                      )}
-                      {client.project_estimated_total && (
-                        <div className="border-2 border-primary p-4 bg-primary/5">
-                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">First Month Estimated Total</p>
-                          <p className="text-xl font-mono font-bold text-foreground">{client.project_estimated_total}</p>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs font-mono text-muted-foreground mt-4 italic">
-                      These are estimates. Final pricing is confirmed in your invoice.
-                    </p>
+                    {(() => {
+                      const maintRaw = (client.project_maintenance_cost || "").trim();
+                      const maintTBD = !maintRaw || /^n\/?a$/i.test(maintRaw) || /tbd/i.test(maintRaw);
+                      const firstMonthTotal = maintTBD
+                        ? client.project_build_cost
+                        : client.project_estimated_total;
+                      return (
+                        <>
+                          <div className="grid sm:grid-cols-3 gap-4">
+                            {client.project_build_cost && (
+                              <div className="border border-border p-4">
+                                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Build</p>
+                                <p className="text-xl font-mono font-bold text-foreground">{client.project_build_cost}</p>
+                              </div>
+                            )}
+                            {!maintTBD && (
+                              <div className="border border-border p-4">
+                                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Maintenance / mo</p>
+                                <p className="text-xl font-mono font-bold text-foreground">{maintRaw}</p>
+                              </div>
+                            )}
+                            {firstMonthTotal && (
+                              <div className="border-2 border-primary p-4 bg-primary/5">
+                                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">First Month Estimated Total</p>
+                                <p className="text-xl font-mono font-bold text-foreground">{firstMonthTotal}</p>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs font-mono text-muted-foreground mt-4 italic">
+                            These are estimates. Final pricing is confirmed in your invoice.
+                          </p>
 
-                    {/* Ongoing Maintenance */}
-                    <div className="mt-6 border-t-2 border-foreground pt-6">
-                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-3 font-bold">
-                        Ongoing Maintenance
-                      </p>
-                      <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
-                        After launch, a monthly plan keeps your site online and updated. No rush — we'll check in midway through the build to lock in your choice.
-                      </p>
+                          {/* Ongoing Maintenance */}
+                          <div className="mt-6 border-t-2 border-foreground pt-6">
+                            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-3 font-bold">
+                              Ongoing Maintenance
+                            </p>
+                            <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
+                              {maintTBD
+                                ? "Maintenance plan not selected yet. Once you pick one, billing starts on the 1st of the following month — separate from your build invoice."
+                                : "Your maintenance plan starts on the 1st of the month after launch. Billed monthly, separate from the build invoice."}
+                            </p>
                       <a
                         href="/maintenance-plans"
                         target="_blank"
