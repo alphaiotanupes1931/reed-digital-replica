@@ -481,6 +481,15 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
                   <span className="text-xs font-mono text-muted-foreground">
                     {new Date(c.created_at).toLocaleString()}
                   </span>
+                  {c.author === "client" && (
+                    <button
+                      onClick={() => handleDeleteComment(i)}
+                      disabled={submitting}
+                      className="ml-auto text-xs font-mono text-muted-foreground hover:text-destructive transition-colors uppercase tracking-[0.15em]"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
                 <p className="text-base font-mono text-foreground leading-relaxed whitespace-pre-wrap">{c.message}</p>
               </div>
