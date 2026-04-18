@@ -22,6 +22,7 @@ const navItems: NavItem[] = [
     children: [
       { label: "Portfolio", href: "/portfolio", desc: "View our recent work" },
       { label: "Pricing", href: "/pricing", desc: "Transparent pricing plans" },
+      { label: "Maintenance Plans", href: "/maintenance-plans", desc: "Monthly care for your site" },
       { label: "Case Studies", href: "/work", desc: "In-depth project breakdowns" },
     ],
   },

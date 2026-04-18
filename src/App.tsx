@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
 import Pricing from "./pages/Pricing";
+import MaintenancePlans from "./pages/MaintenancePlans";
 import Work from "./pages/Work";
 import Portfolio from "./pages/Portfolio";
 import Testimonials from "./pages/Testimonials";
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/government" element={<Government />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/maintenance-plans" element={<MaintenancePlans />} />
             <Route path="/work" element={<Work />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/testimonials" element={<Testimonials />} />
