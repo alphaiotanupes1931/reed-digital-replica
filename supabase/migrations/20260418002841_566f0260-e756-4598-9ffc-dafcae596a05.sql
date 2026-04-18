@@ -1,0 +1,1 @@
+CREATE POLICY "Only service role can delete clients" ON public.clients FOR DELETE TO service_role USING (true);
