@@ -390,6 +390,11 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
     setComment("");
     toast({ title: "Comment sent" });
   };
+  const handleDeleteComment = async (index: number) => {
+    if (!confirm("Delete this comment?")) return;
+    await callApi({ action: "delete_comment", comment_index: index });
+    toast({ title: "Comment deleted" });
+  };
 
   const statusBadge =
     status === "approved"
