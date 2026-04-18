@@ -446,6 +446,45 @@ const InvoiceAdmin = () => {
             {/* SOW TAB */}
             <TabsContent value="sow" className="mt-8 space-y-10">
               <div>
+            {/* SOW TAB */}
+            <TabsContent value="sow" className="mt-8 space-y-10">
+              {/* Client Review Status & Comments */}
+              {(() => {
+                const status = selectedClient?.sow_status || "pending";
+                const comments: SowComment[] = Array.isArray(selectedClient?.sow_comments) ? selectedClient!.sow_comments! : [];
+                const badge =
+                  status === "approved" ? "bg-emerald-500 text-background"
+                  : status === "rejected" ? "bg-destructive text-destructive-foreground"
+                  : "bg-foreground/10 text-foreground border border-border";
+                const label = status === "approved" ? "Client Approved" : status === "rejected" ? "Changes Requested" : "Awaiting Client Review";
+                return (
+                  <div className="border border-border p-5">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Client Review</p>
+                      <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${badge}`}>{label}</span>
+                    </div>
+                    {comments.length === 0 ? (
+                      <p className="text-xs font-mono text-foreground/40 mt-4">No comments from client yet.</p>
+                    ) : (
+                      <div className="mt-4 space-y-3 max-h-72 overflow-y-auto pr-2">
+                        {comments.map((c, i) => (
+                          <div key={i} className="border-l-2 border-foreground/30 pl-4">
+                            <div className="flex items-baseline gap-2 mb-1">
+                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
+                                {c.author === "admin" ? "You" : selectedClient?.owner_name || selectedClient?.company_name || "Client"}
+                              </span>
+                              <span className="text-[10px] font-mono text-foreground/40">{new Date(c.created_at).toLocaleString()}</span>
+                            </div>
+                            <p className="text-sm font-mono text-foreground whitespace-pre-wrap">{c.message}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              <div>
                 <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Scope of Work</label>
                 <textarea
                   value={sowText}
