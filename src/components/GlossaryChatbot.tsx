@@ -155,9 +155,18 @@ export const GlossaryChatbot = () => {
             className="fixed bottom-24 right-6 z-50 w-[calc(100vw-3rem)] max-w-sm h-[28rem] border-2 border-foreground bg-background flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="border-b-2 border-foreground p-4">
-              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">Glossary</p>
-              <p className="text-sm font-mono font-bold text-foreground mt-1">Ask about any term</p>
+            <div className="border-b-2 border-foreground p-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">Glossary</p>
+                <p className="text-sm font-mono font-bold text-foreground mt-1">Ask about any term</p>
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close glossary"
+                className="h-7 w-7 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground hover:text-background text-foreground font-mono text-sm leading-none transition-colors"
+              >
+                ×
+              </button>
             </div>
 
             {/* Messages */}
