@@ -524,12 +524,35 @@ const InvoiceAdmin = () => {
                 <div className="grid gap-4">
                   <div>
                     <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Project Type</span>
-                    <input
+                    <select
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
-                      placeholder="e.g. Landing Page, E-commerce Website, Mobile App"
-                      className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
-                    />
+                      className="w-full bg-background border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground"
+                    >
+                      <option value="">— Select project type —</option>
+                      {[
+                        "Landing page",
+                        "Linktree-style link hub",
+                        "One-pager",
+                        "Personal portfolio website",
+                        "Blog",
+                        "Small business brochure website",
+                        "Restaurant website",
+                        "Multi-page marketing website",
+                        "Brochure website with CMS",
+                        "Membership / community site",
+                        "Directory / listing site",
+                        "Booking / reservation platform",
+                        "E-commerce website (small catalog)",
+                        "E-commerce website (full catalog)",
+                        "Web app",
+                        "SaaS product website + platform",
+                        "Marketplace (two-sided)",
+                        "Enterprise web platform",
+                      ].map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
                   </div>
                   <div className="grid md:grid-cols-3 gap-3">
                     <div>
