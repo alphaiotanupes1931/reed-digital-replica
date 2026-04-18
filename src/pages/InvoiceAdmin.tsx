@@ -268,6 +268,22 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleDeleteClient = async (e: React.MouseEvent, clientId: string, name: string) => {
+    e.stopPropagation();
+    if (!confirm(`Permanently remove ${name} and ALL their invoices? This cannot be undone.`)) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "delete_client", client_id: clientId, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      if (selectedClientId === clientId) setSelectedClientId(null);
+      await fetchData();
+      toast({ title: "Client removed" });
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleDelete = async (invoiceId: string) => {
     if (!confirm("Permanently remove this invoice? This cannot be undone.")) return;
     try {
