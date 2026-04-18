@@ -59,6 +59,20 @@ const GLOSSARY: Term[] = [
   { term: "Newsletter", definition: "Recurring email sent to subscribers — useful for staying top-of-mind with customers." },
   { term: "Calendly", definition: "A scheduling tool that lets clients book meetings on your calendar without back-and-forth emails." },
   { term: "Embed", definition: "Placing a third-party widget (map, video, form, calendar) directly inside your website." },
+  { term: "Backlog", definition: "A running list of features, ideas, and bugs that are planned but not yet started. We pull from the backlog as the project moves forward." },
+  { term: "Sprint", definition: "A short focused work cycle (usually 1–2 weeks) where we tackle a defined set of tasks from the backlog." },
+  { term: "Milestone", definition: "A significant checkpoint in the project — like finishing design, launching the beta, or going live." },
+  { term: "Scope Creep", definition: "When new requests get added beyond the original Scope of Work, expanding the project's size, time, and cost." },
+  { term: "Change Order", definition: "A formal addition to the Scope of Work covering new requests, with updated pricing and timeline." },
+  { term: "Kickoff", definition: "The first official meeting that starts the project — we align on goals, timeline, and next steps." },
+  { term: "Handoff", definition: "Transferring final files, accounts, and access to you at the end of the project." },
+  { term: "Refactor", definition: "Cleaning up or restructuring existing code without changing what it does — improves speed and maintainability." },
+  { term: "QA", definition: "Quality Assurance — testing the site or app to catch bugs and issues before launch." },
+  { term: "Cache", definition: "Stored copies of files that make your site load faster. Sometimes needs to be cleared to see updates." },
+  { term: "404", definition: "The error shown when a page doesn't exist at the URL someone visited." },
+  { term: "Plugin", definition: "An add-on that extends what your website can do — like a contact form, gallery, or booking widget." },
+  { term: "Webhook", definition: "An automated message one app sends another when something happens — e.g., Stripe notifying us of a payment." },
+  { term: "Token", definition: "A secure code that proves identity or permission — used for logins, API access, and password resets." },
 ];
 
 const findAnswer = (query: string): Term | null => {
