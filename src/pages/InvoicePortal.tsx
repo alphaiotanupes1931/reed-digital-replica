@@ -30,6 +30,10 @@ interface Client {
   phases: Phase[] | null;
   sow_status: "pending" | "approved" | "rejected" | string;
   sow_comments: SowComment[] | null;
+  project_type: string | null;
+  project_build_cost: string | null;
+  project_maintenance_cost: string | null;
+  project_estimated_total: string | null;
 }
 
 interface Deliverable {
