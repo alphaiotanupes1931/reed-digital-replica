@@ -42,26 +42,82 @@ serve(async (req) => {
       });
     }
 
-    if (action === "create_invoice") {
-      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message } = data;
-
-      let { data: client } = await supabase
+    if (action === "list_clients") {
+      const { data: clients, error } = await supabase
         .from("clients")
         .select("*")
-        .eq("email", email)
-        .maybeSingle();
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return new Response(JSON.stringify({ clients }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "create_client") {
+      const { company_name, email, owner_name } = data;
+      const { data: existing } = await supabase
+        .from("clients").select("*").eq("email", email).maybeSingle();
+      if (existing) {
+        const { data: updated, error } = await supabase
+          .from("clients")
+          .update({ company_name, owner_name })
+          .eq("id", existing.id).select().single();
+        if (error) throw error;
+        return new Response(JSON.stringify({ client: updated }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: client, error } = await supabase
+        .from("clients")
+        .insert({ company_name, email, owner_name })
+        .select().single();
+      if (error) throw error;
+      return new Response(JSON.stringify({ client }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "save_sow") {
+      const { client_id, scope_of_work, phases, owner_name, company_name } = data;
+      const updates: Record<string, unknown> = {};
+      if (scope_of_work !== undefined) updates.scope_of_work = scope_of_work;
+      if (phases !== undefined) updates.phases = phases;
+      if (owner_name !== undefined) updates.owner_name = owner_name;
+      if (company_name !== undefined) updates.company_name = company_name;
+      const { error } = await supabase.from("clients").update(updates).eq("id", client_id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "create_invoice") {
+      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id } = data;
+
+      let client;
+      if (client_id) {
+        const { data: existing } = await supabase.from("clients").select("*").eq("id", client_id).maybeSingle();
+        client = existing;
+      } else {
+        const { data: byEmail } = await supabase
+          .from("clients").select("*").eq("email", email).maybeSingle();
+        client = byEmail;
+      }
 
       if (!client) {
         const { data: newClient, error: insertError } = await supabase
           .from("clients")
-          .insert({ company_name, email })
+          .insert({ company_name, email, owner_name: owner_name || null })
           .select()
           .single();
 
         if (insertError) throw insertError;
         client = newClient;
       } else {
-        await supabase.from("clients").update({ company_name }).eq("id", client.id);
+        const upd: Record<string, unknown> = {};
+        if (company_name) upd.company_name = company_name;
+        if (owner_name) upd.owner_name = owner_name;
+        if (Object.keys(upd).length) await supabase.from("clients").update(upd).eq("id", client.id);
       }
 
       const { error: invoiceError } = await supabase.from("invoices").insert({

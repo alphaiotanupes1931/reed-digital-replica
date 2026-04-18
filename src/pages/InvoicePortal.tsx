@@ -9,10 +9,18 @@ import { toast } from "@/hooks/use-toast";
 import { useSearchParams, Link } from "react-router-dom";
 import logo from "@/assets/rdg-header-logo.png";
 
+interface Phase {
+  name: string;
+  status: "pending" | "in_progress" | "complete";
+}
+
 interface Client {
   id: string;
   company_name: string;
   email: string;
+  owner_name: string | null;
+  scope_of_work: string | null;
+  phases: Phase[] | null;
 }
 
 interface Deliverable {
@@ -256,6 +264,86 @@ const InvoiceDocument = ({
   );
 };
 
+const WelcomeBlock = ({ client }: { client: Client }) => {
+  const firstName = (client.owner_name || client.company_name || "").trim().split(" ")[0] || "there";
+  const greeting = `Welcome, ${firstName}`;
+  const { displayed, done } = useTypingEffect(greeting, 60, 200);
+  return (
+    <>
+      <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">
+        Client Portal
+      </p>
+      <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight min-h-[1.2em]">
+        {displayed}
+        {!done && <span className="typing-cursor">|</span>}
+      </h1>
+      <p className="text-sm font-mono text-muted-foreground mt-2">{client.company_name}</p>
+    </>
+  );
+};
+
+const PhaseTracker = ({ phases }: { phases: Phase[] }) => {
+  const completed = phases.filter((p) => p.status === "complete").length;
+  const pct = phases.length ? Math.round((completed / phases.length) * 100) : 0;
+  return (
+    <div className="mt-10 border-2 border-foreground p-6 md:p-8">
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Project Progress</p>
+        <p className="text-xs font-mono text-foreground">{completed}/{phases.length} · {pct}%</p>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1 w-full bg-foreground/10 mb-8 relative overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="h-full bg-primary"
+        />
+      </div>
+
+      {/* Phases */}
+      <div className="space-y-4">
+        {phases.map((phase, i) => {
+          const isComplete = phase.status === "complete";
+          const isActive = phase.status === "in_progress";
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className="flex items-center gap-4"
+            >
+              <div className={`w-8 h-8 border-2 flex items-center justify-center text-xs font-mono font-bold shrink-0 ${
+                isComplete
+                  ? "bg-foreground text-background border-foreground"
+                  : isActive
+                  ? "border-primary text-primary"
+                  : "border-foreground/30 text-foreground/30"
+              }`}>
+                {isComplete ? "✓" : String(i + 1).padStart(2, "0")}
+              </div>
+              <div className="flex-1 min-w-0 flex items-center justify-between gap-4 border-b border-border pb-3">
+                <span className={`text-base font-mono ${
+                  isComplete ? "text-foreground" : isActive ? "text-foreground font-bold" : "text-foreground/50"
+                }`}>
+                  {phase.name}
+                </span>
+                <span className={`text-xs font-mono uppercase tracking-[0.15em] ${
+                  isComplete ? "text-emerald-500" : isActive ? "text-primary" : "text-foreground/40"
+                }`}>
+                  {phase.status === "in_progress" ? "In Progress" : phase.status === "complete" ? "Complete" : "Pending"}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const InvoicePortal = () => {
   const [email, setEmail] = useState("");
   const [client, setClient] = useState<Client | null>(null);
@@ -285,7 +373,7 @@ const InvoicePortal = () => {
       return;
     }
 
-    setClient(clientData);
+    setClient(clientData as unknown as Client);
     const { data: invData } = await supabase
       .from("invoices")
       .select("*")
@@ -406,13 +494,9 @@ const InvoicePortal = () => {
             >
               {/* Welcome */}
               <div className="py-10 border-b border-border">
-                <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                  Welcome back
-                </p>
-                <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight">
-                  {client.company_name}
-                </h1>
-                {/* Check if any invoice has a message */}
+                <WelcomeBlock client={client} />
+
+                {/* Special message */}
                 {invoices.some(inv => inv.message) && (
                   <div className="mt-6 border-2 border-primary/30 p-5">
                     <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
@@ -425,11 +509,32 @@ const InvoicePortal = () => {
                     ))}
                   </div>
                 )}
+
+                {/* Scope of Work */}
+                {client.scope_of_work && (
+                  <div className="mt-10 border-2 border-foreground p-6 md:p-8">
+                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
+                      Scope of Work
+                    </p>
+                    <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
+                      {client.scope_of_work}
+                    </p>
+                  </div>
+                )}
+
+                {/* Phase Progress Tracker */}
+                {client.phases && client.phases.length > 0 && (
+                  <PhaseTracker phases={client.phases} />
+                )}
               </div>
 
               {invoices.length === 0 ? (
-                <div className="py-20 text-center">
-                  <p className="text-lg font-mono text-foreground">No invoices available yet</p>
+                <div className="py-20 text-center border-2 border-dashed border-border mt-8">
+                  <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">Status</p>
+                  <p className="text-2xl font-mono font-bold text-foreground">Invoice is not ready</p>
+                  <p className="text-sm font-mono text-muted-foreground mt-3 max-w-md mx-auto">
+                    Your invoice hasn't been issued yet. You'll see it here as soon as it's prepared. Check back soon.
+                  </p>
                 </div>
               ) : (
                 <div>
