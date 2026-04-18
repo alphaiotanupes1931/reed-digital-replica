@@ -14,6 +14,12 @@ interface Phase {
   status: "pending" | "in_progress" | "complete";
 }
 
+interface SowComment {
+  author: "client" | "admin";
+  message: string;
+  created_at: string;
+}
+
 interface Client {
   id: string;
   company_name: string;
@@ -21,6 +27,8 @@ interface Client {
   owner_name: string | null;
   scope_of_work: string | null;
   phases: Phase[] | null;
+  sow_status: "pending" | "approved" | "rejected" | string;
+  sow_comments: SowComment[] | null;
 }
 
 interface Deliverable {
