@@ -293,7 +293,7 @@ const InvoicePortal = () => {
       return;
     }
 
-    setClient(clientData);
+    setClient(clientData as unknown as Client);
     const { data: invData } = await supabase
       .from("invoices")
       .select("*")
