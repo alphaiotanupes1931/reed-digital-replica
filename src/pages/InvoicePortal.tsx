@@ -720,7 +720,7 @@ const InvoicePortal = () => {
                       )}
                       {client.project_estimated_total && (
                         <div className="border-2 border-primary p-4 bg-primary/5">
-                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">Estimated Total</p>
+                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">First Month Estimated Total</p>
                           <p className="text-xl font-mono font-bold text-foreground">{client.project_estimated_total}</p>
                         </div>
                       )}
@@ -729,16 +729,13 @@ const InvoicePortal = () => {
                       These are estimates. Final pricing is confirmed in your invoice.
                     </p>
 
-                    {/* Maintenance Plans Callout */}
+                    {/* Ongoing Maintenance */}
                     <div className="mt-6 border-t-2 border-foreground pt-6">
                       <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-3 font-bold">
-                        About Your Monthly Maintenance
-                      </p>
-                      <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-4">
-                        After your site launches, you'll need a monthly maintenance plan to keep it online, secure, and updated. Take your time looking through the options — <span className="font-bold">you don't have to decide right now.</span>
+                        Ongoing Maintenance
                       </p>
                       <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
-                        About midway through the project, we'll check in and ask which plan you're leaning toward. That way we can finish building your site around the right plan (for example, setting up newsletter tools or analytics if your plan includes them) so everything is ready on launch day.
+                        After launch, a monthly plan keeps your site online and updated. No rush — we'll check in midway through the build to lock in your choice.
                       </p>
                       <a
                         href="/maintenance-plans"
