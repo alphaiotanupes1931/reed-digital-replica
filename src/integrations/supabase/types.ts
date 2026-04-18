@@ -22,6 +22,10 @@ export type Database = {
           id: string
           owner_name: string | null
           phases: Json
+          project_build_cost: string | null
+          project_estimated_total: string | null
+          project_maintenance_cost: string | null
+          project_type: string | null
           scope_of_work: string | null
           sow_comments: Json
           sow_status: string
@@ -33,6 +37,10 @@ export type Database = {
           id?: string
           owner_name?: string | null
           phases?: Json
+          project_build_cost?: string | null
+          project_estimated_total?: string | null
+          project_maintenance_cost?: string | null
+          project_type?: string | null
           scope_of_work?: string | null
           sow_comments?: Json
           sow_status?: string
@@ -44,6 +52,10 @@ export type Database = {
           id?: string
           owner_name?: string | null
           phases?: Json
+          project_build_cost?: string | null
+          project_estimated_total?: string | null
+          project_maintenance_cost?: string | null
+          project_type?: string | null
           scope_of_work?: string | null
           sow_comments?: Json
           sow_status?: string
