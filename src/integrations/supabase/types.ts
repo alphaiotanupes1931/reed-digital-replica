@@ -20,18 +20,27 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          owner_name: string | null
+          phases: Json
+          scope_of_work: string | null
         }
         Insert: {
           company_name: string
           created_at?: string
           email: string
           id?: string
+          owner_name?: string | null
+          phases?: Json
+          scope_of_work?: string | null
         }
         Update: {
           company_name?: string
           created_at?: string
           email?: string
           id?: string
+          owner_name?: string | null
+          phases?: Json
+          scope_of_work?: string | null
         }
         Relationships: []
       }
