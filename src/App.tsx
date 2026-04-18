@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
 import Pricing from "./pages/Pricing";
+import MaintenancePlans from "./pages/MaintenancePlans";
 import Work from "./pages/Work";
 import Portfolio from "./pages/Portfolio";
 import Testimonials from "./pages/Testimonials";
