@@ -345,7 +345,7 @@ const MaintenancePlans = () => {
           <ScrollReveal>
             <div className="max-w-3xl">
               <p className="text-base md:text-lg font-mono text-foreground/85 leading-relaxed mb-6">
-                Reed Digital Group offers different maintenance tiers based on the type of website you have. Restaurants and CMS-driven sites need more hands-on care. Small business sites need steady upkeep. Landing pages need lighter, focused support. Below you'll find the right plans for each.
+                Reed Digital Group offers different maintenance tiers based on the type of website you have. CMS-driven sites need more hands-on care. Small business sites need steady upkeep. Landing pages need lighter, focused support. Below you'll find the right plans for each.
               </p>
               <div className="border border-border bg-secondary/40 p-5">
                 <p className="text-sm font-mono text-foreground/80 leading-relaxed">
@@ -361,9 +361,9 @@ const MaintenancePlans = () => {
           id="cms-plans"
           label="Section 01 — Brochure + CMS"
           title="For Brochure Websites with a Custom CMS"
-          subhead="Multi-page websites with a custom admin panel for managing menus, photos, hours, and content. Ideal for restaurants and established small businesses."
+          subhead="Multi-page websites with a custom admin panel for managing content, photos, and information. Ideal for established businesses that need ongoing content updates."
           plans={cmsPlans}
-          recommendation="Most restaurants pick the Growth plan. Here's why: $300 is the sweet spot. It includes text support, three done-for-you updates each month, performance reporting, and newsletter management — the things that actually keep customers coming back. The $200 Standard plan keeps the lights on, but Growth is what turns your website into a working part of the restaurant."
+          recommendation="Most clients with a CMS-driven site pick the Pro plan. At $400/month it's the sweet spot — unlimited updates, seasonal refreshes, search ranking help, and newsletter management. The lower tiers keep the lights on; Pro is what turns your website into a working part of the business."
         />
 
         {/* SECTION 2 — SMB */}
@@ -373,7 +373,7 @@ const MaintenancePlans = () => {
           title="For Small Business Brochure Websites"
           subhead="Multi-page informational websites without a custom CMS. Ideal for service businesses, consultants, and local shops."
           plans={smbPlans}
-          recommendation="The Growth plan is the recommended choice for most small businesses. At $200/month, you get same-day support, three monthly content changes, performance reporting, and Google search help — enough to keep your site fresh and competitive without overpaying for features you won't use."
+          recommendation="The Pro plan is the recommended choice for most small businesses. At $300/month you get unlimited content changes, quarterly refreshes, monthly newsletter, Google Business Profile management, and direct phone support — full-service care for a site that's actively driving your business."
         />
 
         {/* SECTION 3 — Landing */}
@@ -399,8 +399,8 @@ const MaintenancePlans = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border max-w-5xl">
               {[
-                { type: "Brochure Website with CMS", tier: "Growth", price: 300 },
-                { type: "Small Business Website", tier: "Growth", price: 200 },
+                { type: "Brochure Website with CMS", tier: "Pro", price: 400 },
+                { type: "Small Business Website", tier: "Pro", price: 300 },
                 { type: "Landing Page", tier: "Growth", price: 100 },
               ].map((item, i) => (
                 <motion.div
