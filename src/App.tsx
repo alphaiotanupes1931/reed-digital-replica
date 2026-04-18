@@ -62,8 +62,8 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/portal" element={<InvoicePortal />} />
             <Route path="/portal/thank-you" element={<InvoiceThankYou />} />
-            <Route path="/invoice" element={<InvoicePortal />} />
-            <Route path="/invoice/thank-you" element={<InvoiceThankYou />} />
+            <Route path="/invoice" element={<Navigate to="/portal" replace />} />
+            <Route path="/invoice/thank-you" element={<Navigate to="/portal/thank-you" replace />} />
             <Route path="/admin" element={<InvoiceAdmin />} />
             <Route path="/home-office/login" element={<HomeOfficeLogin />} />
             <Route path="/home-office" element={<HomeOffice />} />
