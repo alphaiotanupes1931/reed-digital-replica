@@ -669,13 +669,18 @@ const InvoicePortal = () => {
                 </div>
               ) : (
                 <div>
-                  <div className="flex items-center justify-between py-6">
-                    <span className="text-sm font-mono text-foreground uppercase tracking-[0.3em]">
-                      Your Invoices
-                    </span>
-                    <span className="text-sm font-mono text-foreground">
-                      {invoices.filter(i => i.status === "paid").length}/{invoices.length} paid
-                    </span>
+                  <div className="pt-6 pb-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-mono text-foreground uppercase tracking-[0.3em]">
+                        Your Invoices
+                      </span>
+                      <span className="text-sm font-mono text-foreground">
+                        {invoices.filter(i => i.status === "paid").length}/{invoices.length} paid
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-mono text-muted-foreground leading-relaxed mt-3 italic max-w-xl">
+                      An invoice is your itemized bill for the work agreed in the Scope of Work. Pay securely with a card, Zelle, or CashApp. Once a payment clears, the status updates and any deliverables become available.
+                    </p>
                   </div>
 
                   {invoices.map((inv) => (
