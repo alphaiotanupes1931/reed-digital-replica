@@ -78,12 +78,16 @@ serve(async (req) => {
     }
 
     if (action === "save_sow") {
-      const { client_id, scope_of_work, phases, owner_name, company_name } = data;
+      const { client_id, scope_of_work, phases, owner_name, company_name, project_type, project_build_cost, project_maintenance_cost, project_estimated_total } = data;
       const updates: Record<string, unknown> = {};
       if (scope_of_work !== undefined) updates.scope_of_work = scope_of_work;
       if (phases !== undefined) updates.phases = phases;
       if (owner_name !== undefined) updates.owner_name = owner_name;
       if (company_name !== undefined) updates.company_name = company_name;
+      if (project_type !== undefined) updates.project_type = project_type;
+      if (project_build_cost !== undefined) updates.project_build_cost = project_build_cost;
+      if (project_maintenance_cost !== undefined) updates.project_maintenance_cost = project_maintenance_cost;
+      if (project_estimated_total !== undefined) updates.project_estimated_total = project_estimated_total;
       const { error } = await supabase.from("clients").update(updates).eq("id", client_id);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {

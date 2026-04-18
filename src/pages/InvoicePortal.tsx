@@ -30,6 +30,10 @@ interface Client {
   phases: Phase[] | null;
   sow_status: "pending" | "approved" | "rejected" | string;
   sow_comments: SowComment[] | null;
+  project_type: string | null;
+  project_build_cost: string | null;
+  project_maintenance_cost: string | null;
+  project_estimated_total: string | null;
 }
 
 interface Deliverable {
@@ -689,6 +693,43 @@ const InvoicePortal = () => {
               {/* Welcome */}
               <div className="py-10 border-b border-border">
                 <WelcomeBlock client={client} />
+
+                {/* Project Summary */}
+                {(client.project_type || client.project_build_cost || client.project_maintenance_cost || client.project_estimated_total) && (
+                  <div className="mt-8 border-2 border-foreground p-6 md:p-8 bg-background">
+                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
+                      Your Project
+                    </p>
+                    {client.project_type && (
+                      <h2 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight mb-6">
+                        {client.project_type}
+                      </h2>
+                    )}
+                    <div className="grid sm:grid-cols-3 gap-4">
+                      {client.project_build_cost && (
+                        <div className="border border-border p-4">
+                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Build</p>
+                          <p className="text-xl font-mono font-bold text-foreground">{client.project_build_cost}</p>
+                        </div>
+                      )}
+                      {client.project_maintenance_cost && (
+                        <div className="border border-border p-4">
+                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Maintenance / mo</p>
+                          <p className="text-xl font-mono font-bold text-foreground">{client.project_maintenance_cost}</p>
+                        </div>
+                      )}
+                      {client.project_estimated_total && (
+                        <div className="border-2 border-primary p-4 bg-primary/5">
+                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">Estimated Total</p>
+                          <p className="text-xl font-mono font-bold text-foreground">{client.project_estimated_total}</p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs font-mono text-muted-foreground mt-4 italic">
+                      These are estimates. Final pricing is confirmed in your invoice.
+                    </p>
+                  </div>
+                )}
 
                 {/* Special message */}
                 {invoices.some(inv => inv.message) && (

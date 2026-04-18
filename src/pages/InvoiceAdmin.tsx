@@ -47,6 +47,10 @@ interface Client {
   phases: Phase[] | null;
   sow_status: "pending" | "approved" | "rejected" | string;
   sow_comments: SowComment[] | null;
+  project_type: string | null;
+  project_build_cost: string | null;
+  project_maintenance_cost: string | null;
+  project_estimated_total: string | null;
   created_at: string;
 }
 
@@ -114,6 +118,10 @@ const InvoiceAdmin = () => {
   // SOW editing
   const [sowText, setSowText] = useState("");
   const [phases, setPhases] = useState<Phase[]>(DEFAULT_PHASES);
+  const [projectType, setProjectType] = useState("");
+  const [projectBuildCost, setProjectBuildCost] = useState("");
+  const [projectMaintenanceCost, setProjectMaintenanceCost] = useState("");
+  const [projectEstimatedTotal, setProjectEstimatedTotal] = useState("");
 
   // Invoice creation (per-client)
   const [showInvoiceForm, setShowInvoiceForm] = useState(false);
@@ -177,6 +185,10 @@ const InvoiceAdmin = () => {
             ? c.phases
             : DEFAULT_PHASES) as Phase[]
         );
+        setProjectType(c.project_type || "");
+        setProjectBuildCost(c.project_build_cost || "");
+        setProjectMaintenanceCost(c.project_maintenance_cost || "");
+        setProjectEstimatedTotal(c.project_estimated_total || "");
       }
     }
   }, [selectedClientId, clients]);
@@ -217,6 +229,10 @@ const InvoiceAdmin = () => {
           client_id: selectedClientId,
           scope_of_work: sowText,
           phases,
+          project_type: projectType,
+          project_build_cost: projectBuildCost,
+          project_maintenance_cost: projectMaintenanceCost,
+          project_estimated_total: projectEstimatedTotal,
           password: ADMIN_PASSWORD,
         },
       });
@@ -501,6 +517,51 @@ const InvoiceAdmin = () => {
                   </div>
                 );
               })()}
+
+              {/* Project summary */}
+              <div className="border border-border p-5">
+                <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-4">Project Summary (shown at top of client portal)</label>
+                <div className="grid gap-4">
+                  <div>
+                    <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Project Type</span>
+                    <input
+                      value={projectType}
+                      onChange={(e) => setProjectType(e.target.value)}
+                      placeholder="e.g. Landing Page, E-commerce Website, Mobile App"
+                      className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <div>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Build Cost</span>
+                      <input
+                        value={projectBuildCost}
+                        onChange={(e) => setProjectBuildCost(e.target.value)}
+                        placeholder="$500–800"
+                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Maintenance / mo</span>
+                      <input
+                        value={projectMaintenanceCost}
+                        onChange={(e) => setProjectMaintenanceCost(e.target.value)}
+                        placeholder="$200–300"
+                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Estimated Total</span>
+                      <input
+                        value={projectEstimatedTotal}
+                        onChange={(e) => setProjectEstimatedTotal(e.target.value)}
+                        placeholder="$700–1,100"
+                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div>
                 <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Scope of Work</label>
