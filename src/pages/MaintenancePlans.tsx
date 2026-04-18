@@ -165,7 +165,7 @@ const faqs = [
   },
   {
     q: "What counts as an 'update'?",
-    a: "Any small change — new menu items, new photos, changing hours, adding a testimonial, swapping a headline. Big changes like new pages or new features are separate projects.",
+    a: "Any small change — new photos, updated text, changing hours or contact info, adding a testimonial, swapping a headline, or refreshing a section. Big changes like new pages or new features are separate projects.",
   },
   {
     q: "Do I have to sign a contract?",
