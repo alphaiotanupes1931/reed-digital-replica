@@ -794,6 +794,7 @@ const InvoicePortal = () => {
           </p>
         </div>
       </div>
+      {client && <GlossaryChatbot />}
     </div>
   );
 };
