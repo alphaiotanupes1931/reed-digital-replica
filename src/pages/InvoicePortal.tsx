@@ -14,6 +14,12 @@ interface Phase {
   status: "pending" | "in_progress" | "complete";
 }
 
+interface SowComment {
+  author: "client" | "admin";
+  message: string;
+  created_at: string;
+}
+
 interface Client {
   id: string;
   company_name: string;
@@ -21,6 +27,8 @@ interface Client {
   owner_name: string | null;
   scope_of_work: string | null;
   phases: Phase[] | null;
+  sow_status: "pending" | "approved" | "rejected" | string;
+  sow_comments: SowComment[] | null;
 }
 
 interface Deliverable {
@@ -344,6 +352,123 @@ const PhaseTracker = ({ phases }: { phases: Phase[] }) => {
   );
 };
 
+const SowReview = ({ client, onChange }: { client: Client; onChange: () => void | Promise<void> }) => {
+  const [comment, setComment] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const status = client.sow_status || "pending";
+  const comments: SowComment[] = Array.isArray(client.sow_comments) ? client.sow_comments : [];
+
+  const callApi = async (body: Record<string, unknown>) => {
+    setSubmitting(true);
+    try {
+      const res = await supabase.functions.invoke("sow-response", {
+        body: { email: client.email, ...body },
+      });
+      if (res.error) throw res.error;
+      const errData = (res.data as { error?: string } | null)?.error;
+      if (errData) throw new Error(errData);
+      await onChange();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleApprove = () => callApi({ action: "set_status", status: "approved" });
+  const handleReject = () => callApi({ action: "set_status", status: "rejected" });
+  const handleComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+    await callApi({ action: "add_comment", message: comment });
+    setComment("");
+    toast({ title: "Comment sent" });
+  };
+
+  const statusBadge =
+    status === "approved"
+      ? "bg-emerald-500 text-background"
+      : status === "rejected"
+      ? "bg-destructive text-destructive-foreground"
+      : "bg-foreground text-background";
+  const statusLabel = status === "approved" ? "Approved" : status === "rejected" ? "Changes Requested" : "Awaiting Review";
+
+  return (
+    <div className="mt-10 border-2 border-foreground p-6 md:p-8">
+      <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+        <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Scope of Work</p>
+        <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${statusBadge}`}>
+          {statusLabel}
+        </span>
+      </div>
+
+      <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
+        {client.scope_of_work}
+      </p>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Button
+          onClick={handleApprove}
+          disabled={submitting || status === "approved"}
+          className="h-11 px-6 font-mono text-xs uppercase tracking-[0.2em] rounded-none bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40"
+        >
+          {status === "approved" ? "Approved" : "Approve"}
+        </Button>
+        <Button
+          onClick={handleReject}
+          disabled={submitting || status === "rejected"}
+          variant="outline"
+          className="h-11 px-6 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-foreground hover:border-destructive hover:text-destructive disabled:opacity-40"
+        >
+          {status === "rejected" ? "Changes Requested" : "Request Changes"}
+        </Button>
+      </div>
+
+      <div className="mt-8 border-t border-border pt-6">
+        <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-4">
+          Comments {comments.length > 0 && <span className="text-foreground/40">({comments.length})</span>}
+        </p>
+
+        {comments.length > 0 && (
+          <div className="space-y-4 mb-6 max-h-72 overflow-y-auto pr-2">
+            {comments.map((c, i) => (
+              <div key={i} className="border-l-2 border-foreground/30 pl-4">
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
+                    {c.author === "admin" ? "Reed Digital Group" : "You"}
+                  </span>
+                  <span className="text-[10px] font-mono text-foreground/40">
+                    {new Date(c.created_at).toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-sm font-mono text-foreground whitespace-pre-wrap">{c.message}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <form onSubmit={handleComment} className="space-y-3">
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Leave a comment or question about the scope..."
+            rows={3}
+            maxLength={2000}
+            className="w-full bg-transparent border border-border focus:border-foreground p-3 font-mono text-sm text-foreground placeholder:text-foreground/40 focus:outline-none resize-none"
+          />
+          <Button
+            type="submit"
+            disabled={submitting || !comment.trim()}
+            className="h-11 px-6 font-mono text-xs uppercase tracking-[0.2em] rounded-none disabled:opacity-40"
+          >
+            {submitting ? "Sending..." : "Send Comment"}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const InvoicePortal = () => {
   const [email, setEmail] = useState("");
   const [client, setClient] = useState<Client | null>(null);
@@ -358,19 +483,17 @@ const InvoicePortal = () => {
     }
   }, [searchParams]);
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const loadClientData = async (emailAddr: string, showError = true) => {
+    const addr = emailAddr.toLowerCase().trim();
     const { data: clientData } = await supabase
       .from("clients")
       .select("*")
-      .eq("email", email.toLowerCase().trim())
+      .eq("email", addr)
       .maybeSingle();
 
     if (!clientData) {
-      toast({ title: "No account found", variant: "destructive" });
-      setLoading(false);
-      return;
+      if (showError) toast({ title: "No account found", variant: "destructive" });
+      return false;
     }
 
     setClient(clientData as unknown as Client);
@@ -382,7 +505,18 @@ const InvoicePortal = () => {
       .order("created_at", { ascending: false });
 
     setInvoices((invData as unknown as Invoice[]) || []);
+    return true;
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    await loadClientData(email);
     setLoading(false);
+  };
+
+  const refreshClient = async () => {
+    if (client?.email) await loadClientData(client.email, false);
   };
 
   const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
@@ -510,16 +644,9 @@ const InvoicePortal = () => {
                   </div>
                 )}
 
-                {/* Scope of Work */}
+                {/* Scope of Work + Review */}
                 {client.scope_of_work && (
-                  <div className="mt-10 border-2 border-foreground p-6 md:p-8">
-                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
-                      Scope of Work
-                    </p>
-                    <p className="text-sm font-mono text-foreground leading-relaxed whitespace-pre-wrap">
-                      {client.scope_of_work}
-                    </p>
-                  </div>
+                  <SowReview client={client} onChange={refreshClient} />
                 )}
 
                 {/* Phase Progress Tracker */}
