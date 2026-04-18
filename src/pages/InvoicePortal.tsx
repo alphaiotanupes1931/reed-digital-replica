@@ -747,16 +747,19 @@ const InvoicePortal = () => {
                                 ? "Maintenance plan not selected yet. Once you pick one, billing starts on the 1st of the following month — separate from your build invoice."
                                 : "Your maintenance plan starts on the 1st of the month after launch. Billed monthly, separate from the build invoice."}
                             </p>
-                      <a
-                        href="/maintenance-plans"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 font-mono text-xs uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
-                      >
-                        View Maintenance Plans
-                        <span aria-hidden="true">→</span>
-                      </a>
-                    </div>
+                            <a
+                              href="/maintenance-plans"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 font-mono text-xs uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+                            >
+                              View Maintenance Plans
+                              <span aria-hidden="true">→</span>
+                            </a>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
 
