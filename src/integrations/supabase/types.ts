@@ -23,6 +23,8 @@ export type Database = {
           owner_name: string | null
           phases: Json
           scope_of_work: string | null
+          sow_comments: Json
+          sow_status: string
         }
         Insert: {
           company_name: string
@@ -32,6 +34,8 @@ export type Database = {
           owner_name?: string | null
           phases?: Json
           scope_of_work?: string | null
+          sow_comments?: Json
+          sow_status?: string
         }
         Update: {
           company_name?: string
@@ -41,6 +45,8 @@ export type Database = {
           owner_name?: string | null
           phases?: Json
           scope_of_work?: string | null
+          sow_comments?: Json
+          sow_status?: string
         }
         Relationships: []
       }
