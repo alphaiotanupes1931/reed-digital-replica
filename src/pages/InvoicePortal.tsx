@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useSearchParams, Link } from "react-router-dom";
 import logo from "@/assets/rdg-header-logo.png";
+import { GlossaryChatbot } from "@/components/GlossaryChatbot";
 
 interface Phase {
   name: string;
