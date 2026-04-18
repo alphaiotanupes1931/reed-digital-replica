@@ -445,9 +445,6 @@ const InvoiceAdmin = () => {
 
             {/* SOW TAB */}
             <TabsContent value="sow" className="mt-8 space-y-10">
-              <div>
-            {/* SOW TAB */}
-            <TabsContent value="sow" className="mt-8 space-y-10">
               {/* Client Review Status & Comments */}
               {(() => {
                 const status = selectedClient?.sow_status || "pending";
