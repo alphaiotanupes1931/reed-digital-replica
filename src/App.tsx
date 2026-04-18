@@ -60,6 +60,8 @@ const App = () => (
             <Route path="/capability-statement" element={<CapabilityStatement />} />
             <Route path="/case-study/:slug" element={<CaseStudy />} />
             <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/portal" element={<InvoicePortal />} />
+            <Route path="/portal/thank-you" element={<InvoiceThankYou />} />
             <Route path="/invoice" element={<InvoicePortal />} />
             <Route path="/invoice/thank-you" element={<InvoiceThankYou />} />
             <Route path="/admin" element={<InvoiceAdmin />} />

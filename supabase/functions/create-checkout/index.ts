@@ -78,8 +78,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/invoice/thank-you`,
-      cancel_url: `${origin}/invoice?payment=cancelled`,
+      success_url: `${origin}/portal/thank-you`,
+      cancel_url: `${origin}/portal?payment=cancelled`,
       metadata: {
         invoice_id: invoice.id,
         is_deposit: pay_deposit ? "true" : "false",
