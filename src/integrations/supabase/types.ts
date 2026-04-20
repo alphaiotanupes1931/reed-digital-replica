@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          maintenance_plan: string | null
           owner_name: string | null
           phases: Json
           project_build_cost: string | null
@@ -35,6 +36,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          maintenance_plan?: string | null
           owner_name?: string | null
           phases?: Json
           project_build_cost?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          maintenance_plan?: string | null
           owner_name?: string | null
           phases?: Json
           project_build_cost?: string | null
