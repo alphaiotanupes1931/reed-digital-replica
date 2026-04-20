@@ -181,6 +181,33 @@ export type Database = {
           },
         ]
       }
+      monthly_bills: {
+        Row: {
+          company_name: string
+          created_at: string
+          id: string
+          notes: string | null
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          price?: number
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
