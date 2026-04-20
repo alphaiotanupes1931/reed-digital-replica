@@ -519,6 +519,38 @@ const InvoiceAdmin = () => {
                 );
               })()}
 
+              {/* Client-selected Maintenance Plan */}
+              {(() => {
+                const plan = selectedClient?.maintenance_plan || "";
+                const [cat, name] = plan.split(":");
+                const catLabel =
+                  cat === "cms" ? "CMS / Restaurant"
+                  : cat === "smb" ? "Small Business"
+                  : cat === "landing" ? "Landing Page"
+                  : "";
+                return (
+                  <div className={`border p-5 ${plan ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
+                        Client Maintenance Plan Selection
+                      </p>
+                      <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${plan ? "bg-primary text-primary-foreground" : "bg-foreground/10 text-foreground border border-border"}`}>
+                        {plan ? "Selected" : "Not Selected"}
+                      </span>
+                    </div>
+                    {plan ? (
+                      <p className="text-lg font-mono font-bold text-foreground mt-3">
+                        {catLabel} — {name}
+                      </p>
+                    ) : (
+                      <p className="text-xs font-mono text-foreground/40 mt-4">
+                        Client has not picked a maintenance plan yet.
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
+
               {/* Project summary */}
               <div className="border border-border p-5">
                 <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-4">Project Summary (shown at top of client portal)</label>
