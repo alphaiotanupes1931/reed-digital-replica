@@ -29,7 +29,7 @@ const cmsPlans: Plan[] = [
       "Email support (2 business day response)",
       "1 update per month done for you",
     ],
-    bestFor: "Restaurants that want a website that just works.",
+      bestFor: "Businesses that want a website that just works.",
   },
   {
     name: "Growth",
