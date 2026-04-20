@@ -60,6 +60,145 @@ interface Invoice {
 const PROCESSING_FEE_RATE = 0.029;
 const PROCESSING_FEE_FLAT = 0.30;
 
+// Maintenance plan catalog (must mirror /maintenance-plans)
+const MAINTENANCE_PLAN_CATALOG: { category: string; categoryLabel: string; plans: { name: string; price: number; tagline: string }[] }[] = [
+  {
+    category: "cms",
+    categoryLabel: "CMS / Restaurant",
+    plans: [
+      { name: "Standard", price: 200, tagline: "Keeps your website up and running." },
+      { name: "Growth", price: 300, tagline: "The plan built for real restaurants." },
+      { name: "Pro", price: 400, tagline: "For sites that should sell for you." },
+      { name: "Elite", price: 500, tagline: "Hands off. We handle everything." },
+    ],
+  },
+  {
+    category: "smb",
+    categoryLabel: "Small Business",
+    plans: [
+      { name: "Standard", price: 100, tagline: "Keeps your site live." },
+      { name: "Growth", price: 200, tagline: "The plan most small businesses need." },
+      { name: "Pro", price: 300, tagline: "Full-service for growing businesses." },
+    ],
+  },
+  {
+    category: "landing",
+    categoryLabel: "Landing Page",
+    plans: [
+      { name: "Standard", price: 50, tagline: "Keeps your page online." },
+      { name: "Growth", price: 100, tagline: "For pages that need to stay sharp." },
+    ],
+  },
+];
+
+const MaintenancePlanPicker = ({
+  client,
+  onChange,
+}: {
+  client: Client;
+  onChange: () => void | Promise<void>;
+}) => {
+  const [saving, setSaving] = useState(false);
+  const current = client.maintenance_plan || "";
+
+  const setPlan = async (planValue: string | null) => {
+    setSaving(true);
+    try {
+      const res = await supabase.functions.invoke("sow-response", {
+        body: { email: client.email, action: "set_maintenance_plan", maintenance_plan: planValue },
+      });
+      if (res.error) throw res.error;
+      const errData = (res.data as { error?: string } | null)?.error;
+      if (errData) throw new Error(errData);
+      toast({ title: planValue ? "Maintenance plan selected" : "Selection cleared" });
+      await onChange();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="mt-6 border-t-2 border-foreground pt-6">
+      <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
+          Choose Your Maintenance Plan
+        </p>
+        {current && (
+          <button
+            onClick={() => setPlan(null)}
+            disabled={saving}
+            className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40"
+          >
+            Clear selection
+          </button>
+        )}
+      </div>
+      <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
+        {current
+          ? "Your selected plan is locked in below. You can change it anytime before launch. Billing starts on the 1st of the month after launch."
+          : "Pick the maintenance plan that fits your project. Billing starts on the 1st of the month after launch — separate from your build invoice."}
+      </p>
+
+      <div className="space-y-6">
+        {MAINTENANCE_PLAN_CATALOG.map((cat) => (
+          <div key={cat.category}>
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">
+              {cat.categoryLabel}
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {cat.plans.map((p) => {
+                const value = `${cat.category}:${p.name}`;
+                const selected = current === value;
+                return (
+                  <button
+                    key={value}
+                    onClick={() => setPlan(value)}
+                    disabled={saving}
+                    className={`text-left border-2 p-4 transition-colors disabled:opacity-50 ${
+                      selected
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-foreground"
+                    }`}
+                  >
+                    <div className="flex items-baseline justify-between mb-2">
+                      <span className="text-sm font-mono font-bold text-foreground uppercase tracking-[0.1em]">
+                        {p.name}
+                      </span>
+                      {selected && (
+                        <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
+                          ✓ Selected
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-lg font-mono font-bold text-foreground">
+                      ${p.price}<span className="text-xs text-muted-foreground">/mo</span>
+                    </p>
+                    <p className="text-[11px] font-mono text-muted-foreground mt-2 leading-snug">
+                      {p.tagline}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href="/maintenance-plans"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-5 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground hover:text-primary transition-colors underline underline-offset-4"
+      >
+        Compare plan details
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  );
+};
+
 const PortalSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
   return (
