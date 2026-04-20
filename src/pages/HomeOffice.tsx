@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 const tiles = [
   { label: "Work Assistant", desc: "Daily notes, goals & standups", href: "/home-office/work-assistant" },
   { label: "Invoices", desc: "Admin dashboard & billing", href: "/admin" },
+  { label: "Bills Tracker", desc: "Monthly bills vs maintenance income", href: "/home-office/bills" },
   { label: "ROI Tracker", desc: "Coming Soon — Plaid integration", href: "/home-office/roi-tracker" },
   { label: "Help", desc: "Contact & support", href: "/home-office/help" },
 ];

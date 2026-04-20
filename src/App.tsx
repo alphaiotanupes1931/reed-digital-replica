@@ -30,6 +30,7 @@ import HomeOffice from "./pages/HomeOffice";
 import WorkAssistant from "./pages/WorkAssistant";
 import ROITracker from "./pages/ROITracker";
 import HomeOfficeHelp from "./pages/HomeOfficeHelp";
+import BillsTracker from "./pages/BillsTracker";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/home-office/work-assistant" element={<WorkAssistant />} />
             <Route path="/home-office/roi-tracker" element={<ROITracker />} />
             <Route path="/home-office/help" element={<HomeOfficeHelp />} />
+            <Route path="/home-office/bills" element={<BillsTracker />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
