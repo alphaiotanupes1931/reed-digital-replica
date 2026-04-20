@@ -877,26 +877,8 @@ const InvoicePortal = () => {
                             These are estimates. Final pricing is confirmed in your invoice.
                           </p>
 
-                          {/* Ongoing Maintenance */}
-                          <div className="mt-6 border-t-2 border-foreground pt-6">
-                            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-3 font-bold">
-                              Ongoing Maintenance
-                            </p>
-                            <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
-                              {maintTBD
-                                ? "Maintenance plan not selected yet. Once you pick one, billing starts on the 1st of the following month — separate from your build invoice."
-                                : "Your maintenance plan starts on the 1st of the month after launch. Billed monthly, separate from the build invoice."}
-                            </p>
-                            <a
-                              href="/maintenance-plans"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 font-mono text-xs uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
-                            >
-                              View Maintenance Plans
-                              <span aria-hidden="true">→</span>
-                            </a>
-                          </div>
+                          {/* Maintenance Plan Selection */}
+                          <MaintenancePlanPicker client={client} onChange={refreshClient} />
                         </>
                       );
                     })()}
