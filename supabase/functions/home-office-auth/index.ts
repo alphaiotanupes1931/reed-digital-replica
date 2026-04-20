@@ -156,6 +156,65 @@ serve(async (req) => {
       });
     }
 
+    // Monthly bills actions
+    if (action === "get_bills") {
+      const { data: bills, error } = await supabase
+        .from("monthly_bills")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return new Response(JSON.stringify({ bills }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "add_bill") {
+      const { company_name, price, notes } = data;
+      const { data: bill, error } = await supabase
+        .from("monthly_bills")
+        .insert({ company_name, price: Number(price) || 0, notes: notes || null })
+        .select()
+        .single();
+      if (error) throw error;
+      return new Response(JSON.stringify({ bill }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "update_bill") {
+      const { id, company_name, price, notes } = data;
+      const updates: Record<string, unknown> = {};
+      if (company_name !== undefined) updates.company_name = company_name;
+      if (price !== undefined) updates.price = Number(price) || 0;
+      if (notes !== undefined) updates.notes = notes;
+      const { error } = await supabase.from("monthly_bills").update(updates).eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete_bill") {
+      const { id } = data;
+      const { error } = await supabase.from("monthly_bills").delete().eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Maintenance income from clients table
+    if (action === "get_maintenance_income") {
+      const { data: clients, error } = await supabase
+        .from("clients")
+        .select("id, company_name, owner_name, email, maintenance_plan")
+        .not("maintenance_plan", "is", null);
+      if (error) throw error;
+      return new Response(JSON.stringify({ clients }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(JSON.stringify({ error: "Unknown action" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
