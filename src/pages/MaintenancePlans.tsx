@@ -29,12 +29,12 @@ const cmsPlans: Plan[] = [
       "Email support (2 business day response)",
       "1 update per month done for you",
     ],
-    bestFor: "Restaurants that want a website that just works.",
+      bestFor: "Businesses that want a website that just works.",
   },
   {
     name: "Growth",
     price: 300,
-    tagline: "The plan built for real restaurants.",
+    tagline: "The plan built for active businesses.",
     features: [
       "Everything in Standard",
       "Text support, same-day response",
@@ -44,13 +44,13 @@ const cmsPlans: Plan[] = [
       "Daily backups",
       "24/7 site monitoring",
     ],
-    bestFor: "Restaurants that want their site to actually bring in customers.",
+    bestFor: "Businesses that want their site to actually bring in customers.",
     popular: true,
   },
   {
     name: "Pro",
     price: 400,
-    tagline: "For restaurants that want their website to sell for them.",
+    tagline: "For businesses that want their website to sell for them.",
     features: [
       "Everything in Growth",
       "Unlimited updates",
@@ -59,7 +59,7 @@ const cmsPlans: Plan[] = [
       "Google search ranking help",
       "Instagram feed tuning",
     ],
-    bestFor: "Restaurants running specials, events, or promotions.",
+    bestFor: "Businesses running specials, events, or promotions.",
   },
   {
     name: "Elite",
@@ -75,7 +75,7 @@ const cmsPlans: Plan[] = [
       "Google Business Profile management",
       "20% off future add-ons",
     ],
-    bestFor: "Restaurants that want to focus on cooking, not websites.",
+    bestFor: "Businesses that want to focus on operations, not websites.",
   },
 ];
 
