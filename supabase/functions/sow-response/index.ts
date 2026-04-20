@@ -16,7 +16,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { email, action, message, status, comment_index } = await req.json();
+    const { email, action, message, status, comment_index, maintenance_plan } = await req.json();
     if (!email) throw new Error("Email required");
 
     const supabase = createClient(
@@ -57,6 +57,14 @@ serve(async (req) => {
       }
       existing.splice(comment_index, 1);
       updates.sow_comments = existing;
+    }
+
+    if (action === "set_maintenance_plan") {
+      // Allow any string up to 100 chars, or null/empty to clear
+      if (maintenance_plan !== null && (typeof maintenance_plan !== "string" || maintenance_plan.length > 100)) {
+        throw new Error("Invalid maintenance plan");
+      }
+      updates.maintenance_plan = maintenance_plan ? maintenance_plan.trim() : null;
     }
 
     if (!Object.keys(updates).length) throw new Error("No update");
