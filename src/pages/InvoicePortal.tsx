@@ -64,10 +64,10 @@ const PROCESSING_FEE_FLAT = 0.30;
 const MAINTENANCE_PLAN_CATALOG: { category: string; categoryLabel: string; plans: { name: string; price: number; tagline: string }[] }[] = [
   {
     category: "cms",
-    categoryLabel: "CMS / Restaurant",
+    categoryLabel: "Brochure + CMS",
     plans: [
       { name: "Standard", price: 200, tagline: "Keeps your website up and running." },
-      { name: "Growth", price: 300, tagline: "The plan built for real restaurants." },
+      { name: "Growth", price: 300, tagline: "The plan built for active businesses." },
       { name: "Pro", price: 400, tagline: "For sites that should sell for you." },
       { name: "Elite", price: 500, tagline: "Hands off. We handle everything." },
     ],
