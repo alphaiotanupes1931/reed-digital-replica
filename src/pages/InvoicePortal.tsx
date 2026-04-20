@@ -34,6 +34,7 @@ interface Client {
   project_build_cost: string | null;
   project_maintenance_cost: string | null;
   project_estimated_total: string | null;
+  maintenance_plan: string | null;
 }
 
 interface Deliverable {
