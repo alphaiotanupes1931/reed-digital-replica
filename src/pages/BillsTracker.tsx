@@ -130,6 +130,9 @@ const BillsTracker = () => {
 
   const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
   const net = totalIncome - totalBills;
+  const SIX_FIGURES_MONTHLY = 6300;
+  const sixFigGap = SIX_FIGURES_MONTHLY - totalIncome;
+  const sixFigPct = Math.min(100, Math.max(0, (totalIncome / SIX_FIGURES_MONTHLY) * 100));
   const fmt = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
@@ -168,6 +171,43 @@ const BillsTracker = () => {
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 {net >= 0 ? "Income covers bills." : `Need ${fmt(Math.abs(net))} more / mo to break even.`}
+              </p>
+            </div>
+          </div>
+
+          {/* Six Figures Goal */}
+          <div className={`border-2 p-6 mb-12 ${sixFigGap <= 0 ? "border-brand bg-brand/5" : "border-foreground"}`}>
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Six Figures Goal</p>
+                <p className="text-xs text-muted-foreground mt-1">Target: {fmt(SIX_FIGURES_MONTHLY)} / mo ($75,600 / yr retainer baseline)</p>
+              </div>
+              <div className="text-right">
+                {sixFigGap <= 0 ? (
+                  <>
+                    <p className="text-2xl font-bold text-brand">Goal Hit ✓</p>
+                    <p className="text-xs text-muted-foreground mt-1">{fmt(Math.abs(sixFigGap))} / mo over target.</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Still need</p>
+                    <p className="text-2xl font-bold">{fmt(sixFigGap)}<span className="text-sm text-muted-foreground"> / mo</span></p>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="h-2 w-full bg-foreground/10 relative overflow-hidden">
+              <div
+                className="absolute inset-y-0 left-0 bg-brand transition-all duration-500"
+                style={{ width: `${sixFigPct}%` }}
+              />
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                {fmt(totalIncome)} of {fmt(SIX_FIGURES_MONTHLY)}
+              </p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                {sixFigPct.toFixed(1)}%
               </p>
             </div>
           </div>
