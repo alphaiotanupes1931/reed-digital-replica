@@ -529,6 +529,33 @@ const InvoiceAdmin = () => {
 
             {/* SOW TAB */}
             <TabsContent value="sow" className="mt-8 space-y-10">
+              {/* SOW Readiness indicator */}
+              {(() => {
+                const hasSow = !!(sowText && sowText.trim());
+                return (
+                  <div className={`border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${hasSow ? "border-emerald-500/50 bg-emerald-500/5" : "border-dashed border-border"}`}>
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Client Portal Status</p>
+                      <p className="text-sm font-mono font-bold text-foreground">
+                        {hasSow ? "SOW is visible to client" : "SOW is hidden — client sees \"SOW is not ready\""}
+                      </p>
+                    </div>
+                    {hasSow && (
+                      <button
+                        onClick={() => {
+                          if (confirm("Mark SOW as not ready? This clears the scope text and the client will see a placeholder.")) {
+                            setSowText("");
+                          }
+                        }}
+                        className="text-xs font-mono uppercase tracking-[0.15em] text-foreground hover:text-destructive transition-colors border border-border px-4 py-2"
+                      >
+                        Mark as Not Ready
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
+
               {/* Client Review Status & Comments */}
               {(() => {
                 const status = selectedClient?.sow_status || "pending";

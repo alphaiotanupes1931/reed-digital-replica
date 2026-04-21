@@ -952,8 +952,16 @@ const InvoicePortal = () => {
                 )}
 
                 {/* Scope of Work + Review */}
-                {client.scope_of_work && (
+                {client.scope_of_work ? (
                   <SowReview client={client} onChange={refreshClient} />
+                ) : (
+                  <div className="mt-10 border-2 border-dashed border-border p-6 md:p-10 bg-background text-center">
+                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">Scope of Work</p>
+                    <p className="text-2xl font-mono font-bold text-foreground">SOW is not ready</p>
+                    <p className="text-sm font-mono text-muted-foreground mt-3 max-w-md mx-auto leading-relaxed">
+                      Your scope of work hasn't been prepared yet. You'll see the full plan here — deliverables, timeline, and phases — as soon as it's ready for your review.
+                    </p>
+                  </div>
                 )}
 
                 {/* Phase Progress Tracker */}
