@@ -366,12 +366,14 @@ const InvoiceDocument = ({
             ${basePrice.toLocaleString()}
           </span>
         </div>
-        <div className="grid grid-cols-12 p-4 md:px-8 items-center">
-          <span className="col-span-8 text-sm font-mono text-foreground">Infrastructure & Setup Fee</span>
-          <span className="col-span-4 text-sm font-mono text-foreground text-right">
-            ${feeAmount.toLocaleString()}
-          </span>
-        </div>
+        {feeApplies && (
+          <div className="grid grid-cols-12 p-4 md:px-8 items-center">
+            <span className="col-span-8 text-sm font-mono text-foreground">Infrastructure & Setup Fee</span>
+            <span className="col-span-4 text-sm font-mono text-foreground text-right">
+              ${feeAmount.toLocaleString()}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Deposit breakdown */}
@@ -409,8 +411,49 @@ const InvoiceDocument = ({
       {/* Actions */}
       {!isPaid && (
         <div className="p-6 md:p-8 space-y-4">
-          {invoice.payment_method === "zelle" ? (
-            <>
+          {allowStripe && (
+            <div className="space-y-3">
+              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Pay with Card</p>
+              <div className="flex flex-wrap gap-3">
+                {depositPending && (
+                  <button
+                    onClick={() => onPay(invoice, true)}
+                    disabled={payingId === invoice.id + "-dep"}
+                    className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
+                      depositOverdue
+                        ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
+                        : "border-foreground text-foreground hover:bg-foreground hover:text-background"
+                    } disabled:opacity-50`}
+                  >
+                    {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+                  </button>
+                )}
+                {(!invoice.deposit_required || invoice.deposit_paid) && (
+                  <button
+                    onClick={() => onPay(invoice, false)}
+                    disabled={payingId === invoice.id}
+                    className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+                  >
+                    {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {allowStripe && allowZelle && (
+            <div className="relative py-2">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-foreground/20" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-background px-3 text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground">Or</span>
+              </div>
+            </div>
+          )}
+
+          {allowZelle && (
+            <div className="space-y-3">
               <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Payment Instructions</p>
               <div className="bg-foreground/5 border-2 border-foreground/30 p-5 space-y-3">
                 <p className="text-sm font-mono text-foreground leading-relaxed">
@@ -441,35 +484,7 @@ const InvoiceDocument = ({
                   Pay via CashApp
                 </a>
               </div>
-            </>
-          ) : (
-            <>
-              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Pay with Card</p>
-              <div className="flex flex-wrap gap-3">
-                {depositPending && (
-                  <button
-                    onClick={() => onPay(invoice, true)}
-                    disabled={payingId === invoice.id + "-dep"}
-                    className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
-                      depositOverdue
-                        ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
-                        : "border-foreground text-foreground hover:bg-foreground hover:text-background"
-                    } disabled:opacity-50`}
-                  >
-                    {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
-                  </button>
-                )}
-                {(!invoice.deposit_required || invoice.deposit_paid) && (
-                  <button
-                    onClick={() => onPay(invoice, false)}
-                    disabled={payingId === invoice.id}
-                    className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-                  >
-                    {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
-                  </button>
-                )}
-              </div>
-            </>
+            </div>
           )}
         </div>
       )}
