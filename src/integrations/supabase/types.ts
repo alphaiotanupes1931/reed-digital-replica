@@ -128,6 +128,7 @@ export type Database = {
           due_date: string
           id: string
           message: string | null
+          payment_method: string
           price: number
           service: string
           status: Database["public"]["Enums"]["invoice_status"]
@@ -146,6 +147,7 @@ export type Database = {
           due_date: string
           id?: string
           message?: string | null
+          payment_method?: string
           price: number
           service: string
           status?: Database["public"]["Enums"]["invoice_status"]
@@ -164,6 +166,7 @@ export type Database = {
           due_date?: string
           id?: string
           message?: string | null
+          payment_method?: string
           price?: number
           service?: string
           status?: Database["public"]["Enums"]["invoice_status"]
