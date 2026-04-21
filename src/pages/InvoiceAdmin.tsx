@@ -353,6 +353,36 @@ const InvoiceAdmin = () => {
     }
   };
 
+  // Auto-calculate estimated total from build + maintenance cost strings.
+  // Supports "$500", "$500-800", "500 - 800", "N/A", etc. Maintenance is treated as monthly.
+  const parseCostRange = (raw: string): [number, number] | null => {
+    if (!raw) return null;
+    const cleaned = raw.replace(/[$,\s]/g, "");
+    if (!cleaned || /n\/?a/i.test(cleaned)) return null;
+    const parts = cleaned.split(/[-–—to]+/i).filter(Boolean);
+    const nums = parts.map((p) => parseFloat(p)).filter((n) => !isNaN(n));
+    if (nums.length === 0) return null;
+    if (nums.length === 1) return [nums[0], nums[0]];
+    return [Math.min(...nums), Math.max(...nums)];
+  };
+
+  const formatNum = (n: number) =>
+    n >= 1000 ? n.toLocaleString("en-US") : String(Math.round(n));
+
+  useEffect(() => {
+    const build = parseCostRange(projectBuildCost);
+    const maint = parseCostRange(projectMaintenanceCost);
+    if (!build) {
+      setProjectEstimatedTotal("");
+      return;
+    }
+    const lo = build[0] + (maint ? maint[0] : 0);
+    const hi = build[1] + (maint ? maint[1] : 0);
+    const computed =
+      lo === hi ? `$${formatNum(lo)}` : `$${formatNum(lo)}–${formatNum(hi)}`;
+    setProjectEstimatedTotal(computed);
+  }, [projectBuildCost, projectMaintenanceCost]);
+
   const handleSyncPayments = async () => {
     setSyncing(true);
     try {
