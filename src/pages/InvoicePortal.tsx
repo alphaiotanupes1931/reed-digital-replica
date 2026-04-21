@@ -910,14 +910,16 @@ const InvoicePortal = () => {
                         {client.project_type}
                       </h2>
                     )}
-                    {client.project_build_cost && (
-                      <div className="border-2 border-primary p-4 bg-primary/5 max-w-xs">
-                        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">Build Cost</p>
-                        <p className="text-xl font-mono font-bold text-foreground">{client.project_build_cost}</p>
-                      </div>
-                    )}
+                    <div className="border-2 border-primary p-4 bg-primary/5 max-w-xs">
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">Build Cost</p>
+                      <p className="text-xl font-mono font-bold text-foreground">
+                        {client.project_build_cost || "N/A"}
+                      </p>
+                    </div>
                     <p className="text-xs font-mono text-muted-foreground mt-4 italic">
-                      Build is a one-time cost. Choose your monthly maintenance plan below.
+                      {client.project_build_cost
+                        ? "Build is a one-time cost. Choose your monthly maintenance plan below."
+                        : "See below for maintenance pricing."}
                     </p>
 
                     {/* Maintenance Plan Selection */}
