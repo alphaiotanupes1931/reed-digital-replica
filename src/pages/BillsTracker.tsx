@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
@@ -32,6 +32,7 @@ const BillsTracker = () => {
   const [notes, setNotes] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const formRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!sessionStorage.getItem("ho-token")) navigate("/home-office/login");
@@ -89,6 +90,9 @@ const BillsTracker = () => {
     setCompany(b.company_name);
     setPrice(String(b.price));
     setNotes(b.notes || "");
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
 
   const cancelEdit = () => {
@@ -213,7 +217,12 @@ const BillsTracker = () => {
           </div>
 
           {/* Add/Edit Bill */}
-          <div className="border-2 border-foreground p-6 mb-12">
+          <div
+            ref={formRef}
+            className={`border-2 p-6 mb-12 transition-colors ${
+              editingId ? "border-brand bg-brand/5" : "border-foreground"
+            }`}
+          >
             <h2 className="text-lg font-bold tracking-tight mb-4">
               {editingId ? "Edit Bill" : "Add a Monthly Bill"}
             </h2>
