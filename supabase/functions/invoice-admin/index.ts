@@ -111,7 +111,7 @@ serve(async (req) => {
     }
 
     if (action === "create_invoice") {
-      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id } = data;
+      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id, payment_method } = data;
 
       let client;
       if (client_id) {
@@ -149,6 +149,7 @@ serve(async (req) => {
         deposit_amount: deposit_amount || null,
         deposit_due_date: deposit_due_date || null,
         message: message || null,
+        payment_method: payment_method === "zelle" ? "zelle" : "stripe",
       });
 
       if (invoiceError) throw invoiceError;
@@ -199,6 +200,19 @@ serve(async (req) => {
 
       if (error) throw error;
 
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "set_payment_method") {
+      const { invoice_id, payment_method } = data;
+      const method = payment_method === "zelle" ? "zelle" : "stripe";
+      const { error } = await supabase
+        .from("invoices")
+        .update({ payment_method: method })
+        .eq("id", invoice_id);
+      if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
