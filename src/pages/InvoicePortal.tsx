@@ -128,19 +128,6 @@ const MaintenancePlanPicker = ({
     }
   };
 
-  const promptCustomPlan = async () => {
-    const name = window.prompt("Name your custom plan:", customName || "Custom");
-    if (!name || !name.trim()) return;
-    const priceStr = window.prompt("Monthly price (USD, numbers only):", customPrice || "");
-    if (!priceStr) return;
-    const price = parseFloat(priceStr.replace(/[^0-9.]/g, ""));
-    if (!price || isNaN(price) || price <= 0) {
-      toast({ title: "Invalid price", variant: "destructive" });
-      return;
-    }
-    await setPlan(`custom:${name.trim().slice(0, 60)}|${price}`);
-  };
-
   return (
     <div className="mt-6 border-t-2 border-foreground pt-6">
       <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3">
