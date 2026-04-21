@@ -112,9 +112,19 @@ const BillsTracker = () => {
   const incomeRows = incomeClients
     .map((c) => {
       const plan = c.maintenance_plan || "";
-      const amount = PLAN_PRICES[plan] || 0;
-      const [cat, name] = plan.split(":");
-      return { ...c, planLabel: PLAN_LABELS[cat] ? `${PLAN_LABELS[cat]} — ${name}` : plan, amount };
+      let amount = PLAN_PRICES[plan] || 0;
+      let planLabel = plan;
+      if (plan.startsWith("custom:")) {
+        const m = plan.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/);
+        if (m) {
+          amount = parseFloat(m[2]);
+          planLabel = `Custom — ${m[1]}`;
+        }
+      } else {
+        const [cat, name] = plan.split(":");
+        if (PLAN_LABELS[cat]) planLabel = `${PLAN_LABELS[cat]} — ${name}`;
+      }
+      return { ...c, planLabel, amount };
     })
     .filter((r) => r.amount > 0);
 
