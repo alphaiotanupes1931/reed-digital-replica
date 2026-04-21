@@ -25,6 +25,7 @@ serve(async (req) => {
       const session = event.data.object as Stripe.Checkout.Session;
       const invoiceId = session.metadata?.invoice_id;
       const isDeposit = session.metadata?.is_deposit === "true";
+      const paymentType = session.metadata?.payment_type || "one_time";
 
       if (invoiceId) {
         const supabase = createClient(
@@ -48,6 +49,9 @@ serve(async (req) => {
             .update({
               status: "paid",
               stripe_payment_intent_id: session.payment_intent as string,
+              stripe_subscription_id:
+                paymentType === "subscription" ? (session.subscription as string) : null,
+              payment_type: paymentType,
             })
             .eq("id", invoiceId);
         }
