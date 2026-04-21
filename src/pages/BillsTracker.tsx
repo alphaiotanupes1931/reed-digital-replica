@@ -33,6 +33,13 @@ const BillsTracker = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
+  const [goalAmount, setGoalAmount] = useState<number>(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("rdg-retainer-goal") : null;
+    const parsed = saved ? parseFloat(saved) : NaN;
+    return !isNaN(parsed) && parsed > 0 ? parsed : 6300;
+  });
+  const [editingGoal, setEditingGoal] = useState(false);
+  const [goalDraft, setGoalDraft] = useState("");
 
   useEffect(() => {
     if (!sessionStorage.getItem("ho-token")) navigate("/home-office/login");
@@ -134,10 +141,21 @@ const BillsTracker = () => {
 
   const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
   const net = totalIncome - totalBills;
-  const SIX_FIGURES_MONTHLY = 6300;
-  const sixFigGap = SIX_FIGURES_MONTHLY - totalIncome;
-  const sixFigPct = Math.min(100, Math.max(0, (totalIncome / SIX_FIGURES_MONTHLY) * 100));
+  const sixFigGap = goalAmount - totalIncome;
+  const sixFigPct = Math.min(100, Math.max(0, (totalIncome / goalAmount) * 100));
   const fmt = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  const saveGoal = () => {
+    const n = parseFloat(goalDraft.replace(/[$,\s]/g, ""));
+    if (isNaN(n) || n <= 0) {
+      toast({ title: "Enter a valid amount", variant: "destructive" });
+      return;
+    }
+    setGoalAmount(n);
+    localStorage.setItem("rdg-retainer-goal", String(n));
+    setEditingGoal(false);
+    toast({ title: "Goal updated", description: `New monthly target: ${fmt(n)}` });
+  };
 
   return (
     <div className="min-h-screen bg-background font-mono relative overflow-hidden">
@@ -183,8 +201,39 @@ const BillsTracker = () => {
           <div className={`border-2 p-6 mb-12 ${sixFigGap <= 0 ? "border-brand bg-brand/5" : "border-foreground"}`}>
             <div className="flex items-baseline justify-between gap-4 flex-wrap mb-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Six Figures Goal</p>
-                <p className="text-xs text-muted-foreground mt-1">Target: {fmt(SIX_FIGURES_MONTHLY)} / mo ($75,600 / yr retainer baseline)</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Retainer Goal</p>
+                  {!editingGoal && (
+                    <button
+                      onClick={() => { setGoalDraft(String(goalAmount)); setEditingGoal(true); }}
+                      className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
+                {editingGoal ? (
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-sm text-muted-foreground">$</span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={goalDraft}
+                      onChange={(e) => setGoalDraft(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditingGoal(false); }}
+                      autoFocus
+                      className="h-9 w-32"
+                    />
+                    <span className="text-xs text-muted-foreground">/ mo</span>
+                    <Button size="sm" onClick={saveGoal}>Save</Button>
+                    <Button size="sm" variant="outline" onClick={() => setEditingGoal(false)}>Cancel</Button>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Target: {fmt(goalAmount)} / mo · {fmt(goalAmount * 12)} / yr
+                  </p>
+                )}
               </div>
               <div className="text-right">
                 {sixFigGap <= 0 ? (
@@ -208,7 +257,7 @@ const BillsTracker = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {fmt(totalIncome)} of {fmt(SIX_FIGURES_MONTHLY)}
+                {fmt(totalIncome)} of {fmt(goalAmount)}
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {sixFigPct.toFixed(1)}%
