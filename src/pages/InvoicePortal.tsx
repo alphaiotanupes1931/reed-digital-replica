@@ -101,13 +101,14 @@ const MaintenancePlanPicker = ({
   const [saving, setSaving] = useState(false);
   const current = client.maintenance_plan || "";
 
-  // Detect a custom plan: stored as "custom:<name>|<price>"
-  const customMatch = current.startsWith("custom:")
-    ? current.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/)
-    : null;
-  const customSelected = !!customMatch;
-  const customName = customMatch?.[1] || "";
-  const customPrice = customMatch?.[2] || "";
+  // Custom plan price is set by the admin via project_maintenance_cost.
+  // Parse the first number in that string (handles "$250", "250/mo", etc.)
+  const customRaw = (client.project_maintenance_cost || "").trim();
+  const customMatch = customRaw.match(/(\d+(?:\.\d+)?)/);
+  const customPrice = customMatch ? customMatch[1] : "";
+  const customAvailable = !!customPrice && parseFloat(customPrice) > 0;
+  const customValue = customAvailable ? `custom:Custom|${customPrice}` : "";
+  const customSelected = customAvailable && current === customValue;
 
   const setPlan = async (planValue: string | null) => {
     setSaving(true);
