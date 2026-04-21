@@ -933,7 +933,9 @@ const InvoicePortal = () => {
                     </p>
 
                     {/* Maintenance Plan Selection */}
-                    <MaintenancePlanPicker client={client} onChange={refreshClient} />
+                    {client.maintenance_plan === "none" ? null : (
+                      <MaintenancePlanPicker client={client} onChange={refreshClient} />
+                    )}
                   </div>
                 )}
 
