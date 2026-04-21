@@ -281,23 +281,29 @@ const InvoiceDocument = ({
   const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
   const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
 
-  // The stored price IS the base service price
-  // Fee is calculated on top for display
-  const basePrice = invoice.price;
-  const feeAmount = Math.round((basePrice * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
-  const totalPrice = Math.round((basePrice + feeAmount) * 100) / 100;
+  // Parse payment methods (comma-separated: "stripe", "zelle", or "stripe,zelle")
+  const methods = (invoice.payment_method || "stripe")
+    .split(",")
+    .map((m) => m.trim().toLowerCase())
+    .filter(Boolean);
+  const allowStripe = methods.includes("stripe");
+  const allowZelle = methods.includes("zelle");
+  // Fee only applies when Stripe is the only option. If Zelle is available, the
+  // quoted total is the raw price (no processing fee).
+  const feeApplies = allowStripe && !allowZelle;
 
-  const baseDeposit = invoice.deposit_amount
-    ? Math.round((invoice.deposit_amount / (1 + PROCESSING_FEE_RATE)) * 100) / 100
-    : null;
-  const depositFee = invoice.deposit_amount && baseDeposit
-    ? Math.round((invoice.deposit_amount - baseDeposit) * 100) / 100
-    : null;
+  const basePrice = invoice.price;
+  const feeAmount = feeApplies
+    ? Math.round((basePrice * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100
+    : 0;
+  const totalPrice = Math.round((basePrice + feeAmount) * 100) / 100;
 
   const remainingBase = invoice.deposit_required && invoice.deposit_amount
     ? invoice.price - invoice.deposit_amount
     : invoice.price;
-  const remainingFee = Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const remainingFee = feeApplies
+    ? Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100
+    : 0;
   const remainingTotal = Math.round((remainingBase + remainingFee) * 100) / 100;
 
   return (
