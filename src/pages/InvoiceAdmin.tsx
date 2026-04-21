@@ -282,7 +282,10 @@ const InvoiceAdmin = () => {
           deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
           message: message.trim() || null,
-          payment_method: paymentMethod,
+          payment_method: [
+            ...(allowStripe ? ["stripe"] : []),
+            ...(allowZelle ? ["zelle"] : []),
+          ].join(",") || "stripe",
           password: ADMIN_PASSWORD,
         },
       });
@@ -290,7 +293,8 @@ const InvoiceAdmin = () => {
       toast({ title: "Invoice created" });
       setShowInvoiceForm(false);
       setService(""); setPrice(""); setDepositRequired(false);
-      setDepositAmount(""); setDepositDueDate(""); setMessage(""); setPaymentMethod("stripe");
+      setDepositAmount(""); setDepositDueDate(""); setMessage("");
+      setAllowStripe(true); setAllowZelle(false);
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -764,36 +768,41 @@ const InvoiceAdmin = () => {
                       </div>
 
                       <div className="border-t border-border pt-6">
-                        <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Method</label>
+                        <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Methods (select one or both)</label>
                         <div className="grid grid-cols-2 gap-3">
                           <button
                             type="button"
-                            onClick={() => setPaymentMethod("stripe")}
+                            onClick={() => setAllowStripe((v) => !v)}
                             className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
-                              paymentMethod === "stripe"
+                              allowStripe
                                 ? "border-primary bg-primary/10 text-foreground"
                                 : "border-border text-foreground/70 hover:border-foreground"
                             }`}
                           >
-                            Stripe (Card)
+                            {allowStripe ? "✓ " : ""}Stripe (Card)
                           </button>
                           <button
                             type="button"
-                            onClick={() => setPaymentMethod("zelle")}
+                            onClick={() => setAllowZelle((v) => !v)}
                             className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
-                              paymentMethod === "zelle"
+                              allowZelle
                                 ? "border-primary bg-primary/10 text-foreground"
                                 : "border-border text-foreground/70 hover:border-foreground"
                             }`}
                           >
-                            Zelle / CashApp
+                            {allowZelle ? "✓ " : ""}Zelle / CashApp
                           </button>
                         </div>
                         <p className="text-[11px] font-mono text-foreground/60 mt-2">
-                          {paymentMethod === "stripe"
-                            ? "Client pays via card through Stripe checkout."
-                            : "Client sees instructions to send to info@reeddigitalgroup.com via Zelle or CashApp."}
+                          {allowStripe && allowZelle
+                            ? "Client sees both options. Zelle has no processing fee."
+                            : allowZelle
+                            ? "Zelle / CashApp only — no processing fee added."
+                            : "Stripe only — 2.9% + $0.30 processing fee added."}
                         </p>
+                        {!allowStripe && !allowZelle && (
+                          <p className="text-[11px] font-mono text-destructive mt-1">Select at least one method.</p>
+                        )}
                       </div>
 
                       <div className="border-t border-border pt-6">
