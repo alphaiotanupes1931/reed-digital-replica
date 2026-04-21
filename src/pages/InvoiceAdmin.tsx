@@ -542,9 +542,24 @@ const InvoiceAdmin = () => {
                     </div>
                     {hasSow && (
                       <button
-                        onClick={() => {
-                          if (confirm("Mark SOW as not ready? This clears the scope text and the client will see a placeholder.")) {
-                            setSowText("");
+                        onClick={async () => {
+                          if (!confirm("Mark SOW as not ready? This clears the scope text and the client will see a placeholder.")) return;
+                          setSowText("");
+                          if (!selectedClientId) return;
+                          try {
+                            const res = await supabase.functions.invoke("invoice-admin", {
+                              body: {
+                                action: "save_sow",
+                                client_id: selectedClientId,
+                                scope_of_work: "",
+                                password: ADMIN_PASSWORD,
+                              },
+                            });
+                            if (res.error) throw res.error;
+                            toast({ title: "SOW marked as not ready" });
+                            fetchData();
+                          } catch (err: any) {
+                            toast({ title: "Error", description: err.message, variant: "destructive" });
                           }
                         }}
                         className="text-xs font-mono uppercase tracking-[0.15em] text-foreground hover:text-destructive transition-colors border border-border px-4 py-2"
