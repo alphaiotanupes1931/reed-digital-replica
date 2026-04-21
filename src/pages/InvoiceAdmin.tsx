@@ -133,7 +133,8 @@ const InvoiceAdmin = () => {
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
   const [message, setMessage] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "zelle">("stripe");
+  const [allowStripe, setAllowStripe] = useState(true);
+  const [allowZelle, setAllowZelle] = useState(false);
 
   // Deliverables
   const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);

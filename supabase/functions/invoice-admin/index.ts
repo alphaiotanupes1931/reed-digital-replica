@@ -112,6 +112,19 @@ serve(async (req) => {
 
     if (action === "create_invoice") {
       const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id, payment_method } = data;
+      // Normalize payment_method: accepts "stripe", "zelle", "stripe,zelle", or an array.
+      const normalizeMethod = (v: unknown): string => {
+        const arr = Array.isArray(v)
+          ? v
+          : typeof v === "string"
+          ? v.split(",")
+          : [];
+        const clean = arr
+          .map((m: unknown) => String(m).trim().toLowerCase())
+          .filter((m: string) => m === "stripe" || m === "zelle");
+        const unique = Array.from(new Set(clean));
+        return unique.length ? unique.join(",") : "stripe";
+      };
 
       let client;
       if (client_id) {
@@ -149,7 +162,7 @@ serve(async (req) => {
         deposit_amount: deposit_amount || null,
         deposit_due_date: deposit_due_date || null,
         message: message || null,
-        payment_method: payment_method === "zelle" ? "zelle" : "stripe",
+        payment_method: normalizeMethod(payment_method),
       });
 
       if (invoiceError) throw invoiceError;
@@ -207,7 +220,16 @@ serve(async (req) => {
 
     if (action === "set_payment_method") {
       const { invoice_id, payment_method } = data;
-      const method = payment_method === "zelle" ? "zelle" : "stripe";
+      const arr = Array.isArray(payment_method)
+        ? payment_method
+        : typeof payment_method === "string"
+        ? payment_method.split(",")
+        : [];
+      const clean = arr
+        .map((m: unknown) => String(m).trim().toLowerCase())
+        .filter((m: string) => m === "stripe" || m === "zelle");
+      const unique = Array.from(new Set(clean));
+      const method = unique.length ? unique.join(",") : "stripe";
       const { error } = await supabase
         .from("invoices")
         .update({ payment_method: method })
