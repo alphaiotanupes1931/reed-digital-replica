@@ -55,6 +55,7 @@ interface Invoice {
   created_at: string;
   message: string | null;
   deliverables: Deliverable[] | null;
+  payment_method?: "stripe" | "zelle" | string | null;
 }
 
 const PROCESSING_FEE_RATE = 0.029;
