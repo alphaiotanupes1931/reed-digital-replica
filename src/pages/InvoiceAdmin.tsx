@@ -531,7 +531,8 @@ const InvoiceAdmin = () => {
             <TabsContent value="sow" className="mt-8 space-y-10">
               {/* SOW Readiness indicator */}
               {(() => {
-                const hasSow = !!(sowText && sowText.trim());
+                const t = (sowText || "").trim();
+                const hasSow = t.length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(t);
                 return (
                   <div className={`border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${hasSow ? "border-emerald-500/50 bg-emerald-500/5" : "border-dashed border-border"}`}>
                     <div>
@@ -1056,7 +1057,11 @@ const InvoiceAdmin = () => {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-3 flex-wrap">
                             <span className="font-mono font-semibold text-foreground text-lg">{c.company_name}</span>
-                            {c.scope_of_work && <span className="text-xs font-mono uppercase tracking-[0.15em] text-emerald-500">SOW</span>}
+                            {(() => {
+                              const t = (c.scope_of_work || "").trim();
+                              const hasSow = t.length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(t);
+                              return hasSow ? <span className="text-xs font-mono uppercase tracking-[0.15em] text-emerald-500">SOW</span> : null;
+                            })()}
                           </div>
                           <p className="text-sm font-mono text-foreground/70 mt-1">{c.owner_name || "—"} · {c.email}</p>
                           <p className="text-xs font-mono text-foreground/50 mt-1">{cInvoices.length} invoices · {cPaid} paid</p>

@@ -952,7 +952,7 @@ const InvoicePortal = () => {
                 )}
 
                 {/* Scope of Work + Review */}
-                {client.scope_of_work ? (
+                {client.scope_of_work && client.scope_of_work.trim().length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(client.scope_of_work.trim()) ? (
                   <SowReview client={client} onChange={refreshClient} />
                 ) : (
                   <div className="mt-10 border-2 border-dashed border-border p-6 md:p-10 bg-background text-center">
