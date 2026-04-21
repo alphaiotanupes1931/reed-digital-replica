@@ -801,11 +801,24 @@ const InvoicePortal = () => {
     if (client?.email) await loadClientData(client.email, false);
   };
 
-  const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
-    setPayingId(invoice.id + (payDeposit ? "-dep" : ""));
+  const handlePay = async (
+    invoice: Invoice,
+    payDeposit: boolean,
+    paymentType: "one_time" | "subscription" = "one_time"
+  ) => {
+    const suffix = payDeposit
+      ? "-dep"
+      : paymentType === "subscription"
+      ? "-sub"
+      : "-once";
+    setPayingId(invoice.id + suffix);
     try {
       const res = await supabase.functions.invoke("create-checkout", {
-        body: { invoice_id: invoice.id, pay_deposit: payDeposit },
+        body: {
+          invoice_id: invoice.id,
+          pay_deposit: payDeposit,
+          payment_type: paymentType,
+        },
       });
       if (res.error) throw res.error;
       if (res.data?.url) window.location.href = res.data.url;
