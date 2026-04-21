@@ -617,8 +617,11 @@ const InvoiceAdmin = () => {
               {/* Client-selected Maintenance Plan */}
               {(() => {
                 const plan = selectedClient?.maintenance_plan || "";
+                const noPlanOffered = plan === "none";
                 let displayLabel = "";
-                if (plan.startsWith("custom:")) {
+                if (noPlanOffered) {
+                  displayLabel = "No maintenance plan offered";
+                } else if (plan.startsWith("custom:")) {
                   const m = plan.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/);
                   displayLabel = m ? `Custom — ${m[1]} ($${m[2]}/mo)` : "Custom";
                 } else {
@@ -630,25 +633,60 @@ const InvoiceAdmin = () => {
                     : "";
                   displayLabel = catLabel ? `${catLabel} — ${name}` : plan;
                 }
+                const setMaintenanceOffer = async (value: string | null) => {
+                  if (!selectedClient) return;
+                  try {
+                    const res = await supabase.functions.invoke("sow-response", {
+                      body: { email: selectedClient.email, action: "set_maintenance_plan", maintenance_plan: value },
+                    });
+                    if (res.error) throw res.error;
+                    const errData = (res.data as { error?: string } | null)?.error;
+                    if (errData) throw new Error(errData);
+                    toast({ title: value === "none" ? "Maintenance hidden from client" : "Maintenance offered to client" });
+                    fetchData();
+                  } catch (err: any) {
+                    toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
+                  }
+                };
                 return (
-                  <div className={`border p-5 ${plan ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <div className={`border p-5 ${plan && !noPlanOffered ? "border-primary bg-primary/5" : "border-border"}`}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
                         Client Maintenance Plan Selection
                       </p>
-                      <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${plan ? "bg-primary text-primary-foreground" : "bg-foreground/10 text-foreground border border-border"}`}>
-                        {plan ? "Selected" : "Not Selected"}
+                      <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${noPlanOffered ? "bg-foreground/10 text-foreground border border-border" : plan ? "bg-primary text-primary-foreground" : "bg-foreground/10 text-foreground border border-border"}`}>
+                        {noPlanOffered ? "Hidden" : plan ? "Selected" : "Not Selected"}
                       </span>
                     </div>
-                    {plan ? (
+                    {plan && !noPlanOffered ? (
                       <p className="text-lg font-mono font-bold text-foreground mt-3">
                         {displayLabel}
+                      </p>
+                    ) : noPlanOffered ? (
+                      <p className="text-sm font-mono text-foreground/70 mt-3">
+                        Maintenance plan options are hidden from this client.
                       </p>
                     ) : (
                       <p className="text-xs font-mono text-foreground/40 mt-4">
                         Client has not picked a maintenance plan yet.
                       </p>
                     )}
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => setMaintenanceOffer(noPlanOffered ? null : "none")}
+                        className="text-[10px] font-mono uppercase tracking-[0.2em] border border-border px-3 py-2 hover:border-foreground transition-colors"
+                      >
+                        {noPlanOffered ? "Offer Maintenance Plans" : "Hide Maintenance (No Plan)"}
+                      </button>
+                      {plan && (
+                        <button
+                          onClick={() => setMaintenanceOffer(null)}
+                          className="text-[10px] font-mono uppercase tracking-[0.2em] border border-border px-3 py-2 hover:border-destructive hover:text-destructive transition-colors"
+                        >
+                          Clear Selection
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })()}
