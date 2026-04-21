@@ -74,6 +74,7 @@ interface Invoice {
   created_at: string;
   message: string | null;
   deliverables: Deliverable[] | null;
+  payment_method?: "stripe" | "zelle" | string | null;
   clients?: Client;
 }
 
@@ -132,6 +133,7 @@ const InvoiceAdmin = () => {
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
   const [message, setMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "zelle">("stripe");
 
   // Deliverables
   const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);
@@ -279,6 +281,7 @@ const InvoiceAdmin = () => {
           deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
           message: message.trim() || null,
+          payment_method: paymentMethod,
           password: ADMIN_PASSWORD,
         },
       });
@@ -286,7 +289,7 @@ const InvoiceAdmin = () => {
       toast({ title: "Invoice created" });
       setShowInvoiceForm(false);
       setService(""); setPrice(""); setDepositRequired(false);
-      setDepositAmount(""); setDepositDueDate(""); setMessage("");
+      setDepositAmount(""); setDepositDueDate(""); setMessage(""); setPaymentMethod("stripe");
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -347,6 +350,19 @@ const InvoiceAdmin = () => {
       });
       if (res.error) throw res.error;
       toast({ title: status === "paid" ? "Marked as paid" : "Marked as unpaid" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleSetPaymentMethod = async (invoiceId: string, method: "stripe" | "zelle") => {
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: `Payment method set to ${method === "zelle" ? "Zelle / CashApp" : "Stripe"}` });
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -747,6 +763,39 @@ const InvoiceAdmin = () => {
                       </div>
 
                       <div className="border-t border-border pt-6">
+                        <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Method</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod("stripe")}
+                            className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
+                              paymentMethod === "stripe"
+                                ? "border-primary bg-primary/10 text-foreground"
+                                : "border-border text-foreground/70 hover:border-foreground"
+                            }`}
+                          >
+                            Stripe (Card)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod("zelle")}
+                            className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
+                              paymentMethod === "zelle"
+                                ? "border-primary bg-primary/10 text-foreground"
+                                : "border-border text-foreground/70 hover:border-foreground"
+                            }`}
+                          >
+                            Zelle / CashApp
+                          </button>
+                        </div>
+                        <p className="text-[11px] font-mono text-foreground/60 mt-2">
+                          {paymentMethod === "stripe"
+                            ? "Client pays via card through Stripe checkout."
+                            : "Client sees instructions to send to info@reeddigitalgroup.com via Zelle or CashApp."}
+                        </p>
+                      </div>
+
+                      <div className="border-t border-border pt-6">
                         <div className="flex items-center justify-between mb-4">
                           <p className="text-sm font-mono">Require Deposit</p>
                           <Switch checked={depositRequired} onCheckedChange={setDepositRequired} />
@@ -778,12 +827,28 @@ const InvoiceAdmin = () => {
                           <div className="flex items-center gap-3 flex-wrap">
                             <span className="font-mono font-semibold text-foreground text-lg">{inv.service}</span>
                             <span className={`text-xs font-mono uppercase tracking-[0.15em] ${inv.status === "paid" ? "text-emerald-500" : "text-primary"}`}>{inv.status}</span>
+                            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 border border-border px-2 py-0.5">
+                              {inv.payment_method === "zelle" ? "Zelle / CashApp" : "Stripe"}
+                            </span>
                           </div>
                           <p className="text-sm font-mono text-foreground/60 mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
                         </div>
                         <div className="flex items-center gap-6 shrink-0">
                           <span className="text-2xl font-mono font-bold">${inv.price.toLocaleString()}</span>
                           <div className="flex gap-2 flex-wrap">
+                            {inv.status !== "paid" && (
+                              <button
+                                onClick={() =>
+                                  handleSetPaymentMethod(
+                                    inv.id,
+                                    inv.payment_method === "zelle" ? "stripe" : "zelle"
+                                  )
+                                }
+                                className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]"
+                              >
+                                {inv.payment_method === "zelle" ? "Switch to Stripe" : "Switch to Zelle"}
+                              </button>
+                            )}
                             {inv.status !== "paid" ? (
                               <button onClick={() => handleSetStatus(inv.id, "paid")} className="h-9 px-4 border border-border hover:border-emerald-500 hover:text-emerald-500 text-xs font-mono uppercase tracking-[0.1em]">Mark Paid</button>
                             ) : (
