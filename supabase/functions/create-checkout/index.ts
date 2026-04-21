@@ -23,8 +23,10 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { invoice_id, pay_deposit } = await req.json();
+    const { invoice_id, pay_deposit, payment_type } = await req.json();
     if (!invoice_id) throw new Error("invoice_id is required");
+    const mode: "payment" | "subscription" =
+      payment_type === "subscription" ? "subscription" : "payment";
 
     // Get invoice with client info
     const { data: invoice, error: invError } = await supabase
@@ -61,6 +63,15 @@ serve(async (req) => {
 
     const paymentAmount = addFee(baseAmount);
 
+    // Subscription mode disallows deposit-only payments and always charges full total monthly
+    const isSubscription = mode === "subscription";
+    const finalUnitAmount = isSubscription
+      ? Math.round(addFee(invoice.price) * 100)
+      : Math.round(paymentAmount * 100);
+    const finalName = isSubscription
+      ? `${invoice.service} (Monthly) - ${client.company_name}`
+      : `${description} - ${client.company_name}`;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       customer_email: client.email,
@@ -69,26 +80,33 @@ serve(async (req) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: `${description} - ${client.company_name}`,
-              description: `Invoice due ${invoice.due_date}`,
+              name: finalName,
+              description: isSubscription
+                ? `Recurring monthly charge`
+                : `Invoice due ${invoice.due_date}`,
             },
-            unit_amount: Math.round(paymentAmount * 100),
+            unit_amount: finalUnitAmount,
+            ...(isSubscription ? { recurring: { interval: "month" as const } } : {}),
           },
           quantity: 1,
         },
       ],
-      mode: "payment",
+      mode,
       success_url: `${origin}/portal/thank-you`,
       cancel_url: `${origin}/portal?payment=cancelled`,
       metadata: {
         invoice_id: invoice.id,
         is_deposit: pay_deposit ? "true" : "false",
+        payment_type: isSubscription ? "subscription" : "one_time",
       },
     });
 
     await supabase
       .from("invoices")
-      .update({ stripe_checkout_session_id: session.id })
+      .update({
+        stripe_checkout_session_id: session.id,
+        payment_type: isSubscription ? "subscription" : "one_time",
+      })
       .eq("id", invoice.id);
 
     return new Response(JSON.stringify({ url: session.url }), {
