@@ -910,43 +910,18 @@ const InvoicePortal = () => {
                         {client.project_type}
                       </h2>
                     )}
-                    {(() => {
-                      const maintRaw = (client.project_maintenance_cost || "").trim();
-                      const maintTBD = !maintRaw || /^n\/?a$/i.test(maintRaw) || /tbd/i.test(maintRaw);
-                      const firstMonthTotal = maintTBD
-                        ? client.project_build_cost
-                        : client.project_estimated_total;
-                      return (
-                        <>
-                          <div className="grid sm:grid-cols-3 gap-4">
-                            {client.project_build_cost && (
-                              <div className="border border-border p-4">
-                                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Build</p>
-                                <p className="text-xl font-mono font-bold text-foreground">{client.project_build_cost}</p>
-                              </div>
-                            )}
-                            {!maintTBD && (
-                              <div className="border border-border p-4">
-                                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">Maintenance / mo</p>
-                                <p className="text-xl font-mono font-bold text-foreground">{maintRaw}</p>
-                              </div>
-                            )}
-                            {firstMonthTotal && (
-                              <div className="border-2 border-primary p-4 bg-primary/5">
-                                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">First Month Estimated Total</p>
-                                <p className="text-xl font-mono font-bold text-foreground">{firstMonthTotal}</p>
-                              </div>
-                            )}
-                          </div>
-                          <p className="text-xs font-mono text-muted-foreground mt-4 italic">
-                            These are estimates. Final pricing is confirmed in your invoice.
-                          </p>
+                    {client.project_build_cost && (
+                      <div className="border-2 border-primary p-4 bg-primary/5 max-w-xs">
+                        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">Build Cost</p>
+                        <p className="text-xl font-mono font-bold text-foreground">{client.project_build_cost}</p>
+                      </div>
+                    )}
+                    <p className="text-xs font-mono text-muted-foreground mt-4 italic">
+                      Build is a one-time cost. Choose your monthly maintenance plan below.
+                    </p>
 
-                          {/* Maintenance Plan Selection */}
-                          <MaintenancePlanPicker client={client} onChange={refreshClient} />
-                        </>
-                      );
-                    })()}
+                    {/* Maintenance Plan Selection */}
+                    <MaintenancePlanPicker client={client} onChange={refreshClient} />
                   </div>
                 )}
 
