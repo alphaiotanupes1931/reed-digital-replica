@@ -476,7 +476,7 @@ const InvoiceDocument = ({
                   Pay via Zelle — ${remainingTotal.toLocaleString()}
                 </a>
                 <a
-                  href="https://cash.app/login?email=reeddigitalgroup@gmail.com"
+                  href="https://cash.app/login?email=info@reeddigitalgroup.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3"
