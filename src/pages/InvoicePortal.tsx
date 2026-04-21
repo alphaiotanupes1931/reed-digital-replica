@@ -429,13 +429,26 @@ const InvoiceDocument = ({
                   </button>
                 )}
                 {(!invoice.deposit_required || invoice.deposit_paid) && (
-                  <button
-                    onClick={() => onPay(invoice, false)}
-                    disabled={payingId === invoice.id}
-                    className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-                  >
-                    {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
-                  </button>
+                  <>
+                    <button
+                      onClick={() => onPay(invoice, false, "one_time")}
+                      disabled={payingId === invoice.id + "-once"}
+                      className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+                    >
+                      {payingId === invoice.id + "-once"
+                        ? "Processing..."
+                        : `Pay Once — $${remainingTotal.toLocaleString()}`}
+                    </button>
+                    <button
+                      onClick={() => onPay(invoice, false, "subscription")}
+                      disabled={payingId === invoice.id + "-sub"}
+                      className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+                    >
+                      {payingId === invoice.id + "-sub"
+                        ? "Processing..."
+                        : `Subscribe Monthly — $${totalPrice.toLocaleString()}/mo`}
+                    </button>
+                  </>
                 )}
               </div>
             </div>
