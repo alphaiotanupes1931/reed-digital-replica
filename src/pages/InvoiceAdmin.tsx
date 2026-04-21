@@ -133,6 +133,7 @@ const InvoiceAdmin = () => {
   const [depositAmount, setDepositAmount] = useState("");
   const [depositDueDate, setDepositDueDate] = useState("");
   const [message, setMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "zelle">("stripe");
 
   // Deliverables
   const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);
@@ -280,6 +281,7 @@ const InvoiceAdmin = () => {
           deposit_amount: depositRequired ? parseFloat(depositAmount) : null,
           deposit_due_date: depositRequired ? depositDueDate : null,
           message: message.trim() || null,
+          payment_method: paymentMethod,
           password: ADMIN_PASSWORD,
         },
       });
@@ -287,7 +289,7 @@ const InvoiceAdmin = () => {
       toast({ title: "Invoice created" });
       setShowInvoiceForm(false);
       setService(""); setPrice(""); setDepositRequired(false);
-      setDepositAmount(""); setDepositDueDate(""); setMessage("");
+      setDepositAmount(""); setDepositDueDate(""); setMessage(""); setPaymentMethod("stripe");
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
