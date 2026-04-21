@@ -403,61 +403,68 @@ const InvoiceDocument = ({
       {/* Actions */}
       {!isPaid && (
         <div className="p-6 md:p-8 space-y-4">
-          <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Pay with Card</p>
-          <div className="flex flex-wrap gap-3">
-            {depositPending && (
-              <button
-                onClick={() => onPay(invoice, true)}
-                disabled={payingId === invoice.id + "-dep"}
-                className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
-                  depositOverdue
-                    ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
-                    : "border-foreground text-foreground hover:bg-foreground hover:text-background"
-                } disabled:opacity-50`}
-              >
-                {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
-              </button>
-            )}
-            {(!invoice.deposit_required || invoice.deposit_paid) && (
-              <button
-                onClick={() => onPay(invoice, false)}
-                disabled={payingId === invoice.id}
-                className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-              >
-                {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
-              </button>
-            )}
-          </div>
-
-          <div className="border-t border-foreground/20 pt-4">
-            <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-3">Or Pay via Zelle / CashApp</p>
-            <div className="bg-foreground/5 border border-foreground/20 p-4 space-y-2">
-              <p className="text-sm font-mono text-foreground">
-                Send payment to: <span className="font-bold">reeddigitalgroup@gmail.com</span>
-              </p>
-              <p className="text-xs font-mono text-foreground/70">
-                Please include your company name and invoice service in the memo. Once payment is received, your invoice will be updated within 1–2 business days.
-              </p>
-              <div className="flex gap-3 pt-2">
+          {invoice.payment_method === "zelle" ? (
+            <>
+              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Payment Instructions</p>
+              <div className="bg-foreground/5 border-2 border-foreground/30 p-5 space-y-3">
+                <p className="text-sm font-mono text-foreground leading-relaxed">
+                  Please send payment via <span className="font-bold">Zelle</span> or <span className="font-bold">CashApp</span> to:
+                </p>
+                <p className="text-lg font-mono font-bold text-foreground break-all">
+                  info@reeddigitalgroup.com
+                </p>
+                <p className="text-xs font-mono text-foreground/70 leading-relaxed">
+                  Open your banking app, search for Zelle (or use CashApp), and send <span className="font-bold text-foreground">${remainingTotal.toLocaleString()}</span> to the email above. Include your company name in the memo. Your invoice will be marked paid within 1–2 business days.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 pt-2">
                 <a
                   href="https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiUkVFRCBESUdJVEFMIEdST1VQIiwidG9rZW4iOiJpbmZvQHJlZWRkaWdpdGFsZ3JvdXAuY29tIiwiYWN0aW9uIjoicGF5bWVudCJ9"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-10 px-6 text-xs font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2"
+                  className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3"
                 >
-                  Zelle
+                  Pay via Zelle — ${remainingTotal.toLocaleString()}
                 </a>
                 <a
                   href="https://cash.app/login?email=reeddigitalgroup@gmail.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-10 px-6 text-xs font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-2"
+                  className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3"
                 >
-                  CashApp
+                  Pay via CashApp
                 </a>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Pay with Card</p>
+              <div className="flex flex-wrap gap-3">
+                {depositPending && (
+                  <button
+                    onClick={() => onPay(invoice, true)}
+                    disabled={payingId === invoice.id + "-dep"}
+                    className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
+                      depositOverdue
+                        ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
+                        : "border-foreground text-foreground hover:bg-foreground hover:text-background"
+                    } disabled:opacity-50`}
+                  >
+                    {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+                  </button>
+                )}
+                {(!invoice.deposit_required || invoice.deposit_paid) && (
+                  <button
+                    onClick={() => onPay(invoice, false)}
+                    disabled={payingId === invoice.id}
+                    className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+                  >
+                    {payingId === invoice.id ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
     </motion.div>
