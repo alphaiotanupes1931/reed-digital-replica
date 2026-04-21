@@ -637,12 +637,12 @@ const InvoiceAdmin = () => {
                       />
                     </div>
                     <div>
-                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Estimated Total</span>
+                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Estimated Total (auto)</span>
                       <input
                         value={projectEstimatedTotal}
-                        onChange={(e) => setProjectEstimatedTotal(e.target.value)}
-                        placeholder="$700–1,100"
-                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
+                        readOnly
+                        placeholder="auto-calculated"
+                        className="w-full bg-foreground/5 border border-border rounded-none p-3 font-mono text-sm text-foreground placeholder:text-foreground/30 cursor-not-allowed"
                       />
                     </div>
                   </div>
