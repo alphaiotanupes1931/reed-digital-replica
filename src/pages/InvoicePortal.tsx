@@ -101,6 +101,14 @@ const MaintenancePlanPicker = ({
   const [saving, setSaving] = useState(false);
   const current = client.maintenance_plan || "";
 
+  // Detect a custom plan: stored as "custom:<name>|<price>"
+  const customMatch = current.startsWith("custom:")
+    ? current.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/)
+    : null;
+  const customSelected = !!customMatch;
+  const customName = customMatch?.[1] || "";
+  const customPrice = customMatch?.[2] || "";
+
   const setPlan = async (planValue: string | null) => {
     setSaving(true);
     try {
@@ -117,6 +125,19 @@ const MaintenancePlanPicker = ({
     } finally {
       setSaving(false);
     }
+  };
+
+  const promptCustomPlan = async () => {
+    const name = window.prompt("Name your custom plan:", customName || "Custom");
+    if (!name || !name.trim()) return;
+    const priceStr = window.prompt("Monthly price (USD, numbers only):", customPrice || "");
+    if (!priceStr) return;
+    const price = parseFloat(priceStr.replace(/[^0-9.]/g, ""));
+    if (!price || isNaN(price) || price <= 0) {
+      toast({ title: "Invalid price", variant: "destructive" });
+      return;
+    }
+    await setPlan(`custom:${name.trim().slice(0, 60)}|${price}`);
   };
 
   return (
