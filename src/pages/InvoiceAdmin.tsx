@@ -531,7 +531,8 @@ const InvoiceAdmin = () => {
             <TabsContent value="sow" className="mt-8 space-y-10">
               {/* SOW Readiness indicator */}
               {(() => {
-                const hasSow = !!(sowText && sowText.trim());
+                const t = (sowText || "").trim();
+                const hasSow = t.length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(t);
                 return (
                   <div className={`border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${hasSow ? "border-emerald-500/50 bg-emerald-500/5" : "border-dashed border-border"}`}>
                     <div>
