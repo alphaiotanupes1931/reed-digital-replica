@@ -763,6 +763,39 @@ const InvoiceAdmin = () => {
                       </div>
 
                       <div className="border-t border-border pt-6">
+                        <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Method</label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod("stripe")}
+                            className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
+                              paymentMethod === "stripe"
+                                ? "border-primary bg-primary/10 text-foreground"
+                                : "border-border text-foreground/70 hover:border-foreground"
+                            }`}
+                          >
+                            Stripe (Card)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod("zelle")}
+                            className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
+                              paymentMethod === "zelle"
+                                ? "border-primary bg-primary/10 text-foreground"
+                                : "border-border text-foreground/70 hover:border-foreground"
+                            }`}
+                          >
+                            Zelle / CashApp
+                          </button>
+                        </div>
+                        <p className="text-[11px] font-mono text-foreground/60 mt-2">
+                          {paymentMethod === "stripe"
+                            ? "Client pays via card through Stripe checkout."
+                            : "Client sees instructions to send to info@reeddigitalgroup.com via Zelle or CashApp."}
+                        </p>
+                      </div>
+
+                      <div className="border-t border-border pt-6">
                         <div className="flex items-center justify-between mb-4">
                           <p className="text-sm font-mono">Require Deposit</p>
                           <Switch checked={depositRequired} onCheckedChange={setDepositRequired} />
