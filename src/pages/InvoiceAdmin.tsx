@@ -361,13 +361,14 @@ const InvoiceAdmin = () => {
     }
   };
 
-  const handleSetPaymentMethod = async (invoiceId: string, method: "stripe" | "zelle") => {
+  const handleSetPaymentMethod = async (invoiceId: string, method: string) => {
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
       });
       if (res.error) throw res.error;
-      toast({ title: `Payment method set to ${method === "zelle" ? "Zelle / CashApp" : "Stripe"}` });
+      const label = method === "zelle" ? "Zelle / CashApp" : method === "stripe,zelle" || method === "zelle,stripe" ? "Stripe + Zelle" : "Stripe";
+      toast({ title: `Payment method set to ${label}` });
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -838,7 +839,13 @@ const InvoiceAdmin = () => {
                             <span className="font-mono font-semibold text-foreground text-lg">{inv.service}</span>
                             <span className={`text-xs font-mono uppercase tracking-[0.15em] ${inv.status === "paid" ? "text-emerald-500" : "text-primary"}`}>{inv.status}</span>
                             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 border border-border px-2 py-0.5">
-                              {inv.payment_method === "zelle" ? "Zelle / CashApp" : "Stripe"}
+                              {(() => {
+                                const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
+                                const hasS = m.includes("stripe"), hasZ = m.includes("zelle");
+                                if (hasS && hasZ) return "Stripe + Zelle";
+                                if (hasZ) return "Zelle / CashApp";
+                                return "Stripe";
+                              })()}
                             </span>
                           </div>
                           <p className="text-sm font-mono text-foreground/60 mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
@@ -846,19 +853,24 @@ const InvoiceAdmin = () => {
                         <div className="flex items-center gap-6 shrink-0">
                           <span className="text-2xl font-mono font-bold">${inv.price.toLocaleString()}</span>
                           <div className="flex gap-2 flex-wrap">
-                            {inv.status !== "paid" && (
-                              <button
-                                onClick={() =>
-                                  handleSetPaymentMethod(
-                                    inv.id,
-                                    inv.payment_method === "zelle" ? "stripe" : "zelle"
-                                  )
-                                }
-                                className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]"
-                              >
-                                {inv.payment_method === "zelle" ? "Switch to Stripe" : "Switch to Zelle"}
-                              </button>
-                            )}
+                            {inv.status !== "paid" && (() => {
+                              const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
+                              const hasS = m.includes("stripe"), hasZ = m.includes("zelle");
+                              // Cycle: stripe → zelle → both → stripe
+                              let next = "zelle", label = "→ Zelle";
+                              if (hasS && !hasZ) { next = "zelle"; label = "→ Zelle"; }
+                              else if (!hasS && hasZ) { next = "stripe,zelle"; label = "→ Both"; }
+                              else { next = "stripe"; label = "→ Stripe"; }
+                              return (
+                                <button
+                                  onClick={() => handleSetPaymentMethod(inv.id, next)}
+                                  className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]"
+                                  title="Cycle payment methods"
+                                >
+                                  {label}
+                                </button>
+                              );
+                            })()}
                             {inv.status !== "paid" ? (
                               <button onClick={() => handleSetStatus(inv.id, "paid")} className="h-9 px-4 border border-border hover:border-emerald-500 hover:text-emerald-500 text-xs font-mono uppercase tracking-[0.1em]">Mark Paid</button>
                             ) : (
