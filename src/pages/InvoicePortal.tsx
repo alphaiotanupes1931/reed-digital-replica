@@ -205,6 +205,50 @@ const MaintenancePlanPicker = ({
             </div>
           </div>
         ))}
+
+        {/* Custom plan */}
+        <div>
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            Custom
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <button
+              onClick={promptCustomPlan}
+              disabled={saving}
+              className={`text-left border-2 p-4 transition-colors disabled:opacity-50 ${
+                customSelected
+                  ? "border-primary bg-primary/10"
+                  : "border-dashed border-border hover:border-foreground"
+              }`}
+            >
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="text-sm font-mono font-bold text-foreground uppercase tracking-[0.1em]">
+                  {customSelected ? customName : "Custom Plan"}
+                </span>
+                {customSelected && (
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
+                    ✓ Selected
+                  </span>
+                )}
+              </div>
+              <p className="text-lg font-mono font-bold text-foreground">
+                {customSelected ? (
+                  <>
+                    ${customPrice}
+                    <span className="text-xs text-muted-foreground">/mo</span>
+                  </>
+                ) : (
+                  <span className="text-sm text-muted-foreground">Set your own</span>
+                )}
+              </p>
+              <p className="text-[11px] font-mono text-muted-foreground mt-2 leading-snug">
+                {customSelected
+                  ? "Tap to edit your custom plan name or price."
+                  : "Have a specific budget? Click to name your plan and set the monthly price."}
+              </p>
+            </button>
+          </div>
+        </div>
       </div>
 
       <a
