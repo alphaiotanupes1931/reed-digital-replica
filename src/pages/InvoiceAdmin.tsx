@@ -356,6 +356,19 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleSetPaymentMethod = async (invoiceId: string, method: "stripe" | "zelle") => {
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: `Payment method set to ${method === "zelle" ? "Zelle / CashApp" : "Stripe"}` });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   // Auto-calculate estimated total from build + maintenance cost strings.
   // Supports "$500", "$500-800", "500 - 800", "N/A", etc. Maintenance is treated as monthly.
   const parseCostRange = (raw: string): [number, number] | null => {
