@@ -129,11 +129,13 @@ export type Database = {
           id: string
           message: string | null
           payment_method: string
+          payment_type: string
           price: number
           service: string
           status: Database["public"]["Enums"]["invoice_status"]
           stripe_checkout_session_id: string | null
           stripe_payment_intent_id: string | null
+          stripe_subscription_id: string | null
           updated_at: string
         }
         Insert: {
@@ -148,11 +150,13 @@ export type Database = {
           id?: string
           message?: string | null
           payment_method?: string
+          payment_type?: string
           price: number
           service: string
           status?: Database["public"]["Enums"]["invoice_status"]
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -167,11 +171,13 @@ export type Database = {
           id?: string
           message?: string | null
           payment_method?: string
+          payment_type?: string
           price?: number
           service?: string
           status?: Database["public"]["Enums"]["invoice_status"]
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
         }
         Relationships: [
