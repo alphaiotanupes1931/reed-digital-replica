@@ -107,6 +107,8 @@ const faqs = [
 ];
 
 const PricingPage = () => {
+  const [ownOpen, setOwnOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
@@ -114,49 +116,119 @@ const PricingPage = () => {
         <main className="pt-32 pb-24">
           <div className="container">
             <div className="max-w-3xl mx-auto">
-              {/* Header */}
+              {/* Hero */}
               <ScrollReveal>
                 <div className="text-center mb-16">
                   <span className="section-label font-mono">Pricing</span>
-                  <TypedHeader text="Simple, Honest Pricing" className="mt-4 mb-6" />
-                  <p className="text-muted-foreground text-sm">
-                    No hidden fees. Free consultation included.
+                  <TypedHeader text="Your Website, Handled Monthly" className="mt-4 mb-6" />
+                  <p className="text-muted-foreground text-sm max-w-xl mx-auto mb-8">
+                    No big upfront cost. No surprise invoices. One flat monthly fee and we build, host, maintain, and update your site for as long as you need it.
                   </p>
+                  <Link
+                    to="/contact"
+                    className="inline-block bg-brand text-brand-foreground px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
+                  >
+                    Book Free Consultation →
+                  </Link>
                 </div>
               </ScrollReveal>
 
-              {/* Transparent Pricing */}
+              {/* Managed Website Plans */}
               <ScrollReveal delay={0.05}>
-                <div className="mb-12 p-6 border-2 border-primary bg-primary/5 text-center">
-                  <h3 className="text-lg font-medium mb-3">Transparent Pricing</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Clear pricing based on scope. Schedule a free consultation to discuss your project needs and get an accurate quote.
-                  </p>
-                </div>
-              </ScrollReveal>
-
-
-              {/* Websites */}
-              <ScrollReveal delay={0.15}>
-                <div className="mb-16">
-                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
-                    Websites
-                  </h3>
-                  <div className="space-y-0">
-                    {packages.map((pkg) => (
-                      <div 
-                        key={pkg.name} 
-                        className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
+                <div className="mb-8">
+                  <div className="text-center mb-8">
+                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-2">
+                      Managed Website Plans
+                    </h3>
+                    <p className="text-xs text-muted-foreground">All-inclusive monthly plans. Build, host, maintain, update.</p>
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {managedPlans.map((plan) => (
+                      <div
+                        key={plan.name}
+                        className={`p-6 border-2 flex flex-col ${plan.popular ? 'border-primary bg-primary/5 md:scale-105' : 'border-border'}`}
                       >
-                        <div>
-                          <span className="font-medium">{pkg.name}</span>
-                          {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
-                          <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
+                        <div className="flex items-baseline justify-between mb-4">
+                          <h4 className="text-lg font-medium">{plan.name}</h4>
+                          {plan.popular && (
+                            <span className="text-[10px] font-mono uppercase tracking-wider bg-primary text-primary-foreground px-2 py-0.5">
+                              Popular
+                            </span>
+                          )}
                         </div>
-                        <span className="font-mono text-sm">{pkg.price}</span>
+                        <div className="mb-6">
+                          <span className="font-mono text-3xl">{plan.price}</span>
+                          <span className="text-muted-foreground text-sm font-mono">/mo</span>
+                        </div>
+                        <ul className="space-y-2 mb-6 flex-1">
+                          {plan.features.map((f) => (
+                            <li key={f} className="text-xs text-muted-foreground leading-relaxed">· {f}</li>
+                          ))}
+                        </ul>
+                        <Link
+                          to="/contact"
+                          className={`block text-center px-4 py-2.5 text-sm font-medium transition-colors ${
+                            plan.popular
+                              ? 'bg-brand text-brand-foreground hover:bg-brand/90'
+                              : 'border border-foreground hover:bg-foreground hover:text-background'
+                          }`}
+                        >
+                          Get Started
+                        </Link>
                       </div>
                     ))}
                   </div>
+                  <p className="text-xs text-muted-foreground text-center mt-6 font-mono">
+                    One-time setup fee: $500 (waived on 24-month agreements)
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              {/* Value Comparison */}
+              <ScrollReveal delay={0.1}>
+                <div className="mb-16 mt-12 p-6 border-2 border-primary bg-primary/5 text-center">
+                  <p className="text-sm leading-relaxed">
+                    A custom <span className="font-mono">$6,000</span> website plus <span className="font-mono">$200/mo</span> maintenance equals <span className="font-mono">$8,400</span> in year one.
+                    <br />
+                    Our <span className="font-medium">Grow</span> plan is <span className="font-mono">$6,000</span> in year one, with nothing out of pocket upfront.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              {/* Prefer to Own Your Site Outright? (collapsible) */}
+              <ScrollReveal delay={0.15}>
+                <div className="mb-16 border-y border-border">
+                  <button
+                    onClick={() => setOwnOpen(!ownOpen)}
+                    className="w-full flex items-center justify-between py-6 text-left hover:opacity-70 transition-opacity"
+                  >
+                    <div>
+                      <h3 className="text-sm font-mono uppercase tracking-wider">
+                        Prefer to Own Your Site Outright?
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Some clients prefer a one-time build with no ongoing commitment. We offer that too.
+                      </p>
+                    </div>
+                    <span className="font-mono text-2xl">{ownOpen ? '−' : '+'}</span>
+                  </button>
+                  {ownOpen && (
+                    <div className="pb-6 space-y-0">
+                      {packages.map((pkg) => (
+                        <div
+                          key={pkg.name}
+                          className={`flex items-center justify-between py-4 border-t border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
+                        >
+                          <div>
+                            <span className="font-medium">{pkg.name}</span>
+                            {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
+                            <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
+                          </div>
+                          <span className="font-mono text-sm">{pkg.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </ScrollReveal>
 
@@ -196,7 +268,7 @@ const PricingPage = () => {
                 <div className="mb-16">
                   <div className="text-center mb-8 p-4 border-2 border-primary bg-primary/5">
                     <h3 className="text-sm font-mono text-primary uppercase tracking-wider">
-                      Monthly Recurring Services
+                      Other Monthly Services
                     </h3>
                   </div>
 
@@ -220,7 +292,7 @@ const PricingPage = () => {
                   </div>
 
                   {/* Social Media */}
-                  <div className="mb-10">
+                  <div>
                     <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
                       Social Media Management
                     </h4>
@@ -233,28 +305,6 @@ const PricingPage = () => {
                             <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
                           </div>
                           <span className="font-mono text-sm">{pkg.price}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Maintenance */}
-                  <div>
-                    <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
-                      Website Maintenance
-                    </h4>
-                    <div className="space-y-0">
-                      {maintenance.map((pkg) => (
-                        <div key={pkg.name} className="flex items-start justify-between py-4 border-b border-border">
-                          <div>
-                            <span className="font-medium">{pkg.name}</span>
-                            <ul className="mt-1.5 space-y-0.5">
-                              {pkg.features.map((f) => (
-                                <li key={f} className="text-xs text-muted-foreground">· {f}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          <span className="font-mono text-sm mt-1">{pkg.price}</span>
                         </div>
                       ))}
                     </div>
@@ -288,6 +338,31 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
+              {/* FAQ */}
+              <ScrollReveal delay={0.38}>
+                <div className="mb-16">
+                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+                    Frequently Asked Questions
+                  </h3>
+                  <div className="space-y-0">
+                    {faqs.map((faq, i) => (
+                      <div key={faq.q} className="border-b border-border">
+                        <button
+                          onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                          className="w-full flex items-center justify-between py-4 text-left hover:opacity-70 transition-opacity"
+                        >
+                          <span className="text-sm font-medium pr-4">{faq.q}</span>
+                          <span className="font-mono text-lg flex-shrink-0">{openFaq === i ? '−' : '+'}</span>
+                        </button>
+                        {openFaq === i && (
+                          <p className="text-sm text-muted-foreground pb-4 leading-relaxed">{faq.a}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+
               {/* CTA */}
               <ScrollReveal delay={0.4}>
                 <div className="text-center">
@@ -295,7 +370,7 @@ const PricingPage = () => {
                     to="/contact" 
                     className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
-                    Get a Quote
+                    Book Free Consultation
                   </Link>
                 </div>
               </ScrollReveal>
