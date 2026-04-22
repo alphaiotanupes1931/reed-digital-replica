@@ -1,10 +1,53 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
 
+
+const managedPlans = [
+  {
+    name: "Launch",
+    price: "$300",
+    features: [
+      "Up to 5 pages, fully responsive",
+      "Hosting, domain management, SSL, backups",
+      "Basic SEO setup",
+      "2 content updates per month",
+      "48-hour response time",
+      "12-month minimum",
+    ],
+  },
+  {
+    name: "Grow",
+    price: "$500",
+    popular: true,
+    features: [
+      "Up to 10 pages, CMS, blog",
+      "Hosting, security, backups, monitoring",
+      "On-page SEO + monthly performance report",
+      "5 content or design updates per month",
+      "24-hour response time",
+      "Quarterly strategy call",
+      "12-month minimum",
+    ],
+  },
+  {
+    name: "Scale",
+    price: "$700",
+    features: [
+      "Up to 20 pages, e-commerce or client portal",
+      "Everything in Grow",
+      "Unlimited minor changes, priority queue",
+      "Same-day response on urgent fixes",
+      "Monthly strategy call",
+      "Analytics and conversion reporting",
+      "12-month minimum",
+    ],
+  },
+];
 
 const packages = [
   { name: "Starter", price: "$1.5k - $3k", desc: "1-5 pages, responsive, basic SEO" },
@@ -32,18 +75,35 @@ const socialMedia = [
   { name: "Pro", price: "$1,000/mo", desc: "Daily posts, ads management, analytics" },
 ];
 
-const maintenance = [
-  { name: "Basic", price: "$100/mo", features: ["Website hosting & uptime monitoring", "Security updates & backups", "1 major change per month", "Month-to-month — no long-term contract"] },
-  { name: "Plus", price: "$200/mo", features: ["Everything in Basic", "Up to 3 fixes or changes per month", "24-hour response time", "Content & design updates"] },
-  { name: "Premium", price: "$350/mo", features: ["Everything in Plus", "Unlimited minor & major changes", "Proactive performance monitoring", "Same-day to 24hr response based on urgency"] },
-];
-
 const extras = [
   { service: "Landing Page", price: "$300 - $600" },
   { service: "Website Redesign", price: "50% of original build cost" },
   { service: "Custom Business Apparel", price: "From $20/shirt (12-shirt min, $50 setup)" },
   { service: "Cybersecurity Audit", price: "From $1,500" },
   { service: "IT Consulting", price: "$150/hr" },
+];
+
+const faqs = [
+  {
+    q: "What happens to my website if I cancel?",
+    a: "You keep your domain and all your content. The website design and codebase stay with RDG unless you purchase a buyout (typically 6 months of your plan rate or a flat fee).",
+  },
+  {
+    q: "Do I own the content and domain?",
+    a: "Yes. Your domain is registered in your name and all content is yours.",
+  },
+  {
+    q: "Why monthly instead of one-time?",
+    a: "Most small businesses cannot afford a 6K to 10K upfront build. Monthly plans make professional web presence accessible and keep your site current without surprise invoices.",
+  },
+  {
+    q: "Can I upgrade or downgrade my plan?",
+    a: "Yes, you can upgrade anytime. Downgrades take effect at the next renewal.",
+  },
+  {
+    q: "What counts as a content update?",
+    a: "Text changes, image swaps, adding or removing sections, publishing blog posts, updating business hours, menu changes, etc. Full redesigns or new page templates are scoped separately.",
+  },
 ];
 
 const PricingPage = () => {
