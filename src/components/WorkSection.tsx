@@ -6,6 +6,20 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 const projects = [
   { 
+    title: "Young ExeKutive", 
+    category: "Personal Brand", 
+    type: "Personal Brand Website",
+    tools: ["React", "Tailwind CSS", "Framer Motion"],
+    url: "https://youngexekutive.com/",
+  },
+  { 
+    title: "Build With Marcus", 
+    category: "Home Services", 
+    type: "Business Website",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://buildwithmarcus.com/",
+  },
+  { 
     title: "Alpha Iota Merch", 
     category: "E-Commerce", 
     type: "E-Commerce Store",
