@@ -135,6 +135,7 @@ const faqs = [
 
 const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [billing, setBilling] = useState<"monthly" | "outright">("monthly");
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
@@ -161,107 +162,122 @@ const PricingPage = () => {
 
               {/* Plan Finder — interactive recommender */}
               <ScrollReveal delay={0.03}>
-                <div className="mb-16">
+                <div className="mb-20">
                   <PricingRecommender />
                 </div>
               </ScrollReveal>
 
-              {/* Managed Website Plans */}
+              {/* Website Plans — unified Monthly / One-time toggle */}
               <ScrollReveal delay={0.05}>
-                <div className="mb-8 lg:-mx-32 xl:-mx-48">
+                <div className="mb-20">
                   <div className="text-center mb-8">
-                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-2">
-                      Managed Website Plans
+                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-3">
+                      Website Plans
                     </h3>
-                    <p className="text-xs text-muted-foreground">No build fee. All-inclusive monthly plans — build, host, maintain, update.</p>
-                  </div>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-3">
-                    {managedPlans.map((plan) => (
-                      <div
-                        key={plan.name}
-                        className={`p-5 border-2 flex flex-col ${plan.popular ? 'border-primary bg-primary/5 lg:scale-105' : 'border-border'}`}
+                    <div className="inline-flex border border-border p-1">
+                      <button
+                        onClick={() => setBilling("monthly")}
+                        className={`px-4 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                          billing === "monthly"
+                            ? "bg-foreground text-background"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
                       >
-                        <div className="flex items-baseline justify-between mb-3 gap-2">
-                          <h4 className="text-base font-medium">{plan.name}</h4>
-                          {plan.popular && (
-                            <span className="text-[9px] font-mono uppercase tracking-wider bg-primary text-primary-foreground px-1.5 py-0.5">
-                              Popular
-                            </span>
-                          )}
-                        </div>
-                        <div className="mb-5">
-                          <span className="font-mono text-2xl">{plan.price}</span>
-                          {plan.price !== "Custom" && (
-                            <span className="text-muted-foreground text-xs font-mono">/mo</span>
-                          )}
-                          {plan.tagline && (
-                            <p className="text-[10px] text-muted-foreground mt-2 leading-snug">{plan.tagline}</p>
-                          )}
-                        </div>
-                        <ul className="space-y-1.5 mb-5 flex-1">
-                          {plan.features.map((f) => (
-                            <li key={f} className="text-[11px] text-muted-foreground leading-snug">· {f}</li>
-                          ))}
-                        </ul>
-                        <Link
-                          to="/contact"
-                          className={`block text-center px-3 py-2 text-xs font-medium transition-colors ${
-                            plan.popular
-                              ? 'bg-brand text-brand-foreground hover:bg-brand/90'
-                              : 'border border-foreground hover:bg-foreground hover:text-background'
-                          }`}
-                        >
-                          {plan.price === "Custom" ? "Contact Sales" : "Get Started"}
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-xs text-muted-foreground text-center mt-6 font-mono">
-                    12-month minimum · One-time $500 setup (waived on 24-mo agreements)
-                  </p>
-                </div>
-              </ScrollReveal>
-
-              {/* Value Comparison */}
-              <ScrollReveal delay={0.1}>
-                <div className="mb-16 mt-12 p-6 border-2 border-primary bg-primary/5 text-center">
-                  <p className="text-sm leading-relaxed">
-                    A custom <span className="font-mono">$6,000</span> website plus <span className="font-mono">$200/mo</span> maintenance equals <span className="font-mono">$8,400</span> in year one.
-                    <br />
-                    Our <span className="font-medium">Business</span> plan is <span className="font-mono">$6,000</span> in year one, with nothing out of pocket upfront.
-                  </p>
-                </div>
-              </ScrollReveal>
-
-              {/* Buy Your Website Outright (always visible) */}
-              <ScrollReveal delay={0.15}>
-                <div className="mb-16">
-                  <div className="text-center mb-8">
-                    <h3 className="text-sm font-mono uppercase tracking-wider mb-2">
-                      Buy Your Website Outright
-                    </h3>
-                    <p className="text-xs text-muted-foreground max-w-lg mx-auto">
-                      Prefer a one-time build with no monthly commitment? Standard pricing below — no maintenance included. <span className="text-foreground">Bundle with a managed plan and the build is free.</span>
-                    </p>
-                  </div>
-                  <div className="space-y-0 border-t border-border">
-                    {buyOutrightPackages.map((pkg) => (
-                      <div
-                        key={pkg.name}
-                        className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
+                        Monthly · No build fee
+                      </button>
+                      <button
+                        onClick={() => setBilling("outright")}
+                        className={`px-4 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                          billing === "outright"
+                            ? "bg-foreground text-background"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
                       >
-                        <div>
-                          <span className="font-medium">{pkg.name}</span>
-                          {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
-                          <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
-                        </div>
-                        <span className="font-mono text-sm">{pkg.price}</span>
-                      </div>
-                    ))}
+                        Buy Outright
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground text-center mt-4 italic">
-                    One-time builds do not include hosting, updates, or maintenance.
-                  </p>
+
+                  {billing === "monthly" ? (
+                    <>
+                      <div className="border-t border-border">
+                        {managedPlans.map((plan) => (
+                          <div
+                            key={plan.name}
+                            className={`flex items-center justify-between gap-6 py-5 border-b border-border ${
+                              plan.popular ? "bg-primary/5 -mx-4 px-4" : ""
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-baseline gap-3">
+                                <span className="font-medium">{plan.name}</span>
+                                {plan.popular && (
+                                  <span className="text-[10px] font-mono uppercase tracking-wider text-primary">
+                                    Popular
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {plan.tagline}
+                              </p>
+                            </div>
+                            <div className="flex items-baseline gap-4 flex-shrink-0">
+                              <span className="font-mono text-lg">
+                                {plan.price}
+                                <span className="text-xs text-muted-foreground">/mo</span>
+                              </span>
+                              <Link
+                                to="/contact"
+                                className="text-[11px] font-mono uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                              >
+                                Choose
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
+                        12-month minimum · $500 setup (waived on 24-mo) · See full features in Plan Finder above
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="border-t border-border">
+                        {buyOutrightPackages.map((pkg) => (
+                          <div
+                            key={pkg.name}
+                            className={`flex items-center justify-between gap-6 py-5 border-b border-border ${
+                              pkg.popular ? "bg-primary/5 -mx-4 px-4" : ""
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-baseline gap-3">
+                                <span className="font-medium">{pkg.name}</span>
+                                {pkg.popular && (
+                                  <span className="text-[10px] font-mono uppercase tracking-wider text-primary">
+                                    Popular
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">{pkg.desc}</p>
+                            </div>
+                            <div className="flex items-baseline gap-4 flex-shrink-0">
+                              <span className="font-mono text-lg">{pkg.price}</span>
+                              <Link
+                                to="/contact"
+                                className="text-[11px] font-mono uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                              >
+                                Quote
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground text-center mt-4 italic">
+                        One-time builds do not include hosting, updates, or maintenance. Bundle a managed plan to waive the build fee.
+                      </p>
+                    </>
+                  )}
                 </div>
               </ScrollReveal>
 
