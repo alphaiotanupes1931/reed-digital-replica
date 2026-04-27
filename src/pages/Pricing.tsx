@@ -90,10 +90,10 @@ const mobilePackages = [
   { name: "Enterprise", price: "Custom Quote", desc: "Multi-platform, advanced security" },
 ];
 
-const seoRetainers = [
-  { name: "Basic", price: "$300/mo", desc: "Keyword research, on-page optimization, monthly report" },
-  { name: "Growth", price: "$600/mo", desc: "Content creation, link building, local SEO", popular: true },
-  { name: "Premium", price: "$1,000/mo", desc: "Full-service SEO, competitive analysis" },
+const maintenancePlans = [
+  { name: "Basic", price: "$150/mo", desc: "Hosting, SSL, backups, security monitoring, 1 update/mo" },
+  { name: "Standard", price: "$300/mo", desc: "Everything in Basic, 3 updates/mo, uptime monitoring, 48hr response", popular: true },
+  { name: "Premium", price: "$500/mo", desc: "Unlimited minor updates, priority support, monthly performance report" },
 ];
 
 const socialMedia = [
@@ -345,13 +345,13 @@ const PricingPage = () => {
                     </h3>
                   </div>
 
-                  {/* SEO */}
+                  {/* Maintenance */}
                   <div className="mb-10">
                     <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
-                      SEO Retainer Packages
+                      Maintenance Plans
                     </h4>
                     <div className="space-y-0">
-                      {seoRetainers.map((pkg) => (
+                      {maintenancePlans.map((pkg) => (
                         <div key={pkg.name} className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}>
                           <div>
                             <span className="font-medium">{pkg.name}</span>
