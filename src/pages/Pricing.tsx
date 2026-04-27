@@ -315,7 +315,7 @@ const PricingPage = () => {
               {/* Monthly Recurring Services */}
               <ScrollReveal delay={0.25}>
                 <div className="mb-16">
-                  <div className="text-center mb-8 p-4 border-2 border-primary bg-primary/5">
+                  <div className="text-center mb-8">
                     <h3 className="text-sm font-mono text-primary uppercase tracking-wider">
                       Other Monthly Services
                     </h3>
