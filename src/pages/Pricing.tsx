@@ -9,9 +9,11 @@ import PageTransition from "@/components/PageTransition";
 
 const managedPlans = [
   {
-    name: "Launch",
+    name: "Starter",
     price: "$300",
+    tagline: "Perfect for new businesses",
     features: [
+      "No build fee — site included",
       "Up to 5 pages, fully responsive",
       "Hosting, domain management, SSL, backups",
       "Basic SEO setup",
@@ -21,10 +23,12 @@ const managedPlans = [
     ],
   },
   {
-    name: "Grow",
+    name: "Business",
     price: "$500",
     popular: true,
+    tagline: "Most small businesses pick this",
     features: [
+      "No build fee — site included",
       "Up to 10 pages, CMS, blog",
       "Hosting, security, backups, monitoring",
       "On-page SEO + monthly performance report",
@@ -35,11 +39,13 @@ const managedPlans = [
     ],
   },
   {
-    name: "Scale",
+    name: "Professional",
     price: "$700",
+    tagline: "For growing brands",
     features: [
+      "No build fee — site included",
       "Up to 20 pages, e-commerce or client portal",
-      "Everything in Grow",
+      "Everything in Business",
       "Unlimited minor changes, priority queue",
       "Same-day response on urgent fixes",
       "Monthly strategy call",
@@ -47,9 +53,37 @@ const managedPlans = [
       "12-month minimum",
     ],
   },
+  {
+    name: "Scale",
+    price: "$1,000",
+    tagline: "High-traffic, high-touch",
+    features: [
+      "No build fee — site included",
+      "Unlimited pages, advanced integrations",
+      "Everything in Professional",
+      "Dedicated project manager",
+      "Same-day priority support, 7 days/week",
+      "Bi-weekly strategy calls",
+      "Custom analytics dashboard",
+      "12-month minimum",
+    ],
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    tagline: "Multi-site, custom platforms",
+    features: [
+      "No build fee — platform included",
+      "Custom architecture, APIs, multi-user",
+      "SLA-backed uptime & response",
+      "Dedicated team",
+      "Compliance & security reviews",
+      "Tailored to your business",
+    ],
+  },
 ];
 
-const packages = [
+const buyOutrightPackages = [
   { name: "Starter", price: "$1.5k - $3k", desc: "1-5 pages, responsive, basic SEO" },
   { name: "Business", price: "$3.5k - $7.5k", desc: "5-10 pages, CMS, blog, animations", popular: true },
   { name: "Professional", price: "$8k - $15k", desc: "10-20 pages, e-commerce, portals" },
@@ -107,7 +141,6 @@ const faqs = [
 ];
 
 const PricingPage = () => {
-  const [ownOpen, setOwnOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   return (
     <PageTransition>
@@ -122,7 +155,7 @@ const PricingPage = () => {
                   <span className="section-label font-mono">Pricing</span>
                   <TypedHeader text="Your Website, Handled Monthly" className="mt-4 mb-6" />
                   <p className="text-muted-foreground text-sm max-w-xl mx-auto mb-8">
-                    No big upfront cost. No surprise invoices. One flat monthly fee and we build, host, maintain, and update your site for as long as you need it.
+                    No build fee. No surprise invoices. Get a website for as little as <span className="text-foreground font-medium">$300/month</span> — we build, host, maintain, and update it for as long as you need.
                   </p>
                   <Link
                     to="/contact"
@@ -140,9 +173,9 @@ const PricingPage = () => {
                     <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-2">
                       Managed Website Plans
                     </h3>
-                    <p className="text-xs text-muted-foreground">All-inclusive monthly plans. Build, host, maintain, update.</p>
+                    <p className="text-xs text-muted-foreground">No build fee. All-inclusive monthly plans — build, host, maintain, update.</p>
                   </div>
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {managedPlans.map((plan) => (
                       <div
                         key={plan.name}
@@ -158,7 +191,12 @@ const PricingPage = () => {
                         </div>
                         <div className="mb-6">
                           <span className="font-mono text-3xl">{plan.price}</span>
-                          <span className="text-muted-foreground text-sm font-mono">/mo</span>
+                          {plan.price !== "Custom" && (
+                            <span className="text-muted-foreground text-sm font-mono">/mo</span>
+                          )}
+                          {plan.tagline && (
+                            <p className="text-[11px] text-muted-foreground mt-2">{plan.tagline}</p>
+                          )}
                         </div>
                         <ul className="space-y-2 mb-6 flex-1">
                           {plan.features.map((f) => (
@@ -173,7 +211,7 @@ const PricingPage = () => {
                               : 'border border-foreground hover:bg-foreground hover:text-background'
                           }`}
                         >
-                          Get Started
+                          {plan.price === "Custom" ? "Contact Sales" : "Get Started"}
                         </Link>
                       </div>
                     ))}
@@ -190,45 +228,40 @@ const PricingPage = () => {
                   <p className="text-sm leading-relaxed">
                     A custom <span className="font-mono">$6,000</span> website plus <span className="font-mono">$200/mo</span> maintenance equals <span className="font-mono">$8,400</span> in year one.
                     <br />
-                    Our <span className="font-medium">Grow</span> plan is <span className="font-mono">$6,000</span> in year one, with nothing out of pocket upfront.
+                    Our <span className="font-medium">Business</span> plan is <span className="font-mono">$6,000</span> in year one, with nothing out of pocket upfront.
                   </p>
                 </div>
               </ScrollReveal>
 
-              {/* Prefer to Own Your Site Outright? (collapsible) */}
+              {/* Buy Your Website Outright (always visible) */}
               <ScrollReveal delay={0.15}>
-                <div className="mb-16 border-y border-border">
-                  <button
-                    onClick={() => setOwnOpen(!ownOpen)}
-                    className="w-full flex items-center justify-between py-6 text-left hover:opacity-70 transition-opacity"
-                  >
-                    <div>
-                      <h3 className="text-sm font-mono uppercase tracking-wider">
-                        Prefer to Own Your Site Outright?
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Some clients prefer a one-time build with no ongoing commitment. We offer that too.
-                      </p>
-                    </div>
-                    <span className="font-mono text-2xl">{ownOpen ? '−' : '+'}</span>
-                  </button>
-                  {ownOpen && (
-                    <div className="pb-6 space-y-0">
-                      {packages.map((pkg) => (
-                        <div
-                          key={pkg.name}
-                          className={`flex items-center justify-between py-4 border-t border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
-                        >
-                          <div>
-                            <span className="font-medium">{pkg.name}</span>
-                            {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
-                            <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
-                          </div>
-                          <span className="font-mono text-sm">{pkg.price}</span>
+                <div className="mb-16">
+                  <div className="text-center mb-8">
+                    <h3 className="text-sm font-mono uppercase tracking-wider mb-2">
+                      Buy Your Website Outright
+                    </h3>
+                    <p className="text-xs text-muted-foreground max-w-lg mx-auto">
+                      Prefer a one-time build with no monthly commitment? Standard pricing below — no maintenance included. <span className="text-foreground">Bundle with a managed plan and the build is free.</span>
+                    </p>
+                  </div>
+                  <div className="space-y-0 border-t border-border">
+                    {buyOutrightPackages.map((pkg) => (
+                      <div
+                        key={pkg.name}
+                        className={`flex items-center justify-between py-4 border-b border-border ${pkg.popular ? 'bg-muted/30 -mx-4 px-4' : ''}`}
+                      >
+                        <div>
+                          <span className="font-medium">{pkg.name}</span>
+                          {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
+                          <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                        <span className="font-mono text-sm">{pkg.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center mt-4 italic">
+                    One-time builds do not include hosting, updates, or maintenance.
+                  </p>
                 </div>
               </ScrollReveal>
 
