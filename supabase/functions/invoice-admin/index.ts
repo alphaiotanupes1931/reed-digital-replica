@@ -254,6 +254,49 @@ serve(async (req) => {
       });
     }
 
+    if (action === "update_invoice") {
+      const { invoice_id, service, price, due_date, message, deposit_required, deposit_amount, deposit_due_date, payment_method } = data;
+      const updates: Record<string, unknown> = {};
+      if (service !== undefined) updates.service = service;
+      if (price !== undefined) updates.price = price;
+      if (due_date !== undefined) updates.due_date = due_date;
+      if (message !== undefined) updates.message = message;
+      if (deposit_required !== undefined) updates.deposit_required = deposit_required;
+      if (deposit_amount !== undefined) updates.deposit_amount = deposit_amount;
+      if (deposit_due_date !== undefined) updates.deposit_due_date = deposit_due_date;
+      if (payment_method !== undefined) {
+        const arr = Array.isArray(payment_method)
+          ? payment_method
+          : typeof payment_method === "string"
+          ? payment_method.split(",")
+          : [];
+        const clean = arr
+          .map((m: unknown) => String(m).trim().toLowerCase())
+          .filter((m: string) => m === "stripe" || m === "zelle");
+        const unique = Array.from(new Set(clean));
+        updates.payment_method = unique.length ? unique.join(",") : "stripe";
+      }
+      const { error } = await supabase.from("invoices").update(updates).eq("id", invoice_id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete_invoice_disabled_old_marker") {
+      const { invoice_id } = data;
+      const { error } = await supabase
+        .from("invoices")
+        .delete()
+        .eq("id", invoice_id);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "delete_client") {
       const { client_id } = data;
       // Delete invoices first (no FK cascade configured)

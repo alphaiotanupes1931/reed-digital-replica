@@ -141,6 +141,71 @@ const InvoiceAdmin = () => {
   const [newDelLabel, setNewDelLabel] = useState("");
   const [newDelUrl, setNewDelUrl] = useState("");
 
+  // Invoice editing
+  const [editingInvoiceId, setEditingInvoiceId] = useState<string | null>(null);
+  const [editService, setEditService] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editMessage, setEditMessage] = useState("");
+  const [editDepositRequired, setEditDepositRequired] = useState(false);
+  const [editDepositAmount, setEditDepositAmount] = useState("");
+  const [editDepositDueDate, setEditDepositDueDate] = useState("");
+  const [editAllowStripe, setEditAllowStripe] = useState(true);
+  const [editAllowZelle, setEditAllowZelle] = useState(false);
+
+  const startEditInvoice = (inv: Invoice) => {
+    setEditingInvoiceId(inv.id);
+    setEditService(inv.service);
+    setEditPrice(String(inv.price));
+    setEditMessage(inv.message || "");
+    setEditDepositRequired(!!inv.deposit_required);
+    setEditDepositAmount(inv.deposit_amount != null ? String(inv.deposit_amount) : "");
+    setEditDepositDueDate(inv.deposit_due_date || "");
+    const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
+    setEditAllowStripe(m.includes("stripe"));
+    setEditAllowZelle(m.includes("zelle"));
+  };
+
+  const handleUpdateInvoice = async (invoiceId: string) => {
+    if (!editService || !editPrice) {
+      toast({ title: "Service and price required", variant: "destructive" });
+      return;
+    }
+    if (editDepositRequired && (!editDepositAmount || !editDepositDueDate)) {
+      toast({ title: "Deposit details required", variant: "destructive" });
+      return;
+    }
+    if (!editAllowStripe && !editAllowZelle) {
+      toast({ title: "Select at least one payment method", variant: "destructive" });
+      return;
+    }
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: {
+          action: "update_invoice",
+          invoice_id: invoiceId,
+          service: editService,
+          price: parseFloat(editPrice),
+          due_date: editDepositRequired ? editDepositDueDate : new Date().toISOString().split("T")[0],
+          deposit_required: editDepositRequired,
+          deposit_amount: editDepositRequired ? parseFloat(editDepositAmount) : null,
+          deposit_due_date: editDepositRequired ? editDepositDueDate : null,
+          message: editMessage.trim() || null,
+          payment_method: [
+            ...(editAllowStripe ? ["stripe"] : []),
+            ...(editAllowZelle ? ["zelle"] : []),
+          ].join(","),
+          password: ADMIN_PASSWORD,
+        },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Invoice updated" });
+      setEditingInvoiceId(null);
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
@@ -957,10 +1022,73 @@ const InvoiceAdmin = () => {
                             ) : (
                               <button onClick={() => handleSetStatus(inv.id, "approved")} className="h-9 px-4 border border-border hover:border-foreground text-xs font-mono uppercase tracking-[0.1em]">Mark Unpaid</button>
                             )}
+                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]">{editingInvoiceId === inv.id ? "Cancel" : "Edit"}</button>
                             <button onClick={() => handleDelete(inv.id)} className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]">Remove</button>
                           </div>
                         </div>
                       </div>
+
+                      {editingInvoiceId === inv.id && (
+                        <div className="mt-6 pt-6 border-t border-border space-y-6">
+                          <div className="grid gap-6 md:grid-cols-2">
+                            <div>
+                              <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Service</label>
+                              <Select value={editService} onValueChange={setEditService}>
+                                <SelectTrigger className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0">
+                                  <SelectValue placeholder="Select a service" />
+                                </SelectTrigger>
+                                <SelectContent className="font-mono">
+                                  {SERVICE_OPTIONS.map((opt) => (
+                                    <SelectItem key={opt} value={opt} className="font-mono text-base">{opt}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Price</label>
+                              <Input type="number" step="0.01" min="0" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0" />
+                              {editPrice && (
+                                <div className="mt-3 font-mono text-sm">
+                                  <span>Fee: </span><strong className="text-primary">${calculateFee(parseFloat(editPrice)).toLocaleString()}</strong>
+                                  <span className="mx-3">·</span>
+                                  <span>Total: </span><strong>${calculateTotal(parseFloat(editPrice)).toLocaleString()}</strong>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Message (optional)</label>
+                            <textarea value={editMessage} onChange={(e) => setEditMessage(e.target.value)} rows={3} className="w-full bg-transparent border-0 border-b border-border font-mono text-base px-0 resize-none focus-visible:outline-none focus-visible:border-foreground" />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Methods</label>
+                            <div className="grid grid-cols-2 gap-3">
+                              <button type="button" onClick={() => setEditAllowStripe((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowStripe ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowStripe ? "✓ " : ""}Stripe (Card)</button>
+                              <button type="button" onClick={() => setEditAllowZelle((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowZelle ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowZelle ? "✓ " : ""}Zelle / CashApp</button>
+                            </div>
+                          </div>
+
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <p className="text-sm font-mono">Require Deposit</p>
+                              <Switch checked={editDepositRequired} onCheckedChange={setEditDepositRequired} />
+                            </div>
+                            {editDepositRequired && (
+                              <div className="grid gap-6 md:grid-cols-2">
+                                <Input type="number" value={editDepositAmount} onChange={(e) => setEditDepositAmount(e.target.value)} placeholder="Deposit amount" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono px-0" />
+                                <Input type="date" value={editDepositDueDate} onChange={(e) => setEditDepositDueDate(e.target.value)} className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono px-0" />
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Button onClick={() => handleUpdateInvoice(inv.id)} className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">Save Changes</Button>
+                            <button onClick={() => setEditingInvoiceId(null)} className="h-12 px-6 border border-border hover:border-foreground text-xs font-mono uppercase tracking-[0.2em]">Cancel</button>
+                          </div>
+                        </div>
+                      )}
 
                       {inv.status === "paid" && (
                         <div className="mt-4 pt-4 border-t border-border">
