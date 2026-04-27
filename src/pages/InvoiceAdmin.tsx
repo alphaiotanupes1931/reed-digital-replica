@@ -141,6 +141,71 @@ const InvoiceAdmin = () => {
   const [newDelLabel, setNewDelLabel] = useState("");
   const [newDelUrl, setNewDelUrl] = useState("");
 
+  // Invoice editing
+  const [editingInvoiceId, setEditingInvoiceId] = useState<string | null>(null);
+  const [editService, setEditService] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editMessage, setEditMessage] = useState("");
+  const [editDepositRequired, setEditDepositRequired] = useState(false);
+  const [editDepositAmount, setEditDepositAmount] = useState("");
+  const [editDepositDueDate, setEditDepositDueDate] = useState("");
+  const [editAllowStripe, setEditAllowStripe] = useState(true);
+  const [editAllowZelle, setEditAllowZelle] = useState(false);
+
+  const startEditInvoice = (inv: Invoice) => {
+    setEditingInvoiceId(inv.id);
+    setEditService(inv.service);
+    setEditPrice(String(inv.price));
+    setEditMessage(inv.message || "");
+    setEditDepositRequired(!!inv.deposit_required);
+    setEditDepositAmount(inv.deposit_amount != null ? String(inv.deposit_amount) : "");
+    setEditDepositDueDate(inv.deposit_due_date || "");
+    const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
+    setEditAllowStripe(m.includes("stripe"));
+    setEditAllowZelle(m.includes("zelle"));
+  };
+
+  const handleUpdateInvoice = async (invoiceId: string) => {
+    if (!editService || !editPrice) {
+      toast({ title: "Service and price required", variant: "destructive" });
+      return;
+    }
+    if (editDepositRequired && (!editDepositAmount || !editDepositDueDate)) {
+      toast({ title: "Deposit details required", variant: "destructive" });
+      return;
+    }
+    if (!editAllowStripe && !editAllowZelle) {
+      toast({ title: "Select at least one payment method", variant: "destructive" });
+      return;
+    }
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: {
+          action: "update_invoice",
+          invoice_id: invoiceId,
+          service: editService,
+          price: parseFloat(editPrice),
+          due_date: editDepositRequired ? editDepositDueDate : new Date().toISOString().split("T")[0],
+          deposit_required: editDepositRequired,
+          deposit_amount: editDepositRequired ? parseFloat(editDepositAmount) : null,
+          deposit_due_date: editDepositRequired ? editDepositDueDate : null,
+          message: editMessage.trim() || null,
+          payment_method: [
+            ...(editAllowStripe ? ["stripe"] : []),
+            ...(editAllowZelle ? ["zelle"] : []),
+          ].join(","),
+          password: ADMIN_PASSWORD,
+        },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Invoice updated" });
+      setEditingInvoiceId(null);
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
