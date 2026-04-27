@@ -71,7 +71,7 @@ function recommend(answers: Record<string, string>): Recommendation {
         price: "$15k+",
         cadence: "one-time",
         why: "Complex integrations, APIs, and multi-user systems are scoped individually.",
-        alt: { plan: "Scale (managed)", price: "$1,000/mo", note: "Skip the upfront cost — build included." },
+        alt: { plan: "Scale (managed)", price: "$600/mo", note: "Skip the upfront cost — build included." },
       };
     }
     if (goal === "ecom" || size === "md") {
@@ -80,7 +80,7 @@ function recommend(answers: Record<string, string>): Recommendation {
         price: "$8k – $15k",
         cadence: "one-time",
         why: "10–20 pages with e-commerce or portal functionality, owned outright.",
-        alt: { plan: "Professional (managed)", price: "$700/mo", note: "Same scope, no build fee." },
+        alt: { plan: "Professional (managed)", price: "$500/mo", note: "Same scope, no build fee." },
       };
     }
     if (size === "sm") {
@@ -89,7 +89,7 @@ function recommend(answers: Record<string, string>): Recommendation {
         price: "$3.5k – $7.5k",
         cadence: "one-time",
         why: "5–10 pages with CMS, blog, and animations — yours to own.",
-        alt: { plan: "Business (managed)", price: "$500/mo", note: "Same scope, no build fee." },
+        alt: { plan: "Business (managed)", price: "$400/mo", note: "Same scope, no build fee." },
       };
     }
     return {
@@ -105,25 +105,25 @@ function recommend(answers: Record<string, string>): Recommendation {
   if (goal === "custom" || support === "dedicated" || size === "lg") {
     return {
       plan: "Scale",
-      price: "$1,000/mo",
+      price: "$600/mo",
       cadence: "monthly · no build fee",
       why: "Unlimited pages, advanced integrations, dedicated PM, and bi-weekly strategy calls.",
-      alt: { plan: "Enterprise", price: "Custom", note: "If you need SLA, compliance, or multi-site." },
+      alt: { plan: "Enterprise", price: "$700/mo", note: "If you need SLA, compliance, or multi-site." },
     };
   }
   if (goal === "ecom" || size === "md" || support === "heavy") {
     return {
       plan: "Professional",
-      price: "$700/mo",
+      price: "$500/mo",
       cadence: "monthly · no build fee",
       why: "Up to 20 pages, e-commerce or client portal, unlimited minor changes, monthly strategy call.",
-      alt: { plan: "Business", price: "$500/mo", note: "If you want lighter ongoing scope." },
+      alt: { plan: "Business", price: "$400/mo", note: "If you want lighter ongoing scope." },
     };
   }
   if (size === "sm" || support === "active") {
     return {
       plan: "Business",
-      price: "$500/mo",
+      price: "$400/mo",
       cadence: "monthly · no build fee",
       why: "Up to 10 pages, CMS, blog, on-page SEO, and 5 updates per month. Most popular pick.",
       alt: { plan: "Starter", price: "$300/mo", note: "If you only need a small site to start." },
@@ -134,7 +134,7 @@ function recommend(answers: Record<string, string>): Recommendation {
     price: "$300/mo",
     cadence: "monthly · no build fee",
     why: "Up to 5 responsive pages, hosting, SSL, basic SEO, and 2 monthly updates. Lowest entry point.",
-    alt: { plan: "Business", price: "$500/mo", note: "Step up when you need a CMS or blog." },
+    alt: { plan: "Business", price: "$400/mo", note: "Step up when you need a CMS or blog." },
   };
 }
 
