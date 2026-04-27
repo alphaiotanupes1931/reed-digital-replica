@@ -14,13 +14,12 @@ const managedPlans = [
     price: "$300",
     tagline: "Perfect for new businesses",
     features: [
-      "No build fee — site included",
-      "Up to 5 pages, fully responsive",
-      "Hosting, domain management, SSL, backups",
-      "Basic SEO setup",
-      "2 content updates per month",
-      "48-hour response time",
-      "12-month minimum",
+      "No build fee",
+      "Up to 5 pages",
+      "Hosting, SSL, backups",
+      "Basic SEO",
+      "2 updates / month",
+      "48hr response",
     ],
   },
   {
@@ -29,14 +28,12 @@ const managedPlans = [
     popular: true,
     tagline: "Most small businesses pick this",
     features: [
-      "No build fee — site included",
-      "Up to 10 pages, CMS, blog",
-      "Hosting, security, backups, monitoring",
-      "On-page SEO + monthly performance report",
-      "5 content or design updates per month",
-      "24-hour response time",
-      "Quarterly strategy call",
-      "12-month minimum",
+      "No build fee",
+      "Up to 10 pages + CMS / blog",
+      "Hosting, security, monitoring",
+      "On-page SEO + monthly report",
+      "5 updates / month",
+      "24hr response",
     ],
   },
   {
@@ -44,14 +41,12 @@ const managedPlans = [
     price: "$700",
     tagline: "For growing brands",
     features: [
-      "No build fee — site included",
-      "Up to 20 pages, e-commerce or client portal",
       "Everything in Business",
-      "Unlimited minor changes, priority queue",
-      "Same-day response on urgent fixes",
+      "Up to 20 pages, e-com or portal",
+      "Unlimited minor changes",
+      "Same-day urgent response",
       "Monthly strategy call",
-      "Analytics and conversion reporting",
-      "12-month minimum",
+      "Analytics + conversion reports",
     ],
   },
   {
@@ -59,14 +54,12 @@ const managedPlans = [
     price: "$1,000",
     tagline: "High-traffic, high-touch",
     features: [
-      "No build fee — site included",
-      "Unlimited pages, advanced integrations",
       "Everything in Professional",
+      "Unlimited pages + integrations",
       "Dedicated project manager",
-      "Same-day priority support, 7 days/week",
+      "7-day priority support",
       "Bi-weekly strategy calls",
       "Custom analytics dashboard",
-      "12-month minimum",
     ],
   },
   {
@@ -74,12 +67,11 @@ const managedPlans = [
     price: "Custom",
     tagline: "Multi-site, custom platforms",
     features: [
-      "No build fee — platform included",
-      "Custom architecture, APIs, multi-user",
-      "SLA-backed uptime & response",
+      "Custom architecture + APIs",
+      "Multi-user / multi-site",
+      "SLA-backed uptime",
       "Dedicated team",
-      "Compliance & security reviews",
-      "Tailored to your business",
+      "Compliance + security reviews",
     ],
   },
 ];
@@ -176,44 +168,44 @@ const PricingPage = () => {
 
               {/* Managed Website Plans */}
               <ScrollReveal delay={0.05}>
-                <div className="mb-8">
+                <div className="mb-8 lg:-mx-32 xl:-mx-48">
                   <div className="text-center mb-8">
                     <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-2">
                       Managed Website Plans
                     </h3>
                     <p className="text-xs text-muted-foreground">No build fee. All-inclusive monthly plans — build, host, maintain, update.</p>
                   </div>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-3">
                     {managedPlans.map((plan) => (
                       <div
                         key={plan.name}
-                        className={`p-6 border-2 flex flex-col ${plan.popular ? 'border-primary bg-primary/5 md:scale-105' : 'border-border'}`}
+                        className={`p-5 border-2 flex flex-col ${plan.popular ? 'border-primary bg-primary/5 lg:scale-105' : 'border-border'}`}
                       >
-                        <div className="flex items-baseline justify-between mb-4">
-                          <h4 className="text-lg font-medium">{plan.name}</h4>
+                        <div className="flex items-baseline justify-between mb-3 gap-2">
+                          <h4 className="text-base font-medium">{plan.name}</h4>
                           {plan.popular && (
-                            <span className="text-[10px] font-mono uppercase tracking-wider bg-primary text-primary-foreground px-2 py-0.5">
+                            <span className="text-[9px] font-mono uppercase tracking-wider bg-primary text-primary-foreground px-1.5 py-0.5">
                               Popular
                             </span>
                           )}
                         </div>
-                        <div className="mb-6">
-                          <span className="font-mono text-3xl">{plan.price}</span>
+                        <div className="mb-5">
+                          <span className="font-mono text-2xl">{plan.price}</span>
                           {plan.price !== "Custom" && (
-                            <span className="text-muted-foreground text-sm font-mono">/mo</span>
+                            <span className="text-muted-foreground text-xs font-mono">/mo</span>
                           )}
                           {plan.tagline && (
-                            <p className="text-[11px] text-muted-foreground mt-2">{plan.tagline}</p>
+                            <p className="text-[10px] text-muted-foreground mt-2 leading-snug">{plan.tagline}</p>
                           )}
                         </div>
-                        <ul className="space-y-2 mb-6 flex-1">
+                        <ul className="space-y-1.5 mb-5 flex-1">
                           {plan.features.map((f) => (
-                            <li key={f} className="text-xs text-muted-foreground leading-relaxed">· {f}</li>
+                            <li key={f} className="text-[11px] text-muted-foreground leading-snug">· {f}</li>
                           ))}
                         </ul>
                         <Link
                           to="/contact"
-                          className={`block text-center px-4 py-2.5 text-sm font-medium transition-colors ${
+                          className={`block text-center px-3 py-2 text-xs font-medium transition-colors ${
                             plan.popular
                               ? 'bg-brand text-brand-foreground hover:bg-brand/90'
                               : 'border border-foreground hover:bg-foreground hover:text-background'
@@ -225,7 +217,7 @@ const PricingPage = () => {
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground text-center mt-6 font-mono">
-                    One-time setup fee: $500 (waived on 24-month agreements)
+                    12-month minimum · One-time $500 setup (waived on 24-mo agreements)
                   </p>
                 </div>
               </ScrollReveal>
