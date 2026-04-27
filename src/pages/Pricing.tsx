@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import TypedHeader from "@/components/TypedHeader";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
+import PricingRecommender from "@/components/PricingRecommender";
 
 
 const managedPlans = [
@@ -163,6 +164,13 @@ const PricingPage = () => {
                   >
                     Book Free Consultation →
                   </Link>
+                </div>
+              </ScrollReveal>
+
+              {/* Plan Finder — interactive recommender */}
+              <ScrollReveal delay={0.03}>
+                <div className="mb-16">
+                  <PricingRecommender />
                 </div>
               </ScrollReveal>
 
