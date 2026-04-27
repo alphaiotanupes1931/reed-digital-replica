@@ -24,7 +24,7 @@ const managedPlans = [
   },
   {
     name: "Business",
-    price: "$500",
+    price: "$400",
     popular: true,
     tagline: "Most small businesses pick this",
     features: [
@@ -38,7 +38,7 @@ const managedPlans = [
   },
   {
     name: "Professional",
-    price: "$700",
+    price: "$500",
     tagline: "For growing brands",
     features: [
       "Everything in Business",
@@ -51,7 +51,7 @@ const managedPlans = [
   },
   {
     name: "Scale",
-    price: "$1,000",
+    price: "$600",
     tagline: "High-traffic, high-touch",
     features: [
       "Everything in Professional",
@@ -64,7 +64,7 @@ const managedPlans = [
   },
   {
     name: "Enterprise",
-    price: "Custom",
+    price: "$700",
     tagline: "Multi-site, custom platforms",
     features: [
       "Custom architecture + APIs",
