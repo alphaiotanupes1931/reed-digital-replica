@@ -160,6 +160,30 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
+              {/* Pricing disclaimer */}
+              <ScrollReveal delay={0.02}>
+                <div className="mb-12 border-2 border-primary bg-primary/5 p-5 md:p-6">
+                  <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-primary">
+                      Important Notice
+                    </span>
+                    <span className="text-[11px] font-mono text-muted-foreground">
+                      Estimates only
+                    </span>
+                  </div>
+                  <p className="text-sm leading-relaxed">
+                    All prices listed on this page are <span className="font-medium">estimates</span> and may not reflect the final cost of your project. Actual pricing depends on scope, integrations, timeline, and ongoing requirements. For an accurate quote tailored to your needs, please contact the developer directly at{" "}
+                    <a
+                      href="mailto:reeddigitalgroup@gmail.com"
+                      className="font-mono text-primary underline underline-offset-4 hover:opacity-70 transition-opacity"
+                    >
+                      reeddigitalgroup@gmail.com
+                    </a>
+                    .
+                  </p>
+                </div>
+              </ScrollReveal>
+
               {/* Plan Finder — interactive recommender */}
               <ScrollReveal delay={0.03}>
                 <div className="mb-20">
