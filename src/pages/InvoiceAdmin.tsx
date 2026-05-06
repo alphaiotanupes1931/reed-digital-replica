@@ -75,6 +75,7 @@ interface Invoice {
   message: string | null;
   deliverables: Deliverable[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
+  hidden_from_client?: boolean;
   clients?: Client;
 }
 
