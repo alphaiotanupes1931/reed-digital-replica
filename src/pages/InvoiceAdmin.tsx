@@ -75,6 +75,7 @@ interface Invoice {
   message: string | null;
   deliverables: Deliverable[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
+  hidden_from_client?: boolean;
   clients?: Client;
 }
 
@@ -434,6 +435,19 @@ const InvoiceAdmin = () => {
       if (res.error) throw res.error;
       const label = method === "zelle" ? "Zelle / CashApp" : method === "stripe,zelle" || method === "zelle,stripe" ? "Stripe + Zelle" : "Stripe";
       toast({ title: `Payment method set to ${label}` });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleToggleVisibility = async (invoiceId: string, currentlyHidden: boolean) => {
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_visibility", invoice_id: invoiceId, hidden_from_client: !currentlyHidden, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: !currentlyHidden ? "Hidden from client" : "Visible to client" });
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -984,6 +998,9 @@ const InvoiceAdmin = () => {
                           <div className="flex items-center gap-3 flex-wrap">
                             <span className="font-mono font-semibold text-foreground text-lg">{inv.service}</span>
                             <span className={`text-xs font-mono uppercase tracking-[0.15em] ${inv.status === "paid" ? "text-emerald-500" : "text-primary"}`}>{inv.status}</span>
+                            {inv.hidden_from_client && (
+                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-destructive/10 text-destructive border border-destructive/40">Hidden</span>
+                            )}
                             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 border border-border px-2 py-0.5">
                               {(() => {
                                 const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
@@ -1022,6 +1039,13 @@ const InvoiceAdmin = () => {
                             ) : (
                               <button onClick={() => handleSetStatus(inv.id, "approved")} className="h-9 px-4 border border-border hover:border-foreground text-xs font-mono uppercase tracking-[0.1em]">Mark Unpaid</button>
                             )}
+                            <button
+                              onClick={() => handleToggleVisibility(inv.id, !!inv.hidden_from_client)}
+                              className={`h-9 px-4 border text-xs font-mono uppercase tracking-[0.1em] ${inv.hidden_from_client ? "border-destructive/60 text-destructive hover:bg-destructive/10" : "border-border hover:border-primary hover:text-primary"}`}
+                              title={inv.hidden_from_client ? "Currently hidden from client portal — click to show" : "Currently visible to client — click to hide"}
+                            >
+                              {inv.hidden_from_client ? "Show to Client" : "Hide from Client"}
+                            </button>
                             <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]">{editingInvoiceId === inv.id ? "Cancel" : "Edit"}</button>
                             <button onClick={() => handleDelete(inv.id)} className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]">Remove</button>
                           </div>

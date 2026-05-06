@@ -1,0 +1,3 @@
+ALTER TABLE public.invoices ADD COLUMN IF NOT EXISTS hidden_from_client boolean NOT NULL DEFAULT false;
+DROP POLICY IF EXISTS "Anyone can read approved/sent/paid invoices" ON public.invoices;
+CREATE POLICY "Anyone can read visible approved/sent/paid invoices" ON public.invoices FOR SELECT USING (status = ANY (ARRAY['approved'::invoice_status, 'sent'::invoice_status, 'paid'::invoice_status]) AND hidden_from_client = false);

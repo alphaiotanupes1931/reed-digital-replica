@@ -126,6 +126,7 @@ export type Database = {
           deposit_paid: boolean
           deposit_required: boolean
           due_date: string
+          hidden_from_client: boolean
           id: string
           message: string | null
           payment_method: string
@@ -147,6 +148,7 @@ export type Database = {
           deposit_paid?: boolean
           deposit_required?: boolean
           due_date: string
+          hidden_from_client?: boolean
           id?: string
           message?: string | null
           payment_method?: string
@@ -168,6 +170,7 @@ export type Database = {
           deposit_paid?: boolean
           deposit_required?: boolean
           due_date?: string
+          hidden_from_client?: boolean
           id?: string
           message?: string | null
           payment_method?: string
