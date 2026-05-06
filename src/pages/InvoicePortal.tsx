@@ -856,7 +856,7 @@ const InvoicePortal = () => {
           </Link>
           {client && (
             <button
-              onClick={() => { setClient(null); setInvoices([]); setEmail(""); }}
+              onClick={() => { localStorage.removeItem("portal-email"); setClient(null); setInvoices([]); setEmail(""); }}
               className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.2em]"
             >
               Sign out
