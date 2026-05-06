@@ -102,7 +102,7 @@ const calculateTotal = (amount: number) =>
   Math.round((amount + calculateFee(amount)) * 100) / 100;
 
 const InvoiceAdmin = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem("admin-auth") === ADMIN_PASSWORD);
   const [password, setPassword] = useState("");
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -211,6 +211,7 @@ const InvoiceAdmin = () => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
+      localStorage.setItem("admin-auth", ADMIN_PASSWORD);
       toast({ title: "Authenticated" });
     } else {
       toast({ title: "Invalid password", variant: "destructive" });
