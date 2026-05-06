@@ -752,7 +752,7 @@ const SowReview = ({ client, onChange }: { client: Client; onChange: () => void 
 };
 
 const InvoicePortal = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => localStorage.getItem("portal-email") || "");
   const [client, setClient] = useState<Client | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
@@ -765,6 +765,15 @@ const InvoicePortal = () => {
     }
   }, [searchParams]);
 
+  // Auto-login if email saved from previous session
+  useEffect(() => {
+    const saved = localStorage.getItem("portal-email");
+    if (saved && !client) {
+      loadClientData(saved, false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const loadClientData = async (emailAddr: string, showError = true) => {
     const addr = emailAddr.toLowerCase().trim();
     const { data: clientData } = await supabase
@@ -775,10 +784,12 @@ const InvoicePortal = () => {
 
     if (!clientData) {
       if (showError) toast({ title: "No account found", variant: "destructive" });
+      localStorage.removeItem("portal-email");
       return false;
     }
 
     setClient(clientData as unknown as Client);
+    localStorage.setItem("portal-email", addr);
     const { data: invData } = await supabase
       .from("invoices")
       .select("*")
@@ -845,7 +856,7 @@ const InvoicePortal = () => {
           </Link>
           {client && (
             <button
-              onClick={() => { setClient(null); setInvoices([]); setEmail(""); }}
+              onClick={() => { localStorage.removeItem("portal-email"); setClient(null); setInvoices([]); setEmail(""); }}
               className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.2em]"
             >
               Sign out
