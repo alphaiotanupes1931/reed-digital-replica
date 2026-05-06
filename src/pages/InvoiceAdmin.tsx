@@ -441,6 +441,19 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleToggleVisibility = async (invoiceId: string, currentlyHidden: boolean) => {
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_visibility", invoice_id: invoiceId, hidden_from_client: !currentlyHidden, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: !currentlyHidden ? "Hidden from client" : "Visible to client" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   // Auto-calculate estimated total from build + maintenance cost strings.
   // Supports "$500", "$500-800", "500 - 800", "N/A", etc. Maintenance is treated as monthly.
   const parseCostRange = (raw: string): [number, number] | null => {
