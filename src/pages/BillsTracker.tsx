@@ -292,7 +292,7 @@ const BillsTracker = () => {
               <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
               <p className="text-xs text-muted-foreground mt-1">
                 {incomeRows.length} client{incomeRows.length === 1 ? "" : "s"}
-                {extraIncome.length > 0 && ` + ${extraIncome.length} extra`}
+                {extraRows.length > 0 && ` + ${extraRows.length} manual`}
               </p>
             </div>
             <div className="border-2 border-foreground p-6">
@@ -436,11 +436,30 @@ const BillsTracker = () => {
           {/* Income */}
           <div>
             <h2 className="text-lg font-bold tracking-tight mb-2">Maintenance Income</h2>
-            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan.</p>
+            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below.</p>
+
+            <div
+              ref={extraFormRef}
+              className={`border-2 p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground"}`}
+            >
+              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
+                {editingExtraId ? "Edit Maintenance Entry" : "Add Maintenance Income"}
+              </h3>
+              <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
+                <Input placeholder="Source / Client" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
+                <Input placeholder="Notes (optional)" value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
+                <div className="flex gap-2">
+                  <Button type="submit">{editingExtraId ? "Save" : "Add"}</Button>
+                  {editingExtraId && <Button type="button" variant="outline" onClick={cancelEditExtra}>Cancel</Button>}
+                </div>
+              </form>
+            </div>
+
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
-            ) : incomeRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No clients on a maintenance plan yet.</p>
+            ) : incomeRows.length === 0 && extraRows.length === 0 ? (
+              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No maintenance income yet.</p>
             ) : (
               <div className="border-2 border-foreground divide-y-2 divide-foreground">
                 {incomeRows.map((r) => (
@@ -453,50 +472,13 @@ const BillsTracker = () => {
                     <p className="font-bold text-sm text-brand">{fmt(r.amount)}</p>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">Total Income</p>
-                  <div />
-                  <p className="font-bold text-sm">{fmt(totalIncome)}</p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Extra Income */}
-          <div className="mt-12">
-            <h2 className="text-lg font-bold tracking-tight mb-2">Extra Income</h2>
-            <p className="text-xs text-muted-foreground mb-4">Manually add other recurring monthly income (one-off retainers, side projects, etc.).</p>
-
-            <div
-              ref={extraFormRef}
-              className={`border-2 p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground"}`}
-            >
-              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
-                {editingExtraId ? "Edit Income Block" : "Add an Income Block"}
-              </h3>
-              <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
-                <Input placeholder="Source (e.g. Consulting)" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
-                <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
-                <Input placeholder="Notes (optional)" value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
-                <div className="flex gap-2">
-                  <Button type="submit">{editingExtraId ? "Save" : "Add"}</Button>
-                  {editingExtraId && <Button type="button" variant="outline" onClick={cancelEditExtra}>Cancel</Button>}
-                </div>
-              </form>
-            </div>
-
-            {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
-            ) : extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No extra income yet.</p>
-            ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
                 {extraRows.map((r) => (
-                  <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
+                  <div key={r.id} className="grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4">
                     <div>
                       <p className="font-bold text-sm">{r.source}</p>
                       {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
                     </div>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
                     <p className="font-bold text-sm text-brand">{fmt(Number(r.price))}</p>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
@@ -504,10 +486,10 @@ const BillsTracker = () => {
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">Total Extra</p>
-                  <p className="font-bold text-sm">{fmt(totalExtra)}</p>
+                <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
+                  <p className="font-bold text-sm uppercase tracking-widest">Total Income</p>
                   <div />
+                  <p className="font-bold text-sm">{fmt(totalIncome + totalExtra)}</p>
                 </div>
               </div>
             )}
