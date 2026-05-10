@@ -89,6 +89,33 @@ export type Database = {
         }
         Relationships: []
       }
+      extra_income: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          price: number
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          price?: number
+          source: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          price?: number
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           completed: boolean

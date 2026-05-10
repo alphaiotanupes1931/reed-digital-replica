@@ -215,6 +215,53 @@ serve(async (req) => {
       });
     }
 
+    // Extra income actions
+    if (action === "get_extra_income") {
+      const { data: items, error } = await supabase
+        .from("extra_income")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return new Response(JSON.stringify({ items }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "add_extra_income") {
+      const { source, price, notes } = data;
+      const { data: item, error } = await supabase
+        .from("extra_income")
+        .insert({ source, price: Number(price) || 0, notes: notes || null })
+        .select()
+        .single();
+      if (error) throw error;
+      return new Response(JSON.stringify({ item }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "update_extra_income") {
+      const { id, source, price, notes } = data;
+      const updates: Record<string, unknown> = {};
+      if (source !== undefined) updates.source = source;
+      if (price !== undefined) updates.price = Number(price) || 0;
+      if (notes !== undefined) updates.notes = notes;
+      const { error } = await supabase.from("extra_income").update(updates).eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete_extra_income") {
+      const { id } = data;
+      const { error } = await supabase.from("extra_income").delete().eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(JSON.stringify({ error: "Unknown action" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
