@@ -1021,7 +1021,7 @@ const InvoicePortal = () => {
                       </span>
                     </div>
                     <p className="text-[11px] font-mono text-muted-foreground leading-relaxed mt-3 italic max-w-xl">
-                      An invoice is your itemized bill for the work agreed in the Scope of Work. Pay securely with a card, Zelle, or CashApp. Once a payment clears, the status updates and any deliverables become available.
+                      An invoice is your itemized bill for the work agreed in the Scope of Work. Pay securely with a card or Zelle. Once a payment clears, the status updates and any deliverables become available.
                     </p>
                   </div>
 
