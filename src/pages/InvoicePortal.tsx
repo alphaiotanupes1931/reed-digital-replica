@@ -470,13 +470,13 @@ const InvoiceDocument = ({
               <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Payment Instructions</p>
               <div className="bg-foreground/5 border-2 border-foreground/30 p-5 space-y-3">
                 <p className="text-sm font-mono text-foreground leading-relaxed">
-                  Please send payment via <span className="font-bold">Zelle</span> or <span className="font-bold">CashApp</span> to:
+                  Please send payment via <span className="font-bold">Zelle</span> to:
                 </p>
                 <p className="text-lg font-mono font-bold text-foreground break-all">
                   info@reeddigitalgroup.com
                 </p>
                 <p className="text-xs font-mono text-foreground/70 leading-relaxed">
-                  Open your banking app, search for Zelle (or use CashApp), and send <span className="font-bold text-foreground">${remainingTotal.toLocaleString()}</span> to the email above. Include your company name in the memo. Your invoice will be marked paid within 1–2 business days.
+                  Open your banking app, search for Zelle, and send <span className="font-bold text-foreground">${remainingTotal.toLocaleString()}</span> to the email above. Include your company name in the memo. Your invoice will be marked paid within 1–2 business days.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 pt-2">
@@ -487,14 +487,6 @@ const InvoiceDocument = ({
                   className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3"
                 >
                   Pay via Zelle — ${remainingTotal.toLocaleString()}
-                </a>
-                <a
-                  href="https://cash.app/login?email=info@reeddigitalgroup.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3"
-                >
-                  Pay via CashApp
                 </a>
               </div>
             </div>
