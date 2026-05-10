@@ -162,10 +162,11 @@ const BillsTracker = () => {
   const w2Rows = extraIncome.filter((r) => r.category === "w2");
   const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const grandIncome = totalIncome + totalExtra + (includeW2 ? totalW2 : 0);
+  const retainerIncome = totalIncome + totalExtra;
+  const grandIncome = retainerIncome + (includeW2 ? totalW2 : 0);
   const net = grandIncome - totalBills;
-  const sixFigGap = goalAmount - grandIncome;
-  const sixFigPct = Math.min(100, Math.max(0, (grandIncome / goalAmount) * 100));
+  const sixFigGap = goalAmount - retainerIncome;
+  const sixFigPct = Math.min(100, Math.max(0, (retainerIncome / goalAmount) * 100));
   const fmt = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const toggleW2 = () => {
@@ -373,7 +374,7 @@ const BillsTracker = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {fmt(grandIncome)} of {fmt(goalAmount)}
+                {fmt(retainerIncome)} of {fmt(goalAmount)} (retainers only)
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {sixFigPct.toFixed(1)}%
