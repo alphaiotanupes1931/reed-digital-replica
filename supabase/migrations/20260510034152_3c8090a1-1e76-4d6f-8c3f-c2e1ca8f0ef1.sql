@@ -1,0 +1,1 @@
+ALTER TABLE public.extra_income ADD COLUMN category TEXT NOT NULL DEFAULT 'extra';

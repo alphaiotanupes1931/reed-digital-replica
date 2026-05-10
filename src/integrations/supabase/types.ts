@@ -91,6 +91,7 @@ export type Database = {
       }
       extra_income: {
         Row: {
+          category: string
           created_at: string
           id: string
           notes: string | null
@@ -99,6 +100,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string
           created_at?: string
           id?: string
           notes?: string | null
@@ -107,6 +109,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string
           created_at?: string
           id?: string
           notes?: string | null
