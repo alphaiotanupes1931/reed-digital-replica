@@ -228,10 +228,10 @@ serve(async (req) => {
     }
 
     if (action === "add_extra_income") {
-      const { source, price, notes } = data;
+      const { source, price, notes, category } = data;
       const { data: item, error } = await supabase
         .from("extra_income")
-        .insert({ source, price: Number(price) || 0, notes: notes || null })
+        .insert({ source, price: Number(price) || 0, notes: notes || null, category: category || "extra" })
         .select()
         .single();
       if (error) throw error;
@@ -241,11 +241,12 @@ serve(async (req) => {
     }
 
     if (action === "update_extra_income") {
-      const { id, source, price, notes } = data;
+      const { id, source, price, notes, category } = data;
       const updates: Record<string, unknown> = {};
       if (source !== undefined) updates.source = source;
       if (price !== undefined) updates.price = Number(price) || 0;
       if (notes !== undefined) updates.notes = notes;
+      if (category !== undefined) updates.category = category;
       const { error } = await supabase.from("extra_income").update(updates).eq("id", id);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {

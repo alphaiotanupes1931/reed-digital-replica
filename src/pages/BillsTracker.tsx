@@ -21,7 +21,7 @@ const PLAN_LABELS: Record<string, string> = {
 
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; }
 interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
-interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; }
+interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 
 const BillsTracker = () => {
   const navigate = useNavigate();
@@ -38,6 +38,15 @@ const BillsTracker = () => {
   const [extraNotes, setExtraNotes] = useState("");
   const [editingExtraId, setEditingExtraId] = useState<string | null>(null);
   const extraFormRef = useRef<HTMLDivElement | null>(null);
+  const [w2Source, setW2Source] = useState("");
+  const [w2Price, setW2Price] = useState("");
+  const [w2Notes, setW2Notes] = useState("");
+  const [editingW2Id, setEditingW2Id] = useState<string | null>(null);
+  const w2FormRef = useRef<HTMLDivElement | null>(null);
+  const [includeW2, setIncludeW2] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("rdg-include-w2") === "true";
+  });
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -149,25 +158,76 @@ const BillsTracker = () => {
     .filter((r) => r.amount > 0);
 
   const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
-  const totalExtra = extraIncome.reduce((s, r) => s + Number(r.price || 0), 0);
-  const grandIncome = totalIncome + totalExtra;
+  const extraRows = extraIncome.filter((r) => r.category !== "w2");
+  const w2Rows = extraIncome.filter((r) => r.category === "w2");
+  const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const grandIncome = totalIncome + totalExtra + (includeW2 ? totalW2 : 0);
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - grandIncome;
   const sixFigPct = Math.min(100, Math.max(0, (grandIncome / goalAmount) * 100));
   const fmt = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  const toggleW2 = () => {
+    const next = !includeW2;
+    setIncludeW2(next);
+    localStorage.setItem("rdg-include-w2", String(next));
+  };
 
   const handleExtraSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!extraSource.trim() || !extraPrice) return;
     try {
       if (editingExtraId) {
-        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null });
+        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category: "extra" });
         toast({ title: "Income updated" });
       } else {
-        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null });
+        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category: "extra" });
         toast({ title: "Income added" });
       }
       setExtraSource(""); setExtraPrice(""); setExtraNotes(""); setEditingExtraId(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleW2Submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!w2Source.trim() || !w2Price) return;
+    try {
+      if (editingW2Id) {
+        await api("update_extra_income", { id: editingW2Id, source: w2Source.trim(), price: w2Price, notes: w2Notes.trim() || null, category: "w2" });
+        toast({ title: "W2 income updated" });
+      } else {
+        await api("add_extra_income", { source: w2Source.trim(), price: w2Price, notes: w2Notes.trim() || null, category: "w2" });
+        toast({ title: "W2 income added" });
+      }
+      setW2Source(""); setW2Price(""); setW2Notes(""); setEditingW2Id(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const startEditW2 = (r: ExtraIncome) => {
+    setEditingW2Id(r.id);
+    setW2Source(r.source);
+    setW2Price(String(r.price));
+    setW2Notes(r.notes || "");
+    setTimeout(() => { w2FormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+  };
+
+  const cancelEditW2 = () => {
+    setEditingW2Id(null);
+    setW2Source(""); setW2Price(""); setW2Notes("");
+  };
+
+  const handleDeleteW2 = async (id: string) => {
+    if (!confirm("Delete this W2 income block?")) return;
+    try {
+      await api("delete_extra_income", { id });
+      toast({ title: "W2 income deleted" });
       await fetchAll();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -427,11 +487,11 @@ const BillsTracker = () => {
 
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
-            ) : extraIncome.length === 0 ? (
+            ) : extraRows.length === 0 ? (
               <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No extra income yet.</p>
             ) : (
               <div className="border-2 border-foreground divide-y-2 divide-foreground">
-                {extraIncome.map((r) => (
+                {extraRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
                     <div>
                       <p className="font-bold text-sm">{r.source}</p>
@@ -447,6 +507,71 @@ const BillsTracker = () => {
                 <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
                   <p className="font-bold text-sm uppercase tracking-widest">Total Extra</p>
                   <p className="font-bold text-sm">{fmt(totalExtra)}</p>
+                  <div />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* W2 Income */}
+          <div className="mt-12">
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              <h2 className="text-lg font-bold tracking-tight">W2 Income</h2>
+              <Button
+                type="button"
+                variant={includeW2 ? "default" : "outline"}
+                size="sm"
+                onClick={toggleW2}
+              >
+                {includeW2 ? "Including W2 in Totals" : "Exclude from Totals"}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Add W2 paychecks here. Toggle the button above to include or exclude this income from your monthly totals and goal progress.
+            </p>
+
+            <div
+              ref={w2FormRef}
+              className={`border-2 p-6 mb-6 transition-colors ${editingW2Id ? "border-brand bg-brand/5" : "border-foreground"}`}
+            >
+              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
+                {editingW2Id ? "Edit W2 Block" : "Add a W2 Block"}
+              </h3>
+              <form onSubmit={handleW2Submit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
+                <Input placeholder="Employer (e.g. Acme Corp)" value={w2Source} onChange={(e) => setW2Source(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={w2Price} onChange={(e) => setW2Price(e.target.value)} required />
+                <Input placeholder="Notes (optional)" value={w2Notes} onChange={(e) => setW2Notes(e.target.value)} />
+                <div className="flex gap-2">
+                  <Button type="submit">{editingW2Id ? "Save" : "Add"}</Button>
+                  {editingW2Id && <Button type="button" variant="outline" onClick={cancelEditW2}>Cancel</Button>}
+                </div>
+              </form>
+            </div>
+
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : w2Rows.length === 0 ? (
+              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No W2 income yet.</p>
+            ) : (
+              <div className={`border-2 divide-y-2 divide-foreground ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+                {w2Rows.map((r) => (
+                  <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
+                    <div>
+                      <p className="font-bold text-sm">{r.source}</p>
+                      {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                    </div>
+                    <p className="font-bold text-sm text-brand">{fmt(Number(r.price))}</p>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => startEditW2(r)}>Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDeleteW2(r.id)}>Delete</Button>
+                    </div>
+                  </div>
+                ))}
+                <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                  <p className="font-bold text-sm uppercase tracking-widest">
+                    Total W2 {includeW2 ? "(included)" : "(excluded)"}
+                  </p>
+                  <p className="font-bold text-sm">{fmt(totalW2)}</p>
                   <div />
                 </div>
               </div>
