@@ -434,7 +434,7 @@ const InvoiceAdmin = () => {
         body: { action: "set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
       });
       if (res.error) throw res.error;
-      const label = method === "zelle" ? "Zelle / CashApp" : method === "stripe,zelle" || method === "zelle,stripe" ? "Stripe + Zelle" : "Stripe";
+      const label = method === "zelle" ? "Zelle" : method === "stripe,zelle" || method === "zelle,stripe" ? "Stripe + Zelle" : "Stripe";
       toast({ title: `Payment method set to ${label}` });
       fetchData();
     } catch (err: any) {
@@ -952,14 +952,14 @@ const InvoiceAdmin = () => {
                                 : "border-border text-foreground/70 hover:border-foreground"
                             }`}
                           >
-                            {allowZelle ? "✓ " : ""}Zelle / CashApp
+                            {allowZelle ? "✓ " : ""}Zelle
                           </button>
                         </div>
                         <p className="text-[11px] font-mono text-foreground/60 mt-2">
                           {allowStripe && allowZelle
                             ? "Client sees both options. Zelle has no processing fee."
                             : allowZelle
-                            ? "Zelle / CashApp only — no processing fee added."
+                            ? "Zelle only — no processing fee added."
                             : "Stripe only — 2.9% + $0.30 processing fee added."}
                         </p>
                         {!allowStripe && !allowZelle && (
@@ -1007,7 +1007,7 @@ const InvoiceAdmin = () => {
                                 const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
                                 const hasS = m.includes("stripe"), hasZ = m.includes("zelle");
                                 if (hasS && hasZ) return "Stripe + Zelle";
-                                if (hasZ) return "Zelle / CashApp";
+                                if (hasZ) return "Zelle";
                                 return "Stripe";
                               })()}
                             </span>
@@ -1091,7 +1091,7 @@ const InvoiceAdmin = () => {
                             <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Methods</label>
                             <div className="grid grid-cols-2 gap-3">
                               <button type="button" onClick={() => setEditAllowStripe((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowStripe ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowStripe ? "✓ " : ""}Stripe (Card)</button>
-                              <button type="button" onClick={() => setEditAllowZelle((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowZelle ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowZelle ? "✓ " : ""}Zelle / CashApp</button>
+                              <button type="button" onClick={() => setEditAllowZelle((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowZelle ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowZelle ? "✓ " : ""}Zelle</button>
                             </div>
                           </div>
 
