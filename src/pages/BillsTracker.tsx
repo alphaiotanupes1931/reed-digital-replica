@@ -21,16 +21,23 @@ const PLAN_LABELS: Record<string, string> = {
 
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; }
 interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
+interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; }
 
 const BillsTracker = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [bills, setBills] = useState<Bill[]>([]);
   const [incomeClients, setIncomeClients] = useState<IncomeClient[]>([]);
+  const [extraIncome, setExtraIncome] = useState<ExtraIncome[]>([]);
   const [company, setCompany] = useState("");
   const [price, setPrice] = useState("");
   const [notes, setNotes] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [extraSource, setExtraSource] = useState("");
+  const [extraPrice, setExtraPrice] = useState("");
+  const [extraNotes, setExtraNotes] = useState("");
+  const [editingExtraId, setEditingExtraId] = useState<string | null>(null);
+  const extraFormRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -59,12 +66,14 @@ const BillsTracker = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [b, c] = await Promise.all([
+      const [b, c, e] = await Promise.all([
         api("get_bills"),
         api("get_maintenance_income"),
+        api("get_extra_income"),
       ]);
       setBills((b as { bills: Bill[] }).bills || []);
       setIncomeClients((c as { clients: IncomeClient[] }).clients || []);
+      setExtraIncome((e as { items: ExtraIncome[] }).items || []);
     } catch (err: any) {
       toast({ title: "Error loading data", description: err.message, variant: "destructive" });
     } finally {
@@ -140,10 +149,54 @@ const BillsTracker = () => {
     .filter((r) => r.amount > 0);
 
   const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
-  const net = totalIncome - totalBills;
-  const sixFigGap = goalAmount - totalIncome;
-  const sixFigPct = Math.min(100, Math.max(0, (totalIncome / goalAmount) * 100));
+  const totalExtra = extraIncome.reduce((s, r) => s + Number(r.price || 0), 0);
+  const grandIncome = totalIncome + totalExtra;
+  const net = grandIncome - totalBills;
+  const sixFigGap = goalAmount - grandIncome;
+  const sixFigPct = Math.min(100, Math.max(0, (grandIncome / goalAmount) * 100));
   const fmt = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  const handleExtraSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!extraSource.trim() || !extraPrice) return;
+    try {
+      if (editingExtraId) {
+        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null });
+        toast({ title: "Income updated" });
+      } else {
+        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null });
+        toast({ title: "Income added" });
+      }
+      setExtraSource(""); setExtraPrice(""); setExtraNotes(""); setEditingExtraId(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const startEditExtra = (r: ExtraIncome) => {
+    setEditingExtraId(r.id);
+    setExtraSource(r.source);
+    setExtraPrice(String(r.price));
+    setExtraNotes(r.notes || "");
+    setTimeout(() => { extraFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+  };
+
+  const cancelEditExtra = () => {
+    setEditingExtraId(null);
+    setExtraSource(""); setExtraPrice(""); setExtraNotes("");
+  };
+
+  const handleDeleteExtra = async (id: string) => {
+    if (!confirm("Delete this income block?")) return;
+    try {
+      await api("delete_extra_income", { id });
+      toast({ title: "Income deleted" });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
 
   const saveGoal = () => {
     const n = parseFloat(goalDraft.replace(/[$,\s]/g, ""));
@@ -176,8 +229,11 @@ const BillsTracker = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
             <div className="border-2 border-foreground p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
-              <p className="text-2xl font-bold mt-2">{fmt(totalIncome)}</p>
-              <p className="text-xs text-muted-foreground mt-1">{incomeRows.length} client{incomeRows.length === 1 ? "" : "s"}</p>
+              <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {incomeRows.length} client{incomeRows.length === 1 ? "" : "s"}
+                {extraIncome.length > 0 && ` + ${extraIncome.length} extra`}
+              </p>
             </div>
             <div className="border-2 border-foreground p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
@@ -257,7 +313,7 @@ const BillsTracker = () => {
             </div>
             <div className="flex items-center justify-between mt-2">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {fmt(totalIncome)} of {fmt(goalAmount)}
+                {fmt(grandIncome)} of {fmt(goalAmount)}
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {sixFigPct.toFixed(1)}%
@@ -341,6 +397,57 @@ const BillsTracker = () => {
                   <p className="font-bold text-sm uppercase tracking-widest">Total Income</p>
                   <div />
                   <p className="font-bold text-sm">{fmt(totalIncome)}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Extra Income */}
+          <div className="mt-12">
+            <h2 className="text-lg font-bold tracking-tight mb-2">Extra Income</h2>
+            <p className="text-xs text-muted-foreground mb-4">Manually add other recurring monthly income (one-off retainers, side projects, etc.).</p>
+
+            <div
+              ref={extraFormRef}
+              className={`border-2 p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground"}`}
+            >
+              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
+                {editingExtraId ? "Edit Income Block" : "Add an Income Block"}
+              </h3>
+              <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
+                <Input placeholder="Source (e.g. Consulting)" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
+                <Input placeholder="Notes (optional)" value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
+                <div className="flex gap-2">
+                  <Button type="submit">{editingExtraId ? "Save" : "Add"}</Button>
+                  {editingExtraId && <Button type="button" variant="outline" onClick={cancelEditExtra}>Cancel</Button>}
+                </div>
+              </form>
+            </div>
+
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : extraIncome.length === 0 ? (
+              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No extra income yet.</p>
+            ) : (
+              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+                {extraIncome.map((r) => (
+                  <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
+                    <div>
+                      <p className="font-bold text-sm">{r.source}</p>
+                      {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                    </div>
+                    <p className="font-bold text-sm text-brand">{fmt(Number(r.price))}</p>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
+                    </div>
+                  </div>
+                ))}
+                <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                  <p className="font-bold text-sm uppercase tracking-widest">Total Extra</p>
+                  <p className="font-bold text-sm">{fmt(totalExtra)}</p>
+                  <div />
                 </div>
               </div>
             )}
