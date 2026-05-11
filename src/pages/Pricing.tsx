@@ -126,17 +126,17 @@ const maintenancePlans = [
 ];
 
 const socialMedia = [
-  { name: "Starter", price: "$300/mo", desc: "3 posts/week, 1 platform" },
-  { name: "Business", price: "$600/mo", desc: "5 posts/week, 2-3 platforms, stories", popular: true },
-  { name: "Pro", price: "$1,000/mo", desc: "Daily posts, ads management, analytics" },
+  { name: "Starter", price: "$150/mo", desc: "3 posts/week, 1 platform" },
+  { name: "Business", price: "$300/mo", desc: "5 posts/week, 2-3 platforms, stories", popular: true },
+  { name: "Pro", price: "$600/mo", desc: "Daily posts, ads management, analytics" },
 ];
 
 const extras = [
   { service: "Landing Page", price: "$300 - $600" },
-  { service: "Website Redesign", price: "50% of original build cost" },
-  { service: "Custom Business Apparel", price: "From $20/shirt (12-shirt min, $50 setup)" },
+  { service: "Website Redesign", price: "Free with any monthly Website or App plan · 50% of original build cost otherwise" },
+  { service: "Custom Business Apparel", price: "From $20/shirt" },
   { service: "Cybersecurity Audit", price: "From $1,500" },
-  { service: "IT Consulting", price: "$150/hr" },
+  { service: "IT Consulting", price: "$50/hr" },
 ];
 
 const faqs = [
