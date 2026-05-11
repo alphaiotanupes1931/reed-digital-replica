@@ -13,6 +13,7 @@ import jessicaPreview from "@/assets/jessica-showell-preview.png";
 // Website projects with live iframe previews
 const websiteProjects = [
   { title: "Young ExeKutive", category: "Personal Brand", url: "https://youngexekutive.com/" },
+  { title: "Auntie Sam", category: "Food & Beverage", url: "https://auntiesam.vercel.app/" },
   { title: "Build With Marcus", category: "Home Services", url: "https://buildwithmarcus.com/" },
   { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
   { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/", slug: "shilom-ai" },
