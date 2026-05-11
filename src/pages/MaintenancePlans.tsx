@@ -16,141 +16,48 @@ interface Plan {
   popular?: boolean;
 }
 
-const cmsPlans: Plan[] = [
+const maintenancePlans: Plan[] = [
   {
-    name: "Standard",
-    price: 200,
-    tagline: "Keeps your website up and running.",
+    name: "Basic",
+    price: 150,
+    tagline: "Keeps your website online and protected.",
     features: [
-      "Your website stays online 24/7",
-      "You can still update your menu, hours, and photos yourself",
-      "We keep your site safe and backed up",
-      "If something breaks, we fix it",
-      "Email support (2 business day response)",
-      "1 update per month done for you",
-    ],
-      bestFor: "Businesses that want a website that just works.",
-  },
-  {
-    name: "Growth",
-    price: 300,
-    tagline: "The plan built for active businesses.",
-    features: [
-      "Everything in Standard",
-      "Text support, same-day response",
-      "3 updates per month done for you",
-      "Monthly report on how your site is performing",
-      "We manage your email newsletter",
-      "Daily backups",
-      "24/7 site monitoring",
-    ],
-    bestFor: "Businesses that want their site to actually bring in customers.",
-    popular: true,
-  },
-  {
-    name: "Pro",
-    price: 400,
-    tagline: "For businesses that want their website to sell for them.",
-    features: [
-      "Everything in Growth",
-      "Unlimited updates",
-      "1 newsletter email a month, fully done for you",
-      "Seasonal homepage updates",
-      "Google search ranking help",
-      "Instagram feed tuning",
-    ],
-    bestFor: "Businesses running specials, events, or promotions.",
-  },
-  {
-    name: "Elite",
-    price: 500,
-    tagline: "Hands off. We handle everything.",
-    features: [
-      "Everything in Pro",
-      "2 newsletter emails a month",
-      "Monthly strategy call with Terell",
-      "Yearly website refresh",
-      "Small new features added free",
-      "Call or text anytime during business hours",
-      "Google Business Profile management",
-      "20% off future add-ons",
-    ],
-    bestFor: "Businesses that want to focus on operations, not websites.",
-  },
-];
-
-const smbPlans: Plan[] = [
-  {
-    name: "Standard",
-    price: 100,
-    tagline: "Keeps your site live.",
-    features: [
-      "Website hosting and security",
+      "Hosting, SSL, and security monitoring",
       "Weekly backups",
       "We fix things if they break",
       "Email support (2 business day response)",
-      "1 text or image change per month",
+      "1 content update per month",
     ],
     bestFor: "Businesses with a simple site they rarely change.",
   },
   {
-    name: "Growth",
-    price: 200,
+    name: "Standard",
+    price: 300,
     tagline: "The plan most small businesses need.",
     features: [
-      "Everything in Standard",
-      "Text support, same-day response",
-      "3 content changes per month",
-      "Monthly performance report",
+      "Everything in Basic",
+      "3 content updates per month",
+      "Uptime monitoring",
       "Daily backups",
-      "24/7 site monitoring",
-      "Help with Google search visibility",
+      "Same-day text support (48hr response)",
+      "Monthly performance report",
     ],
     bestFor: "Businesses that want their site to stay fresh and help them grow.",
     popular: true,
   },
   {
-    name: "Pro",
-    price: 300,
-    tagline: "Full-service for growing businesses.",
-    features: [
-      "Everything in Growth",
-      "Unlimited content changes",
-      "Quarterly site refresh",
-      "1 newsletter email a month done for you",
-      "Google Business Profile management",
-      "Direct phone support",
-    ],
-    bestFor: "Businesses using their website as a serious marketing tool.",
-  },
-];
-
-const landingPlans: Plan[] = [
-  {
-    name: "Standard",
-    price: 50,
-    tagline: "Keeps your page online.",
-    features: [
-      "Hosting and security",
-      "Monthly backups",
-      "Fixes if something breaks",
-      "Email support",
-    ],
-    bestFor: "Landing pages that don't change often.",
-  },
-  {
-    name: "Growth",
-    price: 100,
-    tagline: "For pages that need to stay sharp.",
+    name: "Premium",
+    price: 500,
+    tagline: "Hands off. We handle everything.",
     features: [
       "Everything in Standard",
-      "Text changes and image swaps done for you",
+      "Unlimited minor updates",
+      "Priority support",
       "Monthly performance report",
-      "Form and analytics tracking",
-      "Same-day text support",
+      "Quarterly site refresh",
+      "Google Business Profile management",
     ],
-    bestFor: "Landing pages actively driving signups, leads, or bookings.",
-    popular: true,
+    bestFor: "Businesses using their website as a serious marketing tool.",
   },
 ];
 
@@ -345,44 +252,25 @@ const MaintenancePlans = () => {
           <ScrollReveal>
             <div className="max-w-3xl">
               <p className="text-base md:text-lg font-mono text-foreground/85 leading-relaxed mb-6">
-                Reed Digital Group offers different maintenance tiers based on the type of website you have. CMS-driven sites need more hands-on care. Small business sites need steady upkeep. Landing pages need lighter, focused support. Below you'll find the right plans for each.
+                Reed Digital Group offers three straightforward maintenance tiers. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
               </p>
               <div className="border border-border bg-secondary/40 p-5">
                 <p className="text-sm font-mono text-foreground/80 leading-relaxed">
-                  <span className="text-primary font-bold">Note:</span> Not sure which category your website falls under? <Link to="/contact" className="underline underline-offset-4 hover:text-primary transition-colors">Contact us</Link> and we'll help you figure it out.
+                  <span className="text-primary font-bold">Note:</span> Not sure which plan fits your site? <Link to="/contact" className="underline underline-offset-4 hover:text-primary transition-colors">Contact us</Link> and we'll help you figure it out.
                 </p>
               </div>
             </div>
           </ScrollReveal>
         </section>
 
-        {/* SECTION 1 — CMS */}
+        {/* PLANS */}
         <PlanSection
           id="cms-plans"
-          label="Section 01 — Brochure + CMS"
-          title="For Brochure Websites with a Custom CMS"
-          subhead="Multi-page websites with a custom admin panel for managing content, photos, and information. Ideal for established businesses that need ongoing content updates."
-          plans={cmsPlans}
-          recommendation="Most clients with a CMS-driven site pick the Pro plan. At $400/month it's the sweet spot — unlimited updates, seasonal refreshes, search ranking help, and newsletter management. The lower tiers keep the lights on; Pro is what turns your website into a working part of the business."
-        />
-
-        {/* SECTION 2 — SMB */}
-        <PlanSection
-          id="smb-plans"
-          label="Section 02 — Small Business"
-          title="For Small Business Brochure Websites"
-          subhead="Multi-page informational websites without a custom CMS. Ideal for service businesses, consultants, and local shops."
-          plans={smbPlans}
-          recommendation="The Pro plan is the recommended choice for most small businesses. At $300/month you get unlimited content changes, quarterly refreshes, monthly newsletter, Google Business Profile management, and direct phone support — full-service care for a site that's actively driving your business."
-        />
-
-        {/* SECTION 3 — Landing */}
-        <PlanSection
-          id="landing-plans"
-          label="Section 03 — Landing Pages"
-          title="For Landing Pages and One-Page Websites"
-          subhead="Single-page websites designed for one clear goal. Ideal for personal brands, coming-soon pages, or focused campaigns."
-          plans={landingPlans}
+          label="Maintenance Plans"
+          title="Three Plans. Pick What Fits."
+          subhead="Hosting, security, backups, and updates handled monthly. Or skip this entirely — every monthly Website or App plan already includes maintenance free."
+          plans={maintenancePlans}
+          recommendation="Most small businesses pick the Standard plan at $300/month. It's the sweet spot — three updates a month, daily backups, uptime monitoring, and same-day text support. Heavier sites should look at Premium for unlimited minor updates and quarterly refreshes."
         />
 
         {/* COMPARISON */}
@@ -399,9 +287,9 @@ const MaintenancePlans = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border max-w-5xl">
               {[
-                { type: "Brochure Website with CMS", tier: "Pro", price: 400 },
-                { type: "Small Business Website", tier: "Pro", price: 300 },
-                { type: "Landing Page", tier: "Growth", price: 100 },
+                { type: "Simple / Landing Page", tier: "Basic", price: 150 },
+                { type: "Small Business Website", tier: "Standard", price: 300 },
+                { type: "Active / E-commerce Site", tier: "Premium", price: 500 },
               ].map((item, i) => (
                 <motion.div
                   key={item.type}
