@@ -16,141 +16,48 @@ interface Plan {
   popular?: boolean;
 }
 
-const cmsPlans: Plan[] = [
+const maintenancePlans: Plan[] = [
   {
-    name: "Standard",
-    price: 200,
-    tagline: "Keeps your website up and running.",
+    name: "Basic",
+    price: 150,
+    tagline: "Keeps your website online and protected.",
     features: [
-      "Your website stays online 24/7",
-      "You can still update your menu, hours, and photos yourself",
-      "We keep your site safe and backed up",
-      "If something breaks, we fix it",
-      "Email support (2 business day response)",
-      "1 update per month done for you",
-    ],
-      bestFor: "Businesses that want a website that just works.",
-  },
-  {
-    name: "Growth",
-    price: 300,
-    tagline: "The plan built for active businesses.",
-    features: [
-      "Everything in Standard",
-      "Text support, same-day response",
-      "3 updates per month done for you",
-      "Monthly report on how your site is performing",
-      "We manage your email newsletter",
-      "Daily backups",
-      "24/7 site monitoring",
-    ],
-    bestFor: "Businesses that want their site to actually bring in customers.",
-    popular: true,
-  },
-  {
-    name: "Pro",
-    price: 400,
-    tagline: "For businesses that want their website to sell for them.",
-    features: [
-      "Everything in Growth",
-      "Unlimited updates",
-      "1 newsletter email a month, fully done for you",
-      "Seasonal homepage updates",
-      "Google search ranking help",
-      "Instagram feed tuning",
-    ],
-    bestFor: "Businesses running specials, events, or promotions.",
-  },
-  {
-    name: "Elite",
-    price: 500,
-    tagline: "Hands off. We handle everything.",
-    features: [
-      "Everything in Pro",
-      "2 newsletter emails a month",
-      "Monthly strategy call with Terell",
-      "Yearly website refresh",
-      "Small new features added free",
-      "Call or text anytime during business hours",
-      "Google Business Profile management",
-      "20% off future add-ons",
-    ],
-    bestFor: "Businesses that want to focus on operations, not websites.",
-  },
-];
-
-const smbPlans: Plan[] = [
-  {
-    name: "Standard",
-    price: 100,
-    tagline: "Keeps your site live.",
-    features: [
-      "Website hosting and security",
+      "Hosting, SSL, and security monitoring",
       "Weekly backups",
       "We fix things if they break",
       "Email support (2 business day response)",
-      "1 text or image change per month",
+      "1 content update per month",
     ],
     bestFor: "Businesses with a simple site they rarely change.",
   },
   {
-    name: "Growth",
-    price: 200,
+    name: "Standard",
+    price: 300,
     tagline: "The plan most small businesses need.",
     features: [
-      "Everything in Standard",
-      "Text support, same-day response",
-      "3 content changes per month",
-      "Monthly performance report",
+      "Everything in Basic",
+      "3 content updates per month",
+      "Uptime monitoring",
       "Daily backups",
-      "24/7 site monitoring",
-      "Help with Google search visibility",
+      "Same-day text support (48hr response)",
+      "Monthly performance report",
     ],
     bestFor: "Businesses that want their site to stay fresh and help them grow.",
     popular: true,
   },
   {
-    name: "Pro",
-    price: 300,
-    tagline: "Full-service for growing businesses.",
-    features: [
-      "Everything in Growth",
-      "Unlimited content changes",
-      "Quarterly site refresh",
-      "1 newsletter email a month done for you",
-      "Google Business Profile management",
-      "Direct phone support",
-    ],
-    bestFor: "Businesses using their website as a serious marketing tool.",
-  },
-];
-
-const landingPlans: Plan[] = [
-  {
-    name: "Standard",
-    price: 50,
-    tagline: "Keeps your page online.",
-    features: [
-      "Hosting and security",
-      "Monthly backups",
-      "Fixes if something breaks",
-      "Email support",
-    ],
-    bestFor: "Landing pages that don't change often.",
-  },
-  {
-    name: "Growth",
-    price: 100,
-    tagline: "For pages that need to stay sharp.",
+    name: "Premium",
+    price: 500,
+    tagline: "Hands off. We handle everything.",
     features: [
       "Everything in Standard",
-      "Text changes and image swaps done for you",
+      "Unlimited minor updates",
+      "Priority support",
       "Monthly performance report",
-      "Form and analytics tracking",
-      "Same-day text support",
+      "Quarterly site refresh",
+      "Google Business Profile management",
     ],
-    bestFor: "Landing pages actively driving signups, leads, or bookings.",
-    popular: true,
+    bestFor: "Businesses using their website as a serious marketing tool.",
   },
 ];
 
