@@ -90,6 +90,35 @@ const mobilePackages = [
   { name: "Enterprise", price: "Custom Quote", desc: "Multi-platform, advanced security" },
 ];
 
+const managedAppPlans = [
+  {
+    name: "Starter",
+    price: "$500",
+    tagline: "Solo founders launching a single-platform MVP",
+  },
+  {
+    name: "Business",
+    price: "$600",
+    popular: true,
+    tagline: "Most small businesses launching their first app",
+  },
+  {
+    name: "Professional",
+    price: "$700",
+    tagline: "Growing apps with auth, backend, and push",
+  },
+  {
+    name: "Scale",
+    price: "$800",
+    tagline: "iOS & Android with payments and admin tools",
+  },
+  {
+    name: "Enterprise",
+    price: "$900",
+    tagline: "Multi-platform apps with advanced security",
+  },
+];
+
 const maintenancePlans = [
   { name: "Basic", price: "$150/mo", desc: "Hosting, SSL, backups, security monitoring, 1 update/mo" },
   { name: "Standard", price: "$300/mo", desc: "Everything in Basic, 3 updates/mo, uptime monitoring, 48hr response", popular: true },
@@ -261,7 +290,7 @@ const PricingPage = () => {
                         ))}
                       </div>
                       <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
-                        12-month minimum · $500 setup (waived on 24-mo) · See full features in Plan Finder above
+                        12-month minimum · See full features in Plan Finder above
                       </p>
                     </>
                   ) : (
