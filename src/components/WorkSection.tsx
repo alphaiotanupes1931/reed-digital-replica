@@ -13,6 +13,13 @@ const projects = [
     url: "https://youngexekutive.com/",
   },
   { 
+    title: "Auntie Sam", 
+    category: "Food & Beverage", 
+    type: "Business Website",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://auntiesam.vercel.app/",
+  },
+  { 
     title: "Build With Marcus", 
     category: "Home Services", 
     type: "Business Website",
