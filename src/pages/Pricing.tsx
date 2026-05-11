@@ -291,7 +291,7 @@ const PricingPage = () => {
                         ))}
                       </div>
                       <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
-                        12-month minimum · See full features in Plan Finder above
+                        12-month minimum · Includes free maintenance — the cheapest, smartest, and recommended option · See full features in Plan Finder above
                       </p>
                     </>
                   ) : (
@@ -403,7 +403,7 @@ const PricingPage = () => {
                         ))}
                       </div>
                       <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
-                        12-month minimum · No build fee · Hosting, updates, and store maintenance included
+                        12-month minimum · Includes free maintenance — the cheapest, smartest, and recommended option · No build fee
                       </p>
                     </>
                   ) : (
