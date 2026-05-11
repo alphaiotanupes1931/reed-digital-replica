@@ -165,6 +165,7 @@ const faqs = [
 const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [billing, setBilling] = useState<"monthly" | "outright">("monthly");
+  const [appBilling, setAppBilling] = useState<"monthly" | "outright">("monthly");
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
