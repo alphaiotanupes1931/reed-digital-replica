@@ -90,6 +90,35 @@ const mobilePackages = [
   { name: "Enterprise", price: "Custom Quote", desc: "Multi-platform, advanced security" },
 ];
 
+const managedAppPlans = [
+  {
+    name: "Starter",
+    price: "$500",
+    tagline: "Solo founders launching a single-platform MVP",
+  },
+  {
+    name: "Business",
+    price: "$600",
+    popular: true,
+    tagline: "Most small businesses launching their first app",
+  },
+  {
+    name: "Professional",
+    price: "$700",
+    tagline: "Growing apps with auth, backend, and push",
+  },
+  {
+    name: "Scale",
+    price: "$800",
+    tagline: "iOS & Android with payments and admin tools",
+  },
+  {
+    name: "Enterprise",
+    price: "$900",
+    tagline: "Multi-platform apps with advanced security",
+  },
+];
+
 const maintenancePlans = [
   { name: "Basic", price: "$150/mo", desc: "Hosting, SSL, backups, security monitoring, 1 update/mo" },
   { name: "Standard", price: "$300/mo", desc: "Everything in Basic, 3 updates/mo, uptime monitoring, 48hr response", popular: true },
@@ -136,6 +165,7 @@ const faqs = [
 const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [billing, setBilling] = useState<"monthly" | "outright">("monthly");
+  const [appBilling, setAppBilling] = useState<"monthly" | "outright">("monthly");
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
@@ -261,7 +291,7 @@ const PricingPage = () => {
                         ))}
                       </div>
                       <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
-                        12-month minimum · $500 setup (waived on 24-mo) · See full features in Plan Finder above
+                        12-month minimum · See full features in Plan Finder above
                       </p>
                     </>
                   ) : (
@@ -308,23 +338,101 @@ const PricingPage = () => {
               {/* Mobile Apps */}
               <ScrollReveal delay={0.2}>
                 <div className="mb-16">
-                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
-                    Mobile Apps
-                  </h3>
-                  <div className="space-y-0">
-                    {mobilePackages.map((pkg) => (
-                      <div key={pkg.name} className="flex items-center justify-between py-4 border-b border-border">
-                        <div>
-                          <span className="font-medium">{pkg.name}</span>
-                          <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
-                        </div>
-                        <span className="font-mono text-sm">{pkg.price}</span>
-                      </div>
-                    ))}
+                  <div className="text-center mb-8">
+                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-3">
+                      Mobile App Plans
+                    </h3>
+                    <div className="inline-flex border border-border p-1">
+                      <button
+                        onClick={() => setAppBilling("monthly")}
+                        className={`px-4 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                          appBilling === "monthly"
+                            ? "bg-foreground text-background"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        Monthly · No build fee
+                      </button>
+                      <button
+                        onClick={() => setAppBilling("outright")}
+                        className={`px-4 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                          appBilling === "outright"
+                            ? "bg-foreground text-background"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        Buy Outright
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-6 text-center italic">
-                    App pricing varies based on scope and complexity. Book a free consultation to discuss your project and get an accurate quote tailored to your needs.
-                  </p>
+
+                  {appBilling === "monthly" ? (
+                    <>
+                      <div className="border-t border-border">
+                        {managedAppPlans.map((plan) => (
+                          <div
+                            key={plan.name}
+                            className={`flex items-center justify-between gap-6 py-5 border-b border-border ${
+                              plan.popular ? "bg-primary/5 -mx-4 px-4" : ""
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-baseline gap-3">
+                                <span className="font-medium">{plan.name}</span>
+                                {plan.popular && (
+                                  <span className="text-[10px] font-mono uppercase tracking-wider text-primary">
+                                    Popular
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">{plan.tagline}</p>
+                            </div>
+                            <div className="flex items-baseline gap-4 flex-shrink-0">
+                              <span className="font-mono text-lg">
+                                {plan.price}
+                                <span className="text-xs text-muted-foreground">/mo</span>
+                              </span>
+                              <Link
+                                to="/contact"
+                                className="text-[11px] font-mono uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                              >
+                                Choose
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
+                        12-month minimum · No build fee · Hosting, updates, and store maintenance included
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="border-t border-border">
+                        {mobilePackages.map((pkg) => (
+                          <div key={pkg.name} className="flex items-center justify-between gap-6 py-5 border-b border-border">
+                            <div className="min-w-0">
+                              <span className="font-medium">{pkg.name}</span>
+                              <p className="text-xs text-muted-foreground mt-1">{pkg.desc}</p>
+                            </div>
+                            <div className="flex items-baseline gap-4 flex-shrink-0">
+                              <span className="font-mono text-lg">{pkg.price}</span>
+                              <Link
+                                to="/contact"
+                                className="text-[11px] font-mono uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                              >
+                                Quote
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground text-center mt-4 italic">
+                        One-time builds do not include hosting, updates, or store maintenance. Bundle a managed app plan to waive the build fee.
+                      </p>
+                    </>
+                  )}
+
                   <div className="text-center mt-6">
                     <Link
                       to="/contact"
