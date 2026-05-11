@@ -40,7 +40,7 @@ const caseStudies: Record<string, {
   "dgm-consulting": {
     title: "DGM Consulting",
     category: "Consulting",
-    url: "https://dgmconsulting.info/",
+    url: "https://consultdgm.com/",
     client: "DGM Consulting LLC",
     duration: "6 weeks",
     team: "2 developers",
