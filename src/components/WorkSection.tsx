@@ -1,5 +1,6 @@
 import { useState } from "react";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
+import auntieSamPreview from "@/assets/auntie-sam-preview.png";
 
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -18,6 +19,7 @@ const projects = [
     type: "Business Website",
     tools: ["React", "Tailwind CSS", "Vercel"],
     url: "https://auntiesam.vercel.app/",
+    image: auntieSamPreview,
   },
   { 
     title: "Build With Marcus", 
