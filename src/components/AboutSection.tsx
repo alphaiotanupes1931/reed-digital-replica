@@ -28,6 +28,49 @@ const AboutSection = () => {
             </p>
           </div>
 
+          {/* Founder live preview */}
+          <div className="mt-16 max-w-2xl mx-auto">
+            <div className="text-center mb-4">
+              <span className="text-xs text-muted-foreground tracking-widest font-mono uppercase">
+                Meet the Founder
+              </span>
+            </div>
+            <a
+              href="https://terellreed.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block"
+            >
+              <div className="relative w-full aspect-[16/10] bg-muted rounded-sm overflow-hidden border border-border transform group-hover:scale-[1.02] transition-transform duration-300">
+                <div className="absolute top-0 left-0 right-0 h-6 bg-secondary/80 backdrop-blur-sm flex items-center px-2 gap-1.5 z-10">
+                  <div className="w-2 h-2 rounded-full bg-red-400/60" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+                  <div className="w-2 h-2 rounded-full bg-green-400/60" />
+                  <div className="flex-1 mx-2">
+                    <div className="bg-background/50 rounded-sm px-2 py-0.5 text-[10px] text-muted-foreground truncate font-mono">
+                      terellreed.com
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute top-6 left-0 right-0 bottom-0 overflow-hidden">
+                  <iframe
+                    src="https://terellreed.com"
+                    title="Terell Reed"
+                    className="w-[400%] h-[400%] origin-top-left scale-[0.25] pointer-events-none"
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300" />
+              </div>
+              <div className="mt-4 text-center">
+                <span className="text-sm font-mono group-hover:text-primary transition-colors">
+                  Learn more about Terell ↗
+                </span>
+              </div>
+            </a>
+          </div>
+
           {/* Certifications */}
           <div className="mt-16 pt-8 border-t border-border text-center">
             <span className="text-xs text-muted-foreground tracking-widest font-mono">
