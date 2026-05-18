@@ -22,6 +22,7 @@ const PLAN_LABELS: Record<string, string> = {
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; }
 interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
+interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
 const BillsTracker = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const BillsTracker = () => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [incomeClients, setIncomeClients] = useState<IncomeClient[]>([]);
   const [extraIncome, setExtraIncome] = useState<ExtraIncome[]>([]);
+  const [taxReminders, setTaxReminders] = useState<TaxReminder[]>([]);
   const [company, setCompany] = useState("");
   const [price, setPrice] = useState("");
   const [notes, setNotes] = useState("");
@@ -43,6 +45,12 @@ const BillsTracker = () => {
   const [w2Notes, setW2Notes] = useState("");
   const [editingW2Id, setEditingW2Id] = useState<string | null>(null);
   const w2FormRef = useRef<HTMLDivElement | null>(null);
+  const [taxTitle, setTaxTitle] = useState("");
+  const [taxAmount, setTaxAmount] = useState("");
+  const [taxDueDate, setTaxDueDate] = useState("");
+  const [taxNotes, setTaxNotes] = useState("");
+  const [editingTaxId, setEditingTaxId] = useState<string | null>(null);
+  const taxFormRef = useRef<HTMLDivElement | null>(null);
   const [includeW2, setIncludeW2] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("rdg-include-w2") === "true";
@@ -75,14 +83,16 @@ const BillsTracker = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [b, c, e] = await Promise.all([
+      const [b, c, e, t] = await Promise.all([
         api("get_bills"),
         api("get_maintenance_income"),
         api("get_extra_income"),
+        api("get_tax_reminders"),
       ]);
       setBills((b as { bills: Bill[] }).bills || []);
       setIncomeClients((c as { clients: IncomeClient[] }).clients || []);
       setExtraIncome((e as { items: ExtraIncome[] }).items || []);
+      setTaxReminders((t as { items: TaxReminder[] }).items || []);
     } catch (err: any) {
       toast({ title: "Error loading data", description: err.message, variant: "destructive" });
     } finally {
@@ -257,6 +267,79 @@ const BillsTracker = () => {
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
+  };
+
+  const handleTaxSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!taxTitle.trim()) return;
+    try {
+      const payload = {
+        title: taxTitle.trim(),
+        amount: taxAmount || 0,
+        due_date: taxDueDate || null,
+        notes: taxNotes.trim() || null,
+      };
+      if (editingTaxId) {
+        await api("update_tax_reminder", { id: editingTaxId, ...payload });
+        toast({ title: "Tax reminder updated" });
+      } else {
+        await api("add_tax_reminder", payload);
+        toast({ title: "Tax reminder added" });
+      }
+      setTaxTitle(""); setTaxAmount(""); setTaxDueDate(""); setTaxNotes(""); setEditingTaxId(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const startEditTax = (r: TaxReminder) => {
+    setEditingTaxId(r.id);
+    setTaxTitle(r.title);
+    setTaxAmount(String(r.amount));
+    setTaxDueDate(r.due_date || "");
+    setTaxNotes(r.notes || "");
+    setTimeout(() => { taxFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+  };
+
+  const cancelEditTax = () => {
+    setEditingTaxId(null);
+    setTaxTitle(""); setTaxAmount(""); setTaxDueDate(""); setTaxNotes("");
+  };
+
+  const handleDeleteTax = async (id: string) => {
+    if (!confirm("Delete this tax reminder?")) return;
+    try {
+      await api("delete_tax_reminder", { id });
+      toast({ title: "Tax reminder deleted" });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const togglePaidTax = async (r: TaxReminder) => {
+    try {
+      await api("update_tax_reminder", { id: r.id, paid: !r.paid });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const totalTaxDue = taxReminders.filter((r) => !r.paid).reduce((s, r) => s + Number(r.amount || 0), 0);
+  const fmtDate = (d: string | null) => {
+    if (!d) return "—";
+    const [y, m, day] = d.split("-").map(Number);
+    const dt = new Date(y, (m || 1) - 1, day || 1);
+    return dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  };
+  const daysUntil = (d: string | null) => {
+    if (!d) return null;
+    const [y, m, day] = d.split("-").map(Number);
+    const dt = new Date(y, (m || 1) - 1, day || 1);
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    return Math.round((dt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   };
 
   const saveGoal = () => {
