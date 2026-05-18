@@ -643,6 +643,81 @@ const BillsTracker = () => {
               </div>
             )}
           </div>
+
+          {/* Tax Reminders */}
+          <div className="mt-12">
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              <h2 className="text-lg font-bold tracking-tight">Tax Reminders</h2>
+              <p className="text-sm font-bold">
+                Outstanding: <span className="text-brand">{fmt(totalTaxDue)}</span>
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Track quarterly estimates, sales tax, and any tax payments coming up.
+            </p>
+
+            <div
+              ref={taxFormRef}
+              className={`border-2 p-6 mb-6 transition-colors ${editingTaxId ? "border-brand bg-brand/5" : "border-foreground"}`}
+            >
+              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
+                {editingTaxId ? "Edit Tax Reminder" : "Add a Tax Reminder"}
+              </h3>
+              <form onSubmit={handleTaxSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 items-start">
+                <Input placeholder="Title (e.g. Q1 Estimated Tax)" value={taxTitle} onChange={(e) => setTaxTitle(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Amount" value={taxAmount} onChange={(e) => setTaxAmount(e.target.value)} />
+                <Input type="date" value={taxDueDate} onChange={(e) => setTaxDueDate(e.target.value)} />
+                <Input placeholder="Notes (optional)" value={taxNotes} onChange={(e) => setTaxNotes(e.target.value)} />
+                <div className="flex gap-2">
+                  <Button type="submit">{editingTaxId ? "Save" : "Add"}</Button>
+                  {editingTaxId && <Button type="button" variant="outline" onClick={cancelEditTax}>Cancel</Button>}
+                </div>
+              </form>
+            </div>
+
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : taxReminders.length === 0 ? (
+              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No tax reminders yet.</p>
+            ) : (
+              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+                {taxReminders.map((r) => {
+                  const d = daysUntil(r.due_date);
+                  let dueLabel = fmtDate(r.due_date);
+                  let dueClass = "text-muted-foreground";
+                  if (!r.paid && d !== null) {
+                    if (d < 0) { dueLabel += ` · ${Math.abs(d)}d overdue`; dueClass = "text-destructive"; }
+                    else if (d === 0) { dueLabel += " · due today"; dueClass = "text-destructive"; }
+                    else if (d <= 14) { dueLabel += ` · in ${d}d`; dueClass = "text-brand"; }
+                    else { dueLabel += ` · in ${d}d`; }
+                  }
+                  return (
+                    <div key={r.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${r.paid ? "opacity-50" : ""}`}>
+                      <div>
+                        <p className={`font-bold text-sm ${r.paid ? "line-through" : ""}`}>{r.title}</p>
+                        <p className={`text-xs mt-1 uppercase tracking-widest ${dueClass}`}>{dueLabel}</p>
+                        {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                      </div>
+                      <p className="font-bold text-sm">{fmt(Number(r.amount))}</p>
+                      <Button size="sm" variant={r.paid ? "outline" : "default"} onClick={() => togglePaidTax(r)}>
+                        {r.paid ? "Mark Unpaid" : "Mark Paid"}
+                      </Button>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => startEditTax(r)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDeleteTax(r.id)}>Delete</Button>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                  <p className="font-bold text-sm uppercase tracking-widest">Total Outstanding</p>
+                  <p className="font-bold text-sm">{fmt(totalTaxDue)}</p>
+                  <div />
+                  <div />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </main>
       <Footer />
