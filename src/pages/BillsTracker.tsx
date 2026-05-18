@@ -22,6 +22,7 @@ const PLAN_LABELS: Record<string, string> = {
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; }
 interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
+interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
 const BillsTracker = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const BillsTracker = () => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [incomeClients, setIncomeClients] = useState<IncomeClient[]>([]);
   const [extraIncome, setExtraIncome] = useState<ExtraIncome[]>([]);
+  const [taxReminders, setTaxReminders] = useState<TaxReminder[]>([]);
   const [company, setCompany] = useState("");
   const [price, setPrice] = useState("");
   const [notes, setNotes] = useState("");
@@ -43,6 +45,12 @@ const BillsTracker = () => {
   const [w2Notes, setW2Notes] = useState("");
   const [editingW2Id, setEditingW2Id] = useState<string | null>(null);
   const w2FormRef = useRef<HTMLDivElement | null>(null);
+  const [taxTitle, setTaxTitle] = useState("");
+  const [taxAmount, setTaxAmount] = useState("");
+  const [taxDueDate, setTaxDueDate] = useState("");
+  const [taxNotes, setTaxNotes] = useState("");
+  const [editingTaxId, setEditingTaxId] = useState<string | null>(null);
+  const taxFormRef = useRef<HTMLDivElement | null>(null);
   const [includeW2, setIncludeW2] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("rdg-include-w2") === "true";
@@ -75,14 +83,16 @@ const BillsTracker = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [b, c, e] = await Promise.all([
+      const [b, c, e, t] = await Promise.all([
         api("get_bills"),
         api("get_maintenance_income"),
         api("get_extra_income"),
+        api("get_tax_reminders"),
       ]);
       setBills((b as { bills: Bill[] }).bills || []);
       setIncomeClients((c as { clients: IncomeClient[] }).clients || []);
       setExtraIncome((e as { items: ExtraIncome[] }).items || []);
+      setTaxReminders((t as { items: TaxReminder[] }).items || []);
     } catch (err: any) {
       toast({ title: "Error loading data", description: err.message, variant: "destructive" });
     } finally {
@@ -257,6 +267,79 @@ const BillsTracker = () => {
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
+  };
+
+  const handleTaxSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!taxTitle.trim()) return;
+    try {
+      const payload = {
+        title: taxTitle.trim(),
+        amount: taxAmount || 0,
+        due_date: taxDueDate || null,
+        notes: taxNotes.trim() || null,
+      };
+      if (editingTaxId) {
+        await api("update_tax_reminder", { id: editingTaxId, ...payload });
+        toast({ title: "Tax reminder updated" });
+      } else {
+        await api("add_tax_reminder", payload);
+        toast({ title: "Tax reminder added" });
+      }
+      setTaxTitle(""); setTaxAmount(""); setTaxDueDate(""); setTaxNotes(""); setEditingTaxId(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const startEditTax = (r: TaxReminder) => {
+    setEditingTaxId(r.id);
+    setTaxTitle(r.title);
+    setTaxAmount(String(r.amount));
+    setTaxDueDate(r.due_date || "");
+    setTaxNotes(r.notes || "");
+    setTimeout(() => { taxFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+  };
+
+  const cancelEditTax = () => {
+    setEditingTaxId(null);
+    setTaxTitle(""); setTaxAmount(""); setTaxDueDate(""); setTaxNotes("");
+  };
+
+  const handleDeleteTax = async (id: string) => {
+    if (!confirm("Delete this tax reminder?")) return;
+    try {
+      await api("delete_tax_reminder", { id });
+      toast({ title: "Tax reminder deleted" });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const togglePaidTax = async (r: TaxReminder) => {
+    try {
+      await api("update_tax_reminder", { id: r.id, paid: !r.paid });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const totalTaxDue = taxReminders.filter((r) => !r.paid).reduce((s, r) => s + Number(r.amount || 0), 0);
+  const fmtDate = (d: string | null) => {
+    if (!d) return "—";
+    const [y, m, day] = d.split("-").map(Number);
+    const dt = new Date(y, (m || 1) - 1, day || 1);
+    return dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  };
+  const daysUntil = (d: string | null) => {
+    if (!d) return null;
+    const [y, m, day] = d.split("-").map(Number);
+    const dt = new Date(y, (m || 1) - 1, day || 1);
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    return Math.round((dt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   };
 
   const saveGoal = () => {
@@ -555,6 +638,81 @@ const BillsTracker = () => {
                     Total W2 {includeW2 ? "(included)" : "(excluded)"}
                   </p>
                   <p className="font-bold text-sm">{fmt(totalW2)}</p>
+                  <div />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Tax Reminders */}
+          <div className="mt-12">
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              <h2 className="text-lg font-bold tracking-tight">Tax Reminders</h2>
+              <p className="text-sm font-bold">
+                Outstanding: <span className="text-brand">{fmt(totalTaxDue)}</span>
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Track quarterly estimates, sales tax, and any tax payments coming up.
+            </p>
+
+            <div
+              ref={taxFormRef}
+              className={`border-2 p-6 mb-6 transition-colors ${editingTaxId ? "border-brand bg-brand/5" : "border-foreground"}`}
+            >
+              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
+                {editingTaxId ? "Edit Tax Reminder" : "Add a Tax Reminder"}
+              </h3>
+              <form onSubmit={handleTaxSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 items-start">
+                <Input placeholder="Title (e.g. Q1 Estimated Tax)" value={taxTitle} onChange={(e) => setTaxTitle(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Amount" value={taxAmount} onChange={(e) => setTaxAmount(e.target.value)} />
+                <Input type="date" value={taxDueDate} onChange={(e) => setTaxDueDate(e.target.value)} />
+                <Input placeholder="Notes (optional)" value={taxNotes} onChange={(e) => setTaxNotes(e.target.value)} />
+                <div className="flex gap-2">
+                  <Button type="submit">{editingTaxId ? "Save" : "Add"}</Button>
+                  {editingTaxId && <Button type="button" variant="outline" onClick={cancelEditTax}>Cancel</Button>}
+                </div>
+              </form>
+            </div>
+
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : taxReminders.length === 0 ? (
+              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No tax reminders yet.</p>
+            ) : (
+              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+                {taxReminders.map((r) => {
+                  const d = daysUntil(r.due_date);
+                  let dueLabel = fmtDate(r.due_date);
+                  let dueClass = "text-muted-foreground";
+                  if (!r.paid && d !== null) {
+                    if (d < 0) { dueLabel += ` · ${Math.abs(d)}d overdue`; dueClass = "text-destructive"; }
+                    else if (d === 0) { dueLabel += " · due today"; dueClass = "text-destructive"; }
+                    else if (d <= 14) { dueLabel += ` · in ${d}d`; dueClass = "text-brand"; }
+                    else { dueLabel += ` · in ${d}d`; }
+                  }
+                  return (
+                    <div key={r.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${r.paid ? "opacity-50" : ""}`}>
+                      <div>
+                        <p className={`font-bold text-sm ${r.paid ? "line-through" : ""}`}>{r.title}</p>
+                        <p className={`text-xs mt-1 uppercase tracking-widest ${dueClass}`}>{dueLabel}</p>
+                        {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                      </div>
+                      <p className="font-bold text-sm">{fmt(Number(r.amount))}</p>
+                      <Button size="sm" variant={r.paid ? "outline" : "default"} onClick={() => togglePaidTax(r)}>
+                        {r.paid ? "Mark Unpaid" : "Mark Paid"}
+                      </Button>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => startEditTax(r)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDeleteTax(r.id)}>Delete</Button>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                  <p className="font-bold text-sm uppercase tracking-widest">Total Outstanding</p>
+                  <p className="font-bold text-sm">{fmt(totalTaxDue)}</p>
+                  <div />
                   <div />
                 </div>
               </div>
