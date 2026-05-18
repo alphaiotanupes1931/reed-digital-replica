@@ -263,6 +263,62 @@ serve(async (req) => {
       });
     }
 
+    // Tax reminders actions
+    if (action === "get_tax_reminders") {
+      const { data: items, error } = await supabase
+        .from("tax_reminders")
+        .select("*")
+        .order("due_date", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return new Response(JSON.stringify({ items }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "add_tax_reminder") {
+      const { title, amount, due_date, notes, paid } = data;
+      const { data: item, error } = await supabase
+        .from("tax_reminders")
+        .insert({
+          title,
+          amount: Number(amount) || 0,
+          due_date: due_date || null,
+          notes: notes || null,
+          paid: !!paid,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return new Response(JSON.stringify({ item }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "update_tax_reminder") {
+      const { id, title, amount, due_date, notes, paid } = data;
+      const updates: Record<string, unknown> = {};
+      if (title !== undefined) updates.title = title;
+      if (amount !== undefined) updates.amount = Number(amount) || 0;
+      if (due_date !== undefined) updates.due_date = due_date || null;
+      if (notes !== undefined) updates.notes = notes;
+      if (paid !== undefined) updates.paid = !!paid;
+      const { error } = await supabase.from("tax_reminders").update(updates).eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete_tax_reminder") {
+      const { id } = data;
+      const { error } = await supabase.from("tax_reminders").delete().eq("id", id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(JSON.stringify({ error: "Unknown action" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
