@@ -35,6 +35,7 @@ import BillsTracker from "./pages/BillsTracker";
 import AppsLanding from "./pages/AppsLanding";
 import AppsLogin from "./pages/AppsLogin";
 import AppsDashboard from "./pages/AppsDashboard";
+import AppsLegal from "./pages/AppsLegal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -80,6 +81,7 @@ const App = () => (
             <Route path="/apps" element={<AppsLanding />} />
             <Route path="/apps/login" element={<AppsLogin />} />
             <Route path="/apps/dashboard" element={<AppsDashboard />} />
+            <Route path="/apps/legal/:kind" element={<AppsLegal />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
