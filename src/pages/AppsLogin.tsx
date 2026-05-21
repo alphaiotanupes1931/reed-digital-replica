@@ -106,7 +106,6 @@ const AppsLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full border-2 border-foreground bg-background px-4 py-3 text-sm focus:outline-none focus:border-brand"
-                  required
                 />
               </div>
               <div>
@@ -116,7 +115,6 @@ const AppsLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full border-2 border-foreground bg-background px-4 py-3 text-sm focus:outline-none focus:border-brand"
-                  required
                 />
               </div>
               <button
