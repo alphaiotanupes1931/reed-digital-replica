@@ -109,13 +109,19 @@ const AppsLogin = () => {
           </div>
 
           <div className="text-center mb-8">
+            {mode === "signup" && (
+              <div className="inline-flex items-center gap-2 border border-brand/30 bg-brand/5 text-brand px-3 py-1 rounded-full text-[10px] uppercase tracking-widest mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+                14-day free trial · No card required
+              </div>
+            )}
             <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
               {mode === "login" ? "Sign in to your account" : "Create your account"}
             </h1>
             <p className="text-sm text-muted-foreground mt-2">
               {mode === "login"
                 ? "Welcome back. Enter your details below."
-                : "Start your 14-day free trial. No credit card required."}
+                : "Get full access to every app for 14 days, free."}
             </p>
           </div>
 
@@ -174,8 +180,8 @@ const AppsLogin = () => {
 
           <p className="text-[11px] text-muted-foreground text-center mt-8 leading-relaxed">
             By continuing, you agree to RDG's{" "}
-            <span className="text-foreground/70 hover:text-foreground cursor-pointer">Terms</span> and{" "}
-            <span className="text-foreground/70 hover:text-foreground cursor-pointer">Privacy Policy</span>.
+            <Link to="/apps/legal/terms" className="text-foreground/70 hover:text-foreground underline-offset-4 hover:underline">Terms</Link> and{" "}
+            <Link to="/apps/legal/privacy" className="text-foreground/70 hover:text-foreground underline-offset-4 hover:underline">Privacy Policy</Link>.
           </p>
         </motion.div>
       </main>
@@ -183,8 +189,8 @@ const AppsLogin = () => {
       <footer className="px-6 md:px-10 py-6 flex items-center justify-between text-[11px] text-muted-foreground">
         <span>© 2026 Reed Digital Group</span>
         <div className="flex gap-5">
-          <span className="hover:text-foreground cursor-pointer transition-colors">Privacy</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Terms</span>
+          <Link to="/apps/legal/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+          <Link to="/apps/legal/terms" className="hover:text-foreground transition-colors">Terms</Link>
           <span className="hover:text-foreground cursor-pointer transition-colors">Support</span>
         </div>
       </footer>
