@@ -71,7 +71,7 @@ const Check = () => (
 
 const AppsLanding = () => {
   return (
-    <div className="min-h-screen bg-background font-mono text-foreground">
+    <div className="min-h-screen bg-background font-apps text-foreground">
       <Header />
 
       <main>
