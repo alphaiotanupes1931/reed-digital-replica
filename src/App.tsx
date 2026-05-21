@@ -7,6 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import CustomCursor from "./components/CustomCursor";
 import PageLoader from "./components/PageLoader";
 import ScrollProgress from "./components/ScrollProgress";
+import RDGMemberPopup from "./components/RDGMemberPopup";
 import Index from "./pages/Index";
 import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
@@ -47,6 +48,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <RDGMemberPopup />
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<Index />} />
