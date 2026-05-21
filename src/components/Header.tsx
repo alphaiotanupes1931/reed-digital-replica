@@ -36,13 +36,7 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Government", href: "/government" },
-  {
-    label: "Tools",
-    children: [
-      { label: "Our Apps", href: "/home-office/login", desc: "Internal workspace" },
-      { label: "Client Portal", href: "/portal", desc: "View & pay invoices" },
-    ],
-  },
+  { label: "Apps", href: "/apps" },
   { label: "Contact", href: "/contact" },
 ];
 
