@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* Scoped font override for /apps pages — keep main site on JetBrains Mono */
+.font-apps,
+.font-apps h1,
+.font-apps h2,
+.font-apps h3,
+.font-apps h4,
+.font-apps h5,
+.font-apps h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+.font-apps .font-mono-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
 
 @layer base {
   :root {

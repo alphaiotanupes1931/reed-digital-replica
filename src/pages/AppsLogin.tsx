@@ -48,7 +48,7 @@ const AppsLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background font-apps">
       <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
       <Header />
 
