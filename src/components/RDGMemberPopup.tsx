@@ -62,14 +62,13 @@ const RDGMemberPopup = () => {
             </h2>
 
             <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
-              Members get early access to our apps, priority support, exclusive pricing
-              on services, and free monthly insights tailored to your business.
+              Members get exclusive access to RDG Apps and free monthly insights
+              tailored to your business.
             </p>
 
             <ul className="mt-5 space-y-2 text-xs text-muted-foreground border-l-2 border-brand pl-4">
-              <li>· Free Client Portal access</li>
-              <li>· Discounts on websites, apps & maintenance</li>
-              <li>· Priority support & faster turnaround</li>
+              <li>· Access to RDG Apps (Client Portal & more)</li>
+              <li>· Free monthly business insights</li>
             </ul>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-8">
