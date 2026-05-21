@@ -170,7 +170,7 @@ const AppsLanding = () => {
                 to="/apps/login"
                 className="bg-foreground text-background px-7 py-3.5 text-xs uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors"
               >
-                Start 14-day free trial
+                Log in or Sign up
               </Link>
               <a
                 href="#suite"
@@ -179,6 +179,15 @@ const AppsLanding = () => {
                 See what's included
               </a>
             </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-[11px] uppercase tracking-widest text-muted-foreground mt-5"
+            >
+              14-day free trial · No credit card required
+            </motion.p>
 
             {/* 3D Dashboard preview */}
             <motion.div
