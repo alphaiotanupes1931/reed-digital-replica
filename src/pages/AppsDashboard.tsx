@@ -5,9 +5,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const apps = [
-  { label: "Client Portal", desc: "View invoices, pay securely, track project status.", href: "/portal", status: "Live" },
-  { label: "Home Office", desc: "Internal RDG workspace · staff only.", href: "/home-office/login", status: "Staff" },
-  { label: "ROI Tracker", desc: "Plaid-powered finance insights.", href: "#", status: "Soon" },
+  { label: "Client Portal", desc: "View invoices, pay securely, track project status.", href: "/portal" },
+  { label: "Home Office", desc: "Internal RDG workspace.", href: "/home-office/login" },
+  { label: "ROI Tracker", desc: "Plaid-powered finance insights.", href: "#" },
 ];
 
 const AppsDashboard = () => {
@@ -41,8 +41,9 @@ const AppsDashboard = () => {
             className="flex items-end justify-between border-b-2 border-foreground pb-8 mb-12"
           >
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-brand mb-2">RDG Apps</p>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Your Apps</h1>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                Welcome back, {user?.name || "Elaine"}
+              </h1>
               {user?.email && (
                 <p className="text-sm text-muted-foreground mt-3">Signed in as {user.email}</p>
               )}
@@ -59,14 +60,9 @@ const AppsDashboard = () => {
             {apps.map((app, i) => {
               const inner = (
                 <>
-                  <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-lg font-bold tracking-tight group-hover:text-brand transition-colors">
-                      {app.label}
-                    </h2>
-                    <span className="text-[10px] uppercase tracking-widest border border-foreground/30 px-2 py-1">
-                      {app.status}
-                    </span>
-                  </div>
+                  <h2 className="text-lg font-bold tracking-tight mb-4 group-hover:text-brand transition-colors">
+                    {app.label}
+                  </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed">{app.desc}</p>
                 </>
               );
