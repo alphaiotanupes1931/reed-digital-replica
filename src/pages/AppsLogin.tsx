@@ -59,13 +59,17 @@ const AppsLogin = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <Link to="/apps" className="text-xs uppercase tracking-[0.3em] text-brand hover:underline">
-              ← RDG Apps
-            </Link>
-            <div className="flex justify-center mt-6 mb-4">
+            <div className="flex justify-center mb-4">
               <img src={logo} alt="RDG" className="h-20 md:h-24 w-auto" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">RDG APPS</h2>
+            <Link
+              to="/apps"
+              className="inline-block mt-4 text-[10px] uppercase tracking-[0.3em] text-brand hover:underline"
+            >
+              ← Back to overview
+            </Link>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-6">
               {mode === "login" ? "Sign In" : "Create Account"}
             </h1>
             <p className="text-sm text-muted-foreground mt-2">
