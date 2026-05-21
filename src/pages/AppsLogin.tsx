@@ -4,13 +4,22 @@ import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
+import logo from "@/assets/rdg-header-logo.png";
+
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35.5 24 35.5c-6.4 0-11.5-5.1-11.5-11.5S17.6 12.5 24 12.5c2.9 0 5.6 1.1 7.7 2.9l5.7-5.7C33.9 6.3 29.2 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.3-.4-3.5z"/>
+    <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 12.5 24 12.5c2.9 0 5.6 1.1 7.7 2.9l5.7-5.7C33.9 6.3 29.2 4.5 24 4.5 16.3 4.5 9.7 8.9 6.3 14.7z"/>
+    <path fill="#4CAF50" d="M24 43.5c5.1 0 9.7-1.9 13.2-5.1l-6.1-5c-2 1.4-4.5 2.1-7.1 2.1-5.3 0-9.7-3.1-11.3-7.5l-6.5 5C9.6 39 16.2 43.5 24 43.5z"/>
+    <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4-4.1 5.4l6.1 5c-.4.4 6.7-4.9 6.7-14.4 0-1.2-.1-2.3-.4-3.5z"/>
+  </svg>
+);
 
 type Mode = "login" | "signup";
 
 const AppsLogin = () => {
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -21,7 +30,7 @@ const AppsLogin = () => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      const user = { email: email || "guest@rdg.app", phone, name: email.split("@")[0] || "Guest" };
+      const user = { email: email || "guest@rdg.app", name: email.split("@")[0] || "Guest" };
       localStorage.setItem("rdg-apps-user", JSON.stringify(user));
       setLoading(false);
       toast({ title: mode === "signup" ? "Account created" : "Welcome back", description: "Redirecting…" });
@@ -53,7 +62,10 @@ const AppsLogin = () => {
             <Link to="/apps" className="text-xs uppercase tracking-[0.3em] text-brand hover:underline">
               ← RDG Apps
             </Link>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
+            <div className="flex justify-center mt-6 mb-4">
+              <img src={logo} alt="RDG" className="h-20 md:h-24 w-auto" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
               {mode === "login" ? "Sign In" : "Create Account"}
             </h1>
             <p className="text-sm text-muted-foreground mt-2">
@@ -70,8 +82,9 @@ const AppsLogin = () => {
             <button
               onClick={fakeGoogle}
               disabled={loading}
-              className="w-full border-2 border-foreground py-3 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-50 mb-6"
+              className="w-full border-2 border-foreground py-3 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-50 mb-6 flex items-center justify-center gap-3"
             >
+              <GoogleIcon />
               Continue with Google
             </button>
 
@@ -90,16 +103,6 @@ const AppsLogin = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full border-2 border-foreground bg-background px-4 py-3 text-sm focus:outline-none focus:border-brand"
                   required
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase tracking-widest mb-2">Phone</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 555 000 0000"
-                  className="w-full border-2 border-foreground bg-background px-4 py-3 text-sm focus:outline-none focus:border-brand"
                 />
               </div>
               <div>
@@ -131,10 +134,6 @@ const AppsLogin = () => {
               </button>
             </p>
           </motion.div>
-
-          <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest mt-6">
-            Demo authentication · production auth coming soon
-          </p>
         </div>
       </main>
 

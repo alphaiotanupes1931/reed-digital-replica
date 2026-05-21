@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppsHero3D from "@/components/AppsHero3D";
+import { Suspense } from "react";
 
 const features = [
   {
@@ -36,8 +38,13 @@ const AppsLanding = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="border-b-2 border-foreground pb-16 mb-16"
+            className="relative border-b-2 border-foreground pb-16 mb-16 min-h-[70vh] flex flex-col justify-center overflow-hidden"
           >
+            <Suspense fallback={null}>
+              <AppsHero3D />
+            </Suspense>
+            <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/60 via-background/40 to-background pointer-events-none" />
+
             <p className="text-xs uppercase tracking-[0.3em] text-brand mb-6">RDG Apps · v1.0</p>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.95]">
               The toolkit
@@ -54,9 +61,9 @@ const AppsLanding = () => {
             <div className="flex flex-wrap gap-4 mt-10">
               <Link
                 to="/apps/login"
-                className="bg-foreground text-background px-8 py-4 text-sm uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors"
+                className="group relative bg-foreground text-background px-8 py-4 text-sm uppercase tracking-widest overflow-hidden transition-colors hover:bg-brand hover:text-brand-foreground"
               >
-                Create Account
+                <span className="relative z-10">Create Account</span>
               </Link>
               <Link
                 to="/apps/login"
@@ -66,6 +73,32 @@ const AppsLanding = () => {
               </Link>
             </div>
           </motion.div>
+
+          {/* What is RDG Apps */}
+          <section className="mb-20">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">What is RDG Apps?</p>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+              <h2 className="md:col-span-5 text-3xl md:text-4xl font-bold tracking-tight leading-tight">
+                A members-only platform
+                <br />
+                <span className="text-brand">built by Reed Digital Group.</span>
+              </h2>
+              <div className="md:col-span-7 space-y-4 text-base text-muted-foreground leading-relaxed">
+                <p>
+                  We build software for businesses every day — and we got tired of clients juggling
+                  email threads, PDFs, and spreadsheets just to pay an invoice or check on a project.
+                </p>
+                <p>
+                  <span className="text-foreground font-bold">RDG Apps</span> is the home for every tool
+                  we ship: a Client Portal for invoices and project status, a Home Office for our
+                  team, and new tools rolling out monthly — ROI tracking, AI assistants, and more.
+                </p>
+                <p>
+                  One account. Every app. Designed, built, and maintained by RDG.
+                </p>
+              </div>
+            </div>
+          </section>
 
           {/* What's inside */}
           <section className="mb-20">
