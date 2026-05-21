@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -60,7 +60,6 @@ const plans = [
     tag: "Teams",
     features: [
       "Everything in Suite",
-      "Up to 5 team members",
       "25GB receipt storage",
       "1099 contractor portal",
       "Custom invoice branding",
@@ -108,6 +107,25 @@ const useTyping = (words: string[], speed = 90, pause = 1400) => {
 
 const AppsLanding = () => {
   const typed = useTyping(["numbers.", "receipts.", "invoices.", "taxes.", "books."]);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Mouse-tracked 3D tilt for dashboard
+  const dashRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 6, y: -8 });
+  const handleDashMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = dashRef.current?.getBoundingClientRect();
+    if (!r) return;
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = (e.clientX - cx) / r.width;
+    const dy = (e.clientY - cy) / r.height;
+    setTilt({ x: -dy * 14, y: dx * 18 });
+  };
+  const resetTilt = () => setTilt({ x: 6, y: -8 });
 
   return (
     <div className="min-h-screen bg-background font-apps text-foreground">
@@ -168,8 +186,14 @@ const AppsLanding = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.6 }}
               className="mt-20 md:mt-24 perspective-1000"
+              ref={dashRef}
+              onMouseMove={handleDashMove}
+              onMouseLeave={resetTilt}
             >
-              <div className="animate-float-3d preserve-3d mx-auto max-w-4xl">
+              <div
+                className="preserve-3d mx-auto max-w-4xl transition-transform duration-200 ease-out"
+                style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
+              >
                 <div
                   className="bg-gradient-to-br from-background to-muted border border-foreground/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25),0_20px_40px_-10px_rgba(212,168,42,0.15)] rounded-lg overflow-hidden text-left"
                 >
@@ -189,7 +213,7 @@ const AppsLanding = () => {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Dashboard</div>
-                        <div className="text-xl font-bold mt-1">Welcome back, Shell</div>
+                        <div className="text-xl font-bold mt-1">Welcome back, Elaine</div>
                       </div>
                       <div className="text-[11px] text-muted-foreground">May 2026</div>
                     </div>
@@ -372,10 +396,6 @@ const AppsLanding = () => {
                       Thank you
                     </div>
 
-                    {/* Tax Tracker stamp */}
-                    <div className="absolute top-6 right-0 -mr-3 rotate-12 bg-brand text-brand-foreground px-3 py-1.5 text-[9px] uppercase tracking-widest shadow-lg">
-                      Logged · Meals 50%
-                    </div>
                   </div>
                 </div>
               </div>
@@ -502,23 +522,24 @@ const AppsLanding = () => {
         </section>
 
         {/* ====== CTA ====== */}
-        <section className="px-6 md:px-12 py-24 md:py-32 bg-foreground text-background">
+        <section className="relative px-6 md:px-12 py-24 md:py-32 bg-gradient-to-b from-background via-muted/40 to-muted/70 border-t border-foreground/10 overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.07]" style={{ backgroundImage: "radial-gradient(circle at 30% 50%, hsl(var(--brand)) 0%, transparent 50%), radial-gradient(circle at 70% 50%, hsl(var(--brand)) 0%, transparent 55%)" }} />
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
+            className="relative max-w-3xl mx-auto text-center"
           >
             <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
               Stop dreading tax season
             </h2>
-            <p className="text-sm md:text-base text-background/60 mt-6">
+            <p className="text-sm md:text-base text-muted-foreground mt-6">
               Start tracking today. Pay $0 for 14 days. Cancel anytime.
             </p>
             <Link
               to="/apps/login"
-              className="inline-block mt-10 bg-brand text-brand-foreground px-8 py-3.5 text-xs uppercase tracking-widest hover:bg-background hover:text-foreground transition-colors"
+              className="inline-block mt-10 bg-foreground text-background px-8 py-3.5 text-xs uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors"
             >
               Create your free account
             </Link>
