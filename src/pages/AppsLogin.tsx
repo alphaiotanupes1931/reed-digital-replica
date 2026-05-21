@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
 
@@ -24,6 +22,22 @@ const AppsLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // 3D interactive logo tilt
+  const logoRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const onLogoMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = logoRef.current?.getBoundingClientRect();
+    if (!r) return;
+    const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+    const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+    setTilt({ x: -dy * 22, y: dx * 28 });
+  };
+  const onLogoLeave = () => setTilt({ x: 0, y: 0 });
 
   // FAKE AUTH — backlog: replace with Lovable Cloud auth (email/password + Google OAuth)
   const fakeAuth = (e: React.FormEvent) => {
@@ -48,98 +62,132 @@ const AppsLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-apps">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
-      <Header />
-
-      <main className="pt-32 pb-20">
-        <div className="container max-w-md mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-10"
+    <div className="min-h-screen bg-background font-apps flex flex-col">
+      {/* Minimal top bar */}
+      <div className="flex items-center justify-between px-6 md:px-10 py-6">
+        <Link to="/apps" className="flex items-center gap-2 group">
+          <span
+            className="inline-block w-6 h-6 bg-brand rounded-sm transition-transform group-hover:rotate-12"
+            style={{ boxShadow: "inset -2px -2px 0 rgba(0,0,0,0.15), 0 4px 12px hsl(var(--brand) / 0.3)" }}
+          />
+          <span className="text-sm font-semibold tracking-tight">RDG Apps</span>
+        </Link>
+        <div className="text-xs text-muted-foreground">
+          {mode === "login" ? "New to RDG? " : "Already have an account? "}
+          <button
+            onClick={() => setMode(mode === "login" ? "signup" : "login")}
+            className="text-foreground font-medium hover:text-brand transition-colors"
           >
-            <div className="flex justify-center mb-4">
-              <img src={logo} alt="RDG" className="h-20 md:h-24 w-auto" />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">RDG APPS</h2>
-            <Link
-              to="/apps"
-              className="inline-block mt-4 text-[10px] uppercase tracking-[0.3em] text-brand hover:underline"
+            {mode === "login" ? "Create account" : "Sign in"}
+          </button>
+        </div>
+      </div>
+
+      <main className="flex-1 flex items-center justify-center px-6 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-[400px]"
+        >
+          {/* 3D interactive logo */}
+          <div className="flex justify-center mb-10 perspective-1000">
+            <div
+              ref={logoRef}
+              onMouseMove={onLogoMove}
+              onMouseLeave={onLogoLeave}
+              className="preserve-3d transition-transform duration-200 ease-out"
+              style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
             >
-              ← Back to overview
-            </Link>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-6">
-              {mode === "login" ? "Sign In" : "Create Account"}
+              <img
+                src={logo}
+                alt="RDG"
+                className="h-14 w-auto"
+                style={{ filter: "drop-shadow(0 10px 20px hsl(var(--brand) / 0.25)) drop-shadow(0 4px 8px rgba(0,0,0,0.1))" }}
+              />
+            </div>
+          </div>
+
+          <div className="text-center mb-8">
+            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
+              {mode === "login" ? "Sign in to your account" : "Create your account"}
             </h1>
             <p className="text-sm text-muted-foreground mt-2">
-              {mode === "login" ? "Welcome back to RDG Apps." : "Get access to the Client Portal and more."}
+              {mode === "login"
+                ? "Welcome back. Enter your details below."
+                : "Start your 14-day free trial. No credit card required."}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="border-2 border-foreground p-8"
+          {/* Google */}
+          <button
+            onClick={fakeGoogle}
+            disabled={loading}
+            className="w-full border border-foreground/15 bg-background hover:bg-muted/60 py-2.5 rounded-md text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2.5 shadow-sm"
           >
-            <button
-              onClick={fakeGoogle}
-              disabled={loading}
-              className="w-full border-2 border-foreground py-3 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-50 mb-6 flex items-center justify-center gap-3"
-            >
-              <GoogleIcon />
-              Continue with Google
-            </button>
+            <GoogleIcon />
+            Continue with Google
+          </button>
 
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-foreground/20" />
-              <span className="text-xs text-muted-foreground uppercase tracking-widest">or</span>
-              <div className="flex-1 h-px bg-foreground/20" />
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-foreground/10" />
+            <span className="text-[11px] text-muted-foreground uppercase tracking-wider">or</span>
+            <div className="flex-1 h-px bg-foreground/10" />
+          </div>
+
+          <form onSubmit={fakeAuth} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-foreground/80 mb-1.5">Email</label>
+              <input
+                type="email"
+                placeholder="you@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-foreground/15 bg-background px-3.5 py-2.5 rounded-md text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
             </div>
-
-            <form onSubmit={fakeAuth} className="space-y-4">
-              <div>
-                <label className="block text-xs uppercase tracking-widest mb-2">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border-2 border-foreground bg-background px-4 py-3 text-sm focus:outline-none focus:border-brand"
-                />
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-medium text-foreground/80">Password</label>
+                {mode === "login" && (
+                  <button type="button" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                    Forgot?
+                  </button>
+                )}
               </div>
-              <div>
-                <label className="block text-xs uppercase tracking-widest mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border-2 border-foreground bg-background px-4 py-3 text-sm focus:outline-none focus:border-brand"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-brand text-brand-foreground py-3 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
-              >
-                {loading ? "Please wait…" : mode === "login" ? "Sign In" : "Create Account"}
-              </button>
-            </form>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-foreground/15 bg-background px-3.5 py-2.5 rounded-md text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-foreground text-background py-2.5 rounded-md text-sm font-medium hover:bg-brand hover:text-brand-foreground transition-colors disabled:opacity-50 shadow-sm"
+            >
+              {loading ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
+            </button>
+          </form>
 
-            <p className="text-xs text-muted-foreground text-center mt-6">
-              {mode === "login" ? "New here? " : "Already have an account? "}
-              <button
-                onClick={() => setMode(mode === "login" ? "signup" : "login")}
-                className="text-brand hover:underline uppercase tracking-widest"
-              >
-                {mode === "login" ? "Create account" : "Sign in"}
-              </button>
-            </p>
-          </motion.div>
-        </div>
+          <p className="text-[11px] text-muted-foreground text-center mt-8 leading-relaxed">
+            By continuing, you agree to RDG's{" "}
+            <span className="text-foreground/70 hover:text-foreground cursor-pointer">Terms</span> and{" "}
+            <span className="text-foreground/70 hover:text-foreground cursor-pointer">Privacy Policy</span>.
+          </p>
+        </motion.div>
       </main>
 
-      <Footer />
+      <footer className="px-6 md:px-10 py-6 flex items-center justify-between text-[11px] text-muted-foreground">
+        <span>© 2026 Reed Digital Group</span>
+        <div className="flex gap-5">
+          <span className="hover:text-foreground cursor-pointer transition-colors">Privacy</span>
+          <span className="hover:text-foreground cursor-pointer transition-colors">Terms</span>
+          <span className="hover:text-foreground cursor-pointer transition-colors">Support</span>
+        </div>
+      </footer>
     </div>
   );
 };
