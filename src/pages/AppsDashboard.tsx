@@ -94,7 +94,7 @@ const AppsDashboard = () => {
             <section key={section.title} className="mb-12">
               <div className="flex items-baseline justify-between mb-4">
                 <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{section.title}</h2>
-                <span className="text-[10px] text-muted-foreground/70">{section.subtitle}</span>
+                <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{section.subtitle}</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {section.items.map((app, i) => (
