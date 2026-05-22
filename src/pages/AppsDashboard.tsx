@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const apps = [
-  { label: "Invoices", desc: "Create, send, and track invoices with secure payments.", href: "/portal" },
-  { label: "ROI Tracker", desc: "Plaid-powered finance insights and cashflow analytics.", href: "#" },
-  { label: "Bills Tracker", desc: "Monthly bills vs recurring income at a glance.", href: "/home-office/bills" },
-  { label: "Work Assistant", desc: "Daily notes, goals, and standup tracking.", href: "/home-office/work-assistant" },
-  { label: "Tax Tracker", desc: "Categorize expenses and stay tax-season ready.", href: "#" },
-  { label: "Receipts", desc: "Snap, log, and organize every business receipt.", href: "#" },
+const adminApps = [
+  { label: "Invoice Admin", desc: "Create, send, and manage invoices for your clients.", href: "/apps/admin/invoices" },
+  { label: "Bills Tracker", desc: "Track monthly bills, recurring income, and net cash position.", href: "/apps/admin/bills" },
+  { label: "Tax Tracker", desc: "Log quarterly estimates and tax obligations.", href: "/apps/admin/taxes" },
+];
+
+const clientApps = [
+  { label: "Client Portal", desc: "The page your clients open to view & pay invoices you've sent.", href: "/apps/client/portal" },
 ];
 
 const AppsDashboard = () => {
@@ -18,16 +20,29 @@ const AppsDashboard = () => {
   const [user, setUser] = useState<{ email?: string; name?: string } | null>(null);
 
   useEffect(() => {
-    const raw = localStorage.getItem("rdg-apps-user");
-    if (!raw) {
-      navigate("/apps/login");
-      return;
-    }
-    setUser(JSON.parse(raw));
+    let mounted = true;
+    const sync = (session: any) => {
+      if (!mounted) return;
+      if (!session) {
+        navigate("/apps/login");
+        return;
+      }
+      const u = session.user;
+      setUser({
+        email: u.email,
+        name: (u.user_metadata?.full_name as string) || (u.email?.split("@")[0] ?? "there"),
+      });
+    };
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => sync(session));
+    supabase.auth.getSession().then(({ data }) => sync(data.session));
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, [navigate]);
 
-  const signOut = () => {
-    localStorage.removeItem("rdg-apps-user");
+  const signOut = async () => {
+    await supabase.auth.signOut();
     navigate("/apps");
   };
 
@@ -59,39 +74,37 @@ const AppsDashboard = () => {
             </button>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {apps.map((app, i) => {
-              const inner = (
-                <>
-                  <h2 className="text-lg font-bold tracking-tight mb-4 group-hover:text-brand transition-colors">
-                    {app.label}
-                  </h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{app.desc}</p>
-                </>
-              );
-              return (
-                <motion.div
-                  key={app.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.05 }}
-                >
-                  {app.href === "#" ? (
-                    <div className="block border-2 border-foreground p-8 opacity-60 cursor-not-allowed group">
-                      {inner}
-                    </div>
-                  ) : (
+          {[
+            { title: "Admin", subtitle: "Your back-office. Manage your business.", items: adminApps },
+            { title: "Client", subtitle: "What you share with your clients.", items: clientApps },
+          ].map((section, sIdx) => (
+            <section key={section.title} className="mb-12">
+              <div className="flex items-baseline justify-between mb-4">
+                <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{section.title}</h2>
+                <span className="text-[10px] text-muted-foreground/70">{section.subtitle}</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {section.items.map((app, i) => (
+                  <motion.div
+                    key={app.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + sIdx * 0.1 + i * 0.05 }}
+                  >
                     <Link
                       to={app.href}
-                      className="block border-2 border-foreground p-8 hover:border-brand hover:bg-brand/5 transition-all group"
+                      className="block border-2 border-foreground p-8 hover:border-brand hover:bg-brand/5 transition-all group h-full"
                     >
-                      {inner}
+                      <h3 className="text-lg font-bold tracking-tight mb-4 group-hover:text-brand transition-colors">
+                        {app.label}
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{app.desc}</p>
                     </Link>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </main>
 
