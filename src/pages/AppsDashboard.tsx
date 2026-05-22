@@ -21,16 +21,29 @@ const AppsDashboard = () => {
 
   useEffect(() => {
     let mounted = true;
-    const sync = (session: any) => {
+    const sync = async (session: any) => {
       if (!mounted) return;
       if (!session) {
         navigate("/apps/login");
         return;
       }
       const u = session.user;
+      // Onboarding gate: send first-time users through onboarding before showing dashboard
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, onboarded")
+        .eq("user_id", u.id)
+        .maybeSingle();
+      if (!profile?.onboarded) {
+        navigate("/apps/onboarding", { replace: true });
+        return;
+      }
       setUser({
         email: u.email,
-        name: (u.user_metadata?.full_name as string) || (u.email?.split("@")[0] ?? "there"),
+        name:
+          profile?.full_name ||
+          (u.user_metadata?.full_name as string) ||
+          (u.email?.split("@")[0] ?? "there"),
       });
     };
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => sync(session));
@@ -75,7 +88,7 @@ const AppsDashboard = () => {
           </motion.div>
 
           {[
-            { title: "Admin", subtitle: "Your back-office. Manage your business.", items: adminApps },
+            { title: "Admin", subtitle: "Management", items: adminApps },
             { title: "Client", subtitle: "What you share with your clients.", items: clientApps },
           ].map((section, sIdx) => (
             <section key={section.title} className="mb-12">
