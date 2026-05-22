@@ -514,16 +514,16 @@ const AppsLanding = () => {
                       </li>
                     ))}
                   </ul>
-                  <Link
-                    to="/apps/login"
-                    className={`block w-full text-center px-6 py-3 text-xs uppercase tracking-widest transition-colors ${
-                      p.highlight
-                        ? "bg-foreground text-background hover:bg-brand hover:text-brand-foreground"
-                        : "border border-foreground/20 hover:border-foreground"
-                    }`}
-                  >
-                    Start free trial
-                  </Link>
+                   <Link
+                     to={`/apps/login?plan=${p.priceId}`}
+                     className={`block w-full text-center px-6 py-3 text-xs uppercase tracking-widest transition-colors ${
+                       p.highlight
+                         ? "bg-foreground text-background hover:bg-brand hover:text-brand-foreground"
+                         : "border border-foreground/20 hover:border-foreground"
+                     }`}
+                   >
+                     Start free trial
+                   </Link>
                 </motion.div>
               ))}
             </div>
