@@ -5,9 +5,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const apps = [
-  { label: "Client Portal", desc: "View invoices, pay securely, track project status.", href: "/portal" },
-  { label: "Home Office", desc: "Internal RDG workspace.", href: "/home-office/login" },
-  { label: "ROI Tracker", desc: "Plaid-powered finance insights.", href: "#" },
+  { label: "Invoices", desc: "Create, send, and track invoices with secure payments.", href: "/portal" },
+  { label: "ROI Tracker", desc: "Plaid-powered finance insights and cashflow analytics.", href: "#" },
+  { label: "Bills Tracker", desc: "Monthly bills vs recurring income at a glance.", href: "/home-office/bills" },
+  { label: "Work Assistant", desc: "Daily notes, goals, and standup tracking.", href: "/home-office/work-assistant" },
+  { label: "Tax Tracker", desc: "Categorize expenses and stay tax-season ready.", href: "#" },
+  { label: "Receipts", desc: "Snap, log, and organize every business receipt.", href: "#" },
 ];
 
 const AppsDashboard = () => {
