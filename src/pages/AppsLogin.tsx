@@ -111,6 +111,22 @@ const AppsLogin = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast({ title: "Enter your email first", description: "Type your email above, then click Forgot.", variant: "destructive" });
+      return;
+    }
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/apps/reset-password`,
+      });
+      if (error) throw error;
+      toast({ title: "Check your inbox", description: "We sent you a password reset link." });
+    } catch (err: any) {
+      toast({ title: "Could not send reset email", description: err.message, variant: "destructive" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background font-apps flex flex-col">
       {/* Minimal top bar */}
@@ -199,7 +215,11 @@ const AppsLogin = () => {
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-xs font-medium text-foreground/80">Password</label>
                 {mode === "login" && (
-                  <button type="button" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
                     Forgot?
                   </button>
                 )}
