@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import logo from "@/assets/rdg-header-logo.png";
 
 const GoogleIcon = () => (
@@ -25,6 +27,9 @@ const AppsLogin = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate("/apps/dashboard", { replace: true });
+    });
   }, []);
 
   // 3D interactive logo tilt
@@ -39,26 +44,48 @@ const AppsLogin = () => {
   };
   const onLogoLeave = () => setTilt({ x: 0, y: 0 });
 
-  // FAKE AUTH — backlog: replace with Lovable Cloud auth (email/password + Google OAuth)
-  const fakeAuth = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast({ title: "Email and password required", variant: "destructive" });
+      return;
+    }
     setLoading(true);
-    setTimeout(() => {
-      const user = { email: email || "guest@rdg.app", name: email.split("@")[0] || "Guest" };
-      localStorage.setItem("rdg-apps-user", JSON.stringify(user));
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: `${window.location.origin}/apps/dashboard` },
+        });
+        if (error) throw error;
+        toast({ title: "Account created", description: "Check your inbox to confirm, or sign in if confirmation is disabled." });
+        const { data } = await supabase.auth.getSession();
+        if (data.session) navigate("/apps/dashboard");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        navigate("/apps/dashboard");
+      }
+    } catch (err: any) {
+      toast({ title: "Authentication failed", description: err.message, variant: "destructive" });
+    } finally {
       setLoading(false);
-      toast({ title: mode === "signup" ? "Account created" : "Welcome back", description: "Redirecting…" });
-      navigate("/apps/dashboard");
-    }, 500);
+    }
   };
 
-  const fakeGoogle = () => {
+  const handleGoogle = async () => {
     setLoading(true);
-    setTimeout(() => {
-      const user = { email: "you@gmail.com", name: "Google User" };
-      localStorage.setItem("rdg-apps-user", JSON.stringify(user));
-      navigate("/apps/dashboard");
-    }, 400);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/apps/dashboard`,
+      });
+      if (result.error) throw result.error;
+      if (!result.redirected) navigate("/apps/dashboard");
+    } catch (err: any) {
+      toast({ title: "Google sign-in failed", description: err.message, variant: "destructive" });
+      setLoading(false);
+    }
   };
 
   return (
@@ -125,9 +152,8 @@ const AppsLogin = () => {
             </p>
           </div>
 
-          {/* Google */}
           <button
-            onClick={fakeGoogle}
+            onClick={handleGoogle}
             disabled={loading}
             className="w-full border border-foreground/15 bg-background hover:bg-muted/60 py-2.5 rounded-md text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2.5 shadow-sm"
           >
@@ -141,7 +167,7 @@ const AppsLogin = () => {
             <div className="flex-1 h-px bg-foreground/10" />
           </div>
 
-          <form onSubmit={fakeAuth} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-foreground/80 mb-1.5">Email</label>
               <input
