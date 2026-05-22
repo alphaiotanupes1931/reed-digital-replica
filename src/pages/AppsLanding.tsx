@@ -31,6 +31,7 @@ const plans = [
   {
     name: "Starter",
     price: 5,
+    priceId: "price_1TZkBeLmYe19xWnILOPARN9c",
     tag: "Solo",
     features: [
       "Tax Tracker + Bills Tracker",
@@ -43,6 +44,7 @@ const plans = [
   {
     name: "Suite",
     price: 10,
+    priceId: "price_1TZkBfLmYe19xWnIDRoMFspp",
     tag: "Most popular",
     highlight: true,
     features: [
@@ -57,6 +59,7 @@ const plans = [
   {
     name: "Business",
     price: 15,
+    priceId: "price_1TZkBfLmYe19xWnIwlTExp38",
     tag: "Teams",
     features: [
       "Everything in Suite",
