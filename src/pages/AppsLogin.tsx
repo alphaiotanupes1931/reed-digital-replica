@@ -21,6 +21,7 @@ const AppsLogin = () => {
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -44,11 +45,33 @@ const AppsLogin = () => {
   };
   const onLogoLeave = () => setTilt({ x: 0, y: 0 });
 
+  // Password complexity checks (signup only)
+  const pwChecks = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    symbol: /[^A-Za-z0-9]/.test(password),
+  };
+  const pwScore = Object.values(pwChecks).filter(Boolean).length;
+  const pwStrong = pwScore === 5;
+  const pwMatch = password.length > 0 && password === confirmPassword;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast({ title: "Email and password required", variant: "destructive" });
       return;
+    }
+    if (mode === "signup") {
+      if (!pwStrong) {
+        toast({ title: "Password too weak", description: "Use 8+ chars with upper, lower, number, and symbol.", variant: "destructive" });
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast({ title: "Passwords do not match", variant: "destructive" });
+        return;
+      }
     }
     setLoading(true);
     try {
