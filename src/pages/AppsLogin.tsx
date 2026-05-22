@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,11 +25,43 @@ const AppsLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const planParam = searchParams.get("plan");
+
+  // Forgot password modal
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState<string | null>(null);
+
+  const startCheckout = async (priceId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("apps-subscribe", {
+        body: { priceId },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+        return true;
+      }
+      throw new Error("No checkout URL returned");
+    } catch (err: any) {
+      toast({ title: "Could not start checkout", description: err.message, variant: "destructive" });
+      return false;
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/apps/dashboard", { replace: true });
+      if (data.session) {
+        if (planParam) {
+          startCheckout(planParam);
+        } else {
+          navigate("/apps/dashboard", { replace: true });
+        }
+      }
     });
   }, []);
 
@@ -84,11 +116,23 @@ const AppsLogin = () => {
         if (error) throw error;
         toast({ title: "Account created", description: "Check your inbox to confirm, or sign in if confirmation is disabled." });
         const { data } = await supabase.auth.getSession();
-        if (data.session) navigate("/apps/dashboard");
+        if (data.session) {
+          if (planParam) {
+            const ok = await startCheckout(planParam);
+            if (!ok) navigate("/apps/dashboard");
+          } else {
+            navigate("/apps/dashboard");
+          }
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/apps/dashboard");
+        if (planParam) {
+          const ok = await startCheckout(planParam);
+          if (!ok) navigate("/apps/dashboard");
+        } else {
+          navigate("/apps/dashboard");
+        }
       }
     } catch (err: any) {
       toast({ title: "Authentication failed", description: err.message, variant: "destructive" });
@@ -100,8 +144,11 @@ const AppsLogin = () => {
   const handleGoogle = async () => {
     setLoading(true);
     try {
+      const redirectPath = planParam
+        ? `/apps/login?plan=${encodeURIComponent(planParam)}`
+        : `/apps/dashboard`;
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/apps/dashboard`,
+        redirect_uri: `${window.location.origin}${redirectPath}`,
       });
       if (result.error) throw result.error;
       if (!result.redirected) navigate("/apps/dashboard");
@@ -111,19 +158,31 @@ const AppsLogin = () => {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      toast({ title: "Enter your email first", description: "Type your email above, then click Forgot.", variant: "destructive" });
+  const openForgot = () => {
+    setForgotEmail(email);
+    setForgotSent(false);
+    setForgotError(null);
+    setForgotOpen(true);
+  };
+
+  const submitForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) {
+      setForgotError("Please enter your email address.");
       return;
     }
+    setForgotLoading(true);
+    setForgotError(null);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
         redirectTo: `${window.location.origin}/apps/reset-password`,
       });
       if (error) throw error;
-      toast({ title: "Check your inbox", description: "We sent you a password reset link." });
+      setForgotSent(true);
     } catch (err: any) {
-      toast({ title: "Could not send reset email", description: err.message, variant: "destructive" });
+      setForgotError(err.message || "Could not send reset email.");
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -217,7 +276,7 @@ const AppsLogin = () => {
                 {mode === "login" && (
                   <button
                     type="button"
-                    onClick={handleForgotPassword}
+                    onClick={openForgot}
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Forgot?
@@ -303,6 +362,80 @@ const AppsLogin = () => {
           <span className="hover:text-foreground cursor-pointer transition-colors">Support</span>
         </div>
       </footer>
+
+      {forgotOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 backdrop-blur-sm px-4"
+          onClick={() => !forgotLoading && setForgotOpen(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.18 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[420px] bg-background border border-foreground/15 rounded-lg shadow-2xl p-7"
+          >
+            {!forgotSent ? (
+              <>
+                <h2 className="text-xl font-semibold tracking-tight">Reset your password</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Enter the email on your account and we'll send you a secure link to set a new password.
+                </p>
+                <form onSubmit={submitForgot} className="mt-5 space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-foreground/80 mb-1.5">Email</label>
+                    <input
+                      type="email"
+                      autoFocus
+                      placeholder="you@company.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="w-full border border-foreground/15 bg-background px-3.5 py-2.5 rounded-md text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+                    />
+                  </div>
+                  {forgotError && (
+                    <p className="text-[11px] text-destructive">{forgotError}</p>
+                  )}
+                  <div className="flex items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setForgotOpen(false)}
+                      disabled={forgotLoading}
+                      className="flex-1 border border-foreground/15 py-2.5 rounded-md text-sm font-medium hover:bg-muted/60 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      className="flex-1 bg-foreground text-background py-2.5 rounded-md text-sm font-medium hover:bg-brand hover:text-brand-foreground transition-colors disabled:opacity-50"
+                    >
+                      {forgotLoading ? "Sending…" : "Send reset link"}
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold tracking-tight">Check your inbox</h2>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  If an account exists for <span className="text-foreground font-medium">{forgotEmail}</span>,
+                  you'll receive an email with a link to reset your password within a few minutes.
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-3">
+                  Didn't get it? Check your spam folder, or wait a minute and try again.
+                </p>
+                <button
+                  onClick={() => setForgotOpen(false)}
+                  className="w-full mt-6 bg-foreground text-background py-2.5 rounded-md text-sm font-medium hover:bg-brand hover:text-brand-foreground transition-colors"
+                >
+                  Done
+                </button>
+              </>
+            )}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

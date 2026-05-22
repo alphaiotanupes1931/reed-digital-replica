@@ -31,6 +31,7 @@ const plans = [
   {
     name: "Starter",
     price: 5,
+    priceId: "price_1TZkBeLmYe19xWnILOPARN9c",
     tag: "Solo",
     features: [
       "Tax Tracker + Bills Tracker",
@@ -43,6 +44,7 @@ const plans = [
   {
     name: "Suite",
     price: 10,
+    priceId: "price_1TZkBfLmYe19xWnIDRoMFspp",
     tag: "Most popular",
     highlight: true,
     features: [
@@ -57,6 +59,7 @@ const plans = [
   {
     name: "Business",
     price: 15,
+    priceId: "price_1TZkBfLmYe19xWnIwlTExp38",
     tag: "Teams",
     features: [
       "Everything in Suite",
@@ -511,16 +514,16 @@ const AppsLanding = () => {
                       </li>
                     ))}
                   </ul>
-                  <Link
-                    to="/apps/login"
-                    className={`block w-full text-center px-6 py-3 text-xs uppercase tracking-widest transition-colors ${
-                      p.highlight
-                        ? "bg-foreground text-background hover:bg-brand hover:text-brand-foreground"
-                        : "border border-foreground/20 hover:border-foreground"
-                    }`}
-                  >
-                    Start free trial
-                  </Link>
+                   <Link
+                     to={`/apps/login?plan=${p.priceId}`}
+                     className={`block w-full text-center px-6 py-3 text-xs uppercase tracking-widest transition-colors ${
+                       p.highlight
+                         ? "bg-foreground text-background hover:bg-brand hover:text-brand-foreground"
+                         : "border border-foreground/20 hover:border-foreground"
+                     }`}
+                   >
+                     Start free trial
+                   </Link>
                 </motion.div>
               ))}
             </div>
