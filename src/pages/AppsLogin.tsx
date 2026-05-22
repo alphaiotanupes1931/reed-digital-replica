@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,11 +25,43 @@ const AppsLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const planParam = searchParams.get("plan");
+
+  // Forgot password modal
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState<string | null>(null);
+
+  const startCheckout = async (priceId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("apps-subscribe", {
+        body: { priceId },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+        return true;
+      }
+      throw new Error("No checkout URL returned");
+    } catch (err: any) {
+      toast({ title: "Could not start checkout", description: err.message, variant: "destructive" });
+      return false;
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/apps/dashboard", { replace: true });
+      if (data.session) {
+        if (planParam) {
+          startCheckout(planParam);
+        } else {
+          navigate("/apps/dashboard", { replace: true });
+        }
+      }
     });
   }, []);
 
@@ -84,11 +116,23 @@ const AppsLogin = () => {
         if (error) throw error;
         toast({ title: "Account created", description: "Check your inbox to confirm, or sign in if confirmation is disabled." });
         const { data } = await supabase.auth.getSession();
-        if (data.session) navigate("/apps/dashboard");
+        if (data.session) {
+          if (planParam) {
+            const ok = await startCheckout(planParam);
+            if (!ok) navigate("/apps/dashboard");
+          } else {
+            navigate("/apps/dashboard");
+          }
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/apps/dashboard");
+        if (planParam) {
+          const ok = await startCheckout(planParam);
+          if (!ok) navigate("/apps/dashboard");
+        } else {
+          navigate("/apps/dashboard");
+        }
       }
     } catch (err: any) {
       toast({ title: "Authentication failed", description: err.message, variant: "destructive" });
@@ -100,8 +144,11 @@ const AppsLogin = () => {
   const handleGoogle = async () => {
     setLoading(true);
     try {
+      const redirectPath = planParam
+        ? `/apps/login?plan=${encodeURIComponent(planParam)}`
+        : `/apps/dashboard`;
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/apps/dashboard`,
+        redirect_uri: `${window.location.origin}${redirectPath}`,
       });
       if (result.error) throw result.error;
       if (!result.redirected) navigate("/apps/dashboard");
@@ -111,19 +158,31 @@ const AppsLogin = () => {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      toast({ title: "Enter your email first", description: "Type your email above, then click Forgot.", variant: "destructive" });
+  const openForgot = () => {
+    setForgotEmail(email);
+    setForgotSent(false);
+    setForgotError(null);
+    setForgotOpen(true);
+  };
+
+  const submitForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) {
+      setForgotError("Please enter your email address.");
       return;
     }
+    setForgotLoading(true);
+    setForgotError(null);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
         redirectTo: `${window.location.origin}/apps/reset-password`,
       });
       if (error) throw error;
-      toast({ title: "Check your inbox", description: "We sent you a password reset link." });
+      setForgotSent(true);
     } catch (err: any) {
-      toast({ title: "Could not send reset email", description: err.message, variant: "destructive" });
+      setForgotError(err.message || "Could not send reset email.");
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -217,7 +276,7 @@ const AppsLogin = () => {
                 {mode === "login" && (
                   <button
                     type="button"
-                    onClick={handleForgotPassword}
+                    onClick={openForgot}
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Forgot?
