@@ -362,6 +362,80 @@ const AppsLogin = () => {
           <span className="hover:text-foreground cursor-pointer transition-colors">Support</span>
         </div>
       </footer>
+
+      {forgotOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 backdrop-blur-sm px-4"
+          onClick={() => !forgotLoading && setForgotOpen(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.18 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[420px] bg-background border border-foreground/15 rounded-lg shadow-2xl p-7"
+          >
+            {!forgotSent ? (
+              <>
+                <h2 className="text-xl font-semibold tracking-tight">Reset your password</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Enter the email on your account and we'll send you a secure link to set a new password.
+                </p>
+                <form onSubmit={submitForgot} className="mt-5 space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-foreground/80 mb-1.5">Email</label>
+                    <input
+                      type="email"
+                      autoFocus
+                      placeholder="you@company.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="w-full border border-foreground/15 bg-background px-3.5 py-2.5 rounded-md text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+                    />
+                  </div>
+                  {forgotError && (
+                    <p className="text-[11px] text-destructive">{forgotError}</p>
+                  )}
+                  <div className="flex items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setForgotOpen(false)}
+                      disabled={forgotLoading}
+                      className="flex-1 border border-foreground/15 py-2.5 rounded-md text-sm font-medium hover:bg-muted/60 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      className="flex-1 bg-foreground text-background py-2.5 rounded-md text-sm font-medium hover:bg-brand hover:text-brand-foreground transition-colors disabled:opacity-50"
+                    >
+                      {forgotLoading ? "Sending…" : "Send reset link"}
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold tracking-tight">Check your inbox</h2>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  If an account exists for <span className="text-foreground font-medium">{forgotEmail}</span>,
+                  you'll receive an email with a link to reset your password within a few minutes.
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-3">
+                  Didn't get it? Check your spam folder, or wait a minute and try again.
+                </p>
+                <button
+                  onClick={() => setForgotOpen(false)}
+                  className="w-full mt-6 bg-foreground text-background py-2.5 rounded-md text-sm font-medium hover:bg-brand hover:text-brand-foreground transition-colors"
+                >
+                  Done
+                </button>
+              </>
+            )}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
