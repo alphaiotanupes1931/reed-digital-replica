@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import CustomCursor from "./components/CustomCursor";
-import PageLoader from "./components/PageLoader";
 import ScrollProgress from "./components/ScrollProgress";
 import RDGMemberPopup from "./components/RDGMemberPopup";
 import Index from "./pages/Index";
@@ -36,6 +35,10 @@ import AppsLanding from "./pages/AppsLanding";
 import AppsLogin from "./pages/AppsLogin";
 import AppsDashboard from "./pages/AppsDashboard";
 import AppsLegal from "./pages/AppsLegal";
+import AdminInvoices from "./pages/apps/AdminInvoices";
+import AdminBills from "./pages/apps/AdminBills";
+import AdminTaxes from "./pages/apps/AdminTaxes";
+import ClientPortal from "./pages/apps/ClientPortal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,7 +46,6 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <PageLoader />
       <ScrollProgress />
       <CustomCursor />
       <Toaster />
@@ -82,6 +84,10 @@ const App = () => (
             <Route path="/apps/login" element={<AppsLogin />} />
             <Route path="/apps/dashboard" element={<AppsDashboard />} />
             <Route path="/apps/legal/:kind" element={<AppsLegal />} />
+            <Route path="/apps/admin/invoices" element={<AdminInvoices />} />
+            <Route path="/apps/admin/bills" element={<AdminBills />} />
+            <Route path="/apps/admin/taxes" element={<AdminTaxes />} />
+            <Route path="/apps/client/portal" element={<ClientPortal />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
