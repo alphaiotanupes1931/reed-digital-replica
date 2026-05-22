@@ -22,6 +22,7 @@ export type Database = {
           id: string
           maintenance_plan: string | null
           owner_name: string | null
+          owner_user_id: string | null
           phases: Json
           project_build_cost: string | null
           project_estimated_total: string | null
@@ -38,6 +39,7 @@ export type Database = {
           id?: string
           maintenance_plan?: string | null
           owner_name?: string | null
+          owner_user_id?: string | null
           phases?: Json
           project_build_cost?: string | null
           project_estimated_total?: string | null
@@ -54,6 +56,7 @@ export type Database = {
           id?: string
           maintenance_plan?: string | null
           owner_name?: string | null
+          owner_user_id?: string | null
           phases?: Json
           project_build_cost?: string | null
           project_estimated_total?: string | null
@@ -72,6 +75,7 @@ export type Database = {
           id: string
           note_date: string
           note_type: string
+          owner_user_id: string | null
         }
         Insert: {
           content: string
@@ -79,6 +83,7 @@ export type Database = {
           id?: string
           note_date?: string
           note_type?: string
+          owner_user_id?: string | null
         }
         Update: {
           content?: string
@@ -86,6 +91,7 @@ export type Database = {
           id?: string
           note_date?: string
           note_type?: string
+          owner_user_id?: string | null
         }
         Relationships: []
       }
@@ -95,6 +101,7 @@ export type Database = {
           created_at: string
           id: string
           notes: string | null
+          owner_user_id: string | null
           price: number
           source: string
           updated_at: string
@@ -104,6 +111,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          owner_user_id?: string | null
           price?: number
           source: string
           updated_at?: string
@@ -113,6 +121,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          owner_user_id?: string | null
           price?: number
           source?: string
           updated_at?: string
@@ -126,6 +135,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          owner_user_id: string | null
           title: string
         }
         Insert: {
@@ -134,6 +144,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          owner_user_id?: string | null
           title: string
         }
         Update: {
@@ -142,6 +153,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          owner_user_id?: string | null
           title?: string
         }
         Relationships: []
@@ -159,6 +171,7 @@ export type Database = {
           hidden_from_client: boolean
           id: string
           message: string | null
+          owner_user_id: string | null
           payment_method: string
           payment_type: string
           price: number
@@ -181,6 +194,7 @@ export type Database = {
           hidden_from_client?: boolean
           id?: string
           message?: string | null
+          owner_user_id?: string | null
           payment_method?: string
           payment_type?: string
           price: number
@@ -203,6 +217,7 @@ export type Database = {
           hidden_from_client?: boolean
           id?: string
           message?: string | null
+          owner_user_id?: string | null
           payment_method?: string
           payment_type?: string
           price?: number
@@ -229,6 +244,7 @@ export type Database = {
           created_at: string
           id: string
           notes: string | null
+          owner_user_id: string | null
           price: number
           updated_at: string
         }
@@ -237,6 +253,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          owner_user_id?: string | null
           price?: number
           updated_at?: string
         }
@@ -245,6 +262,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          owner_user_id?: string | null
           price?: number
           updated_at?: string
         }
@@ -257,6 +275,7 @@ export type Database = {
           due_date: string | null
           id: string
           notes: string | null
+          owner_user_id: string | null
           paid: boolean
           title: string
           updated_at: string
@@ -267,6 +286,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           notes?: string | null
+          owner_user_id?: string | null
           paid?: boolean
           title: string
           updated_at?: string
@@ -277,6 +297,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           notes?: string | null
+          owner_user_id?: string | null
           paid?: boolean
           title?: string
           updated_at?: string
