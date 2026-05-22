@@ -21,6 +21,7 @@ const AppsLogin = () => {
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -44,11 +45,33 @@ const AppsLogin = () => {
   };
   const onLogoLeave = () => setTilt({ x: 0, y: 0 });
 
+  // Password complexity checks (signup only)
+  const pwChecks = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    symbol: /[^A-Za-z0-9]/.test(password),
+  };
+  const pwScore = Object.values(pwChecks).filter(Boolean).length;
+  const pwStrong = pwScore === 5;
+  const pwMatch = password.length > 0 && password === confirmPassword;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast({ title: "Email and password required", variant: "destructive" });
       return;
+    }
+    if (mode === "signup") {
+      if (!pwStrong) {
+        toast({ title: "Password too weak", description: "Use 8+ chars with upper, lower, number, and symbol.", variant: "destructive" });
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast({ title: "Passwords do not match", variant: "destructive" });
+        return;
+      }
     }
     setLoading(true);
     try {
@@ -189,6 +212,52 @@ const AppsLogin = () => {
                 className="w-full border border-foreground/15 bg-background px-3.5 py-2.5 rounded-md text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
               />
             </div>
+            {mode === "signup" && (
+              <>
+                <div>
+                  <label className="block text-xs font-medium text-foreground/80 mb-1.5">Confirm password</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full border border-foreground/15 bg-background px-3.5 py-2.5 rounded-md text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+                  />
+                  {confirmPassword.length > 0 && !pwMatch && (
+                    <p className="mt-1.5 text-[11px] text-destructive">Passwords do not match</p>
+                  )}
+                </div>
+                {password.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex gap-1">
+                      {[1,2,3,4,5].map((i) => (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            i <= pwScore
+                              ? pwScore <= 2 ? "bg-destructive" : pwScore <= 4 ? "bg-brand/60" : "bg-brand"
+                              : "bg-foreground/10"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
+                      {[
+                        { ok: pwChecks.length, label: "8+ characters" },
+                        { ok: pwChecks.upper, label: "Uppercase letter" },
+                        { ok: pwChecks.lower, label: "Lowercase letter" },
+                        { ok: pwChecks.number, label: "Number" },
+                        { ok: pwChecks.symbol, label: "Symbol" },
+                      ].map((c) => (
+                        <li key={c.label} className={c.ok ? "text-foreground/80" : "text-muted-foreground/70"}>
+                          <span className="mr-1.5">{c.ok ? "✓" : "·"}</span>{c.label}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            )}
             <button
               type="submit"
               disabled={loading}
