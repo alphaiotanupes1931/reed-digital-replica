@@ -92,13 +92,7 @@ const AppsLogin = () => {
     <div className="min-h-screen bg-background font-apps flex flex-col">
       {/* Minimal top bar */}
       <div className="flex items-center justify-between px-6 md:px-10 py-6">
-        <Link to="/apps" className="flex items-center gap-2 group">
-          <span
-            className="inline-block w-6 h-6 bg-brand rounded-sm transition-transform group-hover:rotate-12"
-            style={{ boxShadow: "inset -2px -2px 0 rgba(0,0,0,0.15), 0 4px 12px hsl(var(--brand) / 0.3)" }}
-          />
-          <span className="text-sm font-semibold tracking-tight">RDG Apps</span>
-        </Link>
+        <div />
         <div className="text-xs text-muted-foreground">
           {mode === "login" ? "New to RDG? " : "Already have an account? "}
           <button
