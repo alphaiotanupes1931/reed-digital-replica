@@ -30,6 +30,7 @@ export type Database = {
           project_type: string | null
           scope_of_work: string | null
           sow_comments: Json
+          sow_hidden: boolean
           sow_status: string
         }
         Insert: {
@@ -47,6 +48,7 @@ export type Database = {
           project_type?: string | null
           scope_of_work?: string | null
           sow_comments?: Json
+          sow_hidden?: boolean
           sow_status?: string
         }
         Update: {
@@ -64,6 +66,7 @@ export type Database = {
           project_type?: string | null
           scope_of_work?: string | null
           sow_comments?: Json
+          sow_hidden?: boolean
           sow_status?: string
         }
         Relationships: []
