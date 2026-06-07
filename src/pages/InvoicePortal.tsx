@@ -1077,10 +1077,10 @@ const InvoicePortal = () => {
                     return (
                       <div className="border-2 border-foreground p-6 md:p-8 mt-8 bg-background">
                         <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                          Monthly Maintenance
+                          Ongoing Service
                         </p>
                         <h2 className="text-2xl font-mono font-bold text-foreground tracking-tight mb-2">
-                          {plan.label}
+                          Monthly Maintenance
                         </h2>
                         <p className="text-3xl font-mono font-bold text-foreground mb-1">
                           ${plan.price.toLocaleString()}<span className="text-sm text-muted-foreground">/mo</span>
