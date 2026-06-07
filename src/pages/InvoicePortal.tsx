@@ -295,7 +295,7 @@ const InvoiceDocument = ({
 }: {
   invoice: Invoice;
   client: Client;
-  onPay: (inv: Invoice, deposit: boolean) => void;
+  onPay: (inv: Invoice, deposit: boolean, includeMaintenance?: boolean) => void;
   payingId: string | null;
 }) => {
   const isPaid = invoice.status === "paid";
@@ -303,6 +303,8 @@ const InvoiceDocument = ({
   const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
   const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
   const [payMethod, setPayMethod] = useState<"stripe" | "zelle" | null>(null);
+  const maintPlan = resolveMaintenancePlan(client);
+  const [bundleMaint, setBundleMaint] = useState(false);
 
   // Parse payment methods (comma-separated: "stripe", "zelle", or "stripe,zelle")
   const methods = (invoice.payment_method || "stripe")
@@ -483,15 +485,37 @@ const InvoiceDocument = ({
                   </button>
                 )}
                 {(!invoice.deposit_required || invoice.deposit_paid) && (
-                  <button
-                    onClick={() => onPay(invoice, false)}
-                    disabled={payingId === invoice.id + "-once"}
-                    className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-                  >
-                    {payingId === invoice.id + "-once"
-                      ? "Processing..."
-                      : `Pay Once — $${remainingTotal.toLocaleString()}`}
-                  </button>
+                  <div className="w-full space-y-3">
+                    {maintPlan && (
+                      <label className="flex items-start gap-3 p-4 border-2 border-foreground/30 hover:border-foreground/60 cursor-pointer transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={bundleMaint}
+                          onChange={(e) => setBundleMaint(e.target.checked)}
+                          className="mt-1 w-4 h-4 accent-foreground"
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-mono font-bold text-foreground uppercase tracking-[0.1em]">
+                            Add Monthly Maintenance — ${maintPlan.price.toLocaleString()}/mo
+                          </p>
+                          <p className="text-xs font-mono text-foreground/70 mt-1 leading-relaxed">
+                            Subscribe in the same checkout. You'll only be charged the build fee today; the recurring maintenance charge begins on the 1st of next month and continues monthly until cancelled.
+                          </p>
+                        </div>
+                      </label>
+                    )}
+                    <button
+                      onClick={() => onPay(invoice, false, bundleMaint && !!maintPlan)}
+                      disabled={payingId === invoice.id + "-once"}
+                      className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+                    >
+                      {payingId === invoice.id + "-once"
+                        ? "Processing..."
+                        : bundleMaint && maintPlan
+                          ? `Pay $${remainingTotal.toLocaleString()} + Subscribe $${maintPlan.price.toLocaleString()}/mo`
+                          : `Pay Once — $${remainingTotal.toLocaleString()}`}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
