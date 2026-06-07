@@ -101,14 +101,14 @@ const resolveMaintenancePlan = (
   if (!v || v === "none") return null;
   if (v.startsWith("custom:")) {
     const m = v.match(/\|(\d+(?:\.\d+)?)/);
-    if (m) return { label: "Custom Plan", price: parseFloat(m[1]) };
+    if (m) return { label: "Website Maintenance Plan", price: parseFloat(m[1]) };
     return null;
   }
   const [cat, name] = v.split(":");
   for (const c of MAINTENANCE_PLAN_CATALOG) {
     if (c.category === cat) {
       const p = c.plans.find((pp) => pp.name === name);
-      if (p) return { label: `${c.categoryLabel} — ${p.name}`, price: p.price };
+      if (p) return { label: `Website Maintenance Plan`, price: p.price };
     }
   }
   return null;
