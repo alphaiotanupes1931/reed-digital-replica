@@ -1142,23 +1142,23 @@ const InvoicePortal = () => {
                     return (
                       <div className="border-2 border-foreground p-6 md:p-8 mt-8 bg-background">
                         <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                          Ongoing Service
+                          Optional — Zelle Clients Only
                         </p>
                         <h2 className="text-2xl font-mono font-bold text-foreground tracking-tight mb-2">
-                          Monthly Maintenance
+                          Enroll in Automatic Monthly Payments
                         </h2>
                         <p className="text-3xl font-mono font-bold text-foreground mb-1">
                           ${plan.price.toLocaleString()}<span className="text-sm text-muted-foreground">/mo</span>
                         </p>
-                        <p className="text-xs font-mono text-muted-foreground italic mb-5">
-                          Recurring monthly subscription. First charge on {startLabel}. Cancel anytime.
+                        <p className="text-xs font-mono text-muted-foreground leading-relaxed mb-5 max-w-xl">
+                          If you paid your invoice via Zelle and don't want to remember to send the monthly maintenance fee each month, you can use this link to enroll in automatic card payments. Your first charge will be on {startLabel}, and you can cancel anytime. If you'd rather keep paying via Zelle each month, you can ignore this section.
                         </p>
                         <button
                           onClick={handleSubscribeMaintenance}
                           disabled={subscribingMaint}
                           className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
                         >
-                          {subscribingMaint ? "Processing..." : `Subscribe — $${plan.price.toLocaleString()}/mo`}
+                          {subscribingMaint ? "Processing..." : `Enroll in Auto-Pay — $${plan.price.toLocaleString()}/mo`}
                         </button>
                       </div>
                     );
