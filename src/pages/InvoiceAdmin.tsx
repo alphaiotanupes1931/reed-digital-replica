@@ -52,6 +52,7 @@ interface Client {
   project_maintenance_cost: string | null;
   project_estimated_total: string | null;
   maintenance_plan: string | null;
+  sow_hidden?: boolean;
   created_at: string;
 }
 

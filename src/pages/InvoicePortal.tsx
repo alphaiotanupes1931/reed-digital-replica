@@ -35,6 +35,7 @@ interface Client {
   project_maintenance_cost: string | null;
   project_estimated_total: string | null;
   maintenance_plan: string | null;
+  sow_hidden?: boolean;
 }
 
 interface Deliverable {
@@ -983,7 +984,7 @@ const InvoicePortal = () => {
                 )}
 
                 {/* Scope of Work + Review */}
-                {client.scope_of_work && client.scope_of_work.trim().length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(client.scope_of_work.trim()) ? (
+                {client.sow_hidden ? null : client.scope_of_work && client.scope_of_work.trim().length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(client.scope_of_work.trim()) ? (
                   <SowReview client={client} onChange={refreshClient} />
                 ) : (
                   <div className="mt-10 border-2 border-dashed border-border p-6 md:p-10 bg-background text-center">
