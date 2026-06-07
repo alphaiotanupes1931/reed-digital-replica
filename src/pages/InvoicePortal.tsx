@@ -903,6 +903,32 @@ const InvoicePortal = () => {
   };
 
   const [subscribingMaint, setSubscribingMaint] = useState(false);
+  const [showAutoPay, setShowAutoPay] = useState(false);
+  const [showCustomPay, setShowCustomPay] = useState(false);
+  const [customAmount, setCustomAmount] = useState("");
+  const [customNote, setCustomNote] = useState("");
+  const [customPaying, setCustomPaying] = useState(false);
+
+  const handleCustomPay = async () => {
+    if (!client) return;
+    const amt = Number(customAmount);
+    if (!amt || amt <= 0) {
+      toast({ title: "Enter a valid amount", variant: "destructive" });
+      return;
+    }
+    setCustomPaying(true);
+    try {
+      const res = await supabase.functions.invoke("create-custom-payment", {
+        body: { client_id: client.id, amount: amt, note: customNote },
+      });
+      if (res.error) throw res.error;
+      if (res.data?.url) window.location.href = res.data.url;
+    } catch (err: any) {
+      toast({ title: "Payment error", description: err.message, variant: "destructive" });
+      setCustomPaying(false);
+    }
+  };
+
   const handleSubscribeMaintenance = async () => {
     if (!client) return;
     const plan = resolveMaintenancePlan(client);
