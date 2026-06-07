@@ -986,7 +986,7 @@ const InvoicePortal = () => {
                 <WelcomeBlock client={client} />
 
                 {/* Project Summary */}
-                {(client.project_type || client.project_build_cost || client.project_maintenance_cost || client.project_estimated_total) && (
+                {!client.sow_hidden && (client.project_type || client.project_build_cost || client.project_maintenance_cost || client.project_estimated_total) && (
                   <div className="mt-8 border-2 border-foreground p-6 md:p-8 bg-background">
                     <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
                       Your Project
