@@ -1082,6 +1082,39 @@ const InvoicePortal = () => {
                     />
                   ))}
 
+                  {/* Maintenance Plan Subscription */}
+                  {(() => {
+                    const plan = resolveMaintenancePlan(client);
+                    if (!plan) return null;
+                    // First-of-next-month label
+                    const now = new Date();
+                    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                    const startLabel = nextMonth.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+                    return (
+                      <div className="border-2 border-foreground p-6 md:p-8 mt-8 bg-background">
+                        <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
+                          Monthly Maintenance
+                        </p>
+                        <h2 className="text-2xl font-mono font-bold text-foreground tracking-tight mb-2">
+                          {plan.label}
+                        </h2>
+                        <p className="text-3xl font-mono font-bold text-foreground mb-1">
+                          ${plan.price.toLocaleString()}<span className="text-sm text-muted-foreground">/mo</span>
+                        </p>
+                        <p className="text-xs font-mono text-muted-foreground italic mb-5">
+                          Recurring monthly subscription. First charge on {startLabel}. Cancel anytime.
+                        </p>
+                        <button
+                          onClick={handleSubscribeMaintenance}
+                          disabled={subscribingMaint}
+                          className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
+                        >
+                          {subscribingMaint ? "Processing..." : `Subscribe — $${plan.price.toLocaleString()}/mo`}
+                        </button>
+                      </div>
+                    );
+                  })()}
+
                   {/* Project Deliverables — separate section */}
                   {invoices.some(inv => inv.status === "paid") && (
                     <div className="border-2 border-foreground p-6 md:p-8 mt-8">
