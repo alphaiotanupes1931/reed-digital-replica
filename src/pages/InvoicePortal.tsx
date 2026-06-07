@@ -295,7 +295,7 @@ const InvoiceDocument = ({
 }: {
   invoice: Invoice;
   client: Client;
-  onPay: (inv: Invoice, deposit: boolean, paymentType?: "one_time" | "subscription") => void;
+  onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
 }) => {
   const isPaid = invoice.status === "paid";
