@@ -544,6 +544,11 @@ const InvoiceDocument = ({
                 <p className="text-xs font-mono text-foreground/70 leading-relaxed">
                   Open your banking app, search for Zelle, and send <span className="font-bold text-foreground">${remainingTotal.toLocaleString()}</span> to the email above. Include your company name in the memo. Your invoice will be marked paid within 1–2 business days.
                 </p>
+                {maintPlan && (
+                  <p className="text-xs font-mono text-destructive leading-relaxed border-t border-foreground/20 pt-3 mt-2">
+                    <span className="font-bold">Important:</span> You are responsible for sending the monthly maintenance fee of <span className="font-bold">${maintPlan.price.toLocaleString()}</span> every month via Zelle. It will not be charged automatically.
+                  </p>
+                )}
               </div>
               <div className="flex flex-wrap gap-3 pt-2">
                 <a
