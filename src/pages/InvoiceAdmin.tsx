@@ -52,6 +52,7 @@ interface Client {
   project_maintenance_cost: string | null;
   project_estimated_total: string | null;
   maintenance_plan: string | null;
+  sow_hidden?: boolean;
   created_at: string;
 }
 
@@ -609,6 +610,37 @@ const InvoiceAdmin = () => {
 
             {/* SOW TAB */}
             <TabsContent value="sow" className="mt-8 space-y-10">
+              {/* Hide SOW from client toggle */}
+              {selectedClientId && (
+                <div className={`border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${selectedClient?.sow_hidden ? "border-destructive/50 bg-destructive/5" : "border-border"}`}>
+                  <div>
+                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">SOW Visibility</p>
+                    <p className="text-sm font-mono font-bold text-foreground">
+                      {selectedClient?.sow_hidden ? "SOW hidden — client sees only invoices" : "SOW shown in client portal"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (!selectedClientId) return;
+                      const next = !selectedClient?.sow_hidden;
+                      try {
+                        const res = await supabase.functions.invoke("invoice-admin", {
+                          body: { action: "set_sow_hidden", client_id: selectedClientId, sow_hidden: next, password: ADMIN_PASSWORD },
+                        });
+                        if (res.error) throw res.error;
+                        toast({ title: next ? "SOW hidden from client" : "SOW visible to client" });
+                        fetchData();
+                      } catch (err: any) {
+                        toast({ title: "Error", description: err.message, variant: "destructive" });
+                      }
+                    }}
+                    className="text-xs font-mono uppercase tracking-[0.15em] border border-border px-4 py-2 hover:border-primary hover:text-primary transition-colors"
+                  >
+                    {selectedClient?.sow_hidden ? "Show SOW to Client" : "Hide SOW from Client"}
+                  </button>
+                </div>
+              )}
+
               {/* SOW Readiness indicator */}
               {(() => {
                 const t = (sowText || "").trim();
