@@ -23,10 +23,17 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { invoice_id, pay_deposit, payment_type } = await req.json();
+    const {
+      invoice_id,
+      pay_deposit,
+      payment_type,
+      include_maintenance,
+      maintenance_price,
+      maintenance_label,
+    } = await req.json();
     if (!invoice_id) throw new Error("invoice_id is required");
     const mode: "payment" | "subscription" =
-      payment_type === "subscription" ? "subscription" : "payment";
+      payment_type === "subscription" || include_maintenance ? "subscription" : "payment";
 
     // Get invoice with client info
     const { data: invoice, error: invError } = await supabase
@@ -65,39 +72,88 @@ serve(async (req) => {
 
     // Subscription mode disallows deposit-only payments and always charges full total monthly
     const isSubscription = mode === "subscription";
-    const finalUnitAmount = isSubscription
+    const bundled = !!include_maintenance && !pay_deposit;
+    const finalUnitAmount = isSubscription && !bundled
       ? Math.round(addFee(invoice.price) * 100)
       : Math.round(paymentAmount * 100);
-    const finalName = isSubscription
+    const finalName = isSubscription && !bundled
       ? `${invoice.service} (Monthly) - ${client.company_name}`
       : `${description} - ${client.company_name}`;
+
+    // Build line items
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: finalName,
+            description:
+              isSubscription && !bundled
+                ? `Recurring monthly charge`
+                : `Invoice due ${invoice.due_date}`,
+          },
+          unit_amount: finalUnitAmount,
+          ...(isSubscription && !bundled
+            ? { recurring: { interval: "month" as const } }
+            : {}),
+        },
+        quantity: 1,
+      },
+    ];
+
+    // Bundle monthly maintenance subscription, starting next month
+    let billingCycleAnchor: number | undefined;
+    if (bundled) {
+      const monthly = Number(maintenance_price);
+      if (!monthly || monthly <= 0) throw new Error("Invalid maintenance_price");
+      const monthlyTotal = addFee(monthly);
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: `${maintenance_label || "Monthly Maintenance"} - ${client.company_name}`,
+            description: "Recurring monthly website maintenance — first charge on the 1st of next month",
+          },
+          unit_amount: Math.round(monthlyTotal * 100),
+          recurring: { interval: "month" as const },
+        },
+        quantity: 1,
+      });
+      const now = new Date();
+      billingCycleAnchor = Math.floor(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0) / 1000
+      );
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       customer_email: client.email,
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: finalName,
-              description: isSubscription
-                ? `Recurring monthly charge`
-                : `Invoice due ${invoice.due_date}`,
-            },
-            unit_amount: finalUnitAmount,
-            ...(isSubscription ? { recurring: { interval: "month" as const } } : {}),
-          },
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       mode,
+      ...(bundled && billingCycleAnchor
+        ? {
+            subscription_data: {
+              billing_cycle_anchor: billingCycleAnchor,
+              proration_behavior: "none" as const,
+              metadata: {
+                client_id: client.id,
+                plan_label: maintenance_label || "Monthly Maintenance",
+                monthly_base_price: String(maintenance_price),
+                type: "maintenance_subscription_bundled",
+              },
+            },
+          }
+        : {}),
       success_url: `${origin}/portal/thank-you`,
       cancel_url: `${origin}/portal?payment=cancelled`,
       metadata: {
         invoice_id: invoice.id,
         is_deposit: pay_deposit ? "true" : "false",
-        payment_type: isSubscription ? "subscription" : "one_time",
+        payment_type: isSubscription
+          ? bundled
+            ? "bundled_build_plus_subscription"
+            : "subscription"
+          : "one_time",
       },
     });
 
