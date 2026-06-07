@@ -295,7 +295,7 @@ const InvoiceDocument = ({
 }: {
   invoice: Invoice;
   client: Client;
-  onPay: (inv: Invoice, deposit: boolean, paymentType?: "one_time" | "subscription") => void;
+  onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
 }) => {
   const isPaid = invoice.status === "paid";
@@ -451,26 +451,15 @@ const InvoiceDocument = ({
                   </button>
                 )}
                 {(!invoice.deposit_required || invoice.deposit_paid) && (
-                  <>
-                    <button
-                      onClick={() => onPay(invoice, false, "one_time")}
-                      disabled={payingId === invoice.id + "-once"}
-                      className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-                    >
-                      {payingId === invoice.id + "-once"
-                        ? "Processing..."
-                        : `Pay Once — $${remainingTotal.toLocaleString()}`}
-                    </button>
-                    <button
-                      onClick={() => onPay(invoice, false, "subscription")}
-                      disabled={payingId === invoice.id + "-sub"}
-                      className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-                    >
-                      {payingId === invoice.id + "-sub"
-                        ? "Processing..."
-                        : `Subscribe Monthly — $${totalPrice.toLocaleString()}/mo`}
-                    </button>
-                  </>
+                  <button
+                    onClick={() => onPay(invoice, false)}
+                    disabled={payingId === invoice.id + "-once"}
+                    className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
+                  >
+                    {payingId === invoice.id + "-once"
+                      ? "Processing..."
+                      : `Pay Once — $${remainingTotal.toLocaleString()}`}
+                  </button>
                 )}
               </div>
             </div>
@@ -829,20 +818,15 @@ const InvoicePortal = () => {
   const handlePay = async (
     invoice: Invoice,
     payDeposit: boolean,
-    paymentType: "one_time" | "subscription" = "one_time"
   ) => {
-    const suffix = payDeposit
-      ? "-dep"
-      : paymentType === "subscription"
-      ? "-sub"
-      : "-once";
+    const suffix = payDeposit ? "-dep" : "-once";
     setPayingId(invoice.id + suffix);
     try {
       const res = await supabase.functions.invoke("create-checkout", {
         body: {
           invoice_id: invoice.id,
           pay_deposit: payDeposit,
-          payment_type: paymentType,
+          payment_type: "one_time",
         },
       });
       if (res.error) throw res.error;
