@@ -302,6 +302,7 @@ const InvoiceDocument = ({
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
   const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
   const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
+  const [payMethod, setPayMethod] = useState<"stripe" | "zelle" | null>(null);
 
   // Parse payment methods (comma-separated: "stripe", "zelle", or "stripe,zelle")
   const methods = (invoice.payment_method || "stripe")
@@ -433,9 +434,40 @@ const InvoiceDocument = ({
       {/* Actions */}
       {!isPaid && (
         <div className="p-6 md:p-8 space-y-4">
-          {allowStripe && (
+          {/* Payment method selector */}
+          {allowStripe && allowZelle && payMethod === null && (
             <div className="space-y-3">
-              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Pay with Card</p>
+              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Choose Payment Method</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={() => setPayMethod("stripe")}
+                  className="h-14 px-6 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors"
+                >
+                  Pay with Card
+                </button>
+                <button
+                  onClick={() => setPayMethod("zelle")}
+                  className="h-14 px-6 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors"
+                >
+                  Pay with Zelle
+                </button>
+              </div>
+            </div>
+          )}
+
+          {allowStripe && (!allowZelle || payMethod === "stripe") && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Pay with Card</p>
+                {allowZelle && (
+                  <button
+                    onClick={() => setPayMethod(null)}
+                    className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground underline underline-offset-4"
+                  >
+                    Change
+                  </button>
+                )}
+              </div>
               <div className="flex flex-wrap gap-3">
                 {depositPending && (
                   <button
@@ -465,20 +497,19 @@ const InvoiceDocument = ({
             </div>
           )}
 
-          {allowStripe && allowZelle && (
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-foreground/20" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-background px-3 text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground">Or</span>
-              </div>
-            </div>
-          )}
-
-          {allowZelle && (
+          {allowZelle && (!allowStripe || payMethod === "zelle") && (
             <div className="space-y-3">
-              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em] mb-2">Payment Instructions</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Pay with Zelle</p>
+                {allowStripe && (
+                  <button
+                    onClick={() => setPayMethod(null)}
+                    className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground underline underline-offset-4"
+                  >
+                    Change
+                  </button>
+                )}
+              </div>
               <div className="bg-foreground/5 border-2 border-foreground/30 p-5 space-y-3">
                 <p className="text-sm font-mono text-foreground leading-relaxed">
                   Please send payment via <span className="font-bold">Zelle</span> to:
