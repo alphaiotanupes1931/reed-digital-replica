@@ -1157,38 +1157,98 @@ const InvoicePortal = () => {
                     />
                   ))}
 
-                  {/* Maintenance Plan Subscription */}
+                  {/* Collapsible: Enroll in auto-pay (Zelle clients) */}
                   {(() => {
                     const plan = resolveMaintenancePlan(client);
                     if (!plan) return null;
-                    // First-of-next-month label
                     const now = new Date();
                     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
                     const startLabel = nextMonth.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
                     return (
-                      <div className="border-2 border-foreground p-6 md:p-8 mt-8 bg-background">
-                        <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                          Optional — Zelle Clients Only
-                        </p>
-                        <h2 className="text-2xl font-mono font-bold text-foreground tracking-tight mb-2">
-                          Enroll in Automatic Monthly Payments
-                        </h2>
-                        <p className="text-3xl font-mono font-bold text-foreground mb-1">
-                          ${plan.price.toLocaleString()}<span className="text-sm text-muted-foreground">/mo</span>
-                        </p>
-                        <p className="text-xs font-mono text-muted-foreground leading-relaxed mb-5 max-w-xl">
-                          If you paid your invoice via Zelle and don't want to remember to send the monthly maintenance fee each month, you can use this link to enroll in automatic card payments. Your first charge will be on {startLabel}, and you can cancel anytime. If you'd rather keep paying via Zelle each month, you can ignore this section.
-                        </p>
+                      <div className="border-2 border-foreground mt-8 bg-background">
                         <button
-                          onClick={handleSubscribeMaintenance}
-                          disabled={subscribingMaint}
-                          className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
+                          onClick={() => setShowAutoPay(v => !v)}
+                          className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
                         >
-                          {subscribingMaint ? "Processing..." : `Enroll in Auto-Pay — $${plan.price.toLocaleString()}/mo`}
+                          <span className="text-sm font-mono text-foreground uppercase tracking-[0.15em]">
+                            Paid via Zelle? Enroll in automatic monthly payments
+                          </span>
+                          <span className="text-lg font-mono text-primary shrink-0">{showAutoPay ? "−" : "+"}</span>
                         </button>
+                        {showAutoPay && (
+                          <div className="border-t-2 border-foreground p-6 md:p-8">
+                            <p className="text-3xl font-mono font-bold text-foreground mb-1">
+                              ${plan.price.toLocaleString()}<span className="text-sm text-muted-foreground">/mo</span>
+                            </p>
+                            <p className="text-xs font-mono text-muted-foreground leading-relaxed mb-5 max-w-xl">
+                              Skip remembering to send the monthly maintenance fee. Enroll your card and we'll charge it automatically every month. First charge on {startLabel}. Cancel anytime.
+                            </p>
+                            <button
+                              onClick={handleSubscribeMaintenance}
+                              disabled={subscribingMaint}
+                              className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
+                            >
+                              {subscribingMaint ? "Processing..." : `Enroll in Auto-Pay — $${plan.price.toLocaleString()}/mo`}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     );
                   })()}
+
+                  {/* Collapsible: Custom one-off payment */}
+                  <div className="border-2 border-foreground mt-4 bg-background">
+                    <button
+                      onClick={() => setShowCustomPay(v => !v)}
+                      className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
+                    >
+                      <span className="text-sm font-mono text-foreground uppercase tracking-[0.15em]">
+                        Looking to make another payment? Click here
+                      </span>
+                      <span className="text-lg font-mono text-primary shrink-0">{showCustomPay ? "−" : "+"}</span>
+                    </button>
+                    {showCustomPay && (
+                      <div className="border-t-2 border-foreground p-6 md:p-8 space-y-4">
+                        <p className="text-xs font-mono text-muted-foreground leading-relaxed max-w-xl">
+                          Pay any custom amount by card. A 2.9% + $1.30 processing fee will be added at checkout.
+                        </p>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                            Amount (USD)
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            step="0.01"
+                            value={customAmount}
+                            onChange={(e) => setCustomAmount(e.target.value)}
+                            placeholder="0.00"
+                            className="w-full bg-transparent border-2 border-border focus:border-foreground p-3 font-mono text-lg text-foreground focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                            Note (optional)
+                          </label>
+                          <input
+                            type="text"
+                            maxLength={200}
+                            value={customNote}
+                            onChange={(e) => setCustomNote(e.target.value)}
+                            placeholder="What is this payment for?"
+                            className="w-full bg-transparent border-2 border-border focus:border-foreground p-3 font-mono text-sm text-foreground focus:outline-none"
+                          />
+                        </div>
+                        <button
+                          onClick={handleCustomPay}
+                          disabled={customPaying || !customAmount}
+                          className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
+                        >
+                          {customPaying ? "Processing..." : "Pay with Card"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Project Deliverables — separate section */}
                   {invoices.some(inv => inv.status === "paid") && (
