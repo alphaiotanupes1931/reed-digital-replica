@@ -101,7 +101,7 @@ const resolveMaintenancePlan = (
   if (!v || v === "none") return null;
   if (v.startsWith("custom:")) {
     const m = v.match(/\|(\d+(?:\.\d+)?)/);
-    if (m) return { label: "Custom Plan", price: parseFloat(m[1]) };
+    if (m) return { label: "Website Maintenance Plan", price: parseFloat(m[1]) };
     return null;
   }
   const [cat, name] = v.split(":");
