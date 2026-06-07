@@ -853,6 +853,31 @@ const InvoicePortal = () => {
     }
   };
 
+  const [subscribingMaint, setSubscribingMaint] = useState(false);
+  const handleSubscribeMaintenance = async () => {
+    if (!client) return;
+    const plan = resolveMaintenancePlan(client);
+    if (!plan) {
+      toast({ title: "No maintenance plan selected", variant: "destructive" });
+      return;
+    }
+    setSubscribingMaint(true);
+    try {
+      const res = await supabase.functions.invoke("create-maintenance-subscription", {
+        body: {
+          client_id: client.id,
+          monthly_price: plan.price,
+          plan_label: plan.label,
+        },
+      });
+      if (res.error) throw res.error;
+      if (res.data?.url) window.location.href = res.data.url;
+    } catch (err: any) {
+      toast({ title: "Subscription error", description: err.message, variant: "destructive" });
+      setSubscribingMaint(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Faded background logo */}
