@@ -252,6 +252,18 @@ serve(async (req) => {
       });
     }
 
+    if (action === "set_sow_hidden") {
+      const { client_id, sow_hidden } = data;
+      const { error } = await supabase
+        .from("clients")
+        .update({ sow_hidden: !!sow_hidden })
+        .eq("id", client_id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "delete_invoice") {
       const { invoice_id } = data;
       const { error } = await supabase
