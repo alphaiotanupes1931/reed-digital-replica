@@ -44,13 +44,17 @@ serve(async (req) => {
             .eq("id", invoiceId);
         } else {
           // Full payment or remaining balance
+          const hasSubscription =
+            paymentType === "subscription" ||
+            paymentType === "bundled_build_plus_subscription";
           await supabase
             .from("invoices")
             .update({
               status: "paid",
               stripe_payment_intent_id: session.payment_intent as string,
-              stripe_subscription_id:
-                paymentType === "subscription" ? (session.subscription as string) : null,
+              stripe_subscription_id: hasSubscription
+                ? (session.subscription as string)
+                : null,
               payment_type: paymentType,
             })
             .eq("id", invoiceId);
