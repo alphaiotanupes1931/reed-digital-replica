@@ -873,15 +873,20 @@ const InvoicePortal = () => {
   const handlePay = async (
     invoice: Invoice,
     payDeposit: boolean,
+    includeMaintenance: boolean = false,
   ) => {
     const suffix = payDeposit ? "-dep" : "-once";
     setPayingId(invoice.id + suffix);
     try {
+      const plan = includeMaintenance && client ? resolveMaintenancePlan(client) : null;
       const res = await supabase.functions.invoke("create-checkout", {
         body: {
           invoice_id: invoice.id,
           pay_deposit: payDeposit,
           payment_type: "one_time",
+          include_maintenance: !!plan,
+          maintenance_price: plan?.price,
+          maintenance_label: plan?.label,
         },
       });
       if (res.error) throw res.error;
