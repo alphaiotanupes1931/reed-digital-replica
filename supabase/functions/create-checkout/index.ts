@@ -101,8 +101,8 @@ serve(async (req) => {
       },
     ];
 
-    // Bundle monthly maintenance subscription, starting next month
-    let billingCycleAnchor: number | undefined;
+    // Bundle monthly maintenance subscription, starting next month (use trial_end)
+    let trialEnd: number | undefined;
     if (bundled) {
       const monthly = Number(maintenance_price);
       if (!monthly || monthly <= 0) throw new Error("Invalid maintenance_price");
@@ -120,7 +120,7 @@ serve(async (req) => {
         quantity: 1,
       });
       const now = new Date();
-      billingCycleAnchor = Math.floor(
+      trialEnd = Math.floor(
         Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0) / 1000
       );
     }
@@ -130,11 +130,10 @@ serve(async (req) => {
       customer_email: client.email,
       line_items: lineItems,
       mode,
-      ...(bundled && billingCycleAnchor
+      ...(bundled && trialEnd
         ? {
             subscription_data: {
-              billing_cycle_anchor: billingCycleAnchor,
-              proration_behavior: "none" as const,
+              trial_end: trialEnd,
               metadata: {
                 client_id: client.id,
                 plan_label: maintenance_label || "Monthly Maintenance",
@@ -169,6 +168,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: any) {
+    console.error("create-checkout error:", error?.message, error?.stack);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
