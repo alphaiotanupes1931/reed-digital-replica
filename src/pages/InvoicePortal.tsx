@@ -108,7 +108,7 @@ const resolveMaintenancePlan = (
   for (const c of MAINTENANCE_PLAN_CATALOG) {
     if (c.category === cat) {
       const p = c.plans.find((pp) => pp.name === name);
-      if (p) return { label: `${c.categoryLabel} — ${p.name}`, price: p.price };
+      if (p) return { label: `Website Maintenance Plan`, price: p.price };
     }
   }
   return null;
