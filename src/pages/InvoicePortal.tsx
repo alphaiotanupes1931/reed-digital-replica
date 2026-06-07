@@ -1043,7 +1043,7 @@ const InvoicePortal = () => {
                 )}
 
                 {/* Phase Progress Tracker */}
-                {client.phases && client.phases.length > 0 && (
+                {!client.sow_hidden && client.phases && client.phases.length > 0 && (
                   <PhaseTracker phases={client.phases} />
                 )}
               </div>
