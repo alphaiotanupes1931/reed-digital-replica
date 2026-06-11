@@ -380,10 +380,23 @@ const BillsTracker = () => {
 
           {/* Summary */}
           <div className="border-2 border-brand bg-brand/5 p-6 mb-4">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
+            <div className="flex items-baseline justify-between gap-4 flex-wrap">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
+              <Button
+                type="button"
+                variant={includeMaintenance ? "default" : "outline"}
+                size="sm"
+                onClick={toggleMaintenance}
+              >
+                {includeMaintenance ? "Including Maintenance" : "Exclude Maintenance"}
+              </Button>
+            </div>
             <p className="text-4xl font-bold mt-2 text-brand">{fmt(grandIncome * 12)}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              {fmt(grandIncome)}/mo × 12 — retainers{includeW2 ? " + W2 take-home" : ""}
+              {fmt(grandIncome)}/mo × 12 — {includeMaintenance ? "maintenance" : ""}
+              {includeMaintenance && totalExtra > 0 ? " + " : ""}
+              {totalExtra > 0 ? "manual" : ""}
+              {includeW2 ? " + W2 take-home" : ""}
               {totalW2 > 0 && <> · Take-home salary: <span className="font-bold text-foreground">{fmt(totalW2)}/mo</span> ({fmt(totalW2 * 12)}/yr)</>}
             </p>
           </div>
