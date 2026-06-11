@@ -549,8 +549,18 @@ const BillsTracker = () => {
 
           {/* Income */}
           <div>
-            <h2 className="text-lg font-bold tracking-tight mb-2">Maintenance Income</h2>
-            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below.</p>
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              <h2 className="text-lg font-bold tracking-tight">Maintenance Income</h2>
+              <Button
+                type="button"
+                variant={includeMaintenance ? "default" : "outline"}
+                size="sm"
+                onClick={toggleMaintenance}
+              >
+                {includeMaintenance ? "Including in Totals" : "Exclude from Totals"}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below. Toggle above to include or exclude from your combined income.</p>
 
             <div
               ref={extraFormRef}
@@ -575,7 +585,7 @@ const BillsTracker = () => {
             ) : incomeRows.length === 0 && extraRows.length === 0 ? (
               <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No maintenance income yet.</p>
             ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+              <div className={`border-2 divide-y-2 divide-foreground ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {incomeRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4">
                     <div>
@@ -601,7 +611,9 @@ const BillsTracker = () => {
                   </div>
                 ))}
                 <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">Total Income</p>
+                  <p className="font-bold text-sm uppercase tracking-widest">
+                    Total Income {includeMaintenance ? "" : "(excluded)"}
+                  </p>
                   <div />
                   <p className="font-bold text-sm">{fmt(totalIncome + totalExtra)}</p>
                 </div>
