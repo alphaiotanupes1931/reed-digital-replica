@@ -7,7 +7,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const HomeOfficeLogin = () => {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const HomeOfficeLogin = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("home-office-auth", {
-        body: { action: "login", username, password },
+        body: { action: "login", password },
       });
       if (error || data?.error) throw new Error(data?.error || "Login failed");
       sessionStorage.setItem("ho-token", data.token);
@@ -51,16 +50,6 @@ const HomeOfficeLogin = () => {
             onSubmit={handleLogin}
             className="border-2 border-foreground p-8 space-y-6"
           >
-            <div>
-              <label className="block text-xs uppercase tracking-widest mb-2">Username</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full border-2 border-foreground bg-background px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand"
-                required
-              />
-            </div>
             <div>
               <label className="block text-xs uppercase tracking-widest mb-2">Password</label>
               <input
