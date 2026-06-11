@@ -295,6 +295,148 @@ serve(async (req) => {
       });
     }
 
+    if (action === "set_deactivated") {
+      const { invoice_id, deactivated } = data;
+      if (!deactivated) {
+        // Re-activating: must not conflict with another active invoice on same client.
+        const { data: inv } = await supabase
+          .from("invoices")
+          .select("client_id")
+          .eq("id", invoice_id)
+          .maybeSingle();
+        if (!inv) throw new Error("Invoice not found");
+        const { data: conflict } = await supabase
+          .from("invoices")
+          .select("id")
+          .eq("client_id", inv.client_id)
+          .eq("deactivated", false)
+          .neq("id", invoice_id)
+          .limit(1);
+        if (conflict && conflict.length > 0) {
+          return new Response(
+            JSON.stringify({
+              error:
+                "This client already has another active invoice. Deactivate that one first to reactivate this invoice.",
+            }),
+            { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+      }
+      const { error } = await supabase
+        .from("invoices")
+        .update({ deactivated: !!deactivated })
+        .eq("id", invoice_id);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "get_payment_history") {
+      const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
+      if (!STRIPE_SECRET_KEY) throw new Error("Stripe not configured");
+      const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
+
+      const { client_id } = data;
+      // Pull all invoices for the client (including deactivated) for full history.
+      const { data: invs, error: invErr } = await supabase
+        .from("invoices")
+        .select("id, service, price, stripe_checkout_session_id, stripe_payment_intent_id, stripe_subscription_id, created_at")
+        .eq("client_id", client_id);
+      if (invErr) throw invErr;
+
+      const payments: Array<{
+        invoice_id: string | null;
+        service: string | null;
+        amount: number;
+        currency: string;
+        status: string;
+        date: string;
+        kind: "one_time" | "subscription" | "custom";
+        description?: string;
+      }> = [];
+
+      for (const inv of (invs || [])) {
+        // One-time / deposit checkout session
+        if (inv.stripe_checkout_session_id) {
+          try {
+            const session = await stripe.checkout.sessions.retrieve(inv.stripe_checkout_session_id);
+            if (session.payment_intent && session.payment_status === "paid") {
+              const pi = await stripe.paymentIntents.retrieve(session.payment_intent as string);
+              payments.push({
+                invoice_id: inv.id,
+                service: inv.service,
+                amount: (pi.amount_received || pi.amount) / 100,
+                currency: pi.currency.toUpperCase(),
+                status: pi.status,
+                date: new Date(pi.created * 1000).toISOString(),
+                kind: "one_time",
+              });
+            }
+          } catch (e) { console.error("session lookup failed", e); }
+        }
+        // Subscription invoices (monthly maintenance)
+        if (inv.stripe_subscription_id) {
+          try {
+            const list = await stripe.invoices.list({ subscription: inv.stripe_subscription_id, limit: 100 });
+            for (const sInv of list.data) {
+              if (sInv.status === "paid" && sInv.amount_paid > 0) {
+                payments.push({
+                  invoice_id: inv.id,
+                  service: inv.service,
+                  amount: sInv.amount_paid / 100,
+                  currency: (sInv.currency || "usd").toUpperCase(),
+                  status: "paid",
+                  date: new Date((sInv.status_transitions?.paid_at || sInv.created) * 1000).toISOString(),
+                  kind: "subscription",
+                  description: sInv.lines?.data?.[0]?.description || "Subscription payment",
+                });
+              }
+            }
+          } catch (e) { console.error("subscription lookup failed", e); }
+        }
+      }
+
+      // Also include custom one-off payments (Stripe sessions with metadata.client_id matching).
+      try {
+        // Search the latest 100 paid checkout sessions referencing this client via metadata.
+        const sessions = await stripe.checkout.sessions.list({ limit: 100 });
+        for (const s of sessions.data) {
+          if (s.metadata?.client_id === client_id && s.metadata?.payment_type === "custom_one_time" && s.payment_status === "paid") {
+            payments.push({
+              invoice_id: null,
+              service: s.metadata?.note || "Custom payment",
+              amount: (s.amount_total || 0) / 100,
+              currency: (s.currency || "usd").toUpperCase(),
+              status: "paid",
+              date: new Date(s.created * 1000).toISOString(),
+              kind: "custom",
+            });
+          }
+        }
+      } catch (e) { console.error("custom session list failed", e); }
+
+      payments.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+      return new Response(JSON.stringify({ payments, count: payments.length, total: payments.reduce((s, p) => s + p.amount, 0) }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "delete_invoice_legacy_dup") {
+      const { invoice_id } = data;
+      const { error } = await supabase
+        .from("invoices")
+        .delete()
+        .eq("id", invoice_id);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "update_invoice") {
       const { invoice_id, service, price, due_date, message, deposit_required, deposit_amount, deposit_due_date, payment_method } = data;
       const updates: Record<string, unknown> = {};
