@@ -55,6 +55,10 @@ const BillsTracker = () => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("rdg-include-w2") === "true";
   });
+  const [includeMaintenance, setIncludeMaintenance] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("rdg-include-maintenance") !== "false";
+  });
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -173,7 +177,7 @@ const BillsTracker = () => {
   const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
   const retainerIncome = totalIncome + totalExtra;
-  const grandIncome = retainerIncome + (includeW2 ? totalW2 : 0);
+  const grandIncome = (includeMaintenance ? totalIncome : 0) + totalExtra + (includeW2 ? totalW2 : 0);
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
   const sixFigPct = Math.min(100, Math.max(0, (retainerIncome / goalAmount) * 100));
@@ -183,6 +187,11 @@ const BillsTracker = () => {
     const next = !includeW2;
     setIncludeW2(next);
     localStorage.setItem("rdg-include-w2", String(next));
+  };
+  const toggleMaintenance = () => {
+    const next = !includeMaintenance;
+    setIncludeMaintenance(next);
+    localStorage.setItem("rdg-include-maintenance", String(next));
   };
 
   const handleExtraSubmit = async (e: React.FormEvent) => {
@@ -371,10 +380,23 @@ const BillsTracker = () => {
 
           {/* Summary */}
           <div className="border-2 border-brand bg-brand/5 p-6 mb-4">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
+            <div className="flex items-baseline justify-between gap-4 flex-wrap">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
+              <Button
+                type="button"
+                variant={includeMaintenance ? "default" : "outline"}
+                size="sm"
+                onClick={toggleMaintenance}
+              >
+                {includeMaintenance ? "Including Maintenance" : "Exclude Maintenance"}
+              </Button>
+            </div>
             <p className="text-4xl font-bold mt-2 text-brand">{fmt(grandIncome * 12)}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              {fmt(grandIncome)}/mo × 12 — retainers{includeW2 ? " + W2 take-home" : ""}
+              {fmt(grandIncome)}/mo × 12 — {includeMaintenance ? "maintenance" : ""}
+              {includeMaintenance && totalExtra > 0 ? " + " : ""}
+              {totalExtra > 0 ? "manual" : ""}
+              {includeW2 ? " + W2 take-home" : ""}
               {totalW2 > 0 && <> · Take-home salary: <span className="font-bold text-foreground">{fmt(totalW2)}/mo</span> ({fmt(totalW2 * 12)}/yr)</>}
             </p>
           </div>
@@ -527,8 +549,18 @@ const BillsTracker = () => {
 
           {/* Income */}
           <div>
-            <h2 className="text-lg font-bold tracking-tight mb-2">Maintenance Income</h2>
-            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below.</p>
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              <h2 className="text-lg font-bold tracking-tight">Maintenance Income</h2>
+              <Button
+                type="button"
+                variant={includeMaintenance ? "default" : "outline"}
+                size="sm"
+                onClick={toggleMaintenance}
+              >
+                {includeMaintenance ? "Including in Totals" : "Exclude from Totals"}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below. Toggle above to include or exclude from your combined income.</p>
 
             <div
               ref={extraFormRef}
@@ -553,7 +585,7 @@ const BillsTracker = () => {
             ) : incomeRows.length === 0 && extraRows.length === 0 ? (
               <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No maintenance income yet.</p>
             ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+              <div className={`border-2 divide-y-2 divide-foreground ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {incomeRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4">
                     <div>
@@ -579,7 +611,9 @@ const BillsTracker = () => {
                   </div>
                 ))}
                 <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">Total Income</p>
+                  <p className="font-bold text-sm uppercase tracking-widest">
+                    Total Income {includeMaintenance ? "" : "(excluded)"}
+                  </p>
                   <div />
                   <p className="font-bold text-sm">{fmt(totalIncome + totalExtra)}</p>
                 </div>
