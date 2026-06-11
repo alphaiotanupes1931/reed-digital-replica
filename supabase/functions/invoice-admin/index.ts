@@ -152,6 +152,23 @@ serve(async (req) => {
         if (Object.keys(upd).length) await supabase.from("clients").update(upd).eq("id", client.id);
       }
 
+      // Enforce: only one ACTIVE (non-deactivated) invoice per client at a time.
+      const { data: activeExisting } = await supabase
+        .from("invoices")
+        .select("id")
+        .eq("client_id", client.id)
+        .eq("deactivated", false)
+        .limit(1);
+      if (activeExisting && activeExisting.length > 0) {
+        return new Response(
+          JSON.stringify({
+            error:
+              "This client already has an active invoice. Deactivate it first before creating a new one.",
+          }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       const { error: invoiceError } = await supabase.from("invoices").insert({
         client_id: client.id,
         service,
