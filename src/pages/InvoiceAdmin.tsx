@@ -1093,6 +1093,9 @@ const InvoiceAdmin = () => {
                             {inv.hidden_from_client && (
                               <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-destructive/10 text-destructive border border-destructive/40">Hidden</span>
                             )}
+                            {inv.deactivated && (
+                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-foreground/10 text-foreground/70 border border-border">Deactivated</span>
+                            )}
                             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 border border-border px-2 py-0.5">
                               {(() => {
                                 const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
