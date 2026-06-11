@@ -1,0 +1,2 @@
+ALTER TABLE public.invoices ADD COLUMN IF NOT EXISTS deactivated boolean NOT NULL DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_invoices_client_active ON public.invoices (client_id) WHERE deactivated = false;

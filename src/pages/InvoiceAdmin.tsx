@@ -77,6 +77,7 @@ interface Invoice {
   deliverables: Deliverable[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
   hidden_from_client?: boolean;
+  deactivated?: boolean;
   clients?: Client;
 }
 
@@ -453,6 +454,64 @@ const InvoiceAdmin = () => {
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleToggleDeactivated = async (invoiceId: string, currentlyDeactivated: boolean) => {
+    const next = !currentlyDeactivated;
+    const label = next
+      ? "Deactivate this invoice? The client will no longer see it and their email will be free to receive a new active invoice."
+      : "Reactivate this invoice? It will become this client's active invoice again.";
+    if (!confirm(label)) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_deactivated", invoice_id: invoiceId, deactivated: next, password: ADMIN_PASSWORD },
+      });
+      // Edge function returns non-2xx for conflict; surface its error message.
+      if (res.error) {
+        const msg = (res.data as any)?.error || res.error.message || "Action blocked";
+        toast({ title: "Cannot reactivate", description: msg, variant: "destructive" });
+        return;
+      }
+      toast({ title: next ? "Invoice deactivated" : "Invoice reactivated" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  // Stripe payment history per client
+  const [paymentHistory, setPaymentHistory] = useState<Record<string, {
+    loading: boolean;
+    open: boolean;
+    payments?: Array<{ invoice_id: string | null; service: string | null; amount: number; currency: string; status: string; date: string; kind: string; description?: string }>;
+    count?: number;
+    total?: number;
+    error?: string;
+  }>>({});
+
+  const loadPaymentHistory = async (clientId: string) => {
+    setPaymentHistory((p) => ({ ...p, [clientId]: { ...(p[clientId] || {}), open: true, loading: true } }));
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "get_payment_history", client_id: clientId, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      const d = res.data as any;
+      setPaymentHistory((p) => ({ ...p, [clientId]: { open: true, loading: false, payments: d.payments, count: d.count, total: d.total } }));
+    } catch (err: any) {
+      setPaymentHistory((p) => ({ ...p, [clientId]: { open: true, loading: false, error: err.message } }));
+    }
+  };
+
+  const togglePaymentHistory = (clientId: string) => {
+    const cur = paymentHistory[clientId];
+    if (cur?.open) {
+      setPaymentHistory((p) => ({ ...p, [clientId]: { ...cur, open: false } }));
+    } else if (cur?.payments) {
+      setPaymentHistory((p) => ({ ...p, [clientId]: { ...cur, open: true } }));
+    } else {
+      loadPaymentHistory(clientId);
     }
   };
 
@@ -919,11 +978,59 @@ const InvoiceAdmin = () => {
 
             {/* INVOICES TAB */}
             <TabsContent value="invoices" className="mt-8">
-              <div className="flex justify-end mb-6">
+              <div className="flex justify-between items-center mb-6 gap-3 flex-wrap">
+                {selectedClient && (
+                  <button
+                    onClick={() => togglePaymentHistory(selectedClient.id)}
+                    className="text-xs font-mono uppercase tracking-[0.2em] border border-border h-9 px-4 hover:border-primary hover:text-primary"
+                  >
+                    {paymentHistory[selectedClient.id]?.open ? "Hide Payment History" : "Stripe Payment History"}
+                  </button>
+                )}
                 <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary flex items-center gap-2">
                   <Plus className="h-4 w-4" />New Invoice
                 </button>
               </div>
+
+              {selectedClient && paymentHistory[selectedClient.id]?.open && (
+                <div className="border border-border mb-8 p-6">
+                  <div className="flex items-baseline justify-between mb-4">
+                    <h3 className="text-sm font-mono uppercase tracking-[0.3em] text-foreground">Stripe Payment History</h3>
+                    {paymentHistory[selectedClient.id]?.count != null && (
+                      <p className="text-xs font-mono text-foreground/60">
+                        {paymentHistory[selectedClient.id]!.count} payment(s) · ${paymentHistory[selectedClient.id]!.total!.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
+                      </p>
+                    )}
+                  </div>
+                  {paymentHistory[selectedClient.id]?.loading ? (
+                    <p className="text-sm font-mono text-foreground/60">Loading from Stripe…</p>
+                  ) : paymentHistory[selectedClient.id]?.error ? (
+                    <p className="text-sm font-mono text-destructive">{paymentHistory[selectedClient.id]!.error}</p>
+                  ) : paymentHistory[selectedClient.id]?.payments?.length === 0 ? (
+                    <p className="text-sm font-mono text-foreground/60">No Stripe payments recorded for this client.</p>
+                  ) : (
+                    <div className="divide-y divide-border">
+                      {paymentHistory[selectedClient.id]!.payments!.map((p, idx) => (
+                        <div key={idx} className="py-3 flex items-center justify-between gap-4 flex-wrap">
+                          <div className="min-w-0">
+                            <p className="font-mono text-sm text-foreground truncate">{p.service || p.description || "Payment"}</p>
+                            <p className="font-mono text-[11px] text-foreground/60 uppercase tracking-[0.15em]">
+                              {new Date(p.date).toLocaleString()} · {p.kind.replace("_", " ")} · {p.status}
+                            </p>
+                          </div>
+                          <span className="font-mono font-bold text-foreground">${p.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-foreground/50">{p.currency}</span></span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => loadPaymentHistory(selectedClient.id)}
+                    className="mt-4 text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 hover:text-primary"
+                  >
+                    ↻ Refresh from Stripe
+                  </button>
+                </div>
+              )}
 
               <AnimatePresence>
                 {showInvoiceForm && (
@@ -1034,6 +1141,9 @@ const InvoiceAdmin = () => {
                             {inv.hidden_from_client && (
                               <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-destructive/10 text-destructive border border-destructive/40">Hidden</span>
                             )}
+                            {inv.deactivated && (
+                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-foreground/10 text-foreground/70 border border-border">Deactivated</span>
+                            )}
                             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 border border-border px-2 py-0.5">
                               {(() => {
                                 const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
@@ -1078,6 +1188,13 @@ const InvoiceAdmin = () => {
                               title={inv.hidden_from_client ? "Currently hidden from client portal — click to show" : "Currently visible to client — click to hide"}
                             >
                               {inv.hidden_from_client ? "Show to Client" : "Hide from Client"}
+                            </button>
+                            <button
+                              onClick={() => handleToggleDeactivated(inv.id, !!inv.deactivated)}
+                              className={`h-9 px-4 border text-xs font-mono uppercase tracking-[0.1em] ${inv.deactivated ? "border-primary text-primary hover:bg-primary/10" : "border-border hover:border-amber-500 hover:text-amber-500"}`}
+                              title={inv.deactivated ? "Reactivate this invoice (only allowed if no other active invoice exists for this client)" : "Deactivate this invoice — frees up the client email for a new invoice and hides this one from them"}
+                            >
+                              {inv.deactivated ? "Reactivate" : "Deactivate"}
                             </button>
                             <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]">{editingInvoiceId === inv.id ? "Cancel" : "Edit"}</button>
                             <button onClick={() => handleDelete(inv.id)} className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]">Remove</button>
