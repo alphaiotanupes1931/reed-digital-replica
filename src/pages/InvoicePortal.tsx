@@ -857,6 +857,7 @@ const InvoicePortal = () => {
       .from("invoices")
       .select("*")
       .eq("client_id", clientData.id)
+      .eq("deactivated", false)
       .in("status", ["approved", "sent", "paid"])
       .order("created_at", { ascending: false });
 
