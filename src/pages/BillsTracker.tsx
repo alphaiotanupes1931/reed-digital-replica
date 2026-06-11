@@ -55,6 +55,10 @@ const BillsTracker = () => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("rdg-include-w2") === "true";
   });
+  const [includeMaintenance, setIncludeMaintenance] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("rdg-include-maintenance") !== "false";
+  });
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -173,7 +177,7 @@ const BillsTracker = () => {
   const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
   const retainerIncome = totalIncome + totalExtra;
-  const grandIncome = retainerIncome + (includeW2 ? totalW2 : 0);
+  const grandIncome = (includeMaintenance ? totalIncome : 0) + totalExtra + (includeW2 ? totalW2 : 0);
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
   const sixFigPct = Math.min(100, Math.max(0, (retainerIncome / goalAmount) * 100));
@@ -183,6 +187,11 @@ const BillsTracker = () => {
     const next = !includeW2;
     setIncludeW2(next);
     localStorage.setItem("rdg-include-w2", String(next));
+  };
+  const toggleMaintenance = () => {
+    const next = !includeMaintenance;
+    setIncludeMaintenance(next);
+    localStorage.setItem("rdg-include-maintenance", String(next));
   };
 
   const handleExtraSubmit = async (e: React.FormEvent) => {
