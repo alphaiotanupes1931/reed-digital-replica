@@ -252,6 +252,7 @@ export type Database = {
         Row: {
           client_id: string
           created_at: string
+          deactivated: boolean
           deliverables: Json | null
           deposit_amount: number | null
           deposit_due_date: string | null
@@ -275,6 +276,7 @@ export type Database = {
         Insert: {
           client_id: string
           created_at?: string
+          deactivated?: boolean
           deliverables?: Json | null
           deposit_amount?: number | null
           deposit_due_date?: string | null
@@ -298,6 +300,7 @@ export type Database = {
         Update: {
           client_id?: string
           created_at?: string
+          deactivated?: boolean
           deliverables?: Json | null
           deposit_amount?: number | null
           deposit_due_date?: string | null
