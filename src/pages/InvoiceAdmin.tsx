@@ -1141,6 +1141,13 @@ const InvoiceAdmin = () => {
                             >
                               {inv.hidden_from_client ? "Show to Client" : "Hide from Client"}
                             </button>
+                            <button
+                              onClick={() => handleToggleDeactivated(inv.id, !!inv.deactivated)}
+                              className={`h-9 px-4 border text-xs font-mono uppercase tracking-[0.1em] ${inv.deactivated ? "border-primary text-primary hover:bg-primary/10" : "border-border hover:border-amber-500 hover:text-amber-500"}`}
+                              title={inv.deactivated ? "Reactivate this invoice (only allowed if no other active invoice exists for this client)" : "Deactivate this invoice — frees up the client email for a new invoice and hides this one from them"}
+                            >
+                              {inv.deactivated ? "Reactivate" : "Deactivate"}
+                            </button>
                             <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]">{editingInvoiceId === inv.id ? "Cancel" : "Edit"}</button>
                             <button onClick={() => handleDelete(inv.id)} className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]">Remove</button>
                           </div>
