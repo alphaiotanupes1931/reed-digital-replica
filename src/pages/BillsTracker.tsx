@@ -370,6 +370,14 @@ const BillsTracker = () => {
           </motion.div>
 
           {/* Summary */}
+          <div className="border-2 border-brand bg-brand/5 p-6 mb-4">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
+            <p className="text-4xl font-bold mt-2 text-brand">{fmt(grandIncome * 12)}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              {fmt(grandIncome)}/mo × 12 — retainers{includeW2 ? " + W2 take-home" : ""}
+              {totalW2 > 0 && <> · Take-home salary: <span className="font-bold text-foreground">{fmt(totalW2)}/mo</span> ({fmt(totalW2 * 12)}/yr)</>}
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
             <div className="border-2 border-foreground p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
@@ -593,7 +601,7 @@ const BillsTracker = () => {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mb-4">
-              Add W2 paychecks here. Toggle the button above to include or exclude this income from your monthly totals and goal progress.
+              Add W2 paychecks here. <span className="font-bold text-foreground">Only enter your take-home pay</span> (after taxes, insurance, and other deductions) — not gross. Toggle the button above to include or exclude this income from your monthly totals and goal progress.
             </p>
 
             <div
@@ -605,7 +613,7 @@ const BillsTracker = () => {
               </h3>
               <form onSubmit={handleW2Submit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Employer (e.g. Acme Corp)" value={w2Source} onChange={(e) => setW2Source(e.target.value)} required />
-                <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={w2Price} onChange={(e) => setW2Price(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Monthly take-home $" value={w2Price} onChange={(e) => setW2Price(e.target.value)} required />
                 <Input placeholder="Notes (optional)" value={w2Notes} onChange={(e) => setW2Notes(e.target.value)} />
                 <div className="flex gap-2">
                   <Button type="submit">{editingW2Id ? "Save" : "Add"}</Button>
