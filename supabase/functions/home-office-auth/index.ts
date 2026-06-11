@@ -7,8 +7,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ADMIN_USERNAME = "terell.reed";
-const ADMIN_PASSWORD = "shell0423";
+const ADMIN_PASSWORD = "admin123#";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -20,7 +19,7 @@ serve(async (req) => {
 
     // Auth check
     if (action === "login") {
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      if (password === ADMIN_PASSWORD) {
         return new Response(JSON.stringify({ success: true, token: "rdg-home-office-2024" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
