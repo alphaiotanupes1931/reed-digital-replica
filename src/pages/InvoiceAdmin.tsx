@@ -978,11 +978,59 @@ const InvoiceAdmin = () => {
 
             {/* INVOICES TAB */}
             <TabsContent value="invoices" className="mt-8">
-              <div className="flex justify-end mb-6">
+              <div className="flex justify-between items-center mb-6 gap-3 flex-wrap">
+                {selectedClient && (
+                  <button
+                    onClick={() => togglePaymentHistory(selectedClient.id)}
+                    className="text-xs font-mono uppercase tracking-[0.2em] border border-border h-9 px-4 hover:border-primary hover:text-primary"
+                  >
+                    {paymentHistory[selectedClient.id]?.open ? "Hide Payment History" : "Stripe Payment History"}
+                  </button>
+                )}
                 <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary flex items-center gap-2">
                   <Plus className="h-4 w-4" />New Invoice
                 </button>
               </div>
+
+              {selectedClient && paymentHistory[selectedClient.id]?.open && (
+                <div className="border border-border mb-8 p-6">
+                  <div className="flex items-baseline justify-between mb-4">
+                    <h3 className="text-sm font-mono uppercase tracking-[0.3em] text-foreground">Stripe Payment History</h3>
+                    {paymentHistory[selectedClient.id]?.count != null && (
+                      <p className="text-xs font-mono text-foreground/60">
+                        {paymentHistory[selectedClient.id]!.count} payment(s) · ${paymentHistory[selectedClient.id]!.total!.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
+                      </p>
+                    )}
+                  </div>
+                  {paymentHistory[selectedClient.id]?.loading ? (
+                    <p className="text-sm font-mono text-foreground/60">Loading from Stripe…</p>
+                  ) : paymentHistory[selectedClient.id]?.error ? (
+                    <p className="text-sm font-mono text-destructive">{paymentHistory[selectedClient.id]!.error}</p>
+                  ) : paymentHistory[selectedClient.id]?.payments?.length === 0 ? (
+                    <p className="text-sm font-mono text-foreground/60">No Stripe payments recorded for this client.</p>
+                  ) : (
+                    <div className="divide-y divide-border">
+                      {paymentHistory[selectedClient.id]!.payments!.map((p, idx) => (
+                        <div key={idx} className="py-3 flex items-center justify-between gap-4 flex-wrap">
+                          <div className="min-w-0">
+                            <p className="font-mono text-sm text-foreground truncate">{p.service || p.description || "Payment"}</p>
+                            <p className="font-mono text-[11px] text-foreground/60 uppercase tracking-[0.15em]">
+                              {new Date(p.date).toLocaleString()} · {p.kind.replace("_", " ")} · {p.status}
+                            </p>
+                          </div>
+                          <span className="font-mono font-bold text-foreground">${p.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-foreground/50">{p.currency}</span></span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => loadPaymentHistory(selectedClient.id)}
+                    className="mt-4 text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 hover:text-primary"
+                  >
+                    ↻ Refresh from Stripe
+                  </button>
+                </div>
+              )}
 
               <AnimatePresence>
                 {showInvoiceForm && (
