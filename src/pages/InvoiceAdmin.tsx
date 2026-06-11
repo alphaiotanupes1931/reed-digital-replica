@@ -457,6 +457,64 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handleToggleDeactivated = async (invoiceId: string, currentlyDeactivated: boolean) => {
+    const next = !currentlyDeactivated;
+    const label = next
+      ? "Deactivate this invoice? The client will no longer see it and their email will be free to receive a new active invoice."
+      : "Reactivate this invoice? It will become this client's active invoice again.";
+    if (!confirm(label)) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_deactivated", invoice_id: invoiceId, deactivated: next, password: ADMIN_PASSWORD },
+      });
+      // Edge function returns non-2xx for conflict; surface its error message.
+      if (res.error) {
+        const msg = (res.data as any)?.error || res.error.message || "Action blocked";
+        toast({ title: "Cannot reactivate", description: msg, variant: "destructive" });
+        return;
+      }
+      toast({ title: next ? "Invoice deactivated" : "Invoice reactivated" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  // Stripe payment history per client
+  const [paymentHistory, setPaymentHistory] = useState<Record<string, {
+    loading: boolean;
+    open: boolean;
+    payments?: Array<{ invoice_id: string | null; service: string | null; amount: number; currency: string; status: string; date: string; kind: string; description?: string }>;
+    count?: number;
+    total?: number;
+    error?: string;
+  }>>({});
+
+  const loadPaymentHistory = async (clientId: string) => {
+    setPaymentHistory((p) => ({ ...p, [clientId]: { ...(p[clientId] || {}), open: true, loading: true } }));
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "get_payment_history", client_id: clientId, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      const d = res.data as any;
+      setPaymentHistory((p) => ({ ...p, [clientId]: { open: true, loading: false, payments: d.payments, count: d.count, total: d.total } }));
+    } catch (err: any) {
+      setPaymentHistory((p) => ({ ...p, [clientId]: { open: true, loading: false, error: err.message } }));
+    }
+  };
+
+  const togglePaymentHistory = (clientId: string) => {
+    const cur = paymentHistory[clientId];
+    if (cur?.open) {
+      setPaymentHistory((p) => ({ ...p, [clientId]: { ...cur, open: false } }));
+    } else if (cur?.payments) {
+      setPaymentHistory((p) => ({ ...p, [clientId]: { ...cur, open: true } }));
+    } else {
+      loadPaymentHistory(clientId);
+    }
+  };
+
   // Auto-calculate estimated total from build + maintenance cost strings.
   // Supports "$500", "$500-800", "500 - 800", "N/A", etc. Maintenance is treated as monthly.
   const parseCostRange = (raw: string): [number, number] | null => {
