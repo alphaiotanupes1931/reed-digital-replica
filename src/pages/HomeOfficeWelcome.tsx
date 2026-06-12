@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const features = [
   {
@@ -19,6 +20,11 @@ const features = [
   },
   {
     k: "04",
+    title: "Client Portal",
+    body: "Give clients a private window into projects, invoices, and updates.",
+  },
+  {
+    k: "05",
     title: "ROI Tracker",
     body: "Plaid-connected income & expense reporting (soon).",
   },
@@ -30,21 +36,45 @@ const fadeUp = {
 };
 
 const HomeOfficeWelcome = () => {
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]);
+  const markerX = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
+
   return (
     <div className="min-h-screen bg-black text-white font-mono overflow-hidden relative">
       <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-50" />
 
-      {/* Background watermark */}
+      {/* Background watermark with parallax */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.4 }}
+        initial={{ opacity: 0, scale: 1.1 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+        style={{ y: heroY }}
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
       >
-        <span className="text-[28vw] font-bold text-white/[0.025] tracking-widest select-none">
+        <span className="text-[28vw] font-bold text-white/[0.03] tracking-widest select-none">
           RDG
         </span>
       </motion.div>
+
+      {/* Animated gold glow */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0.15, 0.35, 0.15] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute top-1/3 -left-40 w-[600px] h-[600px] rounded-full bg-brand/20 blur-[140px]"
+      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0.1, 0.25, 0.1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        className="pointer-events-none absolute bottom-0 -right-40 w-[500px] h-[500px] rounded-full bg-brand/15 blur-[140px]"
+      />
 
       {/* Nav */}
       <motion.nav
@@ -66,7 +96,8 @@ const HomeOfficeWelcome = () => {
 
       {/* Hero */}
       <main className="relative z-10 px-6 md:px-12">
-        <section className="max-w-5xl mx-auto pt-20 md:pt-32 pb-24">
+        <section ref={heroRef} className="max-w-5xl mx-auto pt-20 md:pt-32 pb-24 relative">
+          <motion.div style={{ opacity: heroOpacity }}>
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.7, delay: 0.1 }}
@@ -74,15 +105,30 @@ const HomeOfficeWelcome = () => {
           >
             Home Office — Private Workspace
           </motion.p>
-          <motion.h1
-            {...fadeUp}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95]"
-          >
-            Run your business
-            <br />
-            <span className="text-brand">from one quiet room.</span>
-          </motion.h1>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] overflow-hidden">
+            {["Run your business", "from one quiet room."].map((line, idx) => (
+              <span key={line} className="block overflow-hidden">
+                <motion.span
+                  initial={{ y: "110%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.9, delay: 0.2 + idx * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                  className={`block ${idx === 1 ? "text-brand" : ""}`}
+                >
+                  {line}
+                </motion.span>
+              </span>
+            ))}
+          </h1>
+
+          {/* Animated underline */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 1.2, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: "left", x: markerX }}
+            className="mt-6 h-[2px] w-32 bg-brand"
+          />
+
           <motion.p
             {...fadeUp}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -98,12 +144,14 @@ const HomeOfficeWelcome = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mt-12 flex flex-wrap items-center gap-4"
           >
-            <Link
-              to="/home-office/login?mode=signup"
-              className="group bg-brand text-brand-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium hover:bg-brand/90 transition-colors"
-            >
-              Start 7-day free trial →
-            </Link>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Link
+                to="/home-office/login?mode=signup"
+                className="group inline-block bg-brand text-brand-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium hover:bg-brand/90 transition-colors"
+              >
+                Start 7-day free trial →
+              </Link>
+            </motion.div>
             <Link
               to="/home-office/login"
               className="px-8 py-4 text-xs uppercase tracking-[0.25em] text-white/70 border border-white/15 hover:border-white hover:text-white transition-colors"
@@ -118,24 +166,59 @@ const HomeOfficeWelcome = () => {
           >
             $20 / month after trial · Cancel anytime
           </motion.p>
+          </motion.div>
+
+          {/* Scroll cue */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.8 }}
+            className="mt-24 flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-white/40"
+          >
+            <motion.span
+              animate={{ x: [0, 8, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            >
+              ↓
+            </motion.span>
+            <span>Scroll to explore</span>
+          </motion.div>
         </section>
 
         {/* Features */}
         <section className="max-w-5xl mx-auto border-t border-white/10 py-20">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl md:text-4xl font-bold tracking-tight mb-12"
+          >
+            Everything inside.
+          </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10">
             {features.map((f, i) => (
               <motion.div
                 key={f.k}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -4 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.6, delay: i * 0.08 }}
-                className="bg-black p-8 md:p-10"
+                transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-black p-8 md:p-10 group relative overflow-hidden"
               >
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 + i * 0.08 }}
+                  style={{ transformOrigin: "left" }}
+                  className="absolute top-0 left-0 h-[1px] w-full bg-brand/40"
+                />
                 <div className="text-[10px] uppercase tracking-[0.3em] text-brand mb-6">
                   {f.k}
                 </div>
-                <h3 className="text-xl md:text-2xl font-semibold mb-3 tracking-tight">
+                <h3 className="text-xl md:text-2xl font-semibold mb-3 tracking-tight group-hover:text-brand transition-colors">
                   {f.title}
                 </h3>
                 <p className="text-sm text-white/55 leading-relaxed">
