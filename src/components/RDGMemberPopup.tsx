@@ -33,18 +33,12 @@ const RDGMemberPopup = () => {
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
               Members get free access to RDG Apps and monthly business insights.
             </p>
-            <div className="flex gap-2 mt-4">
+            <div className="mt-4">
               <Link
                 to="/membership"
-                className="flex-1 text-center bg-foreground text-background py-2 text-[10px] uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors rounded-sm"
+                className="block w-full text-center bg-foreground text-background py-2 text-[10px] uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors rounded-sm"
               >
                 Join Now
-              </Link>
-              <Link
-                to="/apps"
-                className="flex-1 text-center border border-foreground/20 py-2 text-[10px] uppercase tracking-widest hover:bg-muted/60 transition-colors rounded-sm"
-              >
-                Get Access
               </Link>
             </div>
           </div>
