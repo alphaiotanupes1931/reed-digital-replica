@@ -20,6 +20,12 @@ const HomeOffice = () => {
     if (!sessionStorage.getItem("ho-token")) navigate("/home-office/login");
   }, [navigate]);
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    sessionStorage.removeItem("ho-token");
+    navigate("/home-office/login");
+  };
+
   return (
     <div className="min-h-screen bg-background font-mono relative overflow-hidden">
       {/* Gold top bar */}
