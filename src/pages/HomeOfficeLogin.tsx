@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 type Mode = "login" | "signup" | "forgot";
 
@@ -18,9 +16,66 @@ const PASSWORD_RULES = [
 const validatePassword = (p: string) => PASSWORD_RULES.every((r) => r.test(p));
 
 const inputCls =
-  "w-full border-2 border-foreground bg-background px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand";
+  "w-full bg-white/[0.04] border border-white/10 text-white px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand transition-colors";
 const btnCls =
   "w-full bg-brand text-brand-foreground py-3 font-mono text-sm uppercase tracking-widest hover:bg-brand/90 transition-colors disabled:opacity-50";
+
+// Animated concentric rings of vertical dashes — built from SVG
+const AnimatedRings = () => {
+  const rings = useMemo(() => {
+    // radius, dash count, dash length, rotation duration (seconds), direction
+    return [
+      { r: 80, count: 16, len: 16, dur: 40, dir: 1 },
+      { r: 150, count: 28, len: 20, dur: 60, dir: -1 },
+      { r: 230, count: 40, len: 22, dur: 80, dir: 1 },
+      { r: 320, count: 54, len: 24, dur: 100, dir: -1 },
+      { r: 420, count: 70, len: 26, dur: 120, dir: 1 },
+      { r: 530, count: 88, len: 28, dur: 140, dir: -1 },
+    ];
+  }, []);
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+      <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
+        {rings.map((ring, ri) => (
+          <motion.g
+            key={ri}
+            animate={{ rotate: ring.dir * 360 }}
+            transition={{ duration: ring.dur, repeat: Infinity, ease: "linear" }}
+            style={{ transformOrigin: "0 0" }}
+          >
+            {Array.from({ length: ring.count }).map((_, i) => {
+              const angle = (i / ring.count) * Math.PI * 2;
+              const x = Math.cos(angle) * ring.r;
+              const y = Math.sin(angle) * ring.r;
+              const rot = (angle * 180) / Math.PI + 90;
+              return (
+                <motion.rect
+                  key={i}
+                  x={-1}
+                  y={-ring.len / 2}
+                  width={2}
+                  height={ring.len}
+                  rx={1}
+                  fill="white"
+                  transform={`translate(${x}, ${y}) rotate(${rot})`}
+                  initial={{ opacity: 0.3 }}
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: (i / ring.count) * 2 + ri * 0.2,
+                    ease: "easeInOut",
+                  }}
+                />
+              );
+            })}
+          </motion.g>
+        ))}
+      </svg>
+    </div>
+  );
+};
 
 const HomeOfficeLogin = () => {
   const [mode, setMode] = useState<Mode>("login");
@@ -108,27 +163,66 @@ const HomeOfficeLogin = () => {
     mode === "login" ? handleLogin : mode === "signup" ? handleSignup : handleForgot;
 
   return (
-    <div className="min-h-screen bg-background font-mono">
-      <Header />
-      <main className="pt-32 pb-20">
-        <div className="container max-w-md mx-auto">
+    <div className="min-h-screen grid md:grid-cols-2 bg-black font-mono text-white">
+      {/* LEFT — animated rings */}
+      <div className="relative hidden md:block bg-black overflow-hidden">
+        <AnimatedRings />
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="absolute top-8 left-8 z-10"
+        >
+          <p className="text-[10px] uppercase tracking-[0.3em] text-white/60">RDG</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-brand mt-1">Home Office</p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="absolute bottom-8 left-8 z-10 max-w-xs"
+        >
+          <p className="text-xs text-white/50 leading-relaxed">
+            Internal workspace. Track bills, notes, goals, taxes, and invoices —
+            all in one quiet system.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* RIGHT — form */}
+      <div className="flex items-center justify-center px-6 py-12 md:py-0">
+        <div className="w-full max-w-sm">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-10"
+            className="mb-8"
           >
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Home Office</h1>
-            <p className="text-sm text-brand italic mt-1">by RDG</p>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {mode === "login"
+                ? "Log in to Home Office"
+                : mode === "signup"
+                ? "Create your account"
+                : "Reset your password"}
+            </h1>
+            <p className="text-xs text-white/50 mt-2">
+              {mode === "login"
+                ? "Welcome back."
+                : mode === "signup"
+                ? "Set up your private workspace."
+                : "We'll send a link to your email."}
+            </p>
           </motion.div>
 
-          <div className="flex border-2 border-foreground mb-6">
+          <div className="flex gap-1 mb-6 text-[10px] uppercase tracking-widest">
             {(["login", "signup", "forgot"] as Mode[]).map((m) => (
               <button
                 key={m}
                 type="button"
                 onClick={() => setMode(m)}
-                className={`flex-1 py-3 text-[10px] uppercase tracking-widest transition-colors ${
-                  mode === m ? "bg-foreground text-background" : "hover:bg-foreground/5"
+                className={`flex-1 py-2 border transition-colors ${
+                  mode === m
+                    ? "border-brand text-brand"
+                    : "border-white/10 text-white/50 hover:text-white hover:border-white/30"
                 }`}
               >
                 {m === "forgot" ? "Forgot" : m}
@@ -138,13 +232,15 @@ const HomeOfficeLogin = () => {
 
           <motion.form
             key={mode}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             onSubmit={onSubmit}
-            className="border-2 border-foreground p-8 space-y-6"
+            className="space-y-5"
           >
             <div>
-              <label className="block text-xs uppercase tracking-widest mb-2">Email</label>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
+                Email
+              </label>
               <input
                 type="email"
                 value={email}
@@ -157,7 +253,9 @@ const HomeOfficeLogin = () => {
 
             {mode !== "forgot" && (
               <div>
-                <label className="block text-xs uppercase tracking-widest mb-2">Password</label>
+                <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
+                  Password
+                </label>
                 <input
                   type="password"
                   value={password}
@@ -173,7 +271,7 @@ const HomeOfficeLogin = () => {
                       return (
                         <li
                           key={r.label}
-                          className={ok ? "text-brand" : "text-muted-foreground"}
+                          className={ok ? "text-brand" : "text-white/40"}
                         >
                           [{ok ? "x" : " "}] {r.label}
                         </li>
@@ -195,20 +293,26 @@ const HomeOfficeLogin = () => {
             </button>
 
             {mode === "login" && (
-              <div className="text-center">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2">
                 <button
                   type="button"
                   onClick={() => setMode("forgot")}
-                  className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-brand"
+                  className="text-white/50 hover:text-brand transition-colors"
                 >
                   Forgot password?
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("signup")}
+                  className="text-white/50 hover:text-brand transition-colors"
+                >
+                  Create account
                 </button>
               </div>
             )}
           </motion.form>
         </div>
-      </main>
-      <Footer />
+      </div>
     </div>
   );
 };
