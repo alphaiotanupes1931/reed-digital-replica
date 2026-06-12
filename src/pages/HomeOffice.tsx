@@ -62,9 +62,22 @@ const HomeOffice = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut({ scope: "global" } as any);
+    } catch {
+      // ignore
+    }
     sessionStorage.removeItem("ho-token");
-    navigate("/home-office/login");
+    // Wipe any cached supabase auth tokens from localStorage
+    try {
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith("sb-") && k.endsWith("-auth-token"))
+        .forEach((k) => localStorage.removeItem(k));
+    } catch {
+      // ignore
+    }
+    // Hard reload to fully reset auth state before the login page mounts
+    window.location.replace("/home-office/login");
   };
 
   return (
