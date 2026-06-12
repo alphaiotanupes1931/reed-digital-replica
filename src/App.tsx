@@ -55,10 +55,6 @@ const queryClient = new QueryClient();
 
 const AuthSync = () => {
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) sessionStorage.setItem("ho-token", data.session.access_token);
-      else sessionStorage.removeItem("ho-token");
-    });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       if (session) sessionStorage.setItem("ho-token", session.access_token);
       else sessionStorage.removeItem("ho-token");
