@@ -36,7 +36,7 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Government", href: "/government" },
-  { label: "Apps", href: "/apps" },
+  { label: "Apps", href: "/home-office" },
   { label: "Contact", href: "/contact" },
 ];
 
