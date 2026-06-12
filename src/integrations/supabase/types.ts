@@ -371,6 +371,8 @@ export type Database = {
           primary_goal: string | null
           referral_source: string | null
           role: string | null
+          stripe_customer_id: string | null
+          subscribed: boolean
           updated_at: string
           user_id: string
         }
@@ -383,6 +385,8 @@ export type Database = {
           primary_goal?: string | null
           referral_source?: string | null
           role?: string | null
+          stripe_customer_id?: string | null
+          subscribed?: boolean
           updated_at?: string
           user_id: string
         }
@@ -395,6 +399,8 @@ export type Database = {
           primary_goal?: string | null
           referral_source?: string | null
           role?: string | null
+          stripe_customer_id?: string | null
+          subscribed?: boolean
           updated_at?: string
           user_id?: string
         }
