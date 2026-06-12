@@ -25,7 +25,7 @@ const HomeOffice = () => {
         return;
       }
       // Owner bypass — full access, no onboarding/paywall
-      if (data.user.email?.toLowerCase() === "terellebony@gmail.com") {
+      if (data.user.email?.toLowerCase() === "terellebony@gmail.com" || data.user.email?.toLowerCase() === "kimorataylor294@gmail.com") {
         const { data: profile } = await supabase
           .from("profiles")
           .select("full_name")

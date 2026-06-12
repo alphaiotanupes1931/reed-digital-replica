@@ -90,7 +90,7 @@ const HomeOfficeLogin = () => {
     sessionStorage.setItem("ho-token", accessToken);
     // Owner bypass — skip onboarding/paywall entirely
     const { data: u } = await supabase.auth.getUser();
-    if (u.user?.email?.toLowerCase() === "terellebony@gmail.com") {
+    if (u.user?.email?.toLowerCase() === "terellebony@gmail.com" || u.user?.email?.toLowerCase() === "kimorataylor294@gmail.com") {
       navigate("/home-office");
       return;
     }
