@@ -92,6 +92,7 @@ const WorkAssistant = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
   const [loading, setLoading] = useState(false);
+  const [displayName, setDisplayName] = useState<string>("");
 
   // History
   const [historyDates, setHistoryDates] = useState<string[]>([]);
@@ -153,6 +154,19 @@ const WorkAssistant = () => {
   useEffect(() => {
     if (!token) navigate("/home-office/login");
   }, [token, navigate]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      setDisplayName(profile?.full_name || "");
+    })();
+  }, []);
 
   const api = useCallback(
     async (action: string, data: any = {}) => {
@@ -375,7 +389,9 @@ const WorkAssistant = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
             <Link to="/home-office" className="inline-block">
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight hover:text-brand transition-colors">Work Assistant</h1>
-              <p className="text-sm text-brand italic mt-1">by RDG</p>
+              <p className="text-sm text-brand italic mt-1">
+                {displayName ? `Welcome, ${displayName}` : "by RDG"}
+              </p>
             </Link>
           </motion.div>
 
