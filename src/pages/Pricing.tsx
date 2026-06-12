@@ -518,6 +518,31 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
+              {/* FAQ */}
+              <ScrollReveal delay={0.36}>
+                <div className="mb-16">
+                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+                    Frequently Asked Questions
+                  </h3>
+                  <div className="space-y-0">
+                    {faqs.map((faq, i) => (
+                      <div key={faq.q} className="border-b border-border">
+                        <button
+                          onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                          className="w-full flex items-center justify-between py-4 text-left hover:opacity-70 transition-opacity"
+                        >
+                          <span className="text-sm font-medium pr-4">{faq.q}</span>
+                          <span className="font-mono text-lg flex-shrink-0">{openFaq === i ? '−' : '+'}</span>
+                        </button>
+                        {openFaq === i && (
+                          <p className="text-sm text-muted-foreground pb-4 leading-relaxed">{faq.a}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+
               {/* Three rungs */}
               <ScrollReveal delay={0.38}>
                 <div className="mb-16 grid md:grid-cols-3 gap-px bg-foreground/10 border-2 border-foreground">
