@@ -190,64 +190,6 @@ const PricingPage = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Three rungs */}
-              <ScrollReveal delay={0.01}>
-                <div className="mb-16 grid md:grid-cols-3 gap-px bg-foreground/10 border-2 border-foreground">
-                  {[
-                    {
-                      k: "Rung 01",
-                      t: "App Only",
-                      p: "$20 / mo",
-                      d: "The front door. Get the Home Office app — invoices, bills, work assistant, client portal. Self-serve, cancel anytime.",
-                      cta: "Start free trial",
-                      href: "/home-office/welcome",
-                    },
-                    {
-                      k: "Rung 02",
-                      t: "RDG Member",
-                      p: "$40 / mo · $400 / yr",
-                      d: "App + 15% off projects + 10% off first 3 months of maintenance + free post-launch training + priority support + quarterly kit + free logo design.",
-                      cta: "Become a member",
-                      href: "/membership",
-                      popular: true,
-                    },
-                    {
-                      k: "Rung 03",
-                      t: "Project Client",
-                      p: "$700 – $2K sites · $5K+ apps",
-                      d: "Full build. 50% deposit before work starts. Members save 15% — that $2,000 site is $1,700.",
-                      cta: "Book consultation",
-                      href: "/contact",
-                    },
-                  ].map((r) => (
-                    <div
-                      key={r.k}
-                      className={`bg-background p-6 md:p-8 flex flex-col ${
-                        r.popular ? "ring-2 ring-brand -m-px relative z-10" : ""
-                      }`}
-                    >
-                      <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand">
-                        {r.k}
-                      </span>
-                      <h3 className="mt-3 text-2xl font-bold tracking-tight">{r.t}</h3>
-                      <p className="mt-2 text-sm font-mono">{r.p}</p>
-                      <p className="mt-4 text-sm text-muted-foreground flex-1">{r.d}</p>
-                      <Link
-                        to={r.href}
-                        className={`mt-6 inline-block text-center px-6 py-3 text-xs uppercase tracking-[0.25em] transition-colors ${
-                          r.popular
-                            ? "bg-brand text-brand-foreground hover:bg-brand/90"
-                            : "border-2 border-foreground hover:bg-foreground hover:text-background"
-                        }`}
-                      >
-                        {r.cta} →
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </ScrollReveal>
-
-              {/* Pricing disclaimer */}
               <ScrollReveal delay={0.02}>
                 <div className="mb-12 border-2 border-primary bg-primary/5 p-5 md:p-6">
                   <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
