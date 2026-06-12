@@ -21,7 +21,7 @@ const HomeOffice = () => {
     (async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) {
-        navigate("/home-office/login");
+        navigate("/home-office/welcome");
         return;
       }
       const { data: profile } = await supabase
