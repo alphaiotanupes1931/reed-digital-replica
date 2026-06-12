@@ -50,7 +50,15 @@ const HomeOffice = () => {
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight hover:text-brand transition-colors">Home Office</h1>
               <p className="text-sm text-brand italic mt-1">by RDG</p>
             </Link>
-            <p className="text-muted-foreground text-sm mt-4">Welcome, Mr. Reed</p>
+            <div className="flex items-center justify-between mt-4">
+              <p className="text-muted-foreground text-sm">Welcome, Mr. Reed</p>
+              <button
+                onClick={handleLogout}
+                className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand transition-colors"
+              >
+                Log Out
+              </button>
+            </div>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
