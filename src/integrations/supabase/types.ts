@@ -364,45 +364,57 @@ export type Database = {
       profiles: {
         Row: {
           business_name: string | null
+          cashapp_handle: string | null
           created_at: string
           full_name: string | null
           id: string
           onboarded: boolean
+          payment_methods: string[]
           primary_goal: string | null
           referral_source: string | null
           role: string | null
           stripe_customer_id: string | null
+          stripe_secret_key: string | null
           subscribed: boolean
           updated_at: string
           user_id: string
+          zelle_handle: string | null
         }
         Insert: {
           business_name?: string | null
+          cashapp_handle?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
           onboarded?: boolean
+          payment_methods?: string[]
           primary_goal?: string | null
           referral_source?: string | null
           role?: string | null
           stripe_customer_id?: string | null
+          stripe_secret_key?: string | null
           subscribed?: boolean
           updated_at?: string
           user_id: string
+          zelle_handle?: string | null
         }
         Update: {
           business_name?: string | null
+          cashapp_handle?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
           onboarded?: boolean
+          payment_methods?: string[]
           primary_goal?: string | null
           referral_source?: string | null
           role?: string | null
           stripe_customer_id?: string | null
+          stripe_secret_key?: string | null
           subscribed?: boolean
           updated_at?: string
           user_id?: string
+          zelle_handle?: string | null
         }
         Relationships: []
       }
@@ -478,6 +490,18 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      list_businesses: {
+        Args: never
+        Returns: {
+          business_name: string
+          cashapp_handle: string
+          has_stripe: boolean
+          owner_name: string
+          payment_methods: string[]
+          user_id: string
+          zelle_handle: string
+        }[]
       }
       move_to_dlq: {
         Args: {

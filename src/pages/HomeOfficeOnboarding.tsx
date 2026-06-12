@@ -17,12 +17,21 @@ const REFERRAL_OPTIONS = [
   "Other",
 ];
 
+const PAYMENT_OPTIONS: { value: "zelle" | "cashapp"; label: string; placeholder: string }[] = [
+  { value: "zelle", label: "Zelle", placeholder: "Email or phone for Zelle" },
+  { value: "cashapp", label: "Cash App", placeholder: "$yourtag" },
+];
+
 const HomeOfficeOnboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [params] = useSearchParams();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [fullName, setFullName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [methods, setMethods] = useState<string[]>([]);
+  const [zelle, setZelle] = useState("");
+  const [cashapp, setCashapp] = useState("");
   const [referral, setReferral] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -43,19 +52,20 @@ const HomeOfficeOnboarding = () => {
       setUserId(data.user.id);
       supabase
         .from("profiles")
-        .select("full_name, onboarded, subscribed")
+        .select("full_name, business_name, onboarded, subscribed")
         .eq("user_id", data.user.id)
         .maybeSingle()
         .then(({ data: p }) => {
           if (p?.full_name) setFullName(p.full_name);
+          if (p?.business_name) setBusinessName(p.business_name);
           // Returning from Stripe checkout
           if (params.get("checkout") === "success") {
-            setStep(3);
+            setStep(5);
             verifyAndEnter();
             return;
           }
           if (params.get("step") === "paywall" || p?.onboarded) {
-            setStep(3);
+            setStep(5);
           }
         });
     });
@@ -95,6 +105,20 @@ const HomeOfficeOnboarding = () => {
     setStep(2);
   };
 
+  const handleBusinessNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!businessName.trim()) return;
+    setStep(3);
+  };
+
+  const handlePaymentsNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep(4);
+  };
+
+  const toggleMethod = (m: string) =>
+    setMethods((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]));
+
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!referral || !userId) return;
@@ -106,13 +130,17 @@ const HomeOfficeOnboarding = () => {
           {
             user_id: userId,
             full_name: fullName.trim(),
+            business_name: businessName.trim() || null,
+            zelle_handle: zelle.trim() || null,
+            cashapp_handle: cashapp.trim() || null,
+            payment_methods: methods,
             referral_source: referral,
             onboarded: false,
           },
           { onConflict: "user_id" }
         );
       if (error) throw error;
-      setStep(3);
+      setStep(5);
     } catch (err: any) {
       toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
     } finally {
@@ -145,7 +173,7 @@ const HomeOfficeOnboarding = () => {
           className="mb-2"
         >
           <p className="text-[10px] uppercase tracking-[0.3em] text-brand">
-            Step {step} of 3
+            Step {step} of 5
           </p>
         </motion.div>
 
@@ -186,6 +214,81 @@ const HomeOfficeOnboarding = () => {
             key="step2"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
+            onSubmit={handleBusinessNext}
+            className="space-y-6"
+          >
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">What's your business called?</h1>
+              <p className="text-xs text-white/50 mt-2">
+                This is the name your clients will see in the Client Portal when they go to pay you.
+              </p>
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
+                Business Name
+              </label>
+              <input
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                className={inputCls}
+                required
+                autoFocus
+              />
+            </div>
+            <button type="submit" className={btnCls}>
+              Continue
+            </button>
+          </motion.form>
+        ) : step === 3 ? (
+          <motion.form
+            key="step3"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            onSubmit={handlePaymentsNext}
+            className="space-y-6"
+          >
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">How do your clients pay you?</h1>
+              <p className="text-xs text-white/50 mt-2">
+                Pick all that apply. We'll show these in your Client Portal so clients know how to send payment. You can add Stripe later from Profile.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {PAYMENT_OPTIONS.map((opt) => {
+                const on = methods.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleMethod(opt.value)}
+                    className={`px-4 py-3 text-sm border transition-colors ${
+                      on ? "border-brand text-brand" : "border-white/10 text-white/70 hover:border-white/30"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            {methods.includes("zelle") && (
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Zelle</label>
+                <input value={zelle} onChange={(e) => setZelle(e.target.value)} className={inputCls} placeholder="email or phone" />
+              </div>
+            )}
+            {methods.includes("cashapp") && (
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Cash App</label>
+                <input value={cashapp} onChange={(e) => setCashapp(e.target.value)} className={inputCls} placeholder="$yourtag" />
+              </div>
+            )}
+            <button type="submit" className={btnCls}>Continue</button>
+          </motion.form>
+        ) : step === 4 ? (
+          <motion.form
+            key="step4"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
             onSubmit={handleSaveProfile}
             className="space-y-6"
           >
@@ -219,7 +322,7 @@ const HomeOfficeOnboarding = () => {
           </motion.form>
         ) : (
           <motion.div
-            key="step3"
+            key="step5"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -288,7 +391,7 @@ const HomeOfficeOnboarding = () => {
             <div className="flex items-center justify-between pt-2 text-[10px] uppercase tracking-widest">
               <button
                 type="button"
-                onClick={() => setStep(2)}
+                onClick={() => setStep(4)}
                 className="text-white/50 hover:text-brand transition-colors"
               >
                 ← Back

@@ -278,6 +278,13 @@ const PortalSubtext = () => {
   );
 };
 
+const PayRow = ({ label, value }: { label: string; value: string }) => (
+  <div className="border border-border p-3">
+    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-1 font-bold">{label}</p>
+    <p className="text-sm font-mono text-foreground break-all">{value}</p>
+  </div>
+);
+
 const GoogleLogo = () => (
   <svg viewBox="0 0 24 24" className="w-6 h-6">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -822,6 +829,44 @@ const InvoicePortal = () => {
   const [payingId, setPayingId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
 
+  type Business = {
+    user_id: string;
+    business_name: string;
+    owner_name: string | null;
+    has_stripe: boolean;
+    zelle_handle: string | null;
+    cashapp_handle: string | null;
+    payment_methods: string[];
+  };
+  const RDG_BUSINESS: Business = {
+    user_id: "rdg",
+    business_name: "Reed Digital Group",
+    owner_name: null,
+    has_stripe: true,
+    zelle_handle: null,
+    cashapp_handle: null,
+    payment_methods: ["stripe"],
+  };
+  const [businesses, setBusinesses] = useState<Business[]>([RDG_BUSINESS]);
+  const [selectedBiz, setSelectedBiz] = useState<Business>(RDG_BUSINESS);
+  const [bizSearch, setBizSearch] = useState("");
+  const [bizOpen, setBizOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.rpc("list_businesses");
+      if (!error && Array.isArray(data)) {
+        setBusinesses([RDG_BUSINESS, ...(data as Business[])]);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filteredBiz = businesses.filter((b) =>
+    b.business_name.toLowerCase().includes(bizSearch.toLowerCase())
+  );
+  const isRDG = selectedBiz.user_id === "rdg";
+
   useEffect(() => {
     if (searchParams.get("payment") === "success") {
       toast({ title: "Payment successful", description: "Thank you for your payment." });
@@ -1002,6 +1047,85 @@ const InvoicePortal = () => {
               </motion.h1>
               <PortalSubtext />
 
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.0 }}
+                className="w-full max-w-sm mb-6"
+              >
+                <label className="block text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/60 mb-2 text-center">
+                  Paying which business?
+                </label>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setBizOpen((v) => !v)}
+                    className="w-full h-12 px-4 border border-border hover:border-foreground rounded-none font-mono text-sm flex items-center justify-between text-left bg-background"
+                  >
+                    <span className="truncate">{selectedBiz.business_name}</span>
+                    <span className="text-primary text-xs">{bizOpen ? "▴" : "▾"}</span>
+                  </button>
+                  {bizOpen && (
+                    <div className="absolute z-30 left-0 right-0 mt-1 border-2 border-foreground bg-background max-h-72 overflow-auto">
+                      <input
+                        autoFocus
+                        type="text"
+                        value={bizSearch}
+                        onChange={(e) => setBizSearch(e.target.value)}
+                        placeholder="Search businesses…"
+                        className="w-full px-3 py-2 border-b border-border font-mono text-sm bg-background focus:outline-none"
+                      />
+                      {filteredBiz.length === 0 ? (
+                        <p className="px-3 py-3 text-xs font-mono text-muted-foreground">No matches</p>
+                      ) : (
+                        filteredBiz.map((b) => (
+                          <button
+                            key={b.user_id}
+                            type="button"
+                            onClick={() => { setSelectedBiz(b); setBizOpen(false); setBizSearch(""); }}
+                            className={`w-full text-left px-3 py-2 font-mono text-sm hover:bg-muted/50 ${
+                              selectedBiz.user_id === b.user_id ? "text-primary" : "text-foreground"
+                            }`}
+                          >
+                            {b.business_name}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+
+              {!isRDG ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="w-full max-w-md border-2 border-foreground p-6 bg-background"
+                >
+                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary mb-2 font-bold">
+                    Pay {selectedBiz.business_name}
+                  </p>
+                  <p className="text-xs font-mono text-muted-foreground mb-5">
+                    Use any of the methods below. Reach out to {selectedBiz.business_name} directly if you have questions about the amount.
+                  </p>
+                  <div className="space-y-3">
+                    {selectedBiz.payment_methods.includes("zelle") && selectedBiz.zelle_handle && (
+                      <PayRow label="Zelle" value={selectedBiz.zelle_handle} />
+                    )}
+                    {selectedBiz.payment_methods.includes("cashapp") && selectedBiz.cashapp_handle && (
+                      <PayRow label="Cash App" value={selectedBiz.cashapp_handle} />
+                    )}
+                    {selectedBiz.payment_methods.includes("stripe") && selectedBiz.has_stripe && (
+                      <PayRow label="Card (Stripe)" value="Card payments available — contact the business for an invoice link." />
+                    )}
+                    {selectedBiz.payment_methods.length === 0 && (
+                      <p className="text-sm font-mono text-foreground/70">
+                        This business hasn't set up payment methods yet. Contact them directly.
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              ) : (
               <motion.form
                 onSubmit={handleEmailSubmit}
                 initial={{ opacity: 0 }}
@@ -1039,6 +1163,7 @@ const InvoicePortal = () => {
                   )}
                 </Button>
               </motion.form>
+              )}
             </motion.div>
           ) : (
             <motion.div

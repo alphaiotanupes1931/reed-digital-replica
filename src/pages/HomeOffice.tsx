@@ -10,6 +10,7 @@ const tiles = [
   { label: "Invoices", desc: "Admin dashboard & billing", href: "/admin" },
   { label: "Bills Tracker", desc: "Monthly bills vs maintenance income", href: "/home-office/bills" },
   { label: "ROI Tracker", desc: "Coming Soon — Plaid integration", href: "/home-office/roi-tracker" },
+  { label: "Profile", desc: "Business name, payment methods & Stripe key", href: "/home-office/profile" },
   { label: "Help", desc: "Contact & support", href: "/home-office/help" },
 ];
 
