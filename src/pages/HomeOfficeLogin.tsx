@@ -20,6 +20,17 @@ const inputCls =
 const btnCls =
   "w-full bg-brand text-brand-foreground py-3 font-mono text-sm uppercase tracking-widest hover:bg-brand/90 transition-colors disabled:opacity-50";
 
+const clearStoredAuth = () => {
+  sessionStorage.removeItem("ho-token");
+  try {
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith("sb-") && k.endsWith("-auth-token"))
+      .forEach((k) => localStorage.removeItem(k));
+  } catch {
+    // ignore storage access errors
+  }
+};
+
 // Animated concentric rings of vertical dashes — built from SVG
 const AnimatedRings = () => {
   const rings = useMemo(() => {
@@ -85,7 +96,7 @@ const HomeOfficeLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Send signed-in users to the right place (onboarding vs dashboard)
+  // Send users to the right place only after they enter credentials.
   const routeAfterAuth = async (accessToken: string, userId: string) => {
     sessionStorage.setItem("ho-token", accessToken);
     // Owner bypass — skip onboarding/paywall entirely
@@ -103,10 +114,8 @@ const HomeOfficeLogin = () => {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) routeAfterAuth(data.session.access_token, data.session.user.id);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    clearStoredAuth();
+    supabase.auth.signOut({ scope: "global" } as any).catch(() => undefined);
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
