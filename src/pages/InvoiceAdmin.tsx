@@ -104,7 +104,11 @@ const calculateTotal = (amount: number) =>
   Math.round((amount + calculateFee(amount)) * 100) / 100;
 
 const InvoiceAdmin = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem("admin-auth") === ADMIN_PASSWORD);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // PIN gate removed — auto-authenticate
+    if (typeof window !== "undefined") localStorage.setItem("admin-auth", ADMIN_PASSWORD);
+    return true;
+  });
   const [password, setPassword] = useState("");
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
