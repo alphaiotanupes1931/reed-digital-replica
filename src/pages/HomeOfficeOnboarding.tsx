@@ -279,6 +279,23 @@ const HomeOfficeOnboarding = () => {
                 Checkout canceled. You can try again above.
               </p>
             )}
+
+            <div className="flex items-center justify-between pt-2 text-[10px] uppercase tracking-widest">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="text-white/50 hover:text-brand transition-colors"
+              >
+                ← Back
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/home-office/welcome")}
+                className="text-white/50 hover:text-brand transition-colors"
+              >
+                Exit
+              </button>
+            </div>
           </motion.div>
         )}
       </div>
