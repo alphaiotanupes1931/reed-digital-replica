@@ -212,6 +212,7 @@ serve(async (req) => {
       const { data: clients, error } = await supabase
         .from("clients")
         .select("id, company_name, owner_name, email, maintenance_plan")
+        .eq("owner_user_id", userId)
         .not("maintenance_plan", "is", null);
       if (error) throw error;
       return new Response(JSON.stringify({ clients }), {
