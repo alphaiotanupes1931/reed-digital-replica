@@ -24,6 +24,22 @@ serve(async (req) => {
       });
     }
 
+    // Scope all data to the signed-in user via Supabase JWT.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const jwt = authHeader.replace(/^Bearer\s+/i, "");
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!
+    );
+    const { data: userData } = jwt ? await authClient.auth.getUser(jwt) : { data: { user: null } } as any;
+    const userId = userData?.user?.id as string | undefined;
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Sign in required" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -33,6 +49,7 @@ serve(async (req) => {
       const { data: invoices, error } = await supabase
         .from("invoices")
         .select("*, clients(*)")
+        .eq("owner_user_id", userId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -46,6 +63,7 @@ serve(async (req) => {
       const { data: clients, error } = await supabase
         .from("clients")
         .select("*")
+        .eq("owner_user_id", userId)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return new Response(JSON.stringify({ clients }), {
@@ -56,7 +74,7 @@ serve(async (req) => {
     if (action === "create_client") {
       const { company_name, email, owner_name } = data;
       const { data: existing } = await supabase
-        .from("clients").select("*").eq("email", email).maybeSingle();
+        .from("clients").select("*").eq("email", email).eq("owner_user_id", userId).maybeSingle();
       if (existing) {
         const { data: updated, error } = await supabase
           .from("clients")
@@ -69,7 +87,7 @@ serve(async (req) => {
       }
       const { data: client, error } = await supabase
         .from("clients")
-        .insert({ company_name, email, owner_name })
+        .insert({ company_name, email, owner_name, owner_user_id: userId })
         .select().single();
       if (error) throw error;
       return new Response(JSON.stringify({ client }), {
@@ -88,7 +106,7 @@ serve(async (req) => {
       if (project_build_cost !== undefined) updates.project_build_cost = project_build_cost;
       if (project_maintenance_cost !== undefined) updates.project_maintenance_cost = project_maintenance_cost;
       if (project_estimated_total !== undefined) updates.project_estimated_total = project_estimated_total;
-      const { error } = await supabase.from("clients").update(updates).eq("id", client_id);
+      const { error } = await supabase.from("clients").update(updates).eq("id", client_id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -97,13 +115,13 @@ serve(async (req) => {
 
     if (action === "delete_sow_comment") {
       const { client_id, comment_index } = data;
-      const { data: c } = await supabase.from("clients").select("sow_comments").eq("id", client_id).maybeSingle();
+      const { data: c } = await supabase.from("clients").select("sow_comments").eq("id", client_id).eq("owner_user_id", userId).maybeSingle();
       const existing: Array<{ author: string; message: string; created_at: string }> = Array.isArray(c?.sow_comments) ? c!.sow_comments : [];
       if (typeof comment_index !== "number" || comment_index < 0 || comment_index >= existing.length) {
         throw new Error("Invalid comment index");
       }
       existing.splice(comment_index, 1);
-      const { error } = await supabase.from("clients").update({ sow_comments: existing }).eq("id", client_id);
+      const { error } = await supabase.from("clients").update({ sow_comments: existing }).eq("id", client_id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -128,18 +146,18 @@ serve(async (req) => {
 
       let client;
       if (client_id) {
-        const { data: existing } = await supabase.from("clients").select("*").eq("id", client_id).maybeSingle();
+        const { data: existing } = await supabase.from("clients").select("*").eq("id", client_id).eq("owner_user_id", userId).maybeSingle();
         client = existing;
       } else {
         const { data: byEmail } = await supabase
-          .from("clients").select("*").eq("email", email).maybeSingle();
+          .from("clients").select("*").eq("email", email).eq("owner_user_id", userId).maybeSingle();
         client = byEmail;
       }
 
       if (!client) {
         const { data: newClient, error: insertError } = await supabase
           .from("clients")
-          .insert({ company_name, email, owner_name: owner_name || null })
+          .insert({ company_name, email, owner_name: owner_name || null, owner_user_id: userId })
           .select()
           .single();
 
@@ -158,6 +176,7 @@ serve(async (req) => {
         .select("id")
         .eq("client_id", client.id)
         .eq("deactivated", false)
+        .eq("owner_user_id", userId)
         .limit(1);
       if (activeExisting && activeExisting.length > 0) {
         return new Response(
@@ -180,6 +199,7 @@ serve(async (req) => {
         deposit_due_date: deposit_due_date || null,
         message: message || null,
         payment_method: normalizeMethod(payment_method),
+        owner_user_id: userId,
       });
 
       if (invoiceError) throw invoiceError;
@@ -194,7 +214,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .update({ deliverables })
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
 
       if (error) throw error;
 
@@ -208,7 +229,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .update({ status: "approved" })
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
 
       if (error) throw error;
 
@@ -226,7 +248,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .update(updates)
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
 
       if (error) throw error;
 
@@ -250,7 +273,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .update({ payment_method: method })
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -262,7 +286,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .update({ hidden_from_client: !!hidden_from_client })
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -274,7 +299,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("clients")
         .update({ sow_hidden: !!sow_hidden })
-        .eq("id", client_id);
+        .eq("id", client_id)
+        .eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -286,7 +312,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .delete()
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
 
       if (error) throw error;
 
@@ -303,6 +330,7 @@ serve(async (req) => {
           .from("invoices")
           .select("client_id")
           .eq("id", invoice_id)
+          .eq("owner_user_id", userId)
           .maybeSingle();
         if (!inv) throw new Error("Invoice not found");
         const { data: conflict } = await supabase
@@ -311,6 +339,7 @@ serve(async (req) => {
           .eq("client_id", inv.client_id)
           .eq("deactivated", false)
           .neq("id", invoice_id)
+          .eq("owner_user_id", userId)
           .limit(1);
         if (conflict && conflict.length > 0) {
           return new Response(
@@ -325,7 +354,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .update({ deactivated: !!deactivated })
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -342,7 +372,8 @@ serve(async (req) => {
       const { data: invs, error: invErr } = await supabase
         .from("invoices")
         .select("id, service, price, stripe_checkout_session_id, stripe_payment_intent_id, stripe_subscription_id, created_at")
-        .eq("client_id", client_id);
+        .eq("client_id", client_id)
+        .eq("owner_user_id", userId);
       if (invErr) throw invErr;
 
       const payments: Array<{
@@ -428,7 +459,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .delete()
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
 
       if (error) throw error;
 
@@ -459,7 +491,7 @@ serve(async (req) => {
         const unique = Array.from(new Set(clean));
         updates.payment_method = unique.length ? unique.join(",") : "stripe";
       }
-      const { error } = await supabase.from("invoices").update(updates).eq("id", invoice_id);
+      const { error } = await supabase.from("invoices").update(updates).eq("id", invoice_id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -471,7 +503,8 @@ serve(async (req) => {
       const { error } = await supabase
         .from("invoices")
         .delete()
-        .eq("id", invoice_id);
+        .eq("id", invoice_id)
+        .eq("owner_user_id", userId);
 
       if (error) throw error;
 
@@ -483,9 +516,9 @@ serve(async (req) => {
     if (action === "delete_client") {
       const { client_id } = data;
       // Delete invoices first (no FK cascade configured)
-      const { error: invErr } = await supabase.from("invoices").delete().eq("client_id", client_id);
+      const { error: invErr } = await supabase.from("invoices").delete().eq("client_id", client_id).eq("owner_user_id", userId);
       if (invErr) throw invErr;
-      const { error } = await supabase.from("clients").delete().eq("id", client_id);
+      const { error } = await supabase.from("clients").delete().eq("id", client_id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -503,6 +536,7 @@ serve(async (req) => {
         .from("invoices")
         .select("*")
         .neq("status", "paid")
+        .eq("owner_user_id", userId)
         .not("stripe_checkout_session_id", "is", null);
 
       if (fetchErr) throw fetchErr;
