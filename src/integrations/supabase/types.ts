@@ -369,6 +369,7 @@ export type Database = {
           id: string
           onboarded: boolean
           primary_goal: string | null
+          referral_source: string | null
           role: string | null
           updated_at: string
           user_id: string
@@ -380,6 +381,7 @@ export type Database = {
           id?: string
           onboarded?: boolean
           primary_goal?: string | null
+          referral_source?: string | null
           role?: string | null
           updated_at?: string
           user_id: string
@@ -391,6 +393,7 @@ export type Database = {
           id?: string
           onboarded?: boolean
           primary_goal?: string | null
+          referral_source?: string | null
           role?: string | null
           updated_at?: string
           user_id?: string
