@@ -7,31 +7,29 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ADMIN_PASSWORD = "admin123#";
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { action, username, password, ...data } = await req.json();
+    const { action, ...data } = await req.json();
 
-    // Auth check
-    if (action === "login") {
-      if (password === ADMIN_PASSWORD) {
-        return new Response(JSON.stringify({ success: true, token: "rdg-home-office-2024" }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      return new Response(JSON.stringify({ error: "Invalid credentials" }), {
+    // Validate Supabase JWT from Authorization header
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const jwt = authHeader.replace(/^Bearer\s+/i, "");
+    if (!jwt) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 401,
       });
     }
-
-    // Verify token for all other actions
-    if (data.token !== "rdg-home-office-2024") {
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+    const { data: userData, error: userErr } = await authClient.auth.getUser(jwt);
+    if (userErr || !userData?.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 401,
