@@ -36,7 +36,7 @@ const HomeOfficeOnboarding = () => {
         return;
       }
       // Owner bypass — skip onboarding/paywall entirely
-      if (data.user.email?.toLowerCase() === "terellebony@gmail.com") {
+      if (data.user.email?.toLowerCase() === "terellebony@gmail.com" || data.user.email?.toLowerCase() === "kimorataylor294@gmail.com") {
         navigate("/home-office", { replace: true });
         return;
       }
