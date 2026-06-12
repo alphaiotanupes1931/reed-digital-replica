@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import CustomCursor from "./components/CustomCursor";
 import ScrollProgress from "./components/ScrollProgress";
 import RDGMemberPopup from "./components/RDGMemberPopup";
@@ -46,6 +48,21 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const AuthSync = () => {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) sessionStorage.setItem("ho-token", data.session.access_token);
+      else sessionStorage.removeItem("ho-token");
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (session) sessionStorage.setItem("ho-token", session.access_token);
+      else sessionStorage.removeItem("ho-token");
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -54,6 +71,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AuthSync />
         <RDGMemberPopup />
         <AnimatePresence mode="wait">
           <Routes>
