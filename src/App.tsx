@@ -29,6 +29,7 @@ import InvoiceThankYou from "./pages/InvoiceThankYou";
 import InvoiceAdmin from "./pages/InvoiceAdmin";
 import HomeOfficeLogin from "./pages/HomeOfficeLogin";
 import HomeOffice from "./pages/HomeOffice";
+import HomeOfficeWelcome from "./pages/HomeOfficeWelcome";
 import HomeOfficeResetPassword from "./pages/HomeOfficeResetPassword";
 import HomeOfficeOnboarding from "./pages/HomeOfficeOnboarding";
 import WorkAssistant from "./pages/WorkAssistant";
@@ -97,6 +98,7 @@ const App = () => (
             <Route path="/invoice/thank-you" element={<Navigate to="/portal/thank-you" replace />} />
             <Route path="/admin" element={<InvoiceAdmin />} />
             <Route path="/home-office/login" element={<HomeOfficeLogin />} />
+            <Route path="/home-office/welcome" element={<HomeOfficeWelcome />} />
             <Route path="/home-office/reset-password" element={<HomeOfficeResetPassword />} />
             <Route path="/home-office/onboarding" element={<HomeOfficeOnboarding />} />
             <Route path="/home-office" element={<HomeOffice />} />

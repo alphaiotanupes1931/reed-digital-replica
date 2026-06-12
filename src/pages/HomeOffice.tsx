@@ -26,12 +26,25 @@ const HomeOffice = () => {
       }
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, onboarded")
+        .select("full_name, onboarded, subscribed")
         .eq("user_id", data.user.id)
         .maybeSingle();
       if (!profile?.onboarded) {
         navigate("/home-office/onboarding");
         return;
+      }
+      // Hard paywall: must be subscribed (also re-verify via Stripe)
+      try {
+        const { data: sub } = await supabase.functions.invoke("ho-check-subscription");
+        if (!sub?.subscribed) {
+          navigate("/home-office/onboarding?step=paywall");
+          return;
+        }
+      } catch {
+        if (!profile?.subscribed) {
+          navigate("/home-office/onboarding?step=paywall");
+          return;
+        }
       }
       setDisplayName(profile.full_name || "");
     })();
