@@ -24,6 +24,16 @@ const HomeOffice = () => {
         navigate("/home-office/welcome");
         return;
       }
+      // Owner bypass — full access, no onboarding/paywall
+      if (data.user.email?.toLowerCase() === "terellebony@gmail.com") {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+        setDisplayName(profile?.full_name || "Terelle");
+        return;
+      }
       const { data: profile } = await supabase
         .from("profiles")
         .select("full_name, onboarded, subscribed")
