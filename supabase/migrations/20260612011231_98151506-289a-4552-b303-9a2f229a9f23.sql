@@ -1,0 +1,2 @@
+UPDATE public.clients SET owner_user_id = '1f979745-5786-4ad2-9dbc-00706e0921f0' WHERE owner_user_id IS NULL;
+UPDATE public.invoices SET owner_user_id = '1f979745-5786-4ad2-9dbc-00706e0921f0' WHERE owner_user_id IS NULL;
