@@ -822,6 +822,44 @@ const InvoicePortal = () => {
   const [payingId, setPayingId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
 
+  type Business = {
+    user_id: string;
+    business_name: string;
+    owner_name: string | null;
+    has_stripe: boolean;
+    zelle_handle: string | null;
+    cashapp_handle: string | null;
+    payment_methods: string[];
+  };
+  const RDG_BUSINESS: Business = {
+    user_id: "rdg",
+    business_name: "Reed Digital Group",
+    owner_name: null,
+    has_stripe: true,
+    zelle_handle: null,
+    cashapp_handle: null,
+    payment_methods: ["stripe"],
+  };
+  const [businesses, setBusinesses] = useState<Business[]>([RDG_BUSINESS]);
+  const [selectedBiz, setSelectedBiz] = useState<Business>(RDG_BUSINESS);
+  const [bizSearch, setBizSearch] = useState("");
+  const [bizOpen, setBizOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.rpc("list_businesses");
+      if (!error && Array.isArray(data)) {
+        setBusinesses([RDG_BUSINESS, ...(data as Business[])]);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filteredBiz = businesses.filter((b) =>
+    b.business_name.toLowerCase().includes(bizSearch.toLowerCase())
+  );
+  const isRDG = selectedBiz.user_id === "rdg";
+
   useEffect(() => {
     if (searchParams.get("payment") === "success") {
       toast({ title: "Payment successful", description: "Thank you for your payment." });
