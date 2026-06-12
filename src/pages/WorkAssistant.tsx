@@ -92,6 +92,7 @@ const WorkAssistant = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
   const [loading, setLoading] = useState(false);
+  const [displayName, setDisplayName] = useState<string>("");
 
   // History
   const [historyDates, setHistoryDates] = useState<string[]>([]);
@@ -153,6 +154,19 @@ const WorkAssistant = () => {
   useEffect(() => {
     if (!token) navigate("/home-office/login");
   }, [token, navigate]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      setDisplayName(profile?.full_name || "");
+    })();
+  }, []);
 
   const api = useCallback(
     async (action: string, data: any = {}) => {
