@@ -36,7 +36,9 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Government", href: "/government" },
-  { label: "Apps", href: "/home-office" },
+  { label: "App", href: "/home-office/welcome" },
+  { label: "Membership", href: "/membership" },
+  { label: "Referral", href: "/referral" },
   { label: "Contact", href: "/contact" },
 ];
 

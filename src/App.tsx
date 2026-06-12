@@ -46,6 +46,8 @@ import AdminInvoices from "./pages/apps/AdminInvoices";
 import AdminBills from "./pages/apps/AdminBills";
 import AdminTaxes from "./pages/apps/AdminTaxes";
 import ClientPortal from "./pages/apps/ClientPortal";
+import Membership from "./pages/Membership";
+import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -116,6 +118,8 @@ const App = () => (
             <Route path="/apps/admin/bills" element={<AdminBills />} />
             <Route path="/apps/admin/taxes" element={<AdminTaxes />} />
             <Route path="/apps/client/portal" element={<ClientPortal />} />
+            <Route path="/membership" element={<Membership />} />
+            <Route path="/referral" element={<Referral />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
