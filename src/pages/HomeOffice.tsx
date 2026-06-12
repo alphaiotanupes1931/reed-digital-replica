@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,9 +15,26 @@ const tiles = [
 
 const HomeOffice = () => {
   const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState<string>("");
 
   useEffect(() => {
-    if (!sessionStorage.getItem("ho-token")) navigate("/home-office/login");
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        navigate("/home-office/login");
+        return;
+      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, onboarded")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      if (!profile?.onboarded) {
+        navigate("/home-office/onboarding");
+        return;
+      }
+      setDisplayName(profile.full_name || "");
+    })();
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -51,7 +68,9 @@ const HomeOffice = () => {
               <p className="text-sm text-brand italic mt-1">by RDG</p>
             </Link>
             <div className="flex items-center justify-between mt-4">
-              <p className="text-muted-foreground text-sm">Welcome, Mr. Reed</p>
+              <p className="text-muted-foreground text-sm">
+                Welcome{displayName ? `, ${displayName}` : ""}
+              </p>
               <button
                 onClick={handleLogout}
                 className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand transition-colors"
