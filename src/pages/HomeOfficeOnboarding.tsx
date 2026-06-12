@@ -35,6 +35,11 @@ const HomeOfficeOnboarding = () => {
         navigate("/home-office/login");
         return;
       }
+      // Owner bypass — skip onboarding/paywall entirely
+      if (data.user.email?.toLowerCase() === "terellebony@gmail.com") {
+        navigate("/home-office", { replace: true });
+        return;
+      }
       setUserId(data.user.id);
       supabase
         .from("profiles")

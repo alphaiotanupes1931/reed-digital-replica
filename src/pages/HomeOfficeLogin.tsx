@@ -88,6 +88,12 @@ const HomeOfficeLogin = () => {
   // Send signed-in users to the right place (onboarding vs dashboard)
   const routeAfterAuth = async (accessToken: string, userId: string) => {
     sessionStorage.setItem("ho-token", accessToken);
+    // Owner bypass — skip onboarding/paywall entirely
+    const { data: u } = await supabase.auth.getUser();
+    if (u.user?.email?.toLowerCase() === "terellebony@gmail.com") {
+      navigate("/home-office");
+      return;
+    }
     const { data: profile } = await supabase
       .from("profiles")
       .select("onboarded")
