@@ -30,6 +30,7 @@ import InvoiceAdmin from "./pages/InvoiceAdmin";
 import HomeOfficeLogin from "./pages/HomeOfficeLogin";
 import HomeOffice from "./pages/HomeOffice";
 import HomeOfficeResetPassword from "./pages/HomeOfficeResetPassword";
+import HomeOfficeOnboarding from "./pages/HomeOfficeOnboarding";
 import WorkAssistant from "./pages/WorkAssistant";
 import ROITracker from "./pages/ROITracker";
 import HomeOfficeHelp from "./pages/HomeOfficeHelp";
@@ -97,6 +98,7 @@ const App = () => (
             <Route path="/admin" element={<InvoiceAdmin />} />
             <Route path="/home-office/login" element={<HomeOfficeLogin />} />
             <Route path="/home-office/reset-password" element={<HomeOfficeResetPassword />} />
+            <Route path="/home-office/onboarding" element={<HomeOfficeOnboarding />} />
             <Route path="/home-office" element={<HomeOffice />} />
             <Route path="/home-office/work-assistant" element={<WorkAssistant />} />
             <Route path="/home-office/roi-tracker" element={<ROITracker />} />
