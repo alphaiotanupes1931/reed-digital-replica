@@ -108,6 +108,7 @@ const InvoiceAdmin = () => {
   const [password, setPassword] = useState("");
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [displayName, setDisplayName] = useState("Admin");
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
 
@@ -246,6 +247,19 @@ const InvoiceAdmin = () => {
       handleSyncPayments().then(() => fetchData());
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      setDisplayName(profile?.full_name || data.user.email?.split("@")[0] || "Admin");
+    })();
+  }, []);
 
   // Load SOW into form when client selected
   useEffect(() => {
@@ -1329,7 +1343,7 @@ const InvoiceAdmin = () => {
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="py-10 border-b border-border">
           <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">Welcome back</p>
-          <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight mb-8">Mr. Reed</h1>
+          <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight mb-8">{displayName}</h1>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div><span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Clients</span><p className="text-3xl font-mono font-bold mt-1">{clients.length}</p></div>
             <div><span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Invoices</span><p className="text-3xl font-mono font-bold mt-1">{invoices.length}</p></div>
