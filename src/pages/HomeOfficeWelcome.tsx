@@ -98,26 +98,17 @@ const HomeOfficeWelcome = () => {
       <main className="relative z-10 px-6 md:px-12">
         <section ref={heroRef} className="max-w-5xl mx-auto pt-20 md:pt-32 pb-24 relative">
           <motion.div style={{ opacity: heroOpacity }}>
-          <motion.p
-            {...fadeUp}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-[10px] uppercase tracking-[0.4em] text-brand mb-6"
-          >
-            Home Office — Private Workspace
-          </motion.p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] overflow-hidden">
-            {["Run your business", "from one quiet room."].map((line, idx) => (
-              <span key={line} className="block overflow-hidden">
-                <motion.span
-                  initial={{ y: "110%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.9, delay: 0.2 + idx * 0.15, ease: [0.22, 1, 0.36, 1] }}
-                  className={`block ${idx === 1 ? "text-brand" : ""}`}
-                >
-                  {line}
-                </motion.span>
-              </span>
-            ))}
+            <span className="block overflow-hidden">
+              <motion.span
+                initial={{ y: "110%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="block"
+              >
+                Home Office by RDG
+              </motion.span>
+            </span>
           </h1>
 
           {/* Animated underline */}
