@@ -85,15 +85,23 @@ const HomeOfficeLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // If already signed in, send them in
+  // Send signed-in users to the right place (onboarding vs dashboard)
+  const routeAfterAuth = async (accessToken: string, userId: string) => {
+    sessionStorage.setItem("ho-token", accessToken);
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarded")
+      .eq("user_id", userId)
+      .maybeSingle();
+    navigate(profile?.onboarded ? "/home-office" : "/home-office/onboarding");
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        sessionStorage.setItem("ho-token", data.session.access_token);
-        navigate("/home-office");
-      }
+      if (data.session) routeAfterAuth(data.session.access_token, data.session.user.id);
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,8 +109,7 @@ const HomeOfficeLogin = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      if (data.session) sessionStorage.setItem("ho-token", data.session.access_token);
-      navigate("/home-office");
+      if (data.session) await routeAfterAuth(data.session.access_token, data.session.user.id);
     } catch (err: any) {
       toast({ title: "Login failed", description: err.message, variant: "destructive" });
     } finally {
@@ -129,10 +136,9 @@ const HomeOfficeLogin = () => {
       });
       if (error) throw error;
       if (data.session) {
-        sessionStorage.setItem("ho-token", data.session.access_token);
-        navigate("/home-office");
+        await routeAfterAuth(data.session.access_token, data.session.user.id);
       } else {
-        toast({ title: "Account created", description: "Check your email to confirm, then log in." });
+        toast({ title: "Account created", description: "Log in to continue." });
         setMode("login");
       }
     } catch (err: any) {
