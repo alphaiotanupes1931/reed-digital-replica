@@ -35,6 +35,7 @@ serve(async (req) => {
         status: 401,
       });
     }
+    const userId = userData.user.id;
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -47,6 +48,7 @@ serve(async (req) => {
       const { data: notes, error } = await supabase
         .from("daily_notes")
         .select("*")
+        .eq("owner_user_id", userId)
         .eq("note_date", date)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -60,6 +62,7 @@ serve(async (req) => {
       const { data: notes, error } = await supabase
         .from("daily_notes")
         .select("*")
+        .eq("owner_user_id", userId)
         .gte("note_date", start_date)
         .lte("note_date", end_date)
         .order("note_date", { ascending: false })
@@ -74,6 +77,7 @@ serve(async (req) => {
       const { data: dates, error } = await supabase
         .from("daily_notes")
         .select("note_date")
+        .eq("owner_user_id", userId)
         .order("note_date", { ascending: false });
       if (error) throw error;
       const uniqueDates = [...new Set(dates.map((d: any) => d.note_date))];
@@ -86,7 +90,7 @@ serve(async (req) => {
       const { content, note_type, note_date } = data;
       const { data: note, error } = await supabase
         .from("daily_notes")
-        .insert({ content, note_type: note_type || "note", note_date: note_date || new Date().toISOString().split("T")[0] })
+        .insert({ content, note_type: note_type || "note", note_date: note_date || new Date().toISOString().split("T")[0], owner_user_id: userId })
         .select()
         .single();
       if (error) throw error;
@@ -97,7 +101,7 @@ serve(async (req) => {
 
     if (action === "delete_note") {
       const { id } = data;
-      const { error } = await supabase.from("daily_notes").delete().eq("id", id);
+      const { error } = await supabase.from("daily_notes").delete().eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -109,6 +113,7 @@ serve(async (req) => {
       const { data: goals, error } = await supabase
         .from("goals")
         .select("*")
+        .eq("owner_user_id", userId)
         .order("created_at", { ascending: true });
       if (error) throw error;
       return new Response(JSON.stringify({ goals }), {
@@ -120,7 +125,7 @@ serve(async (req) => {
       const { title, description } = data;
       const { data: goal, error } = await supabase
         .from("goals")
-        .insert({ title, description })
+        .insert({ title, description, owner_user_id: userId })
         .select()
         .single();
       if (error) throw error;
@@ -137,7 +142,8 @@ serve(async (req) => {
           completed,
           completed_at: completed ? new Date().toISOString() : null,
         })
-        .eq("id", id);
+        .eq("id", id)
+        .eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -146,7 +152,7 @@ serve(async (req) => {
 
     if (action === "delete_goal") {
       const { id } = data;
-      const { error } = await supabase.from("goals").delete().eq("id", id);
+      const { error } = await supabase.from("goals").delete().eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -158,6 +164,7 @@ serve(async (req) => {
       const { data: bills, error } = await supabase
         .from("monthly_bills")
         .select("*")
+        .eq("owner_user_id", userId)
         .order("created_at", { ascending: true });
       if (error) throw error;
       return new Response(JSON.stringify({ bills }), {
@@ -169,7 +176,7 @@ serve(async (req) => {
       const { company_name, price, notes } = data;
       const { data: bill, error } = await supabase
         .from("monthly_bills")
-        .insert({ company_name, price: Number(price) || 0, notes: notes || null })
+        .insert({ company_name, price: Number(price) || 0, notes: notes || null, owner_user_id: userId })
         .select()
         .single();
       if (error) throw error;
@@ -184,7 +191,7 @@ serve(async (req) => {
       if (company_name !== undefined) updates.company_name = company_name;
       if (price !== undefined) updates.price = Number(price) || 0;
       if (notes !== undefined) updates.notes = notes;
-      const { error } = await supabase.from("monthly_bills").update(updates).eq("id", id);
+      const { error } = await supabase.from("monthly_bills").update(updates).eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -193,7 +200,7 @@ serve(async (req) => {
 
     if (action === "delete_bill") {
       const { id } = data;
-      const { error } = await supabase.from("monthly_bills").delete().eq("id", id);
+      const { error } = await supabase.from("monthly_bills").delete().eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -217,6 +224,7 @@ serve(async (req) => {
       const { data: items, error } = await supabase
         .from("extra_income")
         .select("*")
+        .eq("owner_user_id", userId)
         .order("created_at", { ascending: true });
       if (error) throw error;
       return new Response(JSON.stringify({ items }), {
@@ -228,7 +236,7 @@ serve(async (req) => {
       const { source, price, notes, category } = data;
       const { data: item, error } = await supabase
         .from("extra_income")
-        .insert({ source, price: Number(price) || 0, notes: notes || null, category: category || "extra" })
+        .insert({ source, price: Number(price) || 0, notes: notes || null, category: category || "extra", owner_user_id: userId })
         .select()
         .single();
       if (error) throw error;
@@ -244,7 +252,7 @@ serve(async (req) => {
       if (price !== undefined) updates.price = Number(price) || 0;
       if (notes !== undefined) updates.notes = notes;
       if (category !== undefined) updates.category = category;
-      const { error } = await supabase.from("extra_income").update(updates).eq("id", id);
+      const { error } = await supabase.from("extra_income").update(updates).eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -253,7 +261,7 @@ serve(async (req) => {
 
     if (action === "delete_extra_income") {
       const { id } = data;
-      const { error } = await supabase.from("extra_income").delete().eq("id", id);
+      const { error } = await supabase.from("extra_income").delete().eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -265,6 +273,7 @@ serve(async (req) => {
       const { data: items, error } = await supabase
         .from("tax_reminders")
         .select("*")
+        .eq("owner_user_id", userId)
         .order("due_date", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -283,6 +292,7 @@ serve(async (req) => {
           due_date: due_date || null,
           notes: notes || null,
           paid: !!paid,
+          owner_user_id: userId,
         })
         .select()
         .single();
@@ -300,7 +310,7 @@ serve(async (req) => {
       if (due_date !== undefined) updates.due_date = due_date || null;
       if (notes !== undefined) updates.notes = notes;
       if (paid !== undefined) updates.paid = !!paid;
-      const { error } = await supabase.from("tax_reminders").update(updates).eq("id", id);
+      const { error } = await supabase.from("tax_reminders").update(updates).eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -309,7 +319,7 @@ serve(async (req) => {
 
     if (action === "delete_tax_reminder") {
       const { id } = data;
-      const { error } = await supabase.from("tax_reminders").delete().eq("id", id);
+      const { error } = await supabase.from("tax_reminders").delete().eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
