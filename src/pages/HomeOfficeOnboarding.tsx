@@ -244,6 +244,7 @@ const HomeOfficeOnboarding = () => {
                 {[
                   "Full Home Office suite",
                   "Work Assistant, Bills, Invoices",
+                  "Client Portal for your clients",
                   "All future tools included",
                   "Cancel anytime",
                 ].map((t) => (
