@@ -203,7 +203,7 @@ const HomeOffice = () => {
               <button
                 onClick={() => {
                   const subject = `Invoice from ${businessName || "us"}`;
-                  const body = `Hi,\n\nYour invoice is ready. Here's how to pay:\n\n1. Go to: ${window.location.origin}/portal\n2. Enter our Business ID: ${businessId}\n3. Enter the email address this invoice was sent to\n4. Pay with card, Zelle, or Cash App\n\nThanks,\n${displayName || businessName}`;
+                  const body = `Hi,\n\nYour invoice is ready. Here's how to pay:\n\n1. Go to: https://reeddigitalgroup.com/portal\n2. Enter our Business ID: ${businessId}\n3. Enter the email address this invoice was sent to\n4. Pay with card, Zelle, or Cash App\n\nThanks,\n${displayName || businessName}`;
                   navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
                   toast.success("Email copied to clipboard");
                 }}
@@ -219,7 +219,7 @@ Hi,
 
 Your invoice is ready. Here's how to pay:
 
-1. Go to: ${window.location.origin}/portal
+1. Go to: https://reeddigitalgroup.com/portal
 2. Enter our Business ID: ${businessId}
 3. Enter the email address this invoice was sent to
 4. Pay with card, Zelle, or Cash App
