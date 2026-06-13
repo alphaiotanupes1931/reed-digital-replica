@@ -87,7 +87,7 @@ const AboutPage = () => {
                   <span className="section-label font-mono">About Us</span>
                   <TypedHeader text="Building digital experiences since 2020" className="mt-4 mb-6" />
                   <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                    We're a remote-first digital agency passionate about helping businesses 
+                    We're a remote based agency in DC, passionate about helping businesses
                     stand out online with beautiful, functional websites and applications.
                   </p>
                 </div>
