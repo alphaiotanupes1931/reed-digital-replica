@@ -59,7 +59,7 @@ const AppsLogin = () => {
         if (planParam) {
           startCheckout(planParam);
         } else {
-          navigate("/apps/dashboard", { replace: true });
+          navigate("/apps", { replace: true });
         }
       }
     });
@@ -111,7 +111,7 @@ const AppsLogin = () => {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/apps/dashboard` },
+          options: { emailRedirectTo: `${window.location.origin}/apps` },
         });
         if (error) throw error;
         toast({ title: "Account created", description: "Check your inbox to confirm, or sign in if confirmation is disabled." });
@@ -119,9 +119,9 @@ const AppsLogin = () => {
         if (data.session) {
           if (planParam) {
             const ok = await startCheckout(planParam);
-            if (!ok) navigate("/apps/dashboard");
+            if (!ok) navigate("/apps");
           } else {
-            navigate("/apps/dashboard");
+            navigate("/apps");
           }
         }
       } else {
@@ -129,9 +129,9 @@ const AppsLogin = () => {
         if (error) throw error;
         if (planParam) {
           const ok = await startCheckout(planParam);
-          if (!ok) navigate("/apps/dashboard");
+          if (!ok) navigate("/apps");
         } else {
-          navigate("/apps/dashboard");
+          navigate("/apps");
         }
       }
     } catch (err: any) {
@@ -146,12 +146,12 @@ const AppsLogin = () => {
     try {
       const redirectPath = planParam
         ? `/apps/login?plan=${encodeURIComponent(planParam)}`
-        : `/apps/dashboard`;
+        : `/apps`;
       const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: `${window.location.origin}${redirectPath}`,
       });
       if (result.error) throw result.error;
-      if (!result.redirected) navigate("/apps/dashboard");
+      if (!result.redirected) navigate("/apps");
     } catch (err: any) {
       toast({ title: "Google sign-in failed", description: err.message, variant: "destructive" });
       setLoading(false);

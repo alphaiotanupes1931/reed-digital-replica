@@ -49,7 +49,7 @@ const AppsResetPassword = () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast({ title: "Password updated", description: "You're all set. Redirecting…" });
-      setTimeout(() => navigate("/apps/dashboard"), 800);
+      setTimeout(() => navigate("/apps"), 800);
     } catch (err: any) {
       toast({ title: "Could not update password", description: err.message, variant: "destructive" });
     } finally {
