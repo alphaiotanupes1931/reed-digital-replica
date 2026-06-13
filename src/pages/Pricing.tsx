@@ -6,121 +6,43 @@ import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
 
 
-const managedPlans = [
+// Build pricing — websites AND apps combined, one-time fee
+const buildPackages = [
+  { name: "Starter", price: "$700 - $1.5k", desc: "1-5 page site or simple single-screen app" },
+  { name: "Business", price: "$2k - $5k", desc: "Up to 10 pages or small app with auth", popular: true },
+  { name: "Professional", price: "$6k - $12k", desc: "E-commerce, client portal, or multi-screen app with backend" },
+  { name: "Scale", price: "$15k - $30k", desc: "Custom platforms, integrations, iOS + Android apps" },
+  { name: "Enterprise", price: "$30k+", desc: "Multi-site, multi-user platforms, advanced security" },
+];
+
+// Maintenance plans — monthly recurring (formerly "managed" plans)
+const maintenancePlans = [
   {
     name: "Starter",
     price: "$300",
-    tagline: "Perfect for new businesses",
-    features: [
-      "No build fee",
-      "Up to 5 pages",
-      "Hosting, SSL, backups",
-      "Basic SEO",
-      "2 updates / month",
-      "48hr response",
-    ],
+    tagline: "Up to 5 pages · hosting, SSL, basic SEO · 2 updates/mo",
   },
   {
     name: "Business",
     price: "$400",
     popular: true,
-    tagline: "Most small businesses pick this",
-    features: [
-      "No build fee",
-      "Up to 10 pages + CMS / blog",
-      "Hosting, security, monitoring",
-      "On-page SEO + monthly report",
-      "5 updates / month",
-      "24hr response",
-    ],
+    tagline: "Up to 10 pages + CMS · monitoring · 5 updates/mo · 24hr response",
   },
   {
     name: "Professional",
     price: "$500",
-    tagline: "For growing brands",
-    features: [
-      "Everything in Business",
-      "Up to 20 pages, e-com or portal",
-      "Unlimited minor changes",
-      "Same-day urgent response",
-      "Monthly strategy call",
-      "Analytics + conversion reports",
-    ],
+    tagline: "Up to 20 pages, e-com/portal · unlimited minor changes · monthly strategy call",
   },
   {
     name: "Scale",
     price: "$600",
-    tagline: "High-traffic, high-touch",
-    features: [
-      "Everything in Professional",
-      "Unlimited pages + integrations",
-      "Dedicated project manager",
-      "7-day priority support",
-      "Bi-weekly strategy calls",
-      "Custom analytics dashboard",
-    ],
+    tagline: "Unlimited pages + integrations · dedicated PM · bi-weekly calls",
   },
   {
     name: "Enterprise",
     price: "$700",
-    tagline: "Multi-site, custom platforms",
-    features: [
-      "Custom architecture + APIs",
-      "Multi-user / multi-site",
-      "SLA-backed uptime",
-      "Dedicated team",
-      "Compliance + security reviews",
-    ],
+    tagline: "Custom platforms · SLA · dedicated team · compliance reviews",
   },
-];
-
-const buyOutrightPackages = [
-  { name: "Starter", price: "$1.5k - $3k", desc: "1-5 pages, responsive, basic SEO" },
-  { name: "Business", price: "$3.5k - $7.5k", desc: "5-10 pages, CMS, blog, animations", popular: true },
-  { name: "Professional", price: "$8k - $15k", desc: "10-20 pages, e-commerce, portals" },
-  { name: "Enterprise", price: "$15k+", desc: "Complex integrations, APIs, multi-user" },
-];
-
-const mobilePackages = [
-  { name: "MVP", price: "$10k - $20k", desc: "Single platform, core features" },
-  { name: "Standard", price: "$20k - $40k", desc: "Auth, backend, push notifications" },
-  { name: "Full-Featured", price: "$40k - $75k", desc: "iOS & Android, payments, admin" },
-  { name: "Enterprise", price: "Custom Quote", desc: "Multi-platform, advanced security" },
-];
-
-const managedAppPlans = [
-  {
-    name: "Starter",
-    price: "$500",
-    tagline: "Solo founders launching a single-platform MVP",
-  },
-  {
-    name: "Business",
-    price: "$600",
-    popular: true,
-    tagline: "Most small businesses launching their first app",
-  },
-  {
-    name: "Professional",
-    price: "$700",
-    tagline: "Growing apps with auth, backend, and push",
-  },
-  {
-    name: "Scale",
-    price: "$800",
-    tagline: "iOS & Android with payments and admin tools",
-  },
-  {
-    name: "Enterprise",
-    price: "$900",
-    tagline: "Multi-platform apps with advanced security",
-  },
-];
-
-const maintenancePlans = [
-  { name: "Basic", price: "$150/mo", desc: "Hosting, SSL, backups, security monitoring, 1 update/mo" },
-  { name: "Standard", price: "$300/mo", desc: "Everything in Basic, 3 updates/mo, uptime monitoring, 48hr response", popular: true },
-  { name: "Premium", price: "$500/mo", desc: "Unlimited minor updates, priority support, monthly performance report" },
 ];
 
 const socialMedia = [
@@ -162,8 +84,6 @@ const faqs = [
 
 const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [billing, setBilling] = useState<"monthly" | "outright">("monthly");
-  const [appBilling, setAppBilling] = useState<"monthly" | "outright">("monthly");
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
