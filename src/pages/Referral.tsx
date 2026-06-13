@@ -44,30 +44,14 @@ const Referral = () => {
       <Header />
       <main className="pt-32 pb-24">
         <div className="container max-w-3xl mx-auto px-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-[10px] uppercase tracking-[0.4em] text-brand mb-4">Referral Program</p>
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight">Send work. Earn 10%.</h1>
-            <p className="mt-6 max-w-xl text-muted-foreground leading-relaxed">
-              Refer a client. When they pay their deposit, you get <strong>10% of every invoice</strong> they
-              ever pay us. No cap. Forever.
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Send work. Earn 10%.</h1>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Refer a client. Get 10% of every invoice they pay. Forever.
             </p>
           </motion.div>
 
-          <div className="mt-12 grid grid-cols-3 gap-px bg-foreground/10 border-2 border-foreground">
-            {[
-              { k: "01", t: "Submit", d: "Send us their info below." },
-              { k: "02", t: "We close", d: "We pitch and onboard them." },
-              { k: "03", t: "You earn", d: "10% of every invoice. No cap." },
-            ].map((s) => (
-              <div key={s.k} className="bg-background p-6">
-                <span className="text-brand text-[10px] uppercase tracking-[0.3em]">{s.k}</span>
-                <h3 className="mt-2 font-bold">{s.t}</h3>
-                <p className="mt-1 text-xs text-muted-foreground">{s.d}</p>
-              </div>
-            ))}
-          </div>
-
-          <form onSubmit={handleSend} className="mt-12 border-2 border-foreground p-8 space-y-8">
+          <form onSubmit={handleSend} className="mt-12 border border-border p-8 space-y-8">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className={label}>Your name *</label>

@@ -4,7 +4,6 @@ import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
 
 const ContactPage = () => {
   useEffect(() => {
@@ -22,10 +21,10 @@ const ContactPage = () => {
   }, []);
 
   const contactItems = [
-    { icon: Mail, label: "Email", value: "reeddigitalgroup@gmail.com", href: "mailto:reeddigitalgroup@gmail.com" },
-    { icon: Phone, label: "Phone", value: "(301) 332-4084", href: "tel:3013324084" },
-    { icon: MapPin, label: "Location", value: "Remote Based Agency" },
-    { icon: Clock, label: "Office Hours", value: "Mon – Sun: 9 AM – 5 PM EST" },
+    { label: "Email", value: "reeddigitalgroup@gmail.com", href: "mailto:reeddigitalgroup@gmail.com" },
+    { label: "Phone", value: "(301) 332-4084", href: "tel:3013324084" },
+    { label: "Location", value: "Remote" },
+    { label: "Hours", value: "Mon–Sun · 9–5 EST" },
   ];
 
   return (
@@ -51,31 +50,19 @@ const ContactPage = () => {
           {/* Contact Info Cards */}
           <div className="container">
             <div className="max-w-4xl mx-auto">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border mb-20 border border-border">
                 {contactItems.map((item, index) => (
                   <ScrollReveal key={item.label} delay={index * 0.1}>
-                    <motion.div
-                      className="group border border-border p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 relative overflow-hidden"
-                      whileHover={{ y: -4 }}
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
-                      />
-                      <div className="relative z-10">
-                        <item.icon className="w-5 h-5 text-primary mx-auto mb-3" />
-                        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">{item.label}</h3>
-                        {item.href ? (
-                          <a
-                            href={item.href}
-                            className="text-sm font-mono hover:text-primary transition-colors break-all"
-                          >
-                            {item.value}
-                          </a>
-                        ) : (
-                          <p className="text-sm font-mono text-muted-foreground">{item.value}</p>
-                        )}
-                      </div>
-                    </motion.div>
+                    <div className="bg-background p-6 text-center h-full">
+                      <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">{item.label}</h3>
+                      {item.href ? (
+                        <a href={item.href} className="text-sm font-mono hover:text-brand transition-colors break-all">
+                          {item.value}
+                        </a>
+                      ) : (
+                        <p className="text-sm font-mono">{item.value}</p>
+                      )}
+                    </div>
                   </ScrollReveal>
                 ))}
               </div>
