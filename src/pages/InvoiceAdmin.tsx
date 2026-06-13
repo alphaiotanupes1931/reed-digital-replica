@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
+import RevenueCalendar from "@/components/RevenueCalendar";
 
 const ADMIN_PASSWORD = "shell0423";
 const PROCESSING_FEE_RATE = 0.029;
