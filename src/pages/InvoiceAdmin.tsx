@@ -650,7 +650,7 @@ const InvoiceAdmin = () => {
   const selectedClient = clients.find((c) => c.id === selectedClientId);
   const clientInvoices = selectedClient ? invoices.filter((i) => i.client_id === selectedClient.id) : [];
 
-  // ── Client Detail (SOW + Invoices tabs) ──
+  // ── Client Detail ──
   if (selectedClient) {
     return (
       <div className="min-h-screen bg-background relative overflow-hidden">
@@ -658,664 +658,111 @@ const InvoiceAdmin = () => {
           <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
         </div>
         <div className="border-b border-border relative z-10">
-          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-            <button onClick={() => setSelectedClientId(null)} className="flex items-center gap-3 text-xs font-mono text-foreground hover:text-primary uppercase tracking-[0.2em]">
-              <ArrowLeft className="h-4 w-4" /> All Clients
+          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <button onClick={() => setSelectedClientId(null)} className="flex items-center gap-2 text-xs font-mono text-foreground hover:text-primary uppercase tracking-widest">
+              <ArrowLeft className="h-4 w-4" /> Back
             </button>
-            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">{selectedClient.company_name}</span>
+            <span className="text-xs font-mono text-foreground uppercase tracking-widest">{selectedClient.company_name}</span>
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 py-10 relative z-10">
-          <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">Client</p>
-          <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight mb-1">
-            {selectedClient.company_name}
-          </h1>
-          <p className="text-sm font-mono text-foreground/70">
-            {selectedClient.owner_name || "—"} · {selectedClient.email}
-          </p>
+        <div className="max-w-4xl mx-auto px-6 py-8 relative z-10">
+          <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">{selectedClient.company_name}</h1>
+          <p className="text-sm font-mono text-muted-foreground mt-1">{selectedClient.email}</p>
 
-          <Tabs defaultValue="sow" className="mt-10">
-            <TabsList className="bg-transparent border-b border-border rounded-none p-0 h-auto w-full justify-start gap-8">
-              <TabsTrigger value="sow" className="rounded-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-foreground border-b-2 border-transparent px-0 pb-3 font-mono text-xs uppercase tracking-[0.2em]">
-                Scope of Work
-              </TabsTrigger>
-              <TabsTrigger value="invoices" className="rounded-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-foreground border-b-2 border-transparent px-0 pb-3 font-mono text-xs uppercase tracking-[0.2em]">
-                Invoices ({clientInvoices.length})
-              </TabsTrigger>
-            </TabsList>
+          <div className="mt-10 space-y-8">
+            {/* Scope of Work */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Scope of Work</p>
+                <button onClick={handleSaveSow} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+              </div>
+              <textarea
+                value={sowText}
+                onChange={(e) => setSowText(e.target.value)}
+                placeholder="What you're building..."
+                rows={6}
+                className="w-full bg-transparent border border-border p-4 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
+              />
+            </div>
 
-            {/* SOW TAB */}
-            <TabsContent value="sow" className="mt-8 space-y-10">
-              {/* Hide SOW from client toggle */}
-              {selectedClientId && (
-                <div className={`border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${selectedClient?.sow_hidden ? "border-destructive/50 bg-destructive/5" : "border-border"}`}>
-                  <div>
-                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">SOW Visibility</p>
-                    <p className="text-sm font-mono font-bold text-foreground">
-                      {selectedClient?.sow_hidden ? "SOW hidden — client sees only invoices" : "SOW shown in client portal"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={async () => {
-                      if (!selectedClientId) return;
-                      const next = !selectedClient?.sow_hidden;
-                      try {
-                        const res = await supabase.functions.invoke("invoice-admin", {
-                          body: { action: "set_sow_hidden", client_id: selectedClientId, sow_hidden: next, password: ADMIN_PASSWORD },
-                        });
-                        if (res.error) throw res.error;
-                        toast({ title: next ? "SOW hidden from client" : "SOW visible to client" });
-                        fetchData();
-                      } catch (err: any) {
-                        toast({ title: "Error", description: err.message, variant: "destructive" });
-                      }
-                    }}
-                    className="text-xs font-mono uppercase tracking-[0.15em] border border-border px-4 py-2 hover:border-primary hover:text-primary transition-colors"
-                  >
-                    {selectedClient?.sow_hidden ? "Show SOW to Client" : "Hide SOW from Client"}
-                  </button>
-                </div>
-              )}
-
-              {/* SOW Readiness indicator */}
-              {(() => {
-                const t = (sowText || "").trim();
-                const hasSow = t.length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(t);
-                return (
-                  <div className={`border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${hasSow ? "border-emerald-500/50 bg-emerald-500/5" : "border-dashed border-border"}`}>
-                    <div>
-                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Client Portal Status</p>
-                      <p className="text-sm font-mono font-bold text-foreground">
-                        {hasSow ? "SOW is visible to client" : "SOW is hidden — client sees \"SOW is not ready\""}
-                      </p>
-                    </div>
-                    {hasSow && (
-                      <button
-                        onClick={async () => {
-                          if (!confirm("Mark SOW as not ready? This clears the scope text and the client will see a placeholder.")) return;
-                          setSowText("");
-                          if (!selectedClientId) return;
-                          try {
-                            const res = await supabase.functions.invoke("invoice-admin", {
-                              body: {
-                                action: "save_sow",
-                                client_id: selectedClientId,
-                                scope_of_work: "",
-                                password: ADMIN_PASSWORD,
-                              },
-                            });
-                            if (res.error) throw res.error;
-                            toast({ title: "SOW marked as not ready" });
-                            fetchData();
-                          } catch (err: any) {
-                            toast({ title: "Error", description: err.message, variant: "destructive" });
-                          }
-                        }}
-                        className="text-xs font-mono uppercase tracking-[0.15em] text-foreground hover:text-destructive transition-colors border border-border px-4 py-2"
-                      >
-                        Mark as Not Ready
-                      </button>
-                    )}
-                  </div>
-                );
-              })()}
-
-              {/* Client Review Status & Comments */}
-              {(() => {
-                const status = selectedClient?.sow_status || "pending";
-                const comments: SowComment[] = Array.isArray(selectedClient?.sow_comments) ? selectedClient!.sow_comments! : [];
-                const badge =
-                  status === "approved" ? "bg-emerald-500 text-background"
-                  : status === "rejected" ? "bg-destructive text-destructive-foreground"
-                  : "bg-foreground/10 text-foreground border border-border";
-                const label = status === "approved" ? "Client Approved" : status === "rejected" ? "Changes Requested" : "Awaiting Client Review";
-                return (
-                  <div className="border border-border p-5">
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Client Review</p>
-                      <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${badge}`}>{label}</span>
-                    </div>
-                    {comments.length === 0 ? (
-                      <p className="text-xs font-mono text-foreground/40 mt-4">No comments from client yet.</p>
-                    ) : (
-                      <div className="mt-4 space-y-3 max-h-72 overflow-y-auto pr-2">
-                        {comments.map((c, i) => (
-                          <div key={i} className="border-l-2 border-foreground/30 pl-4">
-                            <div className="flex items-baseline gap-2 mb-1 flex-wrap">
-                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
-                                {c.author === "admin" ? "You" : selectedClient?.owner_name || selectedClient?.company_name || "Client"}
-                              </span>
-                              <span className="text-[10px] font-mono text-foreground/40">{new Date(c.created_at).toLocaleString()}</span>
-                              <button
-                                onClick={() => handleDeleteSowComment(i)}
-                                className="ml-auto text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 hover:text-destructive transition-colors"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                            <p className="text-sm font-mono text-foreground whitespace-pre-wrap">{c.message}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-
-              {/* Client-selected Maintenance Plan */}
-              {(() => {
-                const plan = selectedClient?.maintenance_plan || "";
-                const noPlanOffered = plan === "none";
-                let displayLabel = "";
-                if (noPlanOffered) {
-                  displayLabel = "No maintenance plan offered";
-                } else if (plan.startsWith("custom:")) {
-                  const m = plan.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/);
-                  displayLabel = m ? `Custom — ${m[1]} ($${m[2]}/mo)` : "Custom";
-                } else {
-                  const [cat, name] = plan.split(":");
-                  const catLabel =
-                    cat === "cms" ? "Brochure + CMS"
-                    : cat === "smb" ? "Small Business"
-                    : cat === "landing" ? "Landing Page"
-                    : "";
-                  displayLabel = catLabel ? `${catLabel} — ${name}` : plan;
-                }
-                const setMaintenanceOffer = async (value: string | null) => {
-                  if (!selectedClient) return;
-                  try {
-                    const res = await supabase.functions.invoke("sow-response", {
-                      body: { email: selectedClient.email, action: "set_maintenance_plan", maintenance_plan: value },
-                    });
-                    if (res.error) throw res.error;
-                    const errData = (res.data as { error?: string } | null)?.error;
-                    if (errData) throw new Error(errData);
-                    toast({ title: value === "none" ? "Maintenance hidden from client" : "Maintenance offered to client" });
-                    fetchData();
-                  } catch (err: any) {
-                    toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
-                  }
-                };
-                return (
-                  <div className={`border p-5 ${plan && !noPlanOffered ? "border-primary bg-primary/5" : "border-border"}`}>
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
-                        Client Maintenance Plan Selection
-                      </p>
-                      <span className={`text-[10px] font-mono uppercase tracking-[0.2em] px-3 py-1 ${noPlanOffered ? "bg-foreground/10 text-foreground border border-border" : plan ? "bg-primary text-primary-foreground" : "bg-foreground/10 text-foreground border border-border"}`}>
-                        {noPlanOffered ? "Hidden" : plan ? "Selected" : "Not Selected"}
-                      </span>
-                    </div>
-                    {plan && !noPlanOffered ? (
-                      <p className="text-lg font-mono font-bold text-foreground mt-3">
-                        {displayLabel}
-                      </p>
-                    ) : noPlanOffered ? (
-                      <p className="text-sm font-mono text-foreground/70 mt-3">
-                        Maintenance plan options are hidden from this client.
-                      </p>
-                    ) : (
-                      <p className="text-xs font-mono text-foreground/40 mt-4">
-                        Client has not picked a maintenance plan yet.
-                      </p>
-                    )}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <button
-                        onClick={() => setMaintenanceOffer(noPlanOffered ? null : "none")}
-                        className="text-[10px] font-mono uppercase tracking-[0.2em] border border-border px-3 py-2 hover:border-foreground transition-colors"
-                      >
-                        {noPlanOffered ? "Offer Maintenance Plans" : "Hide Maintenance (No Plan)"}
-                      </button>
-                      {plan && (
-                        <button
-                          onClick={() => setMaintenanceOffer(null)}
-                          className="text-[10px] font-mono uppercase tracking-[0.2em] border border-border px-3 py-2 hover:border-destructive hover:text-destructive transition-colors"
-                        >
-                          Clear Selection
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Project summary */}
-              <div className="border border-border p-5">
-                <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-4">Project Summary (shown at top of client portal)</label>
-                <div className="grid gap-4">
-                  <div>
-                    <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Project Type</span>
-                    <select
-                      value={projectType}
-                      onChange={(e) => setProjectType(e.target.value)}
-                      className="w-full bg-background border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground"
-                    >
-                      <option value="">— Select project type —</option>
-                      {[
-                        "Landing page",
-                        "Linktree-style link hub",
-                        "One-pager",
-                        "Personal portfolio website",
-                        "Blog",
-                        "Small business brochure website",
-                        "Restaurant website",
-                        "Multi-page marketing website",
-                        "Brochure website with CMS",
-                        "Membership / community site",
-                        "Directory / listing site",
-                        "Booking / reservation platform",
-                        "E-commerce website (small catalog)",
-                        "E-commerce website (full catalog)",
-                        "Web app",
-                        "SaaS product website + platform",
-                        "Marketplace (two-sided)",
-                        "Enterprise web platform",
-                      ].map((t) => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
+            {/* Phases */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Phases</p>
+                <button onClick={addPhase} className="text-xs font-mono uppercase tracking-widest text-foreground hover:text-primary">+ Add</button>
+              </div>
+              <div className="space-y-2">
+                {phases.map((p, i) => (
+                  <div key={i} className="flex gap-3 items-center border border-border p-3">
+                    <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}</span>
+                    <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm flex-1 px-0" />
+                    <select value={p.status} onChange={(e) => updatePhase(i, { status: e.target.value as PhaseStatus })} className="bg-transparent border border-border font-mono text-xs uppercase px-2 py-1">
+                      {PHASE_STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace("_", " ")}</option>)}
                     </select>
+                    <button onClick={() => removePhase(i)} className="text-xs font-mono text-destructive hover:underline">remove</button>
                   </div>
-                  <div className="grid md:grid-cols-3 gap-3">
-                    <div>
-                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Build Cost</span>
-                      <input
-                        value={projectBuildCost}
-                        onChange={(e) => setProjectBuildCost(e.target.value)}
-                        placeholder="$500–800"
-                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
-                      />
-                    </div>
-                    <div>
-                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Custom Plan Price / mo (optional)</span>
-                      <input
-                        value={projectMaintenanceCost}
-                        onChange={(e) => setProjectMaintenanceCost(e.target.value)}
-                        placeholder="$250 (shows as Custom plan to client)"
-                        className="w-full bg-transparent border border-border rounded-none p-3 font-mono text-sm focus:outline-none focus:border-foreground text-foreground placeholder:text-foreground/30"
-                      />
-                    </div>
-                    <div>
-                      <span className="block text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 mb-1">Estimated Total (auto)</span>
-                      <input
-                        value={projectEstimatedTotal}
-                        readOnly
-                        placeholder="auto-calculated"
-                        className="w-full bg-foreground/5 border border-border rounded-none p-3 font-mono text-sm text-foreground placeholder:text-foreground/30 cursor-not-allowed"
-                      />
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
+            </div>
 
-              <div>
-                <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Scope of Work</label>
-                <textarea
-                  value={sowText}
-                  onChange={(e) => setSowText(e.target.value)}
-                  placeholder="Describe the project scope, deliverables, timeline, and key milestones..."
-                  rows={10}
-                  className="w-full bg-transparent border border-border rounded-none p-4 font-mono text-sm focus-visible:ring-0 focus-visible:outline-none focus-visible:border-foreground text-foreground placeholder:text-foreground/30 resize-y"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <label className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Project Phases</label>
-                  <button onClick={addPhase} className="text-xs font-mono uppercase tracking-[0.15em] text-foreground hover:text-primary">+ Add Phase</button>
-                </div>
-                <div className="space-y-3">
-                  {phases.map((p, i) => (
-                    <div key={i} className="flex gap-3 items-center border border-border p-3">
-                      <span className="text-xs font-mono text-foreground/40 w-8">{String(i + 1).padStart(2, "0")}</span>
-                      <Input
-                        value={p.name}
-                        onChange={(e) => updatePhase(i, { name: e.target.value })}
-                        className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm flex-1"
-                      />
-                      <Select value={p.status} onValueChange={(v) => updatePhase(i, { status: v as PhaseStatus })}>
-                        <SelectTrigger className="h-9 w-40 font-mono text-xs uppercase tracking-[0.15em] rounded-none">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="font-mono">
-                          {PHASE_STATUS_OPTIONS.map((s) => (
-                            <SelectItem key={s} value={s} className="font-mono text-xs uppercase">{s.replace("_", " ")}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <button onClick={() => removePhase(i)} className="text-xs font-mono text-destructive hover:underline">remove</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Button onClick={handleSaveSow} className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">
-                Save Scope of Work
-              </Button>
-            </TabsContent>
-
-            {/* INVOICES TAB */}
-            <TabsContent value="invoices" className="mt-8">
-              <div className="flex justify-between items-center mb-6 gap-3 flex-wrap">
-                {selectedClient && (
-                  <button
-                    onClick={() => togglePaymentHistory(selectedClient.id)}
-                    className="text-xs font-mono uppercase tracking-[0.2em] border border-border h-9 px-4 hover:border-primary hover:text-primary"
-                  >
-                    {paymentHistory[selectedClient.id]?.open ? "Hide Payment History" : "Stripe Payment History"}
-                  </button>
-                )}
-                <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary flex items-center gap-2">
-                  <Plus className="h-4 w-4" />New Invoice
+            {/* Invoices */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Invoices</p>
+                <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+                  {showInvoiceForm ? "Cancel" : "New Invoice"}
                 </button>
               </div>
 
-              {selectedClient && paymentHistory[selectedClient.id]?.open && (
-                <div className="border border-border mb-8 p-6">
-                  <div className="flex items-baseline justify-between mb-4">
-                    <h3 className="text-sm font-mono uppercase tracking-[0.3em] text-foreground">Stripe Payment History</h3>
-                    {paymentHistory[selectedClient.id]?.count != null && (
-                      <p className="text-xs font-mono text-foreground/60">
-                        {paymentHistory[selectedClient.id]!.count} payment(s) · ${paymentHistory[selectedClient.id]!.total!.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
-                      </p>
-                    )}
-                  </div>
-                  {paymentHistory[selectedClient.id]?.loading ? (
-                    <p className="text-sm font-mono text-foreground/60">Loading from Stripe…</p>
-                  ) : paymentHistory[selectedClient.id]?.error ? (
-                    <p className="text-sm font-mono text-destructive">{paymentHistory[selectedClient.id]!.error}</p>
-                  ) : paymentHistory[selectedClient.id]?.payments?.length === 0 ? (
-                    <p className="text-sm font-mono text-foreground/60">No Stripe payments recorded for this client.</p>
-                  ) : (
-                    <div className="divide-y divide-border">
-                      {paymentHistory[selectedClient.id]!.payments!.map((p, idx) => (
-                        <div key={idx} className="py-3 flex items-center justify-between gap-4 flex-wrap">
-                          <div className="min-w-0">
-                            <p className="font-mono text-sm text-foreground truncate">{p.service || p.description || "Payment"}</p>
-                            <p className="font-mono text-[11px] text-foreground/60 uppercase tracking-[0.15em]">
-                              {new Date(p.date).toLocaleString()} · {p.kind.replace("_", " ")} · {p.status}
-                            </p>
-                          </div>
-                          <span className="font-mono font-bold text-foreground">${p.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-foreground/50">{p.currency}</span></span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    onClick={() => loadPaymentHistory(selectedClient.id)}
-                    className="mt-4 text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/60 hover:text-primary"
-                  >
-                    ↻ Refresh from Stripe
-                  </button>
-                </div>
-              )}
-
               <AnimatePresence>
                 {showInvoiceForm && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-border mb-8">
-                    <form onSubmit={handleCreateInvoice} className="p-6 space-y-6">
-                      <div className="grid gap-6 md:grid-cols-2">
-                        <div>
-                          <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Service</label>
-                          <Select value={service} onValueChange={setService}>
-                            <SelectTrigger className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0">
-                              <SelectValue placeholder="Select a service" />
-                            </SelectTrigger>
-                            <SelectContent className="font-mono">
-                              {SERVICE_OPTIONS.map((opt) => (
-                                <SelectItem key={opt} value={opt} className="font-mono text-base">{opt}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Price</label>
-                          <Input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="2500" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0" />
-                          {price && (
-                            <div className="mt-3 font-mono text-sm">
-                              <span>Fee: </span><strong className="text-primary">${calculateFee(parseFloat(price)).toLocaleString()}</strong>
-                              <span className="mx-3">·</span>
-                              <span>Total: </span><strong>${calculateTotal(parseFloat(price)).toLocaleString()}</strong>
-                            </div>
-                          )}
-                        </div>
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-border mb-6">
+                    <form onSubmit={handleCreateInvoice} className="p-5 space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <select value={service} onChange={(e) => setService(e.target.value)} className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground">
+                          <option value="">Select service</option>
+                          {SERVICE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                       </div>
-
-                      <div>
-                        <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Message (optional)</label>
-                        <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={3} className="w-full bg-transparent border-0 border-b border-border font-mono text-base px-0 resize-none focus-visible:outline-none focus-visible:border-foreground" />
+                      <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border font-mono text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                      <div className="flex gap-3">
+                        <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Create</Button>
                       </div>
-
-                      <div className="border-t border-border pt-6">
-                        <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Methods (select one or both)</label>
-                        <div className="grid grid-cols-2 gap-3">
-                          <button
-                            type="button"
-                            onClick={() => setAllowStripe((v) => !v)}
-                            className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
-                              allowStripe
-                                ? "border-primary bg-primary/10 text-foreground"
-                                : "border-border text-foreground/70 hover:border-foreground"
-                            }`}
-                          >
-                            {allowStripe ? "✓ " : ""}Stripe (Card)
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setAllowZelle((v) => !v)}
-                            className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${
-                              allowZelle
-                                ? "border-primary bg-primary/10 text-foreground"
-                                : "border-border text-foreground/70 hover:border-foreground"
-                            }`}
-                          >
-                            {allowZelle ? "✓ " : ""}Zelle
-                          </button>
-                        </div>
-                        <p className="text-[11px] font-mono text-foreground/60 mt-2">
-                          {allowStripe && allowZelle
-                            ? "Client sees both options. Zelle has no processing fee."
-                            : allowZelle
-                            ? "Zelle only — no processing fee added."
-                            : "Stripe only — 2.9% + $0.30 processing fee added."}
-                        </p>
-                        {!allowStripe && !allowZelle && (
-                          <p className="text-[11px] font-mono text-destructive mt-1">Select at least one method.</p>
-                        )}
-                      </div>
-
-                      <div className="border-t border-border pt-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <p className="text-sm font-mono">Require Deposit</p>
-                          <Switch checked={depositRequired} onCheckedChange={setDepositRequired} />
-                        </div>
-                        {depositRequired && (
-                          <div className="grid gap-6 md:grid-cols-2">
-                            <Input type="number" value={depositAmount} onChange={(e) => setDepositAmount(e.target.value)} placeholder="Deposit amount" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono px-0" />
-                            <Input type="date" value={depositDueDate} onChange={(e) => setDepositDueDate(e.target.value)} className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono px-0" />
-                          </div>
-                        )}
-                      </div>
-
-                      <Button type="submit" className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">Create</Button>
                     </form>
                   </motion.div>
                 )}
               </AnimatePresence>
 
               {clientInvoices.length === 0 ? (
-                <div className="py-20 text-center border-t border-border">
-                  <p className="text-lg font-mono text-foreground">No invoices yet for this client</p>
-                </div>
+                <p className="text-sm font-mono text-muted-foreground py-8 border-t border-border">No invoices.</p>
               ) : (
                 <div className="border-t border-border">
-                  {clientInvoices.map((inv, i) => (
-                    <div key={inv.id} className="border-b border-border py-6">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 flex-wrap">
-                            <span className="font-mono font-semibold text-foreground text-lg">{inv.service}</span>
-                            <span className={`text-xs font-mono uppercase tracking-[0.15em] ${inv.status === "paid" ? "text-emerald-500" : "text-primary"}`}>{inv.status}</span>
-                            {inv.hidden_from_client && (
-                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-destructive/10 text-destructive border border-destructive/40">Hidden</span>
-                            )}
-                            {inv.deactivated && (
-                              <span className="text-[10px] font-mono uppercase tracking-[0.2em] px-2 py-0.5 bg-foreground/10 text-foreground/70 border border-border">Deactivated</span>
-                            )}
-                            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50 border border-border px-2 py-0.5">
-                              {(() => {
-                                const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
-                                const hasS = m.includes("stripe"), hasZ = m.includes("zelle");
-                                if (hasS && hasZ) return "Stripe + Zelle";
-                                if (hasZ) return "Zelle";
-                                return "Stripe";
-                              })()}
-                            </span>
-                          </div>
-                          <p className="text-sm font-mono text-foreground/60 mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
+                  {clientInvoices.map((inv) => (
+                    <div key={inv.id} className="border-b border-border py-4 flex items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono font-bold text-foreground">{inv.service}</span>
+                          <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
                         </div>
-                        <div className="flex items-center gap-6 shrink-0">
-                          <span className="text-2xl font-mono font-bold">${inv.price.toLocaleString()}</span>
-                          <div className="flex gap-2 flex-wrap">
-                            {inv.status !== "paid" && (() => {
-                              const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
-                              const hasS = m.includes("stripe"), hasZ = m.includes("zelle");
-                              // Cycle: stripe → zelle → both → stripe
-                              let next = "zelle", label = "→ Zelle";
-                              if (hasS && !hasZ) { next = "zelle"; label = "→ Zelle"; }
-                              else if (!hasS && hasZ) { next = "stripe,zelle"; label = "→ Both"; }
-                              else { next = "stripe"; label = "→ Stripe"; }
-                              return (
-                                <button
-                                  onClick={() => handleSetPaymentMethod(inv.id, next)}
-                                  className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]"
-                                  title="Cycle payment methods"
-                                >
-                                  {label}
-                                </button>
-                              );
-                            })()}
-                            {inv.status !== "paid" ? (
-                              <button onClick={() => handleSetStatus(inv.id, "paid")} className="h-9 px-4 border border-border hover:border-emerald-500 hover:text-emerald-500 text-xs font-mono uppercase tracking-[0.1em]">Mark Paid</button>
-                            ) : (
-                              <button onClick={() => handleSetStatus(inv.id, "approved")} className="h-9 px-4 border border-border hover:border-foreground text-xs font-mono uppercase tracking-[0.1em]">Mark Unpaid</button>
-                            )}
-                            <button
-                              onClick={() => handleToggleVisibility(inv.id, !!inv.hidden_from_client)}
-                              className={`h-9 px-4 border text-xs font-mono uppercase tracking-[0.1em] ${inv.hidden_from_client ? "border-destructive/60 text-destructive hover:bg-destructive/10" : "border-border hover:border-primary hover:text-primary"}`}
-                              title={inv.hidden_from_client ? "Currently hidden from client portal — click to show" : "Currently visible to client — click to hide"}
-                            >
-                              {inv.hidden_from_client ? "Show to Client" : "Hide from Client"}
-                            </button>
-                            <button
-                              onClick={() => handleToggleDeactivated(inv.id, !!inv.deactivated)}
-                              className={`h-9 px-4 border text-xs font-mono uppercase tracking-[0.1em] ${inv.deactivated ? "border-primary text-primary hover:bg-primary/10" : "border-border hover:border-amber-500 hover:text-amber-500"}`}
-                              title={inv.deactivated ? "Reactivate this invoice (only allowed if no other active invoice exists for this client)" : "Deactivate this invoice — frees up the client email for a new invoice and hides this one from them"}
-                            >
-                              {inv.deactivated ? "Reactivate" : "Deactivate"}
-                            </button>
-                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="h-9 px-4 border border-border hover:border-primary hover:text-primary text-xs font-mono uppercase tracking-[0.1em]">{editingInvoiceId === inv.id ? "Cancel" : "Edit"}</button>
-                            <button onClick={() => handleDelete(inv.id)} className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]">Remove</button>
-                          </div>
-                        </div>
+                        <p className="text-xs font-mono text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
                       </div>
-
-                      {editingInvoiceId === inv.id && (
-                        <div className="mt-6 pt-6 border-t border-border space-y-6">
-                          <div className="grid gap-6 md:grid-cols-2">
-                            <div>
-                              <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Service</label>
-                              <Select value={editService} onValueChange={setEditService}>
-                                <SelectTrigger className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0">
-                                  <SelectValue placeholder="Select a service" />
-                                </SelectTrigger>
-                                <SelectContent className="font-mono">
-                                  {SERVICE_OPTIONS.map((opt) => (
-                                    <SelectItem key={opt} value={opt} className="font-mono text-base">{opt}</SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div>
-                              <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Price</label>
-                              <Input type="number" step="0.01" min="0" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0" />
-                              {editPrice && (
-                                <div className="mt-3 font-mono text-sm">
-                                  <span>Fee: </span><strong className="text-primary">${calculateFee(parseFloat(editPrice)).toLocaleString()}</strong>
-                                  <span className="mx-3">·</span>
-                                  <span>Total: </span><strong>${calculateTotal(parseFloat(editPrice)).toLocaleString()}</strong>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Message (optional)</label>
-                            <textarea value={editMessage} onChange={(e) => setEditMessage(e.target.value)} rows={3} className="w-full bg-transparent border-0 border-b border-border font-mono text-base px-0 resize-none focus-visible:outline-none focus-visible:border-foreground" />
-                          </div>
-
-                          <div>
-                            <label className="block text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-3">Payment Methods</label>
-                            <div className="grid grid-cols-2 gap-3">
-                              <button type="button" onClick={() => setEditAllowStripe((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowStripe ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowStripe ? "✓ " : ""}Stripe (Card)</button>
-                              <button type="button" onClick={() => setEditAllowZelle((v) => !v)} className={`h-12 px-4 text-xs font-mono uppercase tracking-[0.15em] border-2 transition-colors ${editAllowZelle ? "border-primary bg-primary/10 text-foreground" : "border-border text-foreground/70 hover:border-foreground"}`}>{editAllowZelle ? "✓ " : ""}Zelle</button>
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="flex items-center justify-between mb-4">
-                              <p className="text-sm font-mono">Require Deposit</p>
-                              <Switch checked={editDepositRequired} onCheckedChange={setEditDepositRequired} />
-                            </div>
-                            {editDepositRequired && (
-                              <div className="grid gap-6 md:grid-cols-2">
-                                <Input type="number" value={editDepositAmount} onChange={(e) => setEditDepositAmount(e.target.value)} placeholder="Deposit amount" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono px-0" />
-                                <Input type="date" value={editDepositDueDate} onChange={(e) => setEditDepositDueDate(e.target.value)} className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono px-0" />
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex gap-3">
-                            <Button onClick={() => handleUpdateInvoice(inv.id)} className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">Save Changes</Button>
-                            <button onClick={() => setEditingInvoiceId(null)} className="h-12 px-6 border border-border hover:border-foreground text-xs font-mono uppercase tracking-[0.2em]">Cancel</button>
-                          </div>
-                        </div>
-                      )}
-
-                      {inv.status === "paid" && (
-                        <div className="mt-4 pt-4 border-t border-border">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-mono text-primary uppercase tracking-[0.2em]">Deliverables ({(inv.deliverables || []).length})</span>
-                            <button onClick={() => setEditingDeliverables(editingDeliverables === inv.id ? null : inv.id)} className="text-xs font-mono uppercase tracking-[0.1em] hover:text-primary">{editingDeliverables === inv.id ? "Close" : "Manage"}</button>
-                          </div>
-                          {(inv.deliverables || []).length > 0 && (
-                            <div className="space-y-1 mb-3">
-                              {(inv.deliverables as Deliverable[]).map((d, di) => (
-                                <div key={di} className="flex items-center gap-3 text-sm font-mono">
-                                  <span className="truncate">↗ {d.label}</span>
-                                  <span className="text-xs text-muted-foreground truncate max-w-[200px]">{d.url}</span>
-                                  {editingDeliverables === inv.id && (
-                                    <button onClick={() => handleRemoveDeliverable(inv.id, di)} className="text-xs text-destructive hover:underline ml-auto">remove</button>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          {editingDeliverables === inv.id && (
-                            <div className="flex gap-2 items-end">
-                              <Input placeholder="Label" value={newDelLabel} onChange={(e) => setNewDelLabel(e.target.value)} className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm px-0" />
-                              <Input placeholder="URL" value={newDelUrl} onChange={(e) => setNewDelUrl(e.target.value)} className="h-9 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm px-0" />
-                              <button onClick={() => handleAddDeliverable(inv.id)} className="h-9 px-4 border border-border hover:border-foreground text-xs font-mono uppercase tracking-[0.1em]">Add</button>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-lg font-mono font-bold">${inv.price.toLocaleString()}</span>
+                        {inv.status !== "paid" ? (
+                          <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
+                        ) : (
+                          <button onClick={() => handleSetStatus(inv.id, "approved")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-foreground">Unpaid</button>
+                        )}
+                        <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </div>
       </div>
     );
