@@ -55,8 +55,8 @@ const extras = [
   { service: "Landing Page", price: "$300 - $600" },
   { service: "Website Redesign", price: "Free with any monthly Website or App plan · 50% of original build cost otherwise" },
   { service: "Custom Business Apparel", price: "From $20/shirt" },
-  { service: "Cybersecurity Audit", price: "From $1,500" },
-  { service: "IT Consulting", price: "$50/hr" },
+  { service: "Cybersecurity Audit", price: "$200" },
+  { service: "IT Consulting", price: "Free" },
 ];
 
 const faqs = [
