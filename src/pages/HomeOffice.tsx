@@ -8,11 +8,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { toast } from "sonner";
 
 const tiles = [
-  { label: "Work Assistant", desc: "Daily notes, goals & standups", href: "/home-office/work-assistant" },
-  { label: "Invoices", desc: "Admin dashboard & billing", href: "/admin" },
-  { label: "Bills Tracker", desc: "Monthly bills vs maintenance income", href: "/home-office/bills" },
-  { label: "ROI Tracker", desc: "Coming Soon — Plaid integration", href: "/home-office/roi-tracker" },
-  { label: "Profile", desc: "Business name, payment methods & Stripe key", href: "/home-office/profile" },
+  { label: "Notes", desc: "Daily notes, goals & standups", href: "/home-office/work-assistant" },
+  { label: "Invoices", desc: "Clients, billing & payments", href: "/admin" },
+  { label: "Bills", desc: "Monthly bills vs income", href: "/home-office/bills" },
+  { label: "Accounting", desc: "Income, expenses & reports", href: "/home-office/accounting" },
+  { label: "Profile", desc: "Business info & payment setup", href: "/home-office/profile" },
   { label: "Help", desc: "Contact & support", href: "/home-office/help" },
 ];
 
