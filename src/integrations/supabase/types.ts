@@ -363,6 +363,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          business_id: string | null
           business_name: string | null
           cashapp_handle: string | null
           created_at: string
@@ -381,6 +382,7 @@ export type Database = {
           zelle_handle: string | null
         }
         Insert: {
+          business_id?: string | null
           business_name?: string | null
           cashapp_handle?: string | null
           created_at?: string
@@ -399,6 +401,7 @@ export type Database = {
           zelle_handle?: string | null
         }
         Update: {
+          business_id?: string | null
           business_name?: string | null
           cashapp_handle?: string | null
           created_at?: string
@@ -491,8 +494,21 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      gen_business_id: { Args: never; Returns: string }
       list_businesses: {
         Args: never
+        Returns: {
+          business_name: string
+          cashapp_handle: string
+          has_stripe: boolean
+          owner_name: string
+          payment_methods: string[]
+          user_id: string
+          zelle_handle: string
+        }[]
+      }
+      lookup_business_by_code: {
+        Args: { p_code: string }
         Returns: {
           business_name: string
           cashapp_handle: string
