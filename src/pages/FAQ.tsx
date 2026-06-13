@@ -9,28 +9,28 @@ import PageTransition from "@/components/PageTransition";
 
 const faqs = [
   {
-    question: "What is your typical project timeline?",
-    answer: "Simple websites take 4-6 weeks. Custom applications can take 3-6 months depending on complexity.",
+    question: "How long does it take?",
+    answer: "Websites: 4-6 weeks. Apps: 3-6 months.",
   },
   {
-    question: "How do you handle pricing?",
-    answer: "We offer fixed-price for defined projects and time-and-materials for evolving requirements. Always with upfront estimates.",
+    question: "How much does it cost?",
+    answer: "Websites and apps start at $700. Monthly plans start at $300. Always a fixed quote up front.",
   },
   {
-    question: "Do you work with government agencies?",
-    answer: "Yes. We're SAM registered and experienced with federal, state, and local government contracts.",
+    question: "Do you work with government?",
+    answer: "Yes. SAM registered.",
   },
   {
-    question: "What technologies do you use?",
-    answer: "React, TypeScript, Node.js, and cloud platforms (AWS, Azure). We select based on your specific needs.",
+    question: "What do you build with?",
+    answer: "Modern, fast tech. We pick what fits your project.",
   },
   {
-    question: "Do you provide ongoing support?",
-    answer: "Yes. From 30-day post-launch support to ongoing maintenance agreements.",
+    question: "Do you keep helping after launch?",
+    answer: "Yes. 30 days free, then optional monthly plans.",
   },
   {
     question: "Do you sign NDAs?",
-    answer: "Absolutely. We treat all project information as proprietary.",
+    answer: "Yes. Always.",
   },
 ];
 
