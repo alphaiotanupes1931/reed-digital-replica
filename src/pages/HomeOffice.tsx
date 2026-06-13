@@ -191,7 +191,7 @@ const HomeOffice = () => {
 
           <ol className="space-y-3 text-sm mt-2">
             <li><span className="text-brand font-bold">1.</span> Send them your Business ID: <code className="text-brand font-bold">{businessId}</code></li>
-            <li><span className="text-brand font-bold">2.</span> Tell them to go to <span className="font-bold">{window.location.origin}/portal</span></li>
+            <li><span className="text-brand font-bold">2.</span> Tell them to go to <span className="font-bold">https://reeddigitalgroup.com/portal</span></li>
             <li><span className="text-brand font-bold">3.</span> They enter your Business ID + their email to see and pay the invoice.</li>
           </ol>
 
