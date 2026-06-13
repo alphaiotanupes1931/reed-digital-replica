@@ -1061,78 +1061,37 @@ const InvoicePortal = () => {
                 className="w-full max-w-sm mb-6"
               >
                 <label className="block text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/60 mb-2 text-center">
-                  Paying which business?
+                  Business ID
                 </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setBizOpen((v) => !v)}
-                    className="w-full h-12 px-4 border border-border hover:border-foreground rounded-none font-mono text-sm flex items-center justify-between text-left bg-background"
-                  >
-                    <span className="truncate">{selectedBiz.business_name}</span>
-                    <span className="text-primary text-xs">{bizOpen ? "▴" : "▾"}</span>
-                  </button>
-                  {bizOpen && (
-                    <div className="absolute z-30 left-0 right-0 mt-1 border-2 border-foreground bg-background max-h-72 overflow-auto">
-                      <input
-                        autoFocus
-                        type="text"
-                        value={bizSearch}
-                        onChange={(e) => setBizSearch(e.target.value)}
-                        placeholder="Search businesses…"
-                        className="w-full px-3 py-2 border-b border-border font-mono text-sm bg-background focus:outline-none"
-                      />
-                      {filteredBiz.length === 0 ? (
-                        <p className="px-3 py-3 text-xs font-mono text-muted-foreground">No matches</p>
-                      ) : (
-                        filteredBiz.map((b) => (
-                          <button
-                            key={b.user_id}
-                            type="button"
-                            onClick={() => { setSelectedBiz(b); setBizOpen(false); setBizSearch(""); }}
-                            className={`w-full text-left px-3 py-2 font-mono text-sm hover:bg-muted/50 ${
-                              selectedBiz.user_id === b.user_id ? "text-primary" : "text-foreground"
-                            }`}
-                          >
-                            {b.business_name}
-                          </button>
-                        ))
-                      )}
-                    </div>
+                <Input
+                  type="text"
+                  inputMode="text"
+                  autoCapitalize="characters"
+                  placeholder="ABCD1234"
+                  value={bizCode}
+                  onChange={(e) => {
+                    const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+                    setBizCode(v);
+                    setSelectedBiz(null);
+                    setBizError(null);
+                    if (v.length === 8) lookupBusiness(v);
+                  }}
+                  className="h-12 text-center font-mono tracking-[0.4em] text-base rounded-none border-border focus-visible:border-foreground"
+                />
+                <div className="mt-2 min-h-[1.25rem] text-center text-xs font-mono">
+                  {bizLookupLoading && <span className="text-muted-foreground">Looking up…</span>}
+                  {!bizLookupLoading && selectedBiz && (
+                    <span className="text-primary">
+                      Paying: <span className="font-bold text-foreground">{selectedBiz.business_name}</span>
+                    </span>
+                  )}
+                  {!bizLookupLoading && bizError && <span className="text-destructive">{bizError}</span>}
+                  {!bizLookupLoading && !selectedBiz && !bizError && (
+                    <span className="text-muted-foreground">Ask the business for their 8-character ID.</span>
                   )}
                 </div>
               </motion.div>
 
-              {!isRDG ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="w-full max-w-md border-2 border-foreground p-6 bg-background"
-                >
-                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary mb-2 font-bold">
-                    Pay {selectedBiz.business_name}
-                  </p>
-                  <p className="text-xs font-mono text-muted-foreground mb-5">
-                    Use any of the methods below. Reach out to {selectedBiz.business_name} directly if you have questions about the amount.
-                  </p>
-                  <div className="space-y-3">
-                    {selectedBiz.payment_methods.includes("zelle") && selectedBiz.zelle_handle && (
-                      <PayRow label="Zelle" value={selectedBiz.zelle_handle} />
-                    )}
-                    {selectedBiz.payment_methods.includes("cashapp") && selectedBiz.cashapp_handle && (
-                      <PayRow label="Cash App" value={selectedBiz.cashapp_handle} />
-                    )}
-                    {selectedBiz.payment_methods.includes("stripe") && selectedBiz.has_stripe && (
-                      <PayRow label="Card (Stripe)" value="Card payments available — contact the business for an invoice link." />
-                    )}
-                    {selectedBiz.payment_methods.length === 0 && (
-                      <p className="text-sm font-mono text-foreground/70">
-                        This business hasn't set up payment methods yet. Contact them directly.
-                      </p>
-                    )}
-                  </div>
-                </motion.div>
-              ) : (
               <motion.form
                 onSubmit={handleEmailSubmit}
                 initial={{ opacity: 0 }}
@@ -1152,7 +1111,7 @@ const InvoicePortal = () => {
                 </div>
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !selectedBiz}
                   variant="outline"
                   className="w-full h-12 font-mono text-sm uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
                 >
@@ -1170,7 +1129,6 @@ const InvoicePortal = () => {
                   )}
                 </Button>
               </motion.form>
-              )}
             </motion.div>
           ) : (
             <motion.div
