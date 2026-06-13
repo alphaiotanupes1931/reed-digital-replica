@@ -92,6 +92,71 @@ export type Database = {
         }
         Relationships: []
       }
+      bank_transactions: {
+        Row: {
+          account_id: string | null
+          amount: number
+          category: string | null
+          created_at: string
+          id: string
+          is_write_off: boolean | null
+          iso_currency_code: string | null
+          merchant_name: string | null
+          name: string
+          owner_user_id: string
+          pending: boolean
+          plaid_item_id: string | null
+          reviewed_at: string | null
+          transaction_id: string
+          txn_date: string
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          amount: number
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_write_off?: boolean | null
+          iso_currency_code?: string | null
+          merchant_name?: string | null
+          name: string
+          owner_user_id: string
+          pending?: boolean
+          plaid_item_id?: string | null
+          reviewed_at?: string | null
+          transaction_id: string
+          txn_date: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          amount?: number
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_write_off?: boolean | null
+          iso_currency_code?: string | null
+          merchant_name?: string | null
+          name?: string
+          owner_user_id?: string
+          pending?: boolean
+          plaid_item_id?: string | null
+          reviewed_at?: string | null
+          transaction_id?: string
+          txn_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transactions_plaid_item_id_fkey"
+            columns: ["plaid_item_id"]
+            isOneToOne: false
+            referencedRelation: "plaid_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           company_name: string
@@ -468,6 +533,42 @@ export type Database = {
           notes?: string | null
           owner_user_id?: string | null
           price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      plaid_items: {
+        Row: {
+          access_token: string
+          created_at: string
+          cursor: string | null
+          id: string
+          institution_name: string | null
+          item_id: string
+          last_synced_at: string | null
+          owner_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          cursor?: string | null
+          id?: string
+          institution_name?: string | null
+          item_id: string
+          last_synced_at?: string | null
+          owner_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          cursor?: string | null
+          id?: string
+          institution_name?: string | null
+          item_id?: string
+          last_synced_at?: string | null
+          owner_user_id?: string
           updated_at?: string
         }
         Relationships: []
