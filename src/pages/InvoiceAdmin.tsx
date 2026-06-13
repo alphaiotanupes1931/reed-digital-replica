@@ -790,6 +790,10 @@ const InvoiceAdmin = () => {
           )}
         </AnimatePresence>
 
+        {invoices.some((i) => i.status === "paid") && (
+          <RevenueCalendar invoices={invoices as any} />
+        )}
+
         <div>
           {loading ? (
             <div className="flex items-center justify-center py-20">
