@@ -374,7 +374,7 @@ const BillsTracker = () => {
         <div className="container max-w-5xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
             <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Bills Tracker</h1>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Bills</h1>
             <p className="text-sm text-muted-foreground mt-2">Monthly outflow vs. maintenance plan income.</p>
           </motion.div>
 

@@ -33,7 +33,7 @@ import HomeOfficeWelcome from "./pages/HomeOfficeWelcome";
 import HomeOfficeResetPassword from "./pages/HomeOfficeResetPassword";
 import HomeOfficeOnboarding from "./pages/HomeOfficeOnboarding";
 import WorkAssistant from "./pages/WorkAssistant";
-import ROITracker from "./pages/ROITracker";
+import Accounting from "./pages/Accounting";
 import HomeOfficeHelp from "./pages/HomeOfficeHelp";
 import BillsTracker from "./pages/BillsTracker";
 import HomeOfficeProfile from "./pages/HomeOfficeProfile";
@@ -102,7 +102,7 @@ const App = () => (
             <Route path="/home-office/onboarding" element={<HomeOfficeOnboarding />} />
             <Route path="/home-office" element={<HomeOffice />} />
             <Route path="/home-office/work-assistant" element={<WorkAssistant />} />
-            <Route path="/home-office/roi-tracker" element={<ROITracker />} />
+            <Route path="/home-office/accounting" element={<Accounting />} />
             <Route path="/home-office/help" element={<HomeOfficeHelp />} />
             <Route path="/home-office/bills" element={<BillsTracker />} />
             <Route path="/home-office/profile" element={<HomeOfficeProfile />} />
