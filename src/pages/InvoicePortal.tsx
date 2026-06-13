@@ -838,34 +838,33 @@ const InvoicePortal = () => {
     cashapp_handle: string | null;
     payment_methods: string[];
   };
-  const RDG_BUSINESS: Business = {
-    user_id: "rdg",
-    business_name: "Reed Digital Group",
-    owner_name: null,
-    has_stripe: true,
-    zelle_handle: null,
-    cashapp_handle: null,
-    payment_methods: ["stripe"],
+  const [bizCode, setBizCode] = useState(() => localStorage.getItem("portal-biz-code") || "");
+  const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
+  const [bizLookupLoading, setBizLookupLoading] = useState(false);
+  const [bizError, setBizError] = useState<string | null>(null);
+
+  const lookupBusiness = async (code: string): Promise<Business | null> => {
+    const c = code.trim().toUpperCase();
+    if (c.length < 4) {
+      setSelectedBiz(null);
+      setBizError(null);
+      return null;
+    }
+    setBizLookupLoading(true);
+    setBizError(null);
+    const { data, error } = await supabase.rpc("lookup_business_by_code", { p_code: c });
+    setBizLookupLoading(false);
+    if (error || !Array.isArray(data) || data.length === 0) {
+      setSelectedBiz(null);
+      setBizError("No business found with that ID");
+      return null;
+    }
+    const biz = data[0] as Business;
+    setSelectedBiz(biz);
+    setBizError(null);
+    localStorage.setItem("portal-biz-code", c);
+    return biz;
   };
-  const [businesses, setBusinesses] = useState<Business[]>([RDG_BUSINESS]);
-  const [selectedBiz, setSelectedBiz] = useState<Business>(RDG_BUSINESS);
-  const [bizSearch, setBizSearch] = useState("");
-  const [bizOpen, setBizOpen] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.rpc("list_businesses");
-      if (!error && Array.isArray(data)) {
-        setBusinesses([RDG_BUSINESS, ...(data as Business[])]);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const filteredBiz = businesses.filter((b) =>
-    b.business_name.toLowerCase().includes(bizSearch.toLowerCase())
-  );
-  const isRDG = selectedBiz.user_id === "rdg";
 
   useEffect(() => {
     if (searchParams.get("payment") === "success") {
@@ -873,25 +872,29 @@ const InvoicePortal = () => {
     }
   }, [searchParams]);
 
-  // Auto-login if email saved from previous session
+  // Auto-login if email + business code saved from previous session
   useEffect(() => {
-    const saved = localStorage.getItem("portal-email");
-    if (saved && !client) {
-      loadClientData(saved, false);
-    }
+    (async () => {
+      const savedCode = localStorage.getItem("portal-biz-code");
+      const savedEmail = localStorage.getItem("portal-email");
+      if (!savedCode || !savedEmail || client) return;
+      const biz = await lookupBusiness(savedCode);
+      if (biz) await loadClientData(savedEmail, biz, false);
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadClientData = async (emailAddr: string, showError = true) => {
+  const loadClientData = async (emailAddr: string, biz: Business, showError = true) => {
     const addr = emailAddr.toLowerCase().trim();
     const { data: clientData } = await supabase
       .from("clients")
       .select("*")
       .eq("email", addr)
+      .eq("owner_user_id", biz.user_id)
       .maybeSingle();
 
     if (!clientData) {
-      if (showError) toast({ title: "No account found", variant: "destructive" });
+      if (showError) toast({ title: "No account found", description: `No invoices for ${addr} under ${biz.business_name}.`, variant: "destructive" });
       localStorage.removeItem("portal-email");
       return false;
     }
@@ -912,13 +915,17 @@ const InvoicePortal = () => {
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedBiz) {
+      setBizError("Enter your business ID first");
+      return;
+    }
     setLoading(true);
-    await loadClientData(email);
+    await loadClientData(email, selectedBiz);
     setLoading(false);
   };
 
   const refreshClient = async () => {
-    if (client?.email) await loadClientData(client.email, false);
+    if (client?.email && selectedBiz) await loadClientData(client.email, selectedBiz, false);
   };
 
   const handlePay = async (
