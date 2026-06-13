@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const ROITracker = () => {
+const Accounting = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!sessionStorage.getItem("ho-token")) navigate("/home-office/login");
@@ -21,12 +21,12 @@ const ROITracker = () => {
         <div className="container max-w-3xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">ROI Tracker</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">Accounting</h1>
             <p className="text-sm text-brand italic mt-1">by RDG</p>
             <div className="border-2 border-foreground/20 p-12 mt-12">
               <p className="text-lg font-bold">Coming Soon</p>
               <p className="text-sm text-muted-foreground mt-3">
-                Future Plaid bank integration for tracking return on investment across projects.
+                Income, expenses, P&L, and tax-ready reports — all in one place.
               </p>
             </div>
           </motion.div>
@@ -37,4 +37,4 @@ const ROITracker = () => {
   );
 };
 
-export default ROITracker;
+export default Accounting;
