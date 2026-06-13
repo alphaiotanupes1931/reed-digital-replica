@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { toast } from "@/hooks/use-toast";
 
 const adminApps = [
   { label: "Invoice Admin", desc: "Create, send, and manage invoices for your clients.", href: "/apps/admin/invoices" },
@@ -18,6 +19,8 @@ const clientApps = [
 const AppsDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<{ email?: string; name?: string } | null>(null);
+  const [businessId, setBusinessId] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -31,13 +34,15 @@ const AppsDashboard = () => {
       // Onboarding gate: send first-time users through onboarding before showing dashboard
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, onboarded")
+        .select("full_name, onboarded, business_id, business_name")
         .eq("user_id", u.id)
         .maybeSingle();
       if (!profile?.onboarded) {
         navigate("/apps/onboarding", { replace: true });
         return;
       }
+      setBusinessId(profile?.business_id ?? null);
+      setBusinessName(profile?.business_name ?? null);
       setUser({
         email: u.email,
         name:
@@ -57,6 +62,18 @@ const AppsDashboard = () => {
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate("/apps");
+  };
+
+  const copyId = async () => {
+    if (!businessId) return;
+    await navigator.clipboard.writeText(businessId);
+    toast({ title: "Business ID copied" });
+  };
+
+  const copyPortalLink = async () => {
+    const url = `${window.location.origin}/portal`;
+    await navigator.clipboard.writeText(url);
+    toast({ title: "Portal link copied", description: "Send this to your clients along with your Business ID." });
   };
 
   return (
@@ -86,6 +103,39 @@ const AppsDashboard = () => {
               Sign Out
             </button>
           </motion.div>
+
+          {businessId && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="border-2 border-foreground p-6 mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+            >
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2">
+                  Your Business ID — share with clients only
+                </p>
+                <p className="text-3xl md:text-4xl font-bold tracking-[0.3em] text-brand">{businessId}</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Clients enter this at <span className="text-foreground">/portal</span> to find {businessName || "your business"}. Keep it private — anyone with it can look up your business name.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 shrink-0">
+                <button
+                  onClick={copyId}
+                  className="text-xs uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors"
+                >
+                  Copy ID
+                </button>
+                <button
+                  onClick={copyPortalLink}
+                  className="text-xs uppercase tracking-widest border border-foreground/40 px-4 py-2 hover:border-foreground transition-colors"
+                >
+                  Copy portal link
+                </button>
+              </div>
+            </motion.div>
+          )}
 
           {[
             { title: "Admin", subtitle: "Management", items: adminApps },
