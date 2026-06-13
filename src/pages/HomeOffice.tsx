@@ -146,7 +146,7 @@ const HomeOffice = () => {
                 </div>
                 <p className="text-xs text-muted-foreground mt-3">
                   Give this ID to your client so they can pay their invoice at{" "}
-                  <span className="text-foreground">{window.location.origin}/portal</span>
+                  <span className="text-foreground">https://reeddigitalgroup.com/portal</span>
                 </p>
                 <button
                   onClick={() => setShowInstructions(true)}
