@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      accountant_invites: {
+        Row: {
+          accepted_at: string | null
+          accountant_user_id: string | null
+          created_at: string
+          email: string
+          id: string
+          invite_token: string
+          owner_user_id: string
+          revoked_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accountant_user_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          invite_token: string
+          owner_user_id: string
+          revoked_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accountant_user_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          invite_token?: string
+          owner_user_id?: string
+          revoked_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      accountant_settings: {
+        Row: {
+          created_at: string
+          id: string
+          owner_user_id: string
+          published: boolean
+          share_passcode_hash: string | null
+          share_token: string | null
+          show_bills: boolean
+          show_invoices: boolean
+          show_notes: boolean
+          show_writeoffs: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          owner_user_id: string
+          published?: boolean
+          share_passcode_hash?: string | null
+          share_token?: string | null
+          show_bills?: boolean
+          show_invoices?: boolean
+          show_notes?: boolean
+          show_writeoffs?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          owner_user_id?: string
+          published?: boolean
+          share_passcode_hash?: string | null
+          share_token?: string | null
+          show_bills?: boolean
+          show_invoices?: boolean
+          show_notes?: boolean
+          show_writeoffs?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           company_name: string
@@ -333,6 +411,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      month_closes: {
+        Row: {
+          closed_at: string
+          created_at: string
+          id: string
+          month: number
+          owner_user_id: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          closed_at?: string
+          created_at?: string
+          id?: string
+          month: number
+          owner_user_id: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          closed_at?: string
+          created_at?: string
+          id?: string
+          month?: number
+          owner_user_id?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
       }
       monthly_bills: {
         Row: {
