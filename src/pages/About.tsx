@@ -85,10 +85,9 @@ const AboutPage = () => {
               <ScrollReveal>
                 <div className="max-w-3xl mx-auto text-center relative z-10">
                   <span className="section-label font-mono">About Us</span>
-                  <TypedHeader text="Building digital experiences since 2020" className="mt-4 mb-6" />
+                  <TypedHeader text="A small team. Big websites." className="mt-4 mb-6" />
                   <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                    We're a remote based agency in DC, passionate about helping businesses
-                    stand out online with beautiful, functional websites and applications.
+                    Remote agency based in DC. We build websites and apps that work.
                   </p>
                 </div>
               </ScrollReveal>
@@ -205,11 +204,9 @@ const AboutPage = () => {
                       </div>
                       
                       <p className="text-muted-foreground leading-relaxed">
-                        A Computer Science graduate from Morgan State University with deep expertise 
-                        in both <strong>software development</strong> and <strong>cybersecurity</strong>. 
-                        Before founding Reed Digital Group, Terell worked in government managing 
-                        critical infrastructure, and as a Security Engineer working on 
-                        security solutions for federal systems.
+                        Computer Science grad from Morgan State. Background in
+                        <strong> software</strong> and <strong>cybersecurity</strong>.
+                        Worked in government on federal systems before starting the agency.
                       </p>
 
                       {/* Experience Pills */}
@@ -277,16 +274,8 @@ const AboutPage = () => {
                 <div className="grid md:grid-cols-2 gap-10 items-center">
                   <div className="space-y-4">
                     <p className="text-muted-foreground leading-relaxed">
-                      Our technical depth goes far beyond websites. We have direct, hands-on experience 
-                      building <strong>robotic systems, embedded controllers, and autonomous machines</strong> — 
-                      the kind of engineering that demands precision at every level of the stack.
-                    </p>
-                    <p className="text-muted-foreground leading-relaxed">
-                      From programming microcontrollers and designing sensor-fusion pipelines to 
-                      implementing computer vision and real-time control systems, we understand how 
-                      complex systems actually work. That depth of knowledge is what allows us to 
-                      build software that's <strong>reliable, performant, and architected to scale</strong> — 
-                      whether it's a business web app, a secure portal, or an enterprise platform.
+                      We also build robots and embedded systems — the hard stuff.
+                      That's why your website will be fast, secure, and built right.
                     </p>
                   </div>
                   <motion.div 
