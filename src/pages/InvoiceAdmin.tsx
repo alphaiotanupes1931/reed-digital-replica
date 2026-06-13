@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ArrowLeft, ChevronRight } from "lucide-react";
+import { Lock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
