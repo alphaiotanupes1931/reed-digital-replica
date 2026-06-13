@@ -1023,7 +1023,15 @@ const InvoicePortal = () => {
           </Link>
           {client && (
             <button
-              onClick={() => { localStorage.removeItem("portal-email"); setClient(null); setInvoices([]); setEmail(""); }}
+              onClick={() => {
+                localStorage.removeItem("portal-email");
+                localStorage.removeItem("portal-biz-code");
+                setClient(null);
+                setInvoices([]);
+                setEmail("");
+                setBizCode("");
+                setSelectedBiz(null);
+              }}
               className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.2em]"
             >
               Sign out
