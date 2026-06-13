@@ -72,7 +72,7 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Digital Agency
+            Remote Based Agency in DC
           </motion.p>
           
           <motion.h1 
