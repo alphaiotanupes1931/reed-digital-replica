@@ -64,6 +64,7 @@ interface Invoice {
   deposit_due_date: string | null;
   deposit_paid: boolean;
   created_at: string;
+  paid_at?: string | null;
   message: string | null;
   deliverables: Deliverable[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
