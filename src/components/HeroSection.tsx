@@ -91,7 +91,7 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            Making digital dreams come true. We craft exceptional websites and applications for businesses that demand quality.
+            Websites and apps for businesses that want to look great online.
           </motion.p>
 
           <motion.div 
