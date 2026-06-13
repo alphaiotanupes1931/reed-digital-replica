@@ -759,22 +759,18 @@ const InvoiceAdmin = () => {
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
       </div>
-      <div className="border-b border-border relative z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/home-office" className="flex items-center gap-3 hover:opacity-70 transition-opacity">
-            <img src={logo} alt="RDG" className="h-5" />
-            <span className="text-xs font-mono text-foreground uppercase tracking-widest">Invoices</span>
-          </Link>
-          <button onClick={() => setShowClientForm(!showClientForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
-            {showClientForm ? "Cancel" : "Add Client"}
-          </button>
-        </div>
-      </div>
-
       <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <div className="py-8">
-          <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">{displayName}</h1>
-          <p className="text-sm font-mono text-muted-foreground mt-1">{clients.length} clients · {invoices.length} invoices · ${totalRevenue.toLocaleString()} revenue</p>
+        <div className="pt-32 pb-8">
+          <Link to="/home-office" className="text-xs font-mono text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
+          <div className="flex items-start justify-between gap-4 mt-3">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">{displayName}</h1>
+              <p className="text-sm font-mono text-muted-foreground mt-1">{clients.length} clients · {invoices.length} invoices · ${totalRevenue.toLocaleString()} revenue</p>
+            </div>
+            <button onClick={() => setShowClientForm(!showClientForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors whitespace-nowrap">
+              {showClientForm ? "Cancel" : "Add Client"}
+            </button>
+          </div>
         </div>
 
         <AnimatePresence>
