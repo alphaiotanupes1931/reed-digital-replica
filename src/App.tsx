@@ -41,7 +41,7 @@ import AppsLanding from "./pages/AppsLanding";
 import AppsLogin from "./pages/AppsLogin";
 import AppsResetPassword from "./pages/AppsResetPassword";
 import AppsOnboarding from "./pages/AppsOnboarding";
-import AppsDashboard from "./pages/AppsDashboard";
+
 import AppsLegal from "./pages/AppsLegal";
 import AdminInvoices from "./pages/apps/AdminInvoices";
 import AdminBills from "./pages/apps/AdminBills";
@@ -110,7 +110,6 @@ const App = () => (
             <Route path="/apps/login" element={<AppsLogin />} />
             <Route path="/apps/reset-password" element={<AppsResetPassword />} />
             <Route path="/apps/onboarding" element={<AppsOnboarding />} />
-            <Route path="/apps/dashboard" element={<AppsDashboard />} />
             <Route path="/apps/legal/:kind" element={<AppsLegal />} />
             <Route path="/apps/admin/invoices" element={<AdminInvoices />} />
             <Route path="/apps/admin/bills" element={<AdminBills />} />

@@ -49,7 +49,7 @@ const AppsOnboarding = () => {
         .maybeSingle();
 
       if (profile?.onboarded) {
-        navigate("/apps/dashboard", { replace: true });
+        navigate("/apps", { replace: true });
         return;
       }
 
@@ -119,7 +119,7 @@ const AppsOnboarding = () => {
         data: { full_name: fullName.trim(), business_name: businessName.trim() || null },
       });
 
-      navigate("/apps/dashboard", { replace: true });
+      navigate("/apps", { replace: true });
     } catch (err: any) {
       toast({ title: "Could not save", description: err.message, variant: "destructive" });
     } finally {
