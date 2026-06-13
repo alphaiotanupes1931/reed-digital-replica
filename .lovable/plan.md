@@ -1,64 +1,78 @@
-# Plan
+## Accounting App — Accountant Access + Plaid Write-Offs
 
-## 1. Small UI cleanups
-- **Remove** `PageLoader` from `src/App.tsx` (delete the component usage; keep file for now).
-- **Replace** `RDGMemberPopup` modal with a small dismissible **bottom-right toast/banner** (same component file, new layout). No backdrop, no auto-blocking. Still hidden on `/apps`, `/admin`, `/portal`, `/home-office`, `/invoice`.
+Build out the Accounting app so an accountant can be invited (via link or email) to view a published, scoped subset of your finances, and so bank transactions flow in via Plaid for write-off review with a soft monthly close.
 
-## 2. Per-user data scoping (multi-tenant invoices / bills / taxes)
+### 1. Accountant Access
 
-Today every invoice/client/bill/tax row is global and readable by anyone. We need each Apps account to see only its own data, without deleting your existing rows.
+**Two access modes, both supported:**
+- **Share link + passcode** — generates `/accountant/:token` URL with a 6-digit passcode. No account needed.
+- **Email invite** — sends invite email; accountant signs up, lands in a read-only accountant dashboard scoped to your data only.
 
-### Database changes (migration)
-Add a nullable `owner_user_id uuid` to:
-- `clients`
-- `invoices`
-- `monthly_bills`
-- `tax_reminders`
-- `extra_income`
-- `daily_notes`
-- `goals`
+**Settings page (inside Accounting app):**
+- Toggle: Finances Published — ON/OFF (master switch the accountant view checks)
+- Per-app visibility toggles: Bills, Invoices + Revenue, Write-offs/Transactions, Notes (Notes default OFF)
+- List of active accountants — revoke access anytime
+- Generate / rotate share link
 
-All existing rows stay with `owner_user_id = NULL` → treated as **legacy / your data**, untouched. You can later run a one-line update to claim them to your real account.
+When "Finances Published" is OFF, the accountant view shows: "Finances are not currently published."
 
-Tighten RLS so clients can still read approved invoices via the public portal (by email lookup, unchanged behavior), but the new per-user app pages only return rows where `owner_user_id = auth.uid()`.
+### 2. Plaid Integration (Sandbox first)
 
-### Auth
-The `/apps/login` page currently stores a fake user in `localStorage`. We switch it to real Lovable Cloud auth (email/password + Google), so `auth.uid()` exists. `guest@rdg.app` becomes a normal account → empty dataset on first login. Your existing `localStorage`-based session is replaced.
+- Plaid Link flow inside Accounting to connect bank accounts
+- Daily transaction sync via edge function (and manual "Sync now" button)
+- Transactions list grouped by month with check / X buttons for write-off classification
+- Categories pulled from Plaid; user confirms or overrides
 
-## 3. Apps dashboard restructure
+**Sandbox setup:** Add `PLAID_CLIENT_ID`, `PLAID_SECRET` (sandbox), `PLAID_ENV=sandbox` as secrets. Swap to production secret later — no code change.
 
-`/apps/dashboard` becomes two clearly labeled sections:
+### 3. Monthly Close (Soft)
 
-```text
-ADMIN
-  - Invoice Admin   → /apps/admin/invoices    (new, per-user version of /admin)
-  - Bills Tracker   → /apps/admin/bills       (per-user version of /home-office/bills)
-  - Tax Tracker     → /apps/admin/taxes       (new)
+- "Close [Month]" button per month
+- If month being closed is the current month → confirm dialog: "You're still in this month. Are you sure?"
+- Closed months show a "Reviewed" badge; transactions remain editable
+- Reopen button to clear close state
 
-CLIENT
-  - Client Portal   → /apps/client/portal     (per-user invoice portal — what you'd send to YOUR clients)
-  - Shareable link  → copy button that gives a URL scoped to this account
-```
+### 4. Published Accountant View
 
-New pages are thin wrappers around the existing `InvoiceAdmin`, `BillsTracker`, and `InvoicePortal` UIs, but they:
-- Read/write only rows where `owner_user_id = auth.uid()`.
-- Insert new rows with `owner_user_id = auth.uid()`.
-
-Same structure as today: editing an invoice in Admin updates what the Client Portal shows — just scoped per account.
-
-The existing routes (`/admin`, `/portal`, `/home-office/*`) are **left untouched** so your current workflow keeps working until the data transfer.
-
-## 4. Out of scope for this pass
-- Actually transferring your existing rows to your future account (you'll tell me when).
-- Tax Tracker UI beyond a basic list/add (matches existing `tax_reminders` table).
-- Stripe per-user Connect accounts (payments still go through the existing platform Stripe key).
+Read-only dashboard at `/accountant/:token` (or `/accountant` for invited users) showing only the toggled-on sections:
+- **Bills** — list of monthly bills + total
+- **Invoices + Revenue** — paid invoices + revenue calendar
+- **Write-offs** — transactions table grouped by month, write-off totals, export CSV
+- **Notes** — only if explicitly shared
 
 ---
 
-## Technical notes
-- Migration uses `ALTER TABLE ... ADD COLUMN owner_user_id uuid` + new RLS policies: `USING (owner_user_id = auth.uid())` for authenticated CRUD, keeping the existing public-read policy on `invoices` for the unauthenticated client portal flow.
-- `AppsLogin` switches to `supabase.auth.signInWithPassword` / `signUp` / `signInWithOAuth({provider:'google'})`. `AppsDashboard` switches to `supabase.auth.getUser()` + `onAuthStateChange`.
-- New folder: `src/pages/apps/` with `AdminInvoices.tsx`, `AdminBills.tsx`, `AdminTaxes.tsx`, `ClientPortal.tsx`.
-- `supabase/config.toml`: enable Google provider via `configure_social_auth` tool.
+### Technical Details
 
-Confirm and I'll execute.
+**Database (new tables):**
+- `accountant_settings` — `owner_user_id`, `published`, `show_bills`, `show_invoices`, `show_writeoffs`, `show_notes`, `share_token`, `share_passcode_hash`
+- `accountant_invites` — `id`, `owner_user_id`, `email`, `accepted_at`, `accountant_user_id`, `revoked_at`
+- `plaid_items` — `id`, `owner_user_id`, `access_token` (encrypted-at-rest), `item_id`, `institution_name`, `cursor`
+- `plaid_accounts` — `id`, `item_id`, `account_id`, `name`, `mask`, `type`
+- `bank_transactions` — `id`, `owner_user_id`, `account_id`, `plaid_transaction_id`, `date`, `name`, `amount`, `category`, `is_write_off` (nullable: null=unreviewed, true=yes, false=no), `notes`
+- `month_closes` — `owner_user_id`, `year`, `month`, `closed_at`
+
+All tables: RLS scoped to `owner_user_id = auth.uid()`. Accountant read access goes through a security-definer function that checks `accountant_invites.accepted_at` + `accountant_settings.published` + per-section toggles. Share-link access goes through a public edge function that validates `share_token + passcode`.
+
+**Edge functions:**
+- `plaid-link-token` — creates link token for frontend Plaid Link
+- `plaid-exchange-token` — exchanges public_token for access_token, stores item
+- `plaid-sync-transactions` — pulls latest transactions (cursor-based)
+- `accountant-invite` — sends email invite via existing email infra
+- `accountant-share-view` — public endpoint, validates token+passcode, returns scoped data
+
+**Frontend:**
+- `src/pages/Accounting.tsx` — replace "Coming Soon" with tabbed dashboard: Overview / Transactions / Bills / Invoices / Settings
+- `src/pages/AccountantView.tsx` — read-only accountant dashboard
+- `src/pages/AccountantShareLogin.tsx` — passcode entry for share links
+- New components: `PlaidLinkButton`, `TransactionRow`, `MonthCloseCard`, `AccountantSettings`
+
+**Sequencing (I'll ship in this order so you can test as we go):**
+1. DB schema + Accounting Settings page (publish toggle, per-app permissions, generate share link)
+2. Accountant view (share-link flow + invite flow) — using existing Bills/Invoices data
+3. Plaid integration (sandbox) — Link, sync, transactions table
+4. Write-off review UI + monthly soft close
+
+This is ~4 sizeable chunks. After you approve, I'll start with #1 and pause between phases so you can review each before I move on.
+
+**Before I start, I need:** `PLAID_CLIENT_ID` + `PLAID_SECRET` (sandbox) — I'll prompt you when we get to phase 3, not now. Phases 1 & 2 don't need Plaid.
