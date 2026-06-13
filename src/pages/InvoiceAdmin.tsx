@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import logo from "@/assets/rdg-header-logo.png";
+import RevenueCalendar from "@/components/RevenueCalendar";
 
 const ADMIN_PASSWORD = "shell0423";
 const PROCESSING_FEE_RATE = 0.029;
@@ -64,6 +65,7 @@ interface Invoice {
   deposit_due_date: string | null;
   deposit_paid: boolean;
   created_at: string;
+  paid_at?: string | null;
   message: string | null;
   deliverables: Deliverable[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
@@ -787,6 +789,10 @@ const InvoiceAdmin = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {invoices.some((i) => i.status === "paid") && (
+          <RevenueCalendar invoices={invoices as any} />
+        )}
 
         <div>
           {loading ? (

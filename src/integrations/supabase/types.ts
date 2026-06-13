@@ -263,6 +263,7 @@ export type Database = {
           id: string
           message: string | null
           owner_user_id: string | null
+          paid_at: string | null
           payment_method: string
           payment_type: string
           price: number
@@ -287,6 +288,7 @@ export type Database = {
           id?: string
           message?: string | null
           owner_user_id?: string | null
+          paid_at?: string | null
           payment_method?: string
           payment_type?: string
           price: number
@@ -311,6 +313,7 @@ export type Database = {
           id?: string
           message?: string | null
           owner_user_id?: string | null
+          paid_at?: string | null
           payment_method?: string
           payment_type?: string
           price?: number
