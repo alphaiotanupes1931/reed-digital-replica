@@ -146,7 +146,7 @@ const HomeOffice = () => {
                 </div>
                 <p className="text-xs text-muted-foreground mt-3">
                   Give this ID to your client so they can pay their invoice at{" "}
-                  <span className="text-foreground">{window.location.origin}/portal</span>
+                  <span className="text-foreground">https://reeddigitalgroup.com/portal</span>
                 </p>
                 <button
                   onClick={() => setShowInstructions(true)}
@@ -191,7 +191,7 @@ const HomeOffice = () => {
 
           <ol className="space-y-3 text-sm mt-2">
             <li><span className="text-brand font-bold">1.</span> Send them your Business ID: <code className="text-brand font-bold">{businessId}</code></li>
-            <li><span className="text-brand font-bold">2.</span> Tell them to go to <span className="font-bold">{window.location.origin}/portal</span></li>
+            <li><span className="text-brand font-bold">2.</span> Tell them to go to <span className="font-bold">https://reeddigitalgroup.com/portal</span></li>
             <li><span className="text-brand font-bold">3.</span> They enter your Business ID + their email to see and pay the invoice.</li>
           </ol>
 
@@ -203,7 +203,7 @@ const HomeOffice = () => {
               <button
                 onClick={() => {
                   const subject = `Invoice from ${businessName || "us"}`;
-                  const body = `Hi,\n\nYour invoice is ready. Here's how to pay:\n\n1. Go to: ${window.location.origin}/portal\n2. Enter our Business ID: ${businessId}\n3. Enter the email address this invoice was sent to\n4. Pay with card, Zelle, or Cash App\n\nThanks,\n${displayName || businessName}`;
+                  const body = `Hi,\n\nYour invoice is ready. Here's how to pay:\n\n1. Go to: https://reeddigitalgroup.com/portal\n2. Enter our Business ID: ${businessId}\n3. Enter the email address this invoice was sent to\n4. Pay with card, Zelle, or Cash App\n\nThanks,\n${displayName || businessName}`;
                   navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
                   toast.success("Email copied to clipboard");
                 }}
@@ -219,7 +219,7 @@ Hi,
 
 Your invoice is ready. Here's how to pay:
 
-1. Go to: ${window.location.origin}/portal
+1. Go to: https://reeddigitalgroup.com/portal
 2. Enter our Business ID: ${businessId}
 3. Enter the email address this invoice was sent to
 4. Pay with card, Zelle, or Cash App

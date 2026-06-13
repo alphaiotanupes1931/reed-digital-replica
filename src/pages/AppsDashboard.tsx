@@ -71,8 +71,7 @@ const AppsDashboard = () => {
   };
 
   const copyPortalLink = async () => {
-    const url = `${window.location.origin}/portal`;
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText("https://reeddigitalgroup.com/portal");
     toast({ title: "Portal link copied", description: "Send this to your clients along with your Business ID." });
   };
 
