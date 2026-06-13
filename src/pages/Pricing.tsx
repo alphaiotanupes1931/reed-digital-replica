@@ -2,10 +2,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import TypedHeader from "@/components/TypedHeader";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
-import PricingRecommender from "@/components/PricingRecommender";
 
 
 const managedPlans = [
@@ -177,48 +175,90 @@ const PricingPage = () => {
               <ScrollReveal>
                 <div className="text-center mb-16">
                   <span className="section-label font-mono">Pricing</span>
-                  <TypedHeader text="Your Website, Handled Monthly" className="mt-4 mb-6" />
-                  <p className="text-muted-foreground text-sm max-w-xl mx-auto mb-8">
-                    No build fee. No surprise invoices. Get a website for as little as <span className="text-foreground font-medium">$300/month</span> — we build, host, maintain, and update it for as long as you need.
+                  <h1 className="mt-4 mb-6 text-4xl md:text-5xl font-bold tracking-tight">
+                    Simple Pricing
+                  </h1>
+                  <p className="text-muted-foreground text-sm max-w-md mx-auto mb-8">
+                    Pick a plan. We handle the rest. Starts at <span className="text-foreground font-medium">$300/mo</span>.
                   </p>
                   <Link
                     to="/contact"
                     className="inline-block bg-brand text-brand-foreground px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
                   >
-                    Book Free Consultation →
+                    Book Free Call →
                   </Link>
                 </div>
               </ScrollReveal>
 
-              <ScrollReveal delay={0.02}>
-                <div className="mb-12 border-2 border-primary bg-primary/5 p-5 md:p-6">
-                  <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-primary">
-                      Important Notice
-                    </span>
-                    <span className="text-[11px] font-mono text-muted-foreground">
-                      Estimates only
-                    </span>
-                  </div>
-                  <p className="text-sm leading-relaxed">
-                    All prices listed on this page are <span className="font-medium">estimates</span> and may not reflect the final cost of your project. Actual pricing depends on scope, integrations, timeline, and ongoing requirements. For an accurate quote tailored to your needs, please contact the developer directly at{" "}
-                    <a
-                      href="mailto:reeddigitalgroup@gmail.com"
-                      className="font-mono text-primary underline underline-offset-4 hover:opacity-70 transition-opacity"
+              {/* Three rungs — moved to top, primary choice */}
+              <ScrollReveal delay={0.05}>
+                <div className="mb-16 grid md:grid-cols-3 gap-4">
+                  {[
+                    {
+                      t: "App Only",
+                      p: "$20",
+                      sub: "/mo",
+                      d: "Home Office app — invoices, bills, client portal.",
+                      cta: "Start Free Trial",
+                      href: "/home-office/welcome",
+                    },
+                    {
+                      t: "Member",
+                      p: "$40",
+                      sub: "/mo",
+                      d: "App + 15% off projects + free logo + perks.",
+                      cta: "Join Now",
+                      href: "/membership",
+                      popular: true,
+                    },
+                    {
+                      t: "Project",
+                      p: "$700+",
+                      sub: "",
+                      d: "Full website or app build. Members save 15%.",
+                      cta: "Book Call",
+                      href: "/contact",
+                    },
+                  ].map((r) => (
+                    <div
+                      key={r.t}
+                      className={`border rounded-md p-6 flex flex-col ${
+                        r.popular ? "border-brand border-2" : "border-border"
+                      }`}
                     >
-                      reeddigitalgroup@gmail.com
-                    </a>
-                    .
-                  </p>
+                      {r.popular && (
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-brand mb-2">
+                          Most Popular
+                        </span>
+                      )}
+                      <h3 className="text-lg font-bold">{r.t}</h3>
+                      <div className="mt-3">
+                        <span className="text-3xl font-bold">{r.p}</span>
+                        <span className="text-sm text-muted-foreground">{r.sub}</span>
+                      </div>
+                      <p className="mt-3 text-sm text-muted-foreground flex-1">{r.d}</p>
+                      <Link
+                        to={r.href}
+                        className={`mt-5 inline-block text-center px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                          r.popular
+                            ? "bg-brand text-brand-foreground hover:bg-brand/90"
+                            : "border border-foreground hover:bg-foreground hover:text-background"
+                        }`}
+                      >
+                        {r.cta}
+                      </Link>
+                    </div>
+                  ))}
                 </div>
               </ScrollReveal>
 
-              {/* Plan Finder — interactive recommender */}
-              <ScrollReveal delay={0.03}>
-                <div className="mb-20">
-                  <PricingRecommender />
-                </div>
-              </ScrollReveal>
+              {/* Details disclosure */}
+              <ScrollReveal delay={0.08}>
+                <details className="mb-12 border border-border rounded-md">
+                  <summary className="cursor-pointer px-5 py-4 text-sm font-medium hover:bg-muted/30 select-none">
+                    See all plans & detailed pricing
+                  </summary>
+                  <div className="px-5 pb-6 pt-2 border-t border-border">
 
               {/* Website Plans — unified Monthly / One-time toggle */}
               <ScrollReveal delay={0.05}>
@@ -544,60 +584,8 @@ const PricingPage = () => {
               </ScrollReveal>
 
               {/* Three rungs */}
-              <ScrollReveal delay={0.38}>
-                <div className="mb-16 grid md:grid-cols-3 gap-px bg-foreground/10 border-2 border-foreground">
-                  {[
-                    {
-                      k: "Rung 01",
-                      t: "Home Office App",
-                      p: "$20 / mo",
-                      d: "The front door. Get the Home Office app — invoices, bills, work assistant, client portal. Self-serve, cancel anytime.",
-                      cta: "Start free trial",
-                      href: "/home-office/welcome",
-                    },
-                    {
-                      k: "Rung 02",
-                      t: "RDG Member",
-                      p: "$40 / mo · $400 / yr",
-                      d: "App + 15% off projects + 10% off first 3 months of maintenance + free post-launch training + priority support + quarterly kit + free logo design.",
-                      cta: "Become a member",
-                      href: "/membership",
-                      popular: true,
-                    },
-                    {
-                      k: "Rung 03",
-                      t: "Project Client",
-                      p: "$700 – $2K sites · $5K+ apps",
-                      d: "Full build. 50% deposit before work starts. Members save 15% — that $2,000 site is $1,700.",
-                      cta: "Book consultation",
-                      href: "/contact",
-                    },
-                  ].map((r) => (
-                    <div
-                      key={r.k}
-                      className={`bg-background p-6 md:p-8 flex flex-col ${
-                        r.popular ? "ring-2 ring-brand -m-px relative z-10" : ""
-                      }`}
-                    >
-                      <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-brand">
-                        {r.k}
-                      </span>
-                      <h3 className="mt-3 text-2xl font-bold tracking-tight">{r.t}</h3>
-                      <p className="mt-2 text-sm font-mono">{r.p}</p>
-                      <p className="mt-4 text-sm text-muted-foreground flex-1">{r.d}</p>
-                      <Link
-                        to={r.href}
-                        className={`mt-6 inline-block text-center px-6 py-3 text-xs uppercase tracking-[0.25em] transition-colors ${
-                          r.popular
-                            ? "bg-brand text-brand-foreground hover:bg-brand/90"
-                            : "border-2 border-foreground hover:bg-foreground hover:text-background"
-                        }`}
-                      >
-                        {r.cta} →
-                      </Link>
-                    </div>
-                  ))}
-                </div>
+                  </div>
+                </details>
               </ScrollReveal>
 
               {/* CTA */}
