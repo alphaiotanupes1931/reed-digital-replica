@@ -648,17 +648,11 @@ const InvoiceAdmin = () => {
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
           <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
         </div>
-        <div className="border-b border-border relative z-10">
-          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <button onClick={() => setSelectedClientId(null)} className="flex items-center gap-2 text-xs font-mono text-foreground hover:text-primary uppercase tracking-widest">
-              <ArrowLeft className="h-4 w-4" /> Back
-            </button>
-            <span className="text-xs font-mono text-foreground uppercase tracking-widest">{selectedClient.company_name}</span>
-          </div>
-        </div>
-
-        <div className="max-w-4xl mx-auto px-6 py-8 relative z-10">
-          <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">{selectedClient.company_name}</h1>
+        <div className="max-w-4xl mx-auto px-6 pt-32 pb-8 relative z-10">
+          <button onClick={() => setSelectedClientId(null)} className="text-xs font-mono text-muted-foreground hover:text-brand uppercase tracking-widest">
+            ← All Clients
+          </button>
+          <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight mt-3">{selectedClient.company_name}</h1>
           <p className="text-sm font-mono text-muted-foreground mt-1">{selectedClient.email}</p>
 
           <div className="mt-10 space-y-8">
