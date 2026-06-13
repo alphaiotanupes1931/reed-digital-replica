@@ -7,8 +7,8 @@ const steps = [
   { 
     id: 1,
     label: "Discovery", 
-    title: "We Listen & Learn",
-    description: "Every great project starts with understanding. We schedule a call to learn about your business, goals, and vision. No jargon, just a real conversation about what you need.",
+    title: "We Talk",
+    description: "A quick call to learn about your business and what you need. No jargon.",
     details: [
       "30-minute discovery call",
       "Understand your target audience",
@@ -19,8 +19,8 @@ const steps = [
   { 
     id: 2,
     label: "Design", 
-    title: "We Create & Refine",
-    description: "We translate your vision into visual designs. You'll see mockups of your website before any code is written, with unlimited revisions until you're thrilled.",
+    title: "We Design",
+    description: "You see how it looks before we build a thing. Revise until you love it.",
     details: [
       "Custom design mockups",
       "Mobile and desktop layouts",
@@ -31,8 +31,8 @@ const steps = [
   { 
     id: 3,
     label: "Development", 
-    title: "We Build & Test",
-    description: "Our developers bring the designs to life using modern technology. We build fast, secure websites that work perfectly on every device.",
+    title: "We Build",
+    description: "Fast, secure, works on every device. We handle the technical stuff.",
     details: [
       "Clean, modern code",
       "Mobile-responsive development",
@@ -43,8 +43,8 @@ const steps = [
   { 
     id: 4,
     label: "Launch", 
-    title: "We Launch & Support",
-    description: "When everything is perfect, we launch your site and make sure it performs flawlessly. We're here for you even after launch with ongoing support.",
+    title: "We Launch",
+    description: "Your site goes live. We stick around to help.",
     details: [
       "Smooth deployment",
       "Training on how to update",
@@ -90,8 +90,7 @@ const InteractiveProcessSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            A clear, transparent process designed to deliver results. 
-            Click each step to learn more.
+            Four steps. That's it.
           </motion.p>
         </ScrollReveal>
 

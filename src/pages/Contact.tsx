@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock, ArrowDown } from "lucide-react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 
 const ContactPage = () => {
   useEffect(() => {
@@ -33,107 +33,19 @@ const ContactPage = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="pt-32 pb-24">
-          {/* Hero Thank You Section */}
-          <section className="relative overflow-hidden mb-24">
-            {/* Animated background text */}
-            <motion.div
-              className="bg-text top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-            >
-              WELCOME
-            </motion.div>
-
-            <div className="container relative z-10">
-              <div className="max-w-3xl mx-auto text-center">
-                {/* Animated label */}
-                <motion.span
-                  className="section-label font-mono inline-block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  Thank You for Visiting
-                </motion.span>
-
-                {/* Main heading with staggered words */}
-                <motion.h1
-                  className="text-5xl md:text-7xl font-semibold tracking-tight mt-6 mb-6"
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
-                >
-                  We're glad
-                  <br />
-                  <motion.span
-                    className="text-primary"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
-                  >
-                    you're here.
-                  </motion.span>
-                </motion.h1>
-
-                {/* Animated line */}
-                <motion.div
-                  className="h-px bg-primary mx-auto mb-8"
-                  initial={{ width: 0 }}
-                  animate={{ width: 120 }}
-                  transition={{ delay: 0.9, duration: 0.8, ease: "easeInOut" }}
-                />
-
-                {/* Description */}
-                <motion.p
-                  className="text-muted-foreground font-mono text-lg max-w-xl mx-auto mb-10"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0 }}
-                >
-                  We appreciate you taking the time to explore Reed Digital Group.
-                  Let's turn your vision into reality.
-                </motion.p>
-
-                {/* Scroll indicator */}
-                <motion.div
-                  className="flex flex-col items-center gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.3 }}
-                >
-                  <span className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Reach Out</span>
-                  <motion.div
-                    animate={{ y: [0, 8, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <ArrowDown className="w-4 h-4 text-primary" />
-                  </motion.div>
-                </motion.div>
+          {/* Simple Hero */}
+          <section className="mb-20">
+            <div className="container">
+              <div className="max-w-2xl mx-auto text-center">
+                <span className="section-label font-mono">Contact</span>
+                <h1 className="mt-4 mb-6 text-4xl md:text-5xl font-bold tracking-tight">
+                  Get in touch
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  Pick a way to reach us, or book a free call below.
+                </p>
               </div>
             </div>
-
-            {/* Floating particles */}
-            {Array.from({ length: 8 }).map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 rounded-full bg-primary/20"
-                style={{
-                  left: `${10 + i * 12}%`,
-                  top: `${15 + (i % 4) * 20}%`,
-                }}
-                animate={{
-                  y: [0, -25, 0],
-                  opacity: [0.15, 0.5, 0.15],
-                }}
-                transition={{
-                  duration: 3 + i * 0.4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.3,
-                }}
-              />
-            ))}
           </section>
 
           {/* Contact Info Cards */}
@@ -168,29 +80,6 @@ const ContactPage = () => {
                 ))}
               </div>
 
-              {/* Divider */}
-              <ScrollReveal>
-                <div className="flex items-center justify-center mb-16">
-                  <motion.div
-                    className="h-px bg-border"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: 64 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                  />
-                  <span className="px-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">
-                    Book a Call
-                  </span>
-                  <motion.div
-                    className="h-px bg-border"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: 64 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                  />
-                </div>
-              </ScrollReveal>
-
               {/* Calendly Section */}
               <ScrollReveal>
                 <div className="max-w-3xl mx-auto">
@@ -200,11 +89,11 @@ const ContactPage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                   >
-                    <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-3">
-                      Schedule a Consultation
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
+                      Book a free call
                     </h2>
-                    <p className="text-muted-foreground font-mono">
-                      Pick a time that works for you. We typically respond within one business day.
+                    <p className="text-sm text-muted-foreground">
+                      Pick a time. We usually reply within a day.
                     </p>
                   </motion.div>
                   <motion.div
