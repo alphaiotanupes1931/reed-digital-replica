@@ -1,47 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useTypingEffect } from "@/hooks/use-typing-effect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useSearchParams, Link } from "react-router-dom";
 import logo from "@/assets/rdg-header-logo.png";
-import { GlossaryChatbot } from "@/components/GlossaryChatbot";
-
-interface Phase {
-  name: string;
-  status: "pending" | "in_progress" | "complete";
-}
-
-interface SowComment {
-  author: "client" | "admin";
-  message: string;
-  created_at: string;
-}
-
-interface Client {
-  id: string;
-  company_name: string;
-  email: string;
-  owner_name: string | null;
-  scope_of_work: string | null;
-  phases: Phase[] | null;
-  sow_status: "pending" | "approved" | "rejected" | string;
-  sow_comments: SowComment[] | null;
-  project_type: string | null;
-  project_build_cost: string | null;
-  project_maintenance_cost: string | null;
-  project_estimated_total: string | null;
-  maintenance_plan: string | null;
-  sow_hidden?: boolean;
-}
-
-interface Deliverable {
-  label: string;
-  url: string;
-}
 
 interface Invoice {
   id: string;
@@ -55,273 +20,34 @@ interface Invoice {
   deposit_paid: boolean;
   created_at: string;
   message: string | null;
-  deliverables: Deliverable[] | null;
+  deliverables: { label: string; url: string }[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
 }
 
 const PROCESSING_FEE_RATE = 0.029;
 const PROCESSING_FEE_FLAT = 0.30;
 
-// Maintenance plan catalog (must mirror /maintenance-plans)
-const MAINTENANCE_PLAN_CATALOG: { category: string; categoryLabel: string; plans: { name: string; price: number; tagline: string }[] }[] = [
-  {
-    category: "cms",
-    categoryLabel: "Brochure + CMS",
-    plans: [
-      { name: "Standard", price: 200, tagline: "Keeps your website up and running." },
-      { name: "Growth", price: 300, tagline: "The plan built for active businesses." },
-      { name: "Pro", price: 400, tagline: "For sites that should sell for you." },
-      { name: "Elite", price: 500, tagline: "Hands off. We handle everything." },
-    ],
-  },
-  {
-    category: "smb",
-    categoryLabel: "Small Business",
-    plans: [
-      { name: "Standard", price: 100, tagline: "Keeps your site live." },
-      { name: "Growth", price: 200, tagline: "The plan most small businesses need." },
-      { name: "Pro", price: 300, tagline: "Full-service for growing businesses." },
-    ],
-  },
-  {
-    category: "landing",
-    categoryLabel: "Landing Page",
-    plans: [
-      { name: "Standard", price: 50, tagline: "Keeps your page online." },
-      { name: "Growth", price: 100, tagline: "For pages that need to stay sharp." },
-    ],
-  },
-];
-
-// Resolve the client's selected maintenance plan to a label and monthly price
-const resolveMaintenancePlan = (
-  client: Pick<Client, "maintenance_plan" | "project_maintenance_cost">
-): { label: string; price: number } | null => {
-  const v = (client.maintenance_plan || "").trim();
-  if (!v || v === "none") return null;
-  if (v.startsWith("custom:")) {
-    const m = v.match(/\|(\d+(?:\.\d+)?)/);
-    if (m) return { label: "Website Maintenance Plan", price: parseFloat(m[1]) };
-    return null;
-  }
-  const [cat, name] = v.split(":");
-  for (const c of MAINTENANCE_PLAN_CATALOG) {
-    if (c.category === cat) {
-      const p = c.plans.find((pp) => pp.name === name);
-      if (p) return { label: `Website Maintenance Plan`, price: p.price };
-    }
-  }
-  return null;
-};
-
-const MaintenancePlanPicker = ({
-  client,
-  onChange,
-}: {
-  client: Client;
-  onChange: () => void | Promise<void>;
-}) => {
-  const [saving, setSaving] = useState(false);
-  const current = client.maintenance_plan || "";
-
-  // Custom plan price is set by the admin via project_maintenance_cost.
-  // Parse the first number in that string (handles "$250", "250/mo", etc.)
-  const customRaw = (client.project_maintenance_cost || "").trim();
-  const customMatch = customRaw.match(/(\d+(?:\.\d+)?)/);
-  const customPrice = customMatch ? customMatch[1] : "";
-  const customAvailable = !!customPrice && parseFloat(customPrice) > 0;
-  const customValue = customAvailable ? `custom:Custom|${customPrice}` : "";
-  const customSelected = customAvailable && current === customValue;
-
-  const setPlan = async (planValue: string | null) => {
-    setSaving(true);
-    try {
-      const res = await supabase.functions.invoke("sow-response", {
-        body: { email: client.email, action: "set_maintenance_plan", maintenance_plan: planValue },
-      });
-      if (res.error) throw res.error;
-      const errData = (res.data as { error?: string } | null)?.error;
-      if (errData) throw new Error(errData);
-      toast({ title: planValue ? "Maintenance plan selected" : "Selection cleared" });
-      await onChange();
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div className="mt-6 border-t-2 border-foreground pt-6">
-      <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3">
-        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
-          Choose Your Maintenance Plan
-        </p>
-        {current && (
-          <button
-            onClick={() => setPlan(null)}
-            disabled={saving}
-            className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40"
-          >
-            Clear selection
-          </button>
-        )}
-      </div>
-      <p className="text-sm font-mono text-foreground/85 leading-relaxed mb-5">
-        {current
-          ? "Your selected plan is locked in below. You can change it anytime before launch. Billing starts on the 1st of the month after launch."
-          : "Pick the maintenance plan that fits your project. Billing starts on the 1st of the month after launch — separate from your build invoice."}
-      </p>
-
-      <div className="space-y-6">
-        {MAINTENANCE_PLAN_CATALOG.map((cat) => (
-          <div key={cat.category}>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">
-              {cat.categoryLabel}
-            </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {cat.plans.map((p) => {
-                const value = `${cat.category}:${p.name}`;
-                const selected = current === value;
-                return (
-                  <button
-                    key={value}
-                    onClick={() => setPlan(value)}
-                    disabled={saving}
-                    className={`text-left border-2 p-4 transition-colors disabled:opacity-50 ${
-                      selected
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-foreground"
-                    }`}
-                  >
-                    <div className="flex items-baseline justify-between mb-2">
-                      <span className="text-sm font-mono font-bold text-foreground uppercase tracking-[0.1em]">
-                        {p.name}
-                      </span>
-                      {selected && (
-                        <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
-                          ✓ Selected
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-lg font-mono font-bold text-foreground">
-                      ${p.price}<span className="text-xs text-muted-foreground">/mo</span>
-                    </p>
-                    <p className="text-[11px] font-mono text-muted-foreground mt-2 leading-snug">
-                      {p.tagline}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-
-        {/* Custom plan — only shown if admin set a price for this client */}
-        {customAvailable && (
-          <div>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">
-              Custom (set for you)
-            </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <button
-                onClick={() => setPlan(customValue)}
-                disabled={saving}
-                className={`text-left border-2 p-4 transition-colors disabled:opacity-50 ${
-                  customSelected
-                    ? "border-primary bg-primary/10"
-                    : "border-border hover:border-foreground"
-                }`}
-              >
-                <div className="flex items-baseline justify-between mb-2">
-                  <span className="text-sm font-mono font-bold text-foreground uppercase tracking-[0.1em]">
-                    Custom
-                  </span>
-                  {customSelected && (
-                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
-                      ✓ Selected
-                    </span>
-                  )}
-                </div>
-                <p className="text-lg font-mono font-bold text-foreground">
-                  ${customPrice}<span className="text-xs text-muted-foreground">/mo</span>
-                </p>
-                <p className="text-[11px] font-mono text-muted-foreground mt-2 leading-snug">
-                  A custom plan tailored to your project.
-                </p>
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <a
-        href="/maintenance-plans"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-5 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground hover:text-primary transition-colors underline underline-offset-4"
-      >
-        Compare plan details
-        <span aria-hidden="true">→</span>
-      </a>
-    </div>
-  );
-};
-
-const PortalSubtext = () => {
-  const { displayed, done } = useTypingEffect("Enter your email to access your invoices", 35, 800);
-  return (
-    <p className="text-lg font-mono text-foreground mb-12 text-center h-7">
-      {displayed}
-      {!done && <span className="typing-cursor">|</span>}
-    </p>
-  );
-};
-
-const PayRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="border border-border p-3">
-    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-1 font-bold">{label}</p>
-    <p className="text-sm font-mono text-foreground break-all">{value}</p>
-  </div>
-);
-
-const GoogleLogo = () => (
-  <svg viewBox="0 0 24 24" className="w-6 h-6">
-    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-  </svg>
-);
-
 const InvoiceDocument = ({
   invoice,
-  client,
+  clientName,
+  clientEmail,
   onPay,
   payingId,
 }: {
   invoice: Invoice;
-  client: Client;
-  onPay: (inv: Invoice, deposit: boolean, includeMaintenance?: boolean) => void;
+  clientName: string;
+  clientEmail: string;
+  onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
 }) => {
   const isPaid = invoice.status === "paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
-  const isOverdue = (d: string | null) => d ? new Date(d) < new Date() : false;
-  const depositOverdue = depositPending && isOverdue(invoice.deposit_due_date);
-  const [payMethod, setPayMethod] = useState<"stripe" | "zelle" | null>(null);
-  const maintPlan = resolveMaintenancePlan(client);
-  const [bundleMaint, setBundleMaint] = useState(false);
-
-  // Parse payment methods (comma-separated: "stripe", "zelle", or "stripe,zelle")
   const methods = (invoice.payment_method || "stripe")
     .split(",")
     .map((m) => m.trim().toLowerCase())
     .filter(Boolean);
   const allowStripe = methods.includes("stripe");
   const allowZelle = methods.includes("zelle");
-  // Fee only applies when Stripe is the only option. If Zelle is available, the
-  // quoted total is the raw price (no processing fee).
   const feeApplies = allowStripe && !allowZelle;
 
   const basePrice = invoice.price;
@@ -344,229 +70,88 @@ const InvoiceDocument = ({
       animate={{ opacity: 1, y: 0 }}
       className="border-2 border-foreground mb-8 bg-background"
     >
-      {/* Invoice header with logo */}
-      <div className="border-b-2 border-foreground p-6 md:p-8 flex items-start justify-between">
-        <div className="flex items-center gap-4">
-          <img src={logo} alt="Reed Digital Group" className="h-8" />
-          <div>
-            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Invoice</span>
-            <p className="text-sm font-mono text-foreground mt-1">
-              {new Date(invoice.created_at).toLocaleDateString("en-US", {
-                year: "numeric", month: "long", day: "numeric",
-              })}
-            </p>
-          </div>
+      {/* Header */}
+      <div className="border-b-2 border-foreground p-6 flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="RDG" className="h-6" />
+          <span className="text-xs font-mono text-foreground uppercase tracking-widest">Invoice</span>
         </div>
         {isPaid ? (
-          <div className="border-4 border-red-600 rounded-sm px-4 py-1 transform rotate-[-8deg]">
-            <span className="text-2xl font-mono font-black uppercase tracking-[0.2em] text-red-600">
-              PAID
-            </span>
-          </div>
+          <span className="text-xl font-mono font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">
+            PAID
+          </span>
         ) : (
-          <div className={`text-sm font-mono font-bold uppercase tracking-[0.15em] ${
-            depositOverdue ? "text-destructive" : "text-foreground"
-          }`}>
-            {depositOverdue ? "OVERDUE" : depositPending ? "DEPOSIT DUE" : "PENDING"}
-          </div>
+          <span className="text-sm font-mono font-bold uppercase tracking-widest text-primary">
+            {depositPending ? "DEPOSIT DUE" : "PENDING"}
+          </span>
         )}
       </div>
 
       {/* Bill To / From */}
-      <div className="border-b-2 border-foreground p-6 md:p-8 grid md:grid-cols-2 gap-6">
+      <div className="border-b-2 border-foreground p-6 grid md:grid-cols-2 gap-6">
         <div>
-          <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-2">Bill To</p>
-          <p className="text-lg font-mono font-bold text-foreground">{client.company_name}</p>
-          <p className="text-sm font-mono text-foreground mt-1">{client.email}</p>
+          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Bill To</p>
+          <p className="text-lg font-mono font-bold text-foreground">{clientName}</p>
+          <p className="text-sm font-mono text-foreground">{clientEmail}</p>
         </div>
         <div>
-          <p className="text-xs font-mono text-foreground uppercase tracking-[0.3em] mb-2">From</p>
+          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">From</p>
           <p className="text-lg font-mono font-bold text-foreground">Reed Digital Group</p>
-          <p className="text-sm font-mono text-foreground mt-1">reeddigitalgroup@gmail.com</p>
+          <p className="text-sm font-mono text-foreground">reeddigitalgroup@gmail.com</p>
         </div>
       </div>
 
       {/* Line items */}
-      <div className="border-b-2 border-foreground">
-        <div className="grid grid-cols-12 p-4 md:px-8 border-b border-foreground/30">
-          <span className="col-span-8 text-xs font-mono text-foreground uppercase tracking-[0.2em]">Description</span>
-          <span className="col-span-4 text-xs font-mono text-foreground uppercase tracking-[0.2em] text-right">Amount</span>
-        </div>
-        <div className="grid grid-cols-12 p-4 md:px-8 items-center border-b border-foreground/20">
-          <span className="col-span-8 text-base font-mono text-foreground">{invoice.service}</span>
-          <span className="col-span-4 text-base font-mono font-bold text-foreground text-right">
-            ${basePrice.toLocaleString()}
-          </span>
+      <div className="border-b-2 border-foreground p-6">
+        <div className="flex justify-between items-center py-2 border-b border-border">
+          <span className="text-sm font-mono text-foreground">{invoice.service}</span>
+          <span className="text-sm font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
         {feeApplies && (
-          <div className="grid grid-cols-12 p-4 md:px-8 items-center">
-            <span className="col-span-8 text-sm font-mono text-foreground">Infrastructure & Setup Fee</span>
-            <span className="col-span-4 text-sm font-mono text-foreground text-right">
-              ${feeAmount.toLocaleString()}
-            </span>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-sm font-mono text-muted-foreground">Processing Fee</span>
+            <span className="text-sm font-mono text-muted-foreground">${feeAmount.toLocaleString()}</span>
           </div>
         )}
-      </div>
-
-      {/* Deposit breakdown */}
-      {invoice.deposit_required && invoice.deposit_amount && (
-        <div className="border-b-2 border-foreground p-4 md:px-8">
-          <div className="flex justify-between items-center py-2">
-            <span className="text-sm font-mono text-foreground flex items-center gap-2">
-              Deposit
-              {invoice.deposit_paid && <span className="text-emerald-500 font-bold">✓</span>}
-              {!invoice.deposit_paid && invoice.deposit_due_date && (
-                <span className={`text-xs ${depositOverdue ? "text-destructive font-bold" : "text-foreground"}`}>
-                  · Due {new Date(invoice.deposit_due_date).toLocaleDateString()}
-                </span>
-              )}
-            </span>
-            <span className="text-sm font-mono font-bold text-foreground">
-              ${invoice.deposit_amount.toLocaleString()}
-            </span>
-          </div>
-          <div className="flex justify-between items-center py-2">
-            <span className="text-sm font-mono text-foreground">Balance Due After Completion</span>
-            <span className="text-sm font-mono font-bold text-foreground">
-              ${remainingTotal.toLocaleString()}
-            </span>
-          </div>
+        <div className="flex justify-between items-center pt-4">
+          <span className="text-lg font-mono font-bold text-foreground">Total</span>
+          <span className="text-2xl font-mono font-bold text-foreground">${totalPrice.toLocaleString()}</span>
         </div>
-      )}
-
-      {/* Total */}
-      <div className="p-6 md:p-8 flex justify-between items-center border-b-2 border-foreground">
-        <span className="text-lg font-mono font-bold text-foreground uppercase tracking-[0.2em]">Total</span>
-        <span className="text-3xl font-mono font-bold text-foreground">${totalPrice.toLocaleString()}</span>
       </div>
 
-      {/* Actions */}
+      {/* Pay buttons */}
       {!isPaid && (
-        <div className="p-6 md:p-8 space-y-4">
-          {/* Payment method selector */}
-          {allowStripe && allowZelle && payMethod === null && (
-            <div className="space-y-3">
-              <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Choose Payment Method</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  onClick={() => setPayMethod("stripe")}
-                  className="h-14 px-6 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors"
-                >
-                  Pay with Card
-                </button>
-                <button
-                  onClick={() => setPayMethod("zelle")}
-                  className="h-14 px-6 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors"
-                >
-                  Pay with Zelle
-                </button>
-              </div>
-            </div>
+        <div className="p-6 space-y-3">
+          {depositPending && (
+            <button
+              onClick={() => onPay(invoice, true)}
+              disabled={payingId === invoice.id + "-dep"}
+              className="w-full h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+            >
+              {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+            </button>
           )}
-
-          {allowStripe && (!allowZelle || payMethod === "stripe") && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Pay with Card</p>
-                {allowZelle && (
-                  <button
-                    onClick={() => setPayMethod(null)}
-                    className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground underline underline-offset-4"
-                  >
-                    Change
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {depositPending && (
-                  <button
-                    onClick={() => onPay(invoice, true)}
-                    disabled={payingId === invoice.id + "-dep"}
-                    className={`h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 rounded-none transition-colors flex items-center gap-3 ${
-                      depositOverdue
-                        ? "border-destructive text-destructive hover:bg-destructive hover:text-background"
-                        : "border-foreground text-foreground hover:bg-foreground hover:text-background"
-                    } disabled:opacity-50`}
-                  >
-                    {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
-                  </button>
-                )}
-                {(!invoice.deposit_required || invoice.deposit_paid) && (
-                  <div className="w-full space-y-3">
-                    {maintPlan && (
-                      <label className="flex items-start gap-3 p-4 border-2 border-foreground/30 hover:border-foreground/60 cursor-pointer transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={bundleMaint}
-                          onChange={(e) => setBundleMaint(e.target.checked)}
-                          className="mt-1 w-4 h-4 accent-foreground"
-                        />
-                        <div className="flex-1">
-                          <p className="text-sm font-mono font-bold text-foreground uppercase tracking-[0.1em]">
-                            Add Monthly Maintenance — ${maintPlan.price.toLocaleString()}/mo
-                          </p>
-                          <p className="text-xs font-mono text-foreground/70 mt-1 leading-relaxed">
-                            Subscribe in the same checkout. You'll only be charged the build fee today; the recurring maintenance charge begins on the 1st of next month and continues monthly until cancelled.
-                          </p>
-                        </div>
-                      </label>
-                    )}
-                    <button
-                      onClick={() => onPay(invoice, false, bundleMaint && !!maintPlan)}
-                      disabled={payingId === invoice.id + "-once"}
-                      className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors flex items-center gap-3 disabled:opacity-50"
-                    >
-                      {payingId === invoice.id + "-once"
-                        ? "Processing..."
-                        : bundleMaint && maintPlan
-                          ? `Pay $${remainingTotal.toLocaleString()} + Subscribe $${maintPlan.price.toLocaleString()}/mo`
-                          : `Pay Once — $${remainingTotal.toLocaleString()}`}
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {allowZelle && (!allowStripe || payMethod === "zelle") && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-mono text-foreground uppercase tracking-[0.2em]">Pay with Zelle</p>
-                {allowStripe && (
-                  <button
-                    onClick={() => setPayMethod(null)}
-                    className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground underline underline-offset-4"
-                  >
-                    Change
-                  </button>
-                )}
-              </div>
-              <div className="bg-foreground/5 border-2 border-foreground/30 p-5 space-y-3">
-                <p className="text-sm font-mono text-foreground leading-relaxed">
-                  Please send payment via <span className="font-bold">Zelle</span> to:
-                </p>
-                <p className="text-lg font-mono font-bold text-foreground break-all">
-                  info@reeddigitalgroup.com
-                </p>
-                <p className="text-xs font-mono text-foreground/70 leading-relaxed">
-                  Open your banking app, search for Zelle, and send <span className="font-bold text-foreground">${remainingTotal.toLocaleString()}</span> to the email above. Include your company name in the memo. Your invoice will be marked paid within 1–2 business days.
-                </p>
-                {maintPlan && (
-                  <p className="text-xs font-mono text-destructive leading-relaxed border-t border-foreground/20 pt-3 mt-2">
-                    <span className="font-bold">Important:</span> You are responsible for sending the monthly maintenance fee of <span className="font-bold">${maintPlan.price.toLocaleString()}</span> every month via Zelle. It will not be charged automatically.
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-3 pt-2">
+          {(!invoice.deposit_required || invoice.deposit_paid) && (
+            <div className="flex flex-wrap gap-3">
+              {allowStripe && (
+                <button
+                  onClick={() => onPay(invoice, false)}
+                  disabled={payingId === invoice.id + "-once"}
+                  className="flex-1 h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                >
+                  {payingId === invoice.id + "-once" ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
+                </button>
+              )}
+              {allowZelle && (
                 <a
                   href="https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiUkVFRCBESUdJVEFMIEdST1VQIiwidG9rZW4iOiJpbmZvQHJlZWRkaWdpdGFsZ3JvdXAuY29tIiwiYWN0aW9uIjoicGF5bWVudCJ9"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors flex items-center gap-3"
+                  className="flex-1 h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center"
                 >
-                  Pay via Zelle — ${remainingTotal.toLocaleString()}
+                  Zelle — ${remainingTotal.toLocaleString()}
                 </a>
-              </div>
+              )}
             </div>
           )}
         </div>
@@ -575,255 +160,10 @@ const InvoiceDocument = ({
   );
 };
 
-const extractGreetingName = (client: Client): string => {
-  const raw = (client.owner_name || client.company_name || "").trim();
-  return raw || "there";
-};
-
-const WelcomeBlock = ({ client }: { client: Client }) => {
-  const firstName = extractGreetingName(client);
-  const greeting = `Welcome, ${firstName}`;
-  const { displayed, done } = useTypingEffect(greeting, 60, 200);
-  return (
-    <>
-      <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">
-        Client Portal
-      </p>
-      <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight min-h-[1.2em]">
-        {displayed}
-        {!done && <span className="typing-cursor">|</span>}
-      </h1>
-      <p className="text-sm font-mono text-muted-foreground mt-2">{client.company_name}</p>
-    </>
-  );
-};
-
-const PhaseTracker = ({ phases }: { phases: Phase[] }) => {
-  const completed = phases.filter((p) => p.status === "complete").length;
-  const pct = phases.length ? Math.round((completed / phases.length) * 100) : 0;
-  return (
-    <div className="mt-10 border-2 border-foreground p-6 md:p-8">
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Project Progress</p>
-        <p className="text-xs font-mono text-foreground">{completed}/{phases.length} · {pct}%</p>
-      </div>
-
-      {/* Progress bar */}
-      <div className="h-1 w-full bg-foreground/10 mb-8 relative overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="h-full bg-primary"
-        />
-      </div>
-
-      {/* Phases */}
-      <div className="space-y-4">
-        {phases.map((phase, i) => {
-          const isComplete = phase.status === "complete";
-          const isActive = phase.status === "in_progress";
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className="flex items-center gap-4"
-            >
-              <div className={`w-8 h-8 border-2 flex items-center justify-center text-xs font-mono font-bold shrink-0 ${
-                isComplete
-                  ? "bg-foreground text-background border-foreground"
-                  : isActive
-                  ? "border-primary text-primary"
-                  : "border-foreground/30 text-foreground/30"
-              }`}>
-                {isComplete ? "✓" : String(i + 1).padStart(2, "0")}
-              </div>
-              <div className="flex-1 min-w-0 flex items-center justify-between gap-4 border-b border-border pb-3">
-                <span className={`text-base font-mono ${
-                  isComplete ? "text-foreground" : isActive ? "text-foreground font-bold" : "text-foreground/50"
-                }`}>
-                  {phase.name}
-                </span>
-                <span className={`text-xs font-mono uppercase tracking-[0.15em] ${
-                  isComplete ? "text-emerald-500" : isActive ? "text-primary" : "text-foreground/40"
-                }`}>
-                  {phase.status === "in_progress" ? "In Progress" : phase.status === "complete" ? "Complete" : "Pending"}
-                </span>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-const SowReview = ({ client, onChange }: { client: Client; onChange: () => void | Promise<void> }) => {
-  const [comment, setComment] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const status = client.sow_status || "pending";
-  const comments: SowComment[] = Array.isArray(client.sow_comments) ? client.sow_comments : [];
-
-  const callApi = async (body: Record<string, unknown>) => {
-    setSubmitting(true);
-    try {
-      const res = await supabase.functions.invoke("sow-response", {
-        body: { email: client.email, ...body },
-      });
-      if (res.error) throw res.error;
-      const errData = (res.data as { error?: string } | null)?.error;
-      if (errData) throw new Error(errData);
-      await onChange();
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleApprove = () => callApi({ action: "set_status", status: "approved" });
-  const handleReject = () => callApi({ action: "set_status", status: "rejected" });
-  const handleComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!comment.trim()) return;
-    await callApi({ action: "add_comment", message: comment });
-    setComment("");
-    toast({ title: "Comment sent" });
-  };
-  const handleDeleteComment = async (index: number) => {
-    if (!confirm("Delete this comment?")) return;
-    await callApi({ action: "delete_comment", comment_index: index });
-    toast({ title: "Comment deleted" });
-  };
-
-  const statusBadge =
-    status === "approved"
-      ? "bg-emerald-500 text-background"
-      : status === "rejected"
-      ? "bg-destructive text-destructive-foreground"
-      : "bg-foreground text-background";
-  const statusLabel = status === "approved" ? "Approved" : status === "rejected" ? "Changes Requested" : "Awaiting Review";
-
-  const sowText = client.scope_of_work || "";
-  const isLong = sowText.length > 320;
-  const [expanded, setExpanded] = useState(!isLong);
-
-  return (
-    <div className="mt-10 border-2 border-foreground p-6 md:p-10 bg-background">
-      <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
-        <p className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Scope of Work</p>
-        <span className={`text-[11px] font-mono uppercase tracking-[0.2em] px-3 py-1.5 ${statusBadge}`}>
-          {statusLabel}
-        </span>
-      </div>
-
-      <p className="text-base font-mono text-muted-foreground leading-relaxed mb-6">
-        This is the plan for your project — what we'll build, what's included, and what to expect. Read it over, leave a comment if anything is unclear, and approve when you're happy.
-      </p>
-
-      <div className={`relative ${!expanded && isLong ? "max-h-48 overflow-hidden" : ""}`}>
-        <p className="text-lg font-mono text-foreground leading-[1.85] whitespace-pre-wrap">
-          {sowText}
-        </p>
-        {!expanded && isLong && (
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-        )}
-      </div>
-
-      {isLong && (
-        <button
-          onClick={() => setExpanded((e) => !e)}
-          className="mt-4 text-base font-mono text-primary hover:text-foreground transition-colors underline underline-offset-4"
-        >
-          {expanded ? "Show less" : "Read full scope →"}
-        </button>
-      )}
-
-      <div className="mt-8 pt-6 border-t border-border">
-        <p className="text-base font-mono text-foreground mb-4">
-          Ready to move forward?
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Button
-            onClick={handleApprove}
-            disabled={submitting || status === "approved"}
-            className="h-14 px-8 font-mono text-base rounded-none bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40"
-          >
-            {status === "approved" ? "✓ Approved" : "Approve Scope"}
-          </Button>
-          <Button
-            onClick={handleReject}
-            disabled={submitting || status === "rejected"}
-            variant="outline"
-            className="h-14 px-8 font-mono text-base rounded-none border-2 border-foreground hover:border-destructive hover:text-destructive disabled:opacity-40"
-          >
-            {status === "rejected" ? "Changes Requested" : "Request Changes"}
-          </Button>
-        </div>
-      </div>
-
-      <div className="mt-10 border-t border-border pt-8">
-        <p className="text-base font-mono text-foreground mb-2 font-bold">
-          Questions or comments?
-        </p>
-        <p className="text-sm font-mono text-muted-foreground mb-5">
-          Leave a note below and we'll respond as soon as possible.
-        </p>
-
-        {comments.length > 0 && (
-          <div className="space-y-5 mb-6 max-h-80 overflow-y-auto pr-2">
-            {comments.map((c, i) => (
-              <div key={i} className="border-l-2 border-primary pl-5 py-1">
-                <div className="flex items-baseline gap-3 mb-2 flex-wrap">
-                  <span className="text-xs font-mono uppercase tracking-[0.2em] text-primary font-bold">
-                    {c.author === "admin" ? "Reed Digital Group" : "You"}
-                  </span>
-                  <span className="text-xs font-mono text-muted-foreground">
-                    {new Date(c.created_at).toLocaleString()}
-                  </span>
-                  {c.author === "client" && (
-                    <button
-                      onClick={() => handleDeleteComment(i)}
-                      disabled={submitting}
-                      className="ml-auto text-xs font-mono text-muted-foreground hover:text-destructive transition-colors uppercase tracking-[0.15em]"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
-                <p className="text-base font-mono text-foreground leading-relaxed whitespace-pre-wrap">{c.message}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <form onSubmit={handleComment} className="space-y-3">
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Type your question or comment here..."
-            rows={4}
-            maxLength={2000}
-            className="w-full bg-transparent border-2 border-border focus:border-foreground p-4 font-mono text-base text-foreground placeholder:text-foreground/40 focus:outline-none resize-none leading-relaxed"
-          />
-          <Button
-            type="submit"
-            disabled={submitting || !comment.trim()}
-            className="h-14 px-8 font-mono text-base rounded-none disabled:opacity-40"
-          >
-            {submitting ? "Sending..." : "Send Comment"}
-          </Button>
-        </form>
-      </div>
-    </div>
-  );
-};
-
 const InvoicePortal = () => {
   const [email, setEmail] = useState(() => localStorage.getItem("portal-email") || "");
-  const [client, setClient] = useState<Client | null>(null);
+  const [clientName, setClientName] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
   const [payingId, setPayingId] = useState<string | null>(null);
@@ -833,15 +173,12 @@ const InvoicePortal = () => {
     user_id: string;
     business_name: string;
     owner_name: string | null;
-    has_stripe: boolean;
-    zelle_handle: string | null;
-    cashapp_handle: string | null;
-    payment_methods: string[];
   };
   const [bizCode, setBizCode] = useState(() => localStorage.getItem("portal-biz-code") || "");
   const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
   const [bizLookupLoading, setBizLookupLoading] = useState(false);
   const [bizError, setBizError] = useState<string | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const lookupBusiness = async (code: string): Promise<Business | null> => {
     const c = code.trim().toUpperCase();
@@ -856,7 +193,7 @@ const InvoicePortal = () => {
     setBizLookupLoading(false);
     if (error || !Array.isArray(data) || data.length === 0) {
       setSelectedBiz(null);
-      setBizError("No business found with that ID");
+      setBizError("No business found");
       return null;
     }
     const biz = data[0] as Business;
@@ -868,16 +205,15 @@ const InvoicePortal = () => {
 
   useEffect(() => {
     if (searchParams.get("payment") === "success") {
-      toast({ title: "Payment successful", description: "Thank you for your payment." });
+      toast({ title: "Payment successful", description: "Thank you." });
     }
   }, [searchParams]);
 
-  // Auto-login if email + business code saved from previous session
   useEffect(() => {
     (async () => {
       const savedCode = localStorage.getItem("portal-biz-code");
       const savedEmail = localStorage.getItem("portal-email");
-      if (!savedCode || !savedEmail || client) return;
+      if (!savedCode || !savedEmail) return;
       const biz = await lookupBusiness(savedCode);
       if (biz) await loadClientData(savedEmail, biz, false);
     })();
@@ -894,12 +230,13 @@ const InvoicePortal = () => {
       .maybeSingle();
 
     if (!clientData) {
-      if (showError) toast({ title: "No account found", description: `No invoices for ${addr} under ${biz.business_name}.`, variant: "destructive" });
+      if (showError) toast({ title: "No account found", description: `No invoices for ${addr}.`, variant: "destructive" });
       localStorage.removeItem("portal-email");
       return false;
     }
 
-    setClient(clientData as unknown as Client);
+    setClientName(clientData.company_name || clientData.owner_name || "");
+    setClientEmail(clientData.email);
     localStorage.setItem("portal-email", addr);
     const { data: invData } = await supabase
       .from("invoices")
@@ -910,13 +247,14 @@ const InvoicePortal = () => {
       .order("created_at", { ascending: false });
 
     setInvoices((invData as unknown as Invoice[]) || []);
+    setLoggedIn(true);
     return true;
   };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedBiz) {
-      setBizError("Enter your business ID first");
+      setBizError("Enter business ID first");
       return;
     }
     setLoading(true);
@@ -924,27 +262,15 @@ const InvoicePortal = () => {
     setLoading(false);
   };
 
-  const refreshClient = async () => {
-    if (client?.email && selectedBiz) await loadClientData(client.email, selectedBiz, false);
-  };
-
-  const handlePay = async (
-    invoice: Invoice,
-    payDeposit: boolean,
-    includeMaintenance: boolean = false,
-  ) => {
+  const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
     const suffix = payDeposit ? "-dep" : "-once";
     setPayingId(invoice.id + suffix);
     try {
-      const plan = includeMaintenance && client ? resolveMaintenancePlan(client) : null;
       const res = await supabase.functions.invoke("create-checkout", {
         body: {
           invoice_id: invoice.id,
           pay_deposit: payDeposit,
           payment_type: "one_time",
-          include_maintenance: !!plan,
-          maintenance_price: plan?.price,
-          maintenance_label: plan?.label,
         },
       });
       if (res.error) throw res.error;
@@ -955,84 +281,31 @@ const InvoicePortal = () => {
     }
   };
 
-  const [subscribingMaint, setSubscribingMaint] = useState(false);
-  const [showAutoPay, setShowAutoPay] = useState(false);
-  const [showCustomPay, setShowCustomPay] = useState(false);
-  const [customAmount, setCustomAmount] = useState("");
-  const [customNote, setCustomNote] = useState("");
-  const [customPaying, setCustomPaying] = useState(false);
-
-  const handleCustomPay = async () => {
-    if (!client) return;
-    const amt = Number(customAmount);
-    if (!amt || amt <= 0) {
-      toast({ title: "Enter a valid amount", variant: "destructive" });
-      return;
-    }
-    setCustomPaying(true);
-    try {
-      const res = await supabase.functions.invoke("create-custom-payment", {
-        body: { client_id: client.id, amount: amt, note: customNote },
-      });
-      if (res.error) throw res.error;
-      if (res.data?.url) window.location.href = res.data.url;
-    } catch (err: any) {
-      toast({ title: "Payment error", description: err.message, variant: "destructive" });
-      setCustomPaying(false);
-    }
-  };
-
-  const handleSubscribeMaintenance = async () => {
-    if (!client) return;
-    const plan = resolveMaintenancePlan(client);
-    if (!plan) {
-      toast({ title: "No maintenance plan selected", variant: "destructive" });
-      return;
-    }
-    setSubscribingMaint(true);
-    try {
-      const res = await supabase.functions.invoke("create-maintenance-subscription", {
-        body: {
-          client_id: client.id,
-          monthly_price: plan.price,
-          plan_label: plan.label,
-        },
-      });
-      if (res.error) throw res.error;
-      if (res.data?.url) window.location.href = res.data.url;
-    } catch (err: any) {
-      toast({ title: "Subscription error", description: err.message, variant: "destructive" });
-      setSubscribingMaint(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Faded background logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
       </div>
+
       {/* Top bar */}
-      <div className="border-b border-border">
+      <div className="border-b border-border relative z-10">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
-            <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
-              Client Portal
-            </span>
+          <Link to="/" className="flex items-center gap-3 hover:opacity-70 transition-opacity">
+            <img src={logo} alt="RDG" className="h-5" />
+            <span className="text-xs font-mono text-foreground uppercase tracking-widest">Pay Invoice</span>
           </Link>
-          {client && (
+          {loggedIn && (
             <button
               onClick={() => {
                 localStorage.removeItem("portal-email");
                 localStorage.removeItem("portal-biz-code");
-                setClient(null);
+                setLoggedIn(false);
                 setInvoices([]);
                 setEmail("");
                 setBizCode("");
                 setSelectedBiz(null);
               }}
-              className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-[0.2em]"
+              className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-widest"
             >
               Sign out
             </button>
@@ -1040,9 +313,9 @@ const InvoicePortal = () => {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6">
+      <div className="max-w-3xl mx-auto px-6 relative z-10">
         <AnimatePresence mode="wait">
-          {!client ? (
+          {!loggedIn ? (
             <motion.div
               key="login"
               initial={{ opacity: 0 }}
@@ -1055,22 +328,19 @@ const InvoicePortal = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center"
+                className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-2 text-center"
               >
-                <em>Invoices</em>{" "}
-                <span className="text-lg md:text-2xl text-primary font-normal">by RDG</span>
+                Pay Invoice
               </motion.h1>
-              <PortalSubtext />
+              <p className="text-sm font-mono text-muted-foreground mb-12 text-center">Enter your info to see your bill.</p>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.0 }}
+                transition={{ delay: 0.5 }}
                 className="w-full max-w-sm mb-6"
               >
-                <label className="block text-[10px] font-mono uppercase tracking-[0.3em] text-foreground/60 mb-2 text-center">
-                  Business ID
-                </label>
+                <p className="text-xs font-mono text-muted-foreground text-center mb-2">Business ID</p>
                 <Input
                   type="text"
                   inputMode="text"
@@ -1087,15 +357,13 @@ const InvoicePortal = () => {
                   className="h-12 text-center font-mono tracking-[0.4em] text-base rounded-none border-border focus-visible:border-foreground"
                 />
                 <div className="mt-2 min-h-[1.25rem] text-center text-xs font-mono">
-                  {bizLookupLoading && <span className="text-muted-foreground">Looking up…</span>}
+                  {bizLookupLoading && <span className="text-muted-foreground">Looking up...</span>}
                   {!bizLookupLoading && selectedBiz && (
-                    <span className="text-primary">
-                      Paying: <span className="font-bold text-foreground">{selectedBiz.business_name}</span>
-                    </span>
+                    <span className="text-primary">Paying: <span className="font-bold text-foreground">{selectedBiz.business_name}</span></span>
                   )}
                   {!bizLookupLoading && bizError && <span className="text-destructive">{bizError}</span>}
                   {!bizLookupLoading && !selectedBiz && !bizError && (
-                    <span className="text-muted-foreground">Ask the business for their 8-character ID.</span>
+                    <span className="text-muted-foreground">Ask for the 8-character ID.</span>
                   )}
                 </div>
               </motion.div>
@@ -1104,7 +372,7 @@ const InvoicePortal = () => {
                 onSubmit={handleEmailSubmit}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.2 }}
+                transition={{ delay: 0.7 }}
                 className="w-full max-w-sm"
               >
                 <div className="mb-4">
@@ -1121,7 +389,7 @@ const InvoicePortal = () => {
                   type="submit"
                   disabled={loading || !selectedBiz}
                   variant="outline"
-                  className="w-full h-12 font-mono text-sm uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
+                  className="w-full h-12 font-mono text-sm uppercase tracking-widest rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
                 >
                   {loading ? (
                     <motion.div
@@ -1145,301 +413,42 @@ const InvoicePortal = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Desktop viewing notice (mobile only) */}
-              <div className="md:hidden mt-6 border-2 border-primary/40 bg-primary/5 p-4">
-                <p className="text-xs font-mono text-primary uppercase tracking-[0.2em] mb-1 font-bold">
-                  Tip
-                </p>
-                <p className="text-sm font-mono text-foreground leading-relaxed">
-                  For the best experience, we recommend viewing this portal on a desktop or laptop computer.
-                </p>
-              </div>
-
-              {/* Welcome */}
               <div className="py-10 border-b border-border">
-                <WelcomeBlock client={client} />
-
-                {/* Project Summary */}
-                {!client.sow_hidden && (client.project_type || client.project_build_cost || client.project_maintenance_cost || client.project_estimated_total) && (
-                  <div className="mt-8 border-2 border-foreground p-6 md:p-8 bg-background">
-                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
-                      Your Project
-                    </p>
-                    {client.project_type && (
-                      <h2 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight mb-6">
-                        {client.project_type}
-                      </h2>
-                    )}
-                    <div className="border-2 border-primary p-4 bg-primary/5 max-w-xs">
-                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-2 font-bold">Build Cost</p>
-                      <p className="text-xl font-mono font-bold text-foreground">
-                        {client.project_build_cost || "N/A"}
-                      </p>
-                    </div>
-                    <p className="text-xs font-mono text-muted-foreground mt-4 italic">
-                      {client.project_build_cost
-                        ? "Build is a one-time cost. Choose your monthly maintenance plan below."
-                        : "See below for maintenance pricing."}
-                    </p>
-
-                    {/* Maintenance Plan Selection */}
-                    {client.maintenance_plan === "none" ? null : (
-                      <MaintenancePlanPicker client={client} onChange={refreshClient} />
-                    )}
-                  </div>
-                )}
-
-                {/* Special message */}
-                {invoices.some(inv => inv.message) && (
-                  <div className="mt-6 border-2 border-primary/30 p-5">
-                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
-                      You have a special message
-                    </p>
-                    {invoices.filter(inv => inv.message).map(inv => (
-                      <p key={inv.id} className="text-sm font-mono text-foreground leading-relaxed">
-                        {inv.message}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                {/* Scope of Work + Review */}
-                {client.sow_hidden ? null : client.scope_of_work && client.scope_of_work.trim().length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(client.scope_of_work.trim()) ? (
-                  <SowReview client={client} onChange={refreshClient} />
-                ) : (
-                  <div className="mt-10 border-2 border-dashed border-border p-6 md:p-10 bg-background text-center">
-                    <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">Scope of Work</p>
-                    <p className="text-2xl font-mono font-bold text-foreground">SOW is not ready</p>
-                    <p className="text-sm font-mono text-muted-foreground mt-3 max-w-md mx-auto leading-relaxed">
-                      Your scope of work hasn't been prepared yet. You'll see the full plan here — deliverables, timeline, and phases — as soon as it's ready for your review.
-                    </p>
-                  </div>
-                )}
-
-                {/* Phase Progress Tracker */}
-                {!client.sow_hidden && client.phases && client.phases.length > 0 && (
-                  <PhaseTracker phases={client.phases} />
-                )}
+                <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">
+                  {clientName ? `Hi, ${clientName}` : "Hi"}
+                </h1>
+                <p className="text-sm font-mono text-muted-foreground mt-1">{clientEmail}</p>
               </div>
 
               {invoices.length === 0 ? (
                 <div className="py-20 text-center border-2 border-dashed border-border mt-8">
-                  <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">Status</p>
-                  <p className="text-2xl font-mono font-bold text-foreground">Invoice is not ready</p>
-                  <p className="text-sm font-mono text-muted-foreground mt-3 max-w-md mx-auto">
-                    Your invoice hasn't been issued yet. You'll see it here as soon as it's prepared. Check back soon.
-                  </p>
+                  <p className="text-2xl font-mono font-bold text-foreground">No invoice yet</p>
+                  <p className="text-sm font-mono text-muted-foreground mt-2">Check back soon.</p>
                 </div>
               ) : (
-                <div>
-                  <div className="pt-6 pb-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-mono text-foreground uppercase tracking-[0.3em]">
-                        Your Invoices
-                      </span>
-                      <span className="text-sm font-mono text-foreground">
-                        {invoices.filter(i => i.status === "paid").length}/{invoices.length} paid
-                      </span>
-                    </div>
-                    <p className="text-[11px] font-mono text-muted-foreground leading-relaxed mt-3 italic max-w-xl">
-                      An invoice is your itemized bill for the work agreed in the Scope of Work. Pay securely with a card or Zelle. Once a payment clears, the status updates and any deliverables become available.
-                    </p>
-                  </div>
-
+                <div className="pt-6">
                   {invoices.map((inv) => (
                     <InvoiceDocument
                       key={inv.id}
                       invoice={inv}
-                      client={client}
+                      clientName={clientName}
+                      clientEmail={clientEmail}
                       onPay={handlePay}
                       payingId={payingId}
                     />
                   ))}
-
-                  {/* Collapsible: Enroll in auto-pay (Zelle clients) */}
-                  {(() => {
-                    const plan = resolveMaintenancePlan(client);
-                    if (!plan) return null;
-                    const now = new Date();
-                    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-                    const startLabel = nextMonth.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-                    return (
-                      <div className="border-2 border-foreground mt-8 bg-background">
-                        <button
-                          onClick={() => setShowAutoPay(v => !v)}
-                          className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
-                        >
-                          <span className="text-sm font-mono text-foreground uppercase tracking-[0.15em]">
-                            Paid via Zelle? Enroll in automatic monthly payments
-                          </span>
-                          <span className="text-lg font-mono text-primary shrink-0">{showAutoPay ? "−" : "+"}</span>
-                        </button>
-                        {showAutoPay && (
-                          <div className="border-t-2 border-foreground p-6 md:p-8">
-                            <p className="text-3xl font-mono font-bold text-foreground mb-1">
-                              ${plan.price.toLocaleString()}<span className="text-sm text-muted-foreground">/mo</span>
-                            </p>
-                            <p className="text-xs font-mono text-muted-foreground leading-relaxed mb-5 max-w-xl">
-                              Skip remembering to send the monthly maintenance fee. Enroll your card and we'll charge it automatically every month. First charge on {startLabel}. Cancel anytime.
-                            </p>
-                            <button
-                              onClick={handleSubscribeMaintenance}
-                              disabled={subscribingMaint}
-                              className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
-                            >
-                              {subscribingMaint ? "Processing..." : `Enroll in Auto-Pay — $${plan.price.toLocaleString()}/mo`}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-
-                  {/* Collapsible: Custom one-off payment */}
-                  <div className="border-2 border-foreground mt-4 bg-background">
-                    <button
-                      onClick={() => setShowCustomPay(v => !v)}
-                      className="w-full text-left p-5 md:p-6 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
-                    >
-                      <span className="text-sm font-mono text-foreground uppercase tracking-[0.15em]">
-                        Looking to make another payment? Click here
-                      </span>
-                      <span className="text-lg font-mono text-primary shrink-0">{showCustomPay ? "−" : "+"}</span>
-                    </button>
-                    {showCustomPay && (
-                      <div className="border-t-2 border-foreground p-6 md:p-8 space-y-4">
-                        <p className="text-xs font-mono text-muted-foreground leading-relaxed max-w-xl">
-                          Pay any custom amount by card. A 2.9% + $1.30 processing fee will be added at checkout.
-                        </p>
-                        <div>
-                          <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground block mb-2">
-                            Amount (USD)
-                          </label>
-                          <input
-                            type="number"
-                            min="1"
-                            step="0.01"
-                            value={customAmount}
-                            onChange={(e) => setCustomAmount(e.target.value)}
-                            placeholder="0.00"
-                            className="w-full bg-transparent border-2 border-border focus:border-foreground p-3 font-mono text-lg text-foreground focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground block mb-2">
-                            Note (optional)
-                          </label>
-                          <input
-                            type="text"
-                            maxLength={200}
-                            value={customNote}
-                            onChange={(e) => setCustomNote(e.target.value)}
-                            placeholder="What is this payment for?"
-                            className="w-full bg-transparent border-2 border-border focus:border-foreground p-3 font-mono text-sm text-foreground focus:outline-none"
-                          />
-                        </div>
-                        <button
-                          onClick={handleCustomPay}
-                          disabled={customPaying || !customAmount}
-                          className="h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 rounded-none transition-colors disabled:opacity-50"
-                        >
-                          {customPaying ? "Processing..." : "Pay with Card"}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Project Deliverables — separate section */}
-                  {invoices.some(inv => inv.status === "paid") && (
-                    <div className="border-2 border-foreground p-6 md:p-8 mt-8">
-                      <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-2">
-                        Project Deliverables
-                      </p>
-                      <h2 className="text-2xl font-mono font-bold text-foreground tracking-tight mb-4">
-                        Your Files & Links
-                      </h2>
-                      {(() => {
-                        const allDeliverables = invoices
-                          .filter(inv => inv.status === "paid" && inv.deliverables && inv.deliverables.length > 0)
-                          .flatMap(inv => inv.deliverables!.map(d => ({ ...d, service: inv.service })));
-                        
-                        return allDeliverables.length > 0 ? (
-                          <div className="space-y-3">
-                            {allDeliverables.map((d, i) => (
-                              <a
-                                key={i}
-                                href={d.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-4 p-4 border border-border hover:border-foreground transition-colors group"
-                              >
-                                <span className="w-8 h-8 border-2 border-foreground group-hover:border-primary group-hover:text-primary flex items-center justify-center text-sm font-bold shrink-0">↗</span>
-                                <div>
-                                  <span className="text-sm font-mono font-bold text-foreground group-hover:text-primary transition-colors">{d.label}</span>
-                                  <p className="text-xs font-mono text-muted-foreground mt-0.5">{d.service}</p>
-                                </div>
-                              </a>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm font-mono text-muted-foreground">
-                            Your project deliverables (source code, documentation, design assets, etc.) will appear here once they are ready.
-                          </p>
-                        );
-                      })()}
-                    </div>
-                  )}
-
-                  {/* Review & Support */}
-                  <div className="border-2 border-foreground p-6 md:p-8 mt-8">
-                    <p className="text-sm font-mono text-foreground uppercase tracking-[0.3em] mb-4">
-                      We'd love your feedback
-                    </p>
-                    <p className="text-base font-mono text-foreground mb-6">
-                      If you've enjoyed working with us, we'd really appreciate a review. It helps us grow and serve more businesses like yours.
-                    </p>
-                    <a
-                      href="https://share.google/QzA1ri46KnQyE0a4M"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 h-12 px-8 text-sm font-mono uppercase tracking-[0.15em] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors"
-                    >
-                      <GoogleLogo />
-                      Leave a Review
-                    </a>
-
-                    <div className="border-t border-foreground/30 mt-8 pt-6">
-                      <p className="text-sm font-mono text-foreground">
-                        Need assistance? Reach out at{" "}
-                        <a
-                          href="mailto:reeddigitalgroup@gmail.com"
-                          className="text-primary hover:underline"
-                        >
-                          reeddigitalgroup@gmail.com
-                        </a>
-                      </p>
-                    </div>
-                  </div>
                 </div>
               )}
+
+              <div className="border-t border-border mt-12 py-8 text-center">
+                <p className="text-xs font-mono text-muted-foreground">
+                  Need help? Email <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-
-      {/* Branded footer */}
-      <div className="border-t border-border mt-20">
-        <div className="max-w-3xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-          <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-xs font-mono text-muted-foreground text-center">
-            If you are having issues, please contact{" "}
-            <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
-            {" "}or{" "}
-            <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
-          </p>
-        </div>
-      </div>
-      {client && <GlossaryChatbot />}
     </div>
   );
 };
