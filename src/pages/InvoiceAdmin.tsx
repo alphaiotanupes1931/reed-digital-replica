@@ -1328,78 +1328,50 @@ const InvoiceAdmin = () => {
         <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
       </div>
       <div className="border-b border-border relative z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/home-office" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
-            <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link to="/home-office" className="flex items-center gap-3 hover:opacity-70 transition-opacity">
+            <img src={logo} alt="RDG" className="h-5" />
+            <span className="text-xs font-mono text-foreground uppercase tracking-widest">Invoices</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <button onClick={handleSyncPayments} disabled={syncing} className="text-sm font-mono uppercase tracking-[0.2em] hover:text-primary">
-              {syncing ? "Syncing..." : "Sync Payments"}
-            </button>
-            <button onClick={() => setShowClientForm(!showClientForm)} className="text-sm font-mono uppercase tracking-[0.2em] hover:text-primary flex items-center gap-2">
-              <Plus className="h-4 w-4" />New Client
-            </button>
-          </div>
+          <button onClick={() => setShowClientForm(!showClientForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+            {showClientForm ? "Cancel" : "Add Client"}
+          </button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        <div className="py-10 border-b border-border">
-          <p className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-2">Welcome back</p>
-          <h1 className="text-4xl md:text-5xl font-mono font-bold text-foreground tracking-tight mb-8">{displayName}</h1>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div><span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Clients</span><p className="text-3xl font-mono font-bold mt-1">{clients.length}</p></div>
-            <div><span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Invoices</span><p className="text-3xl font-mono font-bold mt-1">{invoices.length}</p></div>
-            <div><span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Revenue</span><p className="text-3xl font-mono font-bold mt-1">${totalRevenue.toLocaleString()}</p></div>
-            <div><span className="text-sm font-mono text-primary uppercase tracking-[0.2em]">Pending</span><p className="text-3xl font-mono font-bold mt-1">{pendingCount}</p></div>
-          </div>
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
+        <div className="py-8">
+          <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">{displayName}</h1>
+          <p className="text-sm font-mono text-muted-foreground mt-1">{clients.length} clients · {invoices.length} invoices · ${totalRevenue.toLocaleString()} revenue</p>
         </div>
 
         <AnimatePresence>
           {showClientForm && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border-b border-border">
-              <div className="py-10">
-                <h2 className="text-sm font-mono text-primary uppercase tracking-[0.3em] mb-8">Add Client</h2>
-                <form onSubmit={handleCreateClient} className="space-y-8">
-                  <div className="grid gap-8 md:grid-cols-3">
-                    <div>
-                      <label className="block text-xs font-mono uppercase tracking-[0.3em] mb-3">Owner Name</label>
-                      <Input value={newOwnerName} onChange={(e) => setNewOwnerName(e.target.value)} placeholder="Jane Doe" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-mono uppercase tracking-[0.3em] mb-3">Business</label>
-                      <Input value={newCompanyName} onChange={(e) => setNewCompanyName(e.target.value)} placeholder="Acme Corp" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-mono uppercase tracking-[0.3em] mb-3">Email</label>
-                      <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="jane@acme.com" className="h-12 bg-transparent border-0 border-b border-border rounded-none font-mono text-base px-0" />
-                    </div>
-                  </div>
-                  <Button type="submit" className="h-12 px-10 font-mono text-sm uppercase tracking-[0.2em] rounded-none">Add Client</Button>
-                </form>
-              </div>
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border-2 border-foreground mb-8">
+              <form onSubmit={handleCreateClient} className="p-6 space-y-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <input value={newOwnerName} onChange={(e) => setNewOwnerName(e.target.value)} placeholder="Name" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                  <input value={newCompanyName} onChange={(e) => setNewCompanyName(e.target.value)} placeholder="Business" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                  <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                </div>
+                <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Add</Button>
+              </form>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="py-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-sm font-mono text-primary uppercase tracking-[0.3em]">Clients</h2>
-            <span className="text-sm font-mono">{paidCount}/{invoices.length} invoices paid</span>
-          </div>
-
+        <div>
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="h-5 w-5 border border-foreground/30 border-t-foreground rounded-full" />
             </div>
           ) : clients.length === 0 ? (
             <div className="py-20 text-center border-t border-border">
-              <p className="text-lg font-mono">No clients yet — add one to get started</p>
+              <p className="text-lg font-mono">No clients yet.</p>
             </div>
           ) : (
             <div className="border-t border-border">
-              {clients.map((c, i) => {
+              {clients.map((c) => {
                 const cInvoices = invoices.filter((inv) => inv.client_id === c.id);
                 const cPaid = cInvoices.filter((inv) => inv.status === "paid").length;
                 const cTotal = cInvoices.reduce((s, inv) => s + inv.price, 0);
@@ -1407,49 +1379,27 @@ const InvoiceAdmin = () => {
                   <div
                     key={c.id}
                     onClick={() => setSelectedClientId(c.id)}
-                    className="w-full text-left border-b border-border py-6 hover:bg-foreground/5 transition-colors group cursor-pointer"
+                    className="w-full text-left border-b border-border py-5 hover:bg-foreground/5 transition-colors group cursor-pointer flex items-center justify-between gap-4"
                   >
-                    <div className="flex items-center justify-between gap-6 px-1">
-                      <div className="flex gap-6 items-start flex-1 min-w-0">
-                        <span className="text-3xl font-mono font-bold text-foreground/20 leading-none pt-1 hidden md:block">{String(i + 1).padStart(2, "0")}</span>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-3 flex-wrap">
-                            <span className="font-mono font-semibold text-foreground text-lg">{c.company_name}</span>
-                            {(() => {
-                              const t = (c.scope_of_work || "").trim();
-                              const hasSow = t.length > 0 && !/^(n\/?a|tbd|none|pending|\-+)$/i.test(t);
-                              return hasSow ? <span className="text-xs font-mono uppercase tracking-[0.15em] text-emerald-500">SOW</span> : null;
-                            })()}
-                          </div>
-                          <p className="text-sm font-mono text-foreground/70 mt-1">{c.owner_name || "—"} · {c.email}</p>
-                          <p className="text-xs font-mono text-foreground/50 mt-1">{cInvoices.length} invoices · {cPaid} paid</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 shrink-0">
-                        <span className="text-2xl font-mono font-bold">${cTotal.toLocaleString()}</span>
-                        <button
-                          onClick={(e) => handleDeleteClient(e, c.id, c.company_name)}
-                          className="h-9 px-4 border border-border hover:border-destructive hover:text-destructive text-xs font-mono uppercase tracking-[0.1em]"
-                        >
-                          Remove
-                        </button>
-                        <ChevronRight className="h-5 w-5 text-foreground/40 group-hover:text-foreground transition-colors" />
-                      </div>
+                    <div className="min-w-0">
+                      <p className="font-mono font-bold text-foreground text-base">{c.company_name}</p>
+                      <p className="text-sm font-mono text-muted-foreground">{c.email} · {cInvoices.length} invoices · {cPaid} paid</p>
+                    </div>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <span className="text-xl font-mono font-bold">${cTotal.toLocaleString()}</span>
+                      <button
+                        onClick={(e) => handleDeleteClient(e, c.id, c.company_name)}
+                        className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive"
+                      >
+                        Remove
+                      </button>
+                      <ChevronRight className="h-5 w-5 text-foreground/40 group-hover:text-foreground transition-colors" />
                     </div>
                   </div>
                 );
               })}
             </div>
           )}
-        </div>
-      </div>
-
-      <div className="border-t border-border mt-20 relative z-10">
-        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-4">
-          <img src={logo} alt="RDG" className="h-10 opacity-40" />
-          <p className="text-xs font-mono text-muted-foreground text-center">
-            Reed Digital Group · Admin Console
-          </p>
         </div>
       </div>
     </div>
