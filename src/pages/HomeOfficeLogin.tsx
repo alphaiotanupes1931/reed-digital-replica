@@ -48,12 +48,10 @@ const BlinkingEye = () => {
 
   return (
     <g>
-      {/* glow */}
-      <ellipse cx="0" cy="0" rx="120" ry="70" fill="white" opacity="0.05" />
-      {/* sclera */}
-      <ellipse cx="0" cy="0" rx="70" ry="38" fill="#f5f4f0" />
-      <ellipse cx="0" cy="0" rx="70" ry="38" fill="url(#scleraGrad)" opacity="0.35" />
-      <ellipse cx="0" cy="-10" rx="56" ry="20" fill="white" opacity="0.3" />
+      {/* sclera — blends into the dark background */}
+      <ellipse cx="0" cy="0" rx="70" ry="38" fill="black" stroke="white" strokeOpacity="0.22" strokeWidth="1" />
+      <ellipse cx="0" cy="0" rx="70" ry="38" fill="url(#scleraGrad)" opacity="0.15" />
+      <ellipse cx="0" cy="-10" rx="56" ry="20" fill="white" opacity="0.08" />
       {/* iris */}
       <circle cx="0" cy="0" r="24" fill="url(#irisGrad)" />
       <circle cx="0" cy="0" r="20" fill="none" stroke="#143326" strokeWidth="1.2" opacity="0.5" />
