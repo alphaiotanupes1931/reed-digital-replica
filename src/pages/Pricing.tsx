@@ -239,6 +239,14 @@ const PricingPage = () => {
                       Monthly · keeps your site or app running, updated, and supported.
                     </p>
                   </div>
+                  <div className="border border-foreground/15 p-4 mb-6 text-center">
+                    <p className="text-[11px] font-mono uppercase tracking-wider text-primary mb-1">
+                      Included with every plan
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Weekly progress updates · free training once your platform is built
+                    </p>
+                  </div>
                   <div className="border-t border-border">
                     {maintenancePlans.map((plan) => (
                       <div
