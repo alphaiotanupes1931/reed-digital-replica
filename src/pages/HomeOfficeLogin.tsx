@@ -85,7 +85,6 @@ const AnimatedRings = () => {
           </motion.g>
         ))}
       </svg>
-      <BlinkingEyeOverlay />
     </div>
   );
 };
