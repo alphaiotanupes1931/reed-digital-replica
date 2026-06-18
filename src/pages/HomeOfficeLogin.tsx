@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type Mode = "login" | "signup" | "forgot";
+type Mode = "login" | "signup";
 
 const PASSWORD_RULES = [
   { test: (p: string) => p.length >= 8, label: "At least 8 characters" },
@@ -163,25 +163,7 @@ const HomeOfficeLogin = () => {
     }
   };
 
-  const handleForgot = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/home-office/reset-password`,
-      });
-      if (error) throw error;
-      toast({ title: "Reset email sent", description: "Check your inbox for the reset link." });
-      setMode("login");
-    } catch (err: any) {
-      toast({ title: "Couldn't send reset", description: err.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onSubmit =
-    mode === "login" ? handleLogin : mode === "signup" ? handleSignup : handleForgot;
+  const onSubmit = mode === "login" ? handleLogin : handleSignup;
 
   return (
     <div className="min-h-screen grid md:grid-cols-2 bg-black font-mono text-white">
@@ -221,21 +203,17 @@ const HomeOfficeLogin = () => {
             <h1 className="text-2xl font-bold tracking-tight">
               {mode === "login"
                 ? "Log in to Home Office"
-                : mode === "signup"
-                ? "Create your account"
-                : "Reset your password"}
+                : "Create your account"}
             </h1>
             <p className="text-xs text-white/50 mt-2">
               {mode === "login"
                 ? "Welcome back."
-                : mode === "signup"
-                ? "Set up your private workspace."
-                : "We'll send a link to your email."}
+                : "Set up your private workspace."}
             </p>
           </motion.div>
 
           <div className="flex gap-1 mb-6 text-[10px] uppercase tracking-widest">
-            {(["login", "signup", "forgot"] as Mode[]).map((m) => (
+            {(["login", "signup"] as Mode[]).map((m) => (
               <button
                 key={m}
                 type="button"
@@ -246,7 +224,7 @@ const HomeOfficeLogin = () => {
                     : "border-white/10 text-white/50 hover:text-white hover:border-white/30"
                 }`}
               >
-                {m === "forgot" ? "Forgot" : m}
+                {m}
               </button>
             ))}
           </div>
@@ -310,7 +288,7 @@ const HomeOfficeLogin = () => {
               <div className="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2">
                 <button
                   type="button"
-                  onClick={() => setMode("forgot")}
+                  onClick={() => navigate("/home-office/forgot-password")}
                   className="text-white/50 hover:text-brand transition-colors"
                 >
                   Forgot password?
