@@ -33,12 +33,14 @@ const InvoiceDocument = ({
   clientEmail,
   onPay,
   payingId,
+  zelleHandle,
 }: {
   invoice: Invoice;
   clientName: string;
   clientEmail: string;
   onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
+  zelleHandle?: string | null;
 }) => {
   const isPaid = invoice.status === "paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
@@ -48,21 +50,23 @@ const InvoiceDocument = ({
     .filter(Boolean);
   const allowStripe = methods.includes("stripe");
   const allowZelle = methods.includes("zelle");
-  const feeApplies = allowStripe && !allowZelle;
 
   const basePrice = invoice.price;
-  const feeAmount = feeApplies
-    ? Math.round((basePrice * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100
-    : 0;
-  const totalPrice = Math.round((basePrice + feeAmount) * 100) / 100;
+  // Stripe always carries a processing fee; Zelle never does.
+  const stripeFee = Math.round((basePrice * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const stripeTotal = Math.round((basePrice + stripeFee) * 100) / 100;
+  const zelleTotal = basePrice;
 
   const remainingBase = invoice.deposit_required && invoice.deposit_amount
     ? invoice.price - invoice.deposit_amount
     : invoice.price;
-  const remainingFee = feeApplies
-    ? Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100
-    : 0;
-  const remainingTotal = Math.round((remainingBase + remainingFee) * 100) / 100;
+  const remainingStripeFee = Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const remainingStripeTotal = Math.round((remainingBase + remainingStripeFee) * 100) / 100;
+  const remainingZelleTotal = remainingBase;
+
+  const zelleUrl = zelleHandle && zelleHandle.trim().length > 0
+    ? `mailto:${encodeURIComponent(zelleHandle)}?subject=${encodeURIComponent("Zelle payment — " + invoice.service)}`
+    : "https://www.zellepay.com/";
 
   return (
     <motion.div
@@ -107,16 +111,24 @@ const InvoiceDocument = ({
           <span className="text-sm font-mono text-foreground">{invoice.service}</span>
           <span className="text-sm font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
-        {feeApplies && (
-          <div className="flex justify-between items-center py-2">
-            <span className="text-sm font-mono text-muted-foreground">Processing Fee</span>
-            <span className="text-sm font-mono text-muted-foreground">${feeAmount.toLocaleString()}</span>
-          </div>
-        )}
         <div className="flex justify-between items-center pt-4">
-          <span className="text-lg font-mono font-bold text-foreground">Total</span>
-          <span className="text-2xl font-mono font-bold text-foreground">${totalPrice.toLocaleString()}</span>
+          <span className="text-lg font-mono font-bold text-foreground">
+            {allowZelle ? "Total (Zelle)" : "Total"}
+          </span>
+          <span className="text-2xl font-mono font-bold text-foreground">
+            ${(allowZelle ? zelleTotal : stripeTotal).toLocaleString()}
+          </span>
         </div>
+        {allowStripe && allowZelle && (
+          <p className="text-[11px] font-mono text-muted-foreground mt-2 text-right">
+            Pay with Stripe: ${stripeTotal.toLocaleString()} (includes ${stripeFee.toLocaleString()} processing fee)
+          </p>
+        )}
+        {allowStripe && !allowZelle && (
+          <p className="text-[11px] font-mono text-muted-foreground mt-2 text-right">
+            Includes ${stripeFee.toLocaleString()} processing fee
+          </p>
+        )}
       </div>
 
       {/* Pay buttons */}
@@ -132,25 +144,28 @@ const InvoiceDocument = ({
             </button>
           )}
           {(!invoice.deposit_required || invoice.deposit_paid) && (
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3">
+              {allowZelle && (
+                <a
+                  href={zelleUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center justify-center"
+                >
+                  Pay with Zelle — ${remainingZelleTotal.toLocaleString()}
+                  {zelleHandle ? ` · ${zelleHandle}` : ""}
+                </a>
+              )}
               {allowStripe && (
                 <button
                   onClick={() => onPay(invoice, false)}
                   disabled={payingId === invoice.id + "-once"}
-                  className="flex-1 h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                  className="w-full h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
                 >
-                  {payingId === invoice.id + "-once" ? "Processing..." : `Pay — $${remainingTotal.toLocaleString()}`}
+                  {payingId === invoice.id + "-once"
+                    ? "Processing..."
+                    : `Pay with Card (Stripe) — $${remainingStripeTotal.toLocaleString()}`}
                 </button>
-              )}
-              {allowZelle && (
-                <a
-                  href="https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiUkVFRCBESUdJVEFMIEdST1VQIiwidG9rZW4iOiJpbmZvQHJlZWRkaWdpdGFsZ3JvdXAuY29tIiwiYWN0aW9uIjoicGF5bWVudCJ9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center"
-                >
-                  Zelle — ${remainingTotal.toLocaleString()}
-                </a>
               )}
             </div>
           )}
@@ -173,6 +188,9 @@ const InvoicePortal = () => {
     user_id: string;
     business_name: string;
     owner_name: string | null;
+    zelle_handle?: string | null;
+    cashapp_handle?: string | null;
+    payment_methods?: string[] | null;
   };
   const [bizCode, setBizCode] = useState(() => localStorage.getItem("portal-biz-code") || "");
   const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
@@ -435,6 +453,7 @@ const InvoicePortal = () => {
                       clientEmail={clientEmail}
                       onPay={handlePay}
                       payingId={payingId}
+                      zelleHandle={selectedBiz?.zelle_handle ?? null}
                     />
                   ))}
                 </div>
