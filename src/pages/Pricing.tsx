@@ -41,7 +41,7 @@ const maintenancePlans = [
   {
     name: "Enterprise",
     price: "$700",
-    tagline: "Custom platforms · SLA · dedicated team · compliance reviews",
+    tagline: "Custom platforms · SLA · dedicated team · compliance reviews · monthly videographer visit (DMV area), printed menus, QR codes, and a free business shirt every month on request",
   },
 ];
 
