@@ -106,7 +106,8 @@ const InvoiceAdmin = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [displayName, setDisplayName] = useState("Admin");
-  const [loading, setLoading] = useState(false);
+  const [sowVisible, setSowVisible] = useState(true);
+  const [invoicesVisible, setInvoicesVisible] = useState(true);
   const [syncing, setSyncing] = useState(false);
 
   // Selected client for SOW/Invoice management
