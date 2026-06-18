@@ -842,6 +842,11 @@ const InvoiceAdmin = () => {
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-mono font-bold text-foreground">{inv.service}</span>
                               <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
+                              {inv.payment_plan === "monthly" && (
+                                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/40 text-foreground/70">
+                                  Monthly · {inv.plan_months}mo · ${Number(inv.plan_monthly_amount || 0).toFixed(2)}/mo
+                                </span>
+                              )}
                             </div>
                             <p className="text-xs font-mono text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
                           </div>
