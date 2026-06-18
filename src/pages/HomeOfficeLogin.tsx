@@ -47,8 +47,8 @@ const AnimatedRings = () => {
 
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-          <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
-            {rings.map((ring, ri) => (
+      <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
+        {rings.map((ring, ri) => (
           <motion.g
             key={ri}
             animate={{ rotate: ring.dir * 360 }}
@@ -83,7 +83,6 @@ const AnimatedRings = () => {
             })}
           </motion.g>
         ))}
-        <BlinkingEye />
       </svg>
     </div>
   );
