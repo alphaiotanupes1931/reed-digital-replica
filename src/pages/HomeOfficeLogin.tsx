@@ -31,11 +31,71 @@ const clearStoredAuth = () => {
   }
 };
 
+const BlinkingEye = () => {
+  const [blink, setBlink] = useState(false);
+  useEffect(() => {
+    const schedule = () => {
+      const timer = setTimeout(() => {
+        setBlink(true);
+        setTimeout(() => setBlink(false), 180);
+        schedule();
+      }, 2500 + Math.random() * 4000);
+      return timer;
+    };
+    const t = schedule();
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <g>
+      {/* glow */}
+      <ellipse cx="0" cy="0" rx="120" ry="70" fill="white" opacity="0.05" />
+      {/* sclera */}
+      <ellipse cx="0" cy="0" rx="70" ry="38" fill="#f5f4f0" />
+      <ellipse cx="0" cy="0" rx="70" ry="38" fill="url(#scleraGrad)" opacity="0.35" />
+      <ellipse cx="0" cy="-10" rx="56" ry="20" fill="white" opacity="0.3" />
+      {/* iris */}
+      <circle cx="0" cy="0" r="24" fill="url(#irisGrad)" />
+      <circle cx="0" cy="0" r="20" fill="none" stroke="#143326" strokeWidth="1.2" opacity="0.5" />
+      <circle cx="0" cy="0" r="16" fill="none" stroke="#1a3a2f" strokeWidth="0.8" opacity="0.4" />
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#143326" strokeWidth="0.6" opacity="0.3" />
+      {/* pupil */}
+      <circle cx="0" cy="0" r="10" fill="#050505" />
+      <circle cx="0" cy="0" r="6" fill="#000000" />
+      {/* highlights */}
+      <circle cx="6" cy="-6" r="3.5" fill="white" opacity="0.95" />
+      <circle cx="6" cy="-6" r="1.8" fill="white" opacity="1" />
+      <circle cx="-4" cy="5" r="1.8" fill="white" opacity="0.35" />
+      {/* crease */}
+      <path d="M -80 -4 Q 0 -48 80 -4" fill="none" stroke="white" strokeWidth="1" opacity="0.12" />
+      {/* upper eyelid — translateY blink */}
+      <motion.path
+        d="M -80 -4 Q 0 -52 80 -4 L 80 -60 L -80 -60 Z"
+        fill="black"
+        initial={{ y: 0 }}
+        animate={{ y: blink ? 52 : 0 }}
+        transition={{ duration: 0.1, ease: "easeInOut" }}
+      />
+      {/* lower eyelid */}
+      <motion.path
+        d="M -80 4 Q 0 34 80 4 L 80 60 L -80 60 Z"
+        fill="black"
+        initial={{ y: 0 }}
+        animate={{ y: blink ? -34 : 0 }}
+        transition={{ duration: 0.1, ease: "easeInOut" }}
+      />
+      {/* lashes */}
+      <line x1="-65" y1="-10" x2="-75" y2="-22" stroke="white" strokeWidth="0.8" opacity="0.2" />
+      <line x1="-50" y1="-18" x2="-56" y2="-30" stroke="white" strokeWidth="0.7" opacity="0.18" />
+      <line x1="50" y1="-18" x2="56" y2="-30" stroke="white" strokeWidth="0.7" opacity="0.18" />
+      <line x1="65" y1="-10" x2="75" y2="-22" stroke="white" strokeWidth="0.8" opacity="0.2" />
+    </g>
+  );
+};
 
 // Animated concentric rings of vertical dashes — built from SVG
 const AnimatedRings = () => {
   const rings = useMemo(() => {
-    // radius, dash count, dash length, rotation duration (seconds), direction
     return [
       { r: 80, count: 16, len: 16, dur: 40, dir: 1 },
       { r: 150, count: 28, len: 20, dur: 60, dir: -1 },
@@ -49,6 +109,17 @@ const AnimatedRings = () => {
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
       <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
+        <defs>
+          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#2a5a4a" />
+            <stop offset="60%" stopColor="#1a3a2f" />
+            <stop offset="100%" stopColor="#0d1f18" />
+          </radialGradient>
+          <radialGradient id="scleraGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="70%" stopColor="white" stopOpacity="0" />
+            <stop offset="100%" stopColor="#b0aea9" stopOpacity="0.6" />
+          </radialGradient>
+        </defs>
         {rings.map((ring, ri) => (
           <motion.g
             key={ri}
@@ -84,6 +155,7 @@ const AnimatedRings = () => {
             })}
           </motion.g>
         ))}
+        <BlinkingEye />
       </svg>
     </div>
   );
