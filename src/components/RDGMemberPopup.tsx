@@ -3,21 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const RDGMemberPopup = () => {
-  const [open, setOpen] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    const blocked = ["/apps", "/admin", "/portal", "/home-office", "/invoice"];
-    if (blocked.some((p) => location.pathname.startsWith(p))) {
-      setOpen(false);
-      return;
-    }
-    setOpen(true);
-  }, [location.pathname]);
-
+  // Membership program retired — App subscription now grants member benefits.
+  return null;
+  // eslint-disable-next-line no-unreachable
   return (
     <AnimatePresence>
-      {open && (
+      {false && (
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
