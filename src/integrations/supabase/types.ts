@@ -408,7 +408,12 @@ export type Database = {
           owner_user_id: string | null
           paid_at: string | null
           payment_method: string
+          payment_plan: string
           payment_type: string
+          plan_end_date: string | null
+          plan_monthly_amount: number | null
+          plan_months: number | null
+          plan_start_date: string | null
           price: number
           service: string
           status: Database["public"]["Enums"]["invoice_status"]
@@ -433,7 +438,12 @@ export type Database = {
           owner_user_id?: string | null
           paid_at?: string | null
           payment_method?: string
+          payment_plan?: string
           payment_type?: string
+          plan_end_date?: string | null
+          plan_monthly_amount?: number | null
+          plan_months?: number | null
+          plan_start_date?: string | null
           price: number
           service: string
           status?: Database["public"]["Enums"]["invoice_status"]
@@ -458,7 +468,12 @@ export type Database = {
           owner_user_id?: string | null
           paid_at?: string | null
           payment_method?: string
+          payment_plan?: string
           payment_type?: string
+          plan_end_date?: string | null
+          plan_monthly_amount?: number | null
+          plan_months?: number | null
+          plan_start_date?: string | null
           price?: number
           service?: string
           status?: Database["public"]["Enums"]["invoice_status"]
