@@ -27,52 +27,24 @@ interface Invoice {
 const PROCESSING_FEE_RATE = 0.029;
 const PROCESSING_FEE_FLAT = 0.30;
 
-const InvoiceDocument = ({
+const InvoiceDetailsCard = ({
   invoice,
   clientName,
   clientEmail,
-  onPay,
-  payingId,
-  zelleHandle,
 }: {
   invoice: Invoice;
   clientName: string;
   clientEmail: string;
-  onPay: (inv: Invoice, deposit: boolean) => void;
-  payingId: string | null;
-  zelleHandle?: string | null;
 }) => {
   const isPaid = invoice.status === "paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
-  const methods = (invoice.payment_method || "stripe")
-    .split(",")
-    .map((m) => m.trim().toLowerCase())
-    .filter(Boolean);
-  const allowStripe = methods.includes("stripe");
-  const allowZelle = methods.includes("zelle");
-
   const basePrice = invoice.price;
-  // Stripe always carries a processing fee; Zelle never does.
-  const stripeFee = Math.round((basePrice * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
-  const stripeTotal = Math.round((basePrice + stripeFee) * 100) / 100;
-  const zelleTotal = basePrice;
-
-  const remainingBase = invoice.deposit_required && invoice.deposit_amount
-    ? invoice.price - invoice.deposit_amount
-    : invoice.price;
-  const remainingStripeFee = Math.round((remainingBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
-  const remainingStripeTotal = Math.round((remainingBase + remainingStripeFee) * 100) / 100;
-  const remainingZelleTotal = remainingBase;
-
-  const zelleUrl = zelleHandle && zelleHandle.trim().length > 0
-    ? `mailto:${encodeURIComponent(zelleHandle)}?subject=${encodeURIComponent("Zelle payment — " + invoice.service)}`
-    : "https://www.zellepay.com/";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="border-2 border-foreground mb-8 bg-background"
+      className="border-2 border-foreground mb-6 bg-background"
     >
       {/* Header */}
       <div className="border-b-2 border-foreground p-6 flex items-start justify-between">
@@ -106,72 +78,171 @@ const InvoiceDocument = ({
       </div>
 
       {/* Line items */}
-      <div className="border-b-2 border-foreground p-6">
+      <div className="p-6">
         <div className="flex justify-between items-center py-2 border-b border-border">
           <span className="text-sm font-mono text-foreground">{invoice.service}</span>
           <span className="text-sm font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
         <div className="flex justify-between items-center pt-4">
-          <span className="text-lg font-mono font-bold text-foreground">
-            {allowZelle ? "Total (Zelle)" : "Total"}
-          </span>
-          <span className="text-2xl font-mono font-bold text-foreground">
-            ${(allowZelle ? zelleTotal : stripeTotal).toLocaleString()}
-          </span>
+          <span className="text-lg font-mono font-bold text-foreground">Total</span>
+          <span className="text-2xl font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
-        {allowStripe && allowZelle && (
-          <p className="text-[11px] font-mono text-muted-foreground mt-2 text-right">
-            Pay with Stripe: ${stripeTotal.toLocaleString()} (includes ${stripeFee.toLocaleString()} processing fee)
-          </p>
-        )}
-        {allowStripe && !allowZelle && (
-          <p className="text-[11px] font-mono text-muted-foreground mt-2 text-right">
-            Includes ${stripeFee.toLocaleString()} processing fee
-          </p>
-        )}
       </div>
+    </motion.div>
+  );
+};
 
-      {/* Pay buttons */}
-      {!isPaid && (
-        <div className="p-6 space-y-3">
-          {depositPending && (
-            <button
-              onClick={() => onPay(invoice, true)}
-              disabled={payingId === invoice.id + "-dep"}
-              className="w-full h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
-            >
-              {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
-            </button>
-          )}
-          {(!invoice.deposit_required || invoice.deposit_paid) && (
-            <div className="flex flex-col gap-3">
-              {allowZelle && (
-                <a
-                  href={zelleUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center justify-center"
-                >
-                  Pay with Zelle — ${remainingZelleTotal.toLocaleString()}
-                  {zelleHandle ? ` · ${zelleHandle}` : ""}
-                </a>
-              )}
-              {allowStripe && (
-                <button
-                  onClick={() => onPay(invoice, false)}
-                  disabled={payingId === invoice.id + "-once"}
-                  className="w-full h-12 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
-                >
-                  {payingId === invoice.id + "-once"
-                    ? "Processing..."
-                    : `Pay with Card (Stripe) — $${remainingStripeTotal.toLocaleString()}`}
-                </button>
-              )}
-            </div>
-          )}
+const PaymentOptions = ({
+  invoice,
+  onPay,
+  payingId,
+  zelleHandle,
+}: {
+  invoice: Invoice;
+  onPay: (inv: Invoice, deposit: boolean) => void;
+  payingId: string | null;
+  zelleHandle?: string | null;
+}) => {
+  const isPaid = invoice.status === "paid";
+  const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
+
+  const methods = (invoice.payment_method || "stripe")
+    .split(",")
+    .map((m) => m.trim().toLowerCase())
+    .filter(Boolean);
+  const allowStripe = methods.includes("stripe");
+  const allowZelle = methods.includes("zelle");
+
+  const baseAmount = depositPending && invoice.deposit_amount
+    ? invoice.deposit_amount
+    : invoice.deposit_required && invoice.deposit_paid && invoice.deposit_amount
+    ? invoice.price - invoice.deposit_amount
+    : invoice.price;
+
+  const stripeFee = Math.round((baseAmount * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const stripeTotal = Math.round((baseAmount + stripeFee) * 100) / 100;
+  const zelleTotal = baseAmount;
+
+  const zelleUrl = zelleHandle && zelleHandle.trim().length > 0
+    ? `mailto:${encodeURIComponent(zelleHandle)}?subject=${encodeURIComponent("Zelle payment — " + invoice.service)}`
+    : "https://www.zellepay.com/";
+
+  const zelleSuffix = depositPending ? "-dep" : "-once";
+  const stripeSuffix = depositPending ? "-dep" : "-once";
+
+  if (isPaid) return null;
+
+  if (depositPending) {
+    return (
+      <div className="mb-8">
+        <button
+          onClick={() => onPay(invoice, true)}
+          disabled={payingId === invoice.id + "-dep"}
+          className="w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+        >
+          {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+        </button>
+      </div>
+    );
+  }
+
+  const both = allowZelle && allowStripe;
+
+  return (
+    <div className={`mb-8 grid gap-4 ${both ? "md:grid-cols-[1fr_auto_1fr] items-stretch" : "grid-cols-1"}`}>
+      {/* Zelle Card */}
+      {allowZelle && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="border-2 border-foreground bg-background p-6 flex flex-col"
+        >
+          <div className="flex-1">
+            <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
+            <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Zelle</h3>
+            <p className="text-3xl font-mono font-bold text-foreground mb-2">${zelleTotal.toLocaleString()}</p>
+            <p className="text-xs font-mono text-emerald-500">No processing fee</p>
+            {zelleHandle && (
+              <p className="text-xs font-mono text-muted-foreground mt-1">Send to: {zelleHandle}</p>
+            )}
+          </div>
+          <a
+            href={zelleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center justify-center"
+          >
+            Pay with Zelle
+          </a>
+        </motion.div>
+      )}
+
+      {/* OR Divider */}
+      {both && (
+        <div className="flex items-center justify-center">
+          <span className="text-4xl md:text-5xl font-mono font-black text-primary tracking-tight">OR</span>
         </div>
       )}
-    </motion.div>
+
+      {/* Stripe Card */}
+      {allowStripe && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="border-2 border-foreground bg-background p-6 flex flex-col"
+        >
+          <div className="flex-1">
+            <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
+            <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Card (Stripe)</h3>
+            <p className="text-3xl font-mono font-bold text-foreground mb-2">${stripeTotal.toLocaleString()}</p>
+            <p className="text-xs font-mono text-muted-foreground">Includes ${stripeFee.toLocaleString()} processing fee</p>
+          </div>
+          <button
+            onClick={() => onPay(invoice, false)}
+            disabled={payingId === invoice.id + stripeSuffix}
+            className="mt-6 w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+          >
+            {payingId === invoice.id + stripeSuffix
+              ? "Processing..."
+              : "Pay with Card (Stripe)"}
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+const InvoiceDocument = ({
+  invoice,
+  clientName,
+  clientEmail,
+  onPay,
+  payingId,
+  zelleHandle,
+}: {
+  invoice: Invoice;
+  clientName: string;
+  clientEmail: string;
+  onPay: (inv: Invoice, deposit: boolean) => void;
+  payingId: string | null;
+  zelleHandle?: string | null;
+}) => {
+  return (
+    <div className="mb-12">
+      <InvoiceDetailsCard
+        invoice={invoice}
+        clientName={clientName}
+        clientEmail={clientEmail}
+      />
+      <PaymentOptions
+        invoice={invoice}
+        onPay={onPay}
+        payingId={payingId}
+        zelleHandle={zelleHandle}
+      />
+    </div>
   );
 };
 
