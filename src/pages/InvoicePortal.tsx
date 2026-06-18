@@ -228,6 +228,7 @@ const InvoiceDocument = ({
   onPay,
   payingId,
   zelleHandle,
+  bizMethods,
 }: {
   invoice: Invoice;
   clientName: string;
@@ -235,6 +236,7 @@ const InvoiceDocument = ({
   onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
   zelleHandle?: string | null;
+  bizMethods?: string[] | null;
 }) => {
   return (
     <div className="mb-12">
@@ -248,6 +250,7 @@ const InvoiceDocument = ({
         onPay={onPay}
         payingId={payingId}
         zelleHandle={zelleHandle}
+        bizMethods={bizMethods}
       />
     </div>
   );
@@ -532,6 +535,7 @@ const InvoicePortal = () => {
                       onPay={handlePay}
                       payingId={payingId}
                       zelleHandle={selectedBiz?.zelle_handle ?? null}
+                      bizMethods={selectedBiz?.payment_methods ?? null}
                     />
                   ))}
                 </div>
