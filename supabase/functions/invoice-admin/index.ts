@@ -129,7 +129,7 @@ serve(async (req) => {
     }
 
     if (action === "create_invoice") {
-      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id, payment_method } = data;
+      const { company_name, email, service, price, due_date, deposit_required, deposit_amount, deposit_due_date, message, owner_name, client_id, payment_method, payment_plan, plan_start_date, plan_end_date } = data;
       // Normalize payment_method: accepts "stripe", "zelle", "stripe,zelle", or an array.
       const normalizeMethod = (v: unknown): string => {
         const arr = Array.isArray(v)
@@ -200,6 +200,21 @@ serve(async (req) => {
         message: message || null,
         payment_method: normalizeMethod(payment_method),
         owner_user_id: userId,
+        ...(payment_plan === "monthly" && plan_start_date && plan_end_date
+          ? (() => {
+              const s = new Date(plan_start_date);
+              const e = new Date(plan_end_date);
+              const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+              const monthly = Math.round((Number(price) / months) * 100) / 100;
+              return {
+                payment_plan: "monthly",
+                plan_start_date,
+                plan_end_date,
+                plan_months: months,
+                plan_monthly_amount: monthly,
+              };
+            })()
+          : { payment_plan: "one_time" }),
       });
 
       if (invoiceError) throw invoiceError;
@@ -470,7 +485,7 @@ serve(async (req) => {
     }
 
     if (action === "update_invoice") {
-      const { invoice_id, service, price, due_date, message, deposit_required, deposit_amount, deposit_due_date, payment_method } = data;
+      const { invoice_id, service, price, due_date, message, deposit_required, deposit_amount, deposit_due_date, payment_method, payment_plan, plan_start_date, plan_end_date } = data;
       const updates: Record<string, unknown> = {};
       if (service !== undefined) updates.service = service;
       if (price !== undefined) updates.price = price;
@@ -490,6 +505,27 @@ serve(async (req) => {
           .filter((m: string) => m === "stripe" || m === "zelle");
         const unique = Array.from(new Set(clean));
         updates.payment_method = unique.length ? unique.join(",") : "stripe";
+      }
+      if (payment_plan !== undefined) {
+        if (payment_plan === "monthly" && plan_start_date && plan_end_date) {
+          const s = new Date(plan_start_date);
+          const e = new Date(plan_end_date);
+          const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+          const basePrice = price !== undefined ? Number(price) : null;
+          updates.payment_plan = "monthly";
+          updates.plan_start_date = plan_start_date;
+          updates.plan_end_date = plan_end_date;
+          updates.plan_months = months;
+          if (basePrice !== null) {
+            updates.plan_monthly_amount = Math.round((basePrice / months) * 100) / 100;
+          }
+        } else {
+          updates.payment_plan = "one_time";
+          updates.plan_start_date = null;
+          updates.plan_end_date = null;
+          updates.plan_months = null;
+          updates.plan_monthly_amount = null;
+        }
       }
       const { error } = await supabase.from("invoices").update(updates).eq("id", invoice_id).eq("owner_user_id", userId);
       if (error) throw error;
