@@ -102,6 +102,7 @@ const InvoiceAdmin = () => {
     if (typeof window !== "undefined") localStorage.setItem("admin-auth", ADMIN_PASSWORD);
     return true;
   });
+  const [hasSession, setHasSession] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -250,6 +251,7 @@ const InvoiceAdmin = () => {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
+      setHasSession(!!data.user);
       if (!data.user) return;
       const { data: profile } = await supabase
         .from("profiles")
@@ -258,7 +260,29 @@ const InvoiceAdmin = () => {
         .maybeSingle();
       setDisplayName(profile?.full_name || data.user.email?.split("@")[0] || "Admin");
     })();
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setHasSession(!!s?.user));
+    return () => sub.subscription.unsubscribe();
   }, []);
+
+  if (hasSession === false) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <div className="max-w-md w-full text-center">
+          <Lock className="h-6 w-6 mx-auto mb-6 text-foreground/60" />
+          <h1 className="text-2xl font-mono font-bold text-foreground mb-3">Sign in required</h1>
+          <p className="text-sm font-mono text-muted-foreground mb-8">
+            Your session expired. Sign in to access the admin panel.
+          </p>
+          <Link
+            to="/home-office/login"
+            className="inline-block text-xs font-mono uppercase tracking-widest border-2 border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
+          >
+            Go to Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Load SOW into form when client selected
   useEffect(() => {
