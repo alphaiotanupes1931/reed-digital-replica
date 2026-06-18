@@ -196,6 +196,14 @@ const InvoiceAdmin = () => {
       toast({ title: "Select at least one payment method", variant: "destructive" });
       return;
     }
+    if (editPaymentPlan === "monthly" && (!editPlanStart || !editPlanEnd)) {
+      toast({ title: "Monthly plan needs start and end dates", variant: "destructive" });
+      return;
+    }
+    if (editPaymentPlan === "monthly" && editPlanStart && editPlanEnd && editPlanEnd < editPlanStart) {
+      toast({ title: "End date must be after start date", variant: "destructive" });
+      return;
+    }
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
@@ -212,6 +220,9 @@ const InvoiceAdmin = () => {
             ...(editAllowStripe ? ["stripe"] : []),
             ...(editAllowZelle ? ["zelle"] : []),
           ].join(","),
+          payment_plan: editPaymentPlan,
+          plan_start_date: editPaymentPlan === "monthly" ? editPlanStart : null,
+          plan_end_date: editPaymentPlan === "monthly" ? editPlanEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
