@@ -587,6 +587,7 @@ const InvoicePortal = () => {
                       clientName={clientName}
                       clientEmail={clientEmail}
                       onPay={handlePay}
+                      onPayMonthly={handlePayMonthly}
                       payingId={payingId}
                       zelleHandle={selectedBiz?.zelle_handle ?? null}
                       bizMethods={selectedBiz?.payment_methods ?? null}
