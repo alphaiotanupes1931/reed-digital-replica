@@ -79,7 +79,7 @@ const BlinkingEye = () => {
       <circle cx="-4" cy="5" r="1.8" fill="white" opacity="0.35" />
 
       {/* Eyelid crease line */}
-      <motion.path
+      <path
         d="M -80 -4 Q 0 -48 80 -4"
         fill="none"
         stroke="white"
@@ -87,27 +87,23 @@ const BlinkingEye = () => {
         opacity="0.12"
       />
 
-      {/* Upper eyelid — blinks */}
+      {/* Upper eyelid — blinks via vertical translation */}
       <motion.path
-        d={blink ? "M -80 -4 Q 0 0 80 -4 L 80 -60 L -80 -60 Z" : "M -80 -4 Q 0 -52 80 -4 L 80 -60 L -80 -60 Z"}
+        d="M -80 -4 Q 0 -52 80 -4 L 80 -60 L -80 -60 Z"
         fill="black"
-        animate={{
-          d: blink
-            ? "M -80 -4 Q 0 0 80 -4 L 80 -60 L -80 -60 Z"
-            : "M -80 -4 Q 0 -52 80 -4 L 80 -60 L -80 -60 Z",
-        }}
+        initial={{ translateY: 0 }}
+        animate={{ translateY: blink ? 52 : 0 }}
         transition={{ duration: 0.1, ease: "easeInOut" }}
+        style={{ transformOrigin: "0 -4px" }}
       />
       {/* Lower eyelid — subtle */}
       <motion.path
-        d={blink ? "M -80 4 Q 0 0 80 4 L 80 60 L -80 60 Z" : "M -80 4 Q 0 34 80 4 L 80 60 L -80 60 Z"}
+        d="M -80 4 Q 0 34 80 4 L 80 60 L -80 60 Z"
         fill="black"
-        animate={{
-          d: blink
-            ? "M -80 4 Q 0 0 80 4 L 80 60 L -80 60 Z"
-            : "M -80 4 Q 0 34 80 4 L 80 60 L -80 60 Z",
-        }}
+        initial={{ translateY: 0 }}
+        animate={{ translateY: blink ? -34 : 0 }}
         transition={{ duration: 0.1, ease: "easeInOut" }}
+        style={{ transformOrigin: "0 4px" }}
       />
 
       {/* Lash hints */}
