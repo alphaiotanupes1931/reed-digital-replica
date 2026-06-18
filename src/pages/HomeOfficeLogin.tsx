@@ -243,12 +243,6 @@ const HomeOfficeLogin = () => {
       {/* LEFT — animated rings */}
       <div className="relative hidden md:block bg-black overflow-hidden">
         <AnimatedRings />
-        {/* Debug eye overlay */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
-          <div className="w-24 h-24 rounded-full bg-red-600 border-4 border-white flex items-center justify-center">
-            <span className="text-white text-xs font-bold">EYE</span>
-          </div>
-        </div>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
