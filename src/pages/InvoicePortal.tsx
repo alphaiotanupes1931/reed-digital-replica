@@ -97,19 +97,26 @@ const PaymentOptions = ({
   onPay,
   payingId,
   zelleHandle,
+  bizMethods,
 }: {
   invoice: Invoice;
   onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
   zelleHandle?: string | null;
+  bizMethods?: string[] | null;
 }) => {
   const isPaid = invoice.status === "paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
 
-  const methods = (invoice.payment_method || "stripe")
-    .split(",")
-    .map((m) => m.trim().toLowerCase())
-    .filter(Boolean);
+  // Prefer the business's current profile setting so toggling Zelle/Stripe in
+  // the profile applies to every invoice. Fall back to per-invoice override.
+  const methods =
+    bizMethods && bizMethods.length > 0
+      ? bizMethods.map((m) => m.trim().toLowerCase()).filter(Boolean)
+      : (invoice.payment_method || "stripe")
+          .split(",")
+          .map((m) => m.trim().toLowerCase())
+          .filter(Boolean);
   const allowStripe = methods.includes("stripe");
   const allowZelle = methods.includes("zelle");
 
@@ -221,6 +228,7 @@ const InvoiceDocument = ({
   onPay,
   payingId,
   zelleHandle,
+  bizMethods,
 }: {
   invoice: Invoice;
   clientName: string;
@@ -228,6 +236,7 @@ const InvoiceDocument = ({
   onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
   zelleHandle?: string | null;
+  bizMethods?: string[] | null;
 }) => {
   return (
     <div className="mb-12">
@@ -241,6 +250,7 @@ const InvoiceDocument = ({
         onPay={onPay}
         payingId={payingId}
         zelleHandle={zelleHandle}
+        bizMethods={bizMethods}
       />
     </div>
   );
@@ -525,6 +535,7 @@ const InvoicePortal = () => {
                       onPay={handlePay}
                       payingId={payingId}
                       zelleHandle={selectedBiz?.zelle_handle ?? null}
+                      bizMethods={selectedBiz?.payment_methods ?? null}
                     />
                   ))}
                 </div>
