@@ -664,15 +664,20 @@ const InvoiceAdmin = () => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Scope of Work</p>
-                <button onClick={handleSaveSow} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setSowVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{sowVisible ? "Hide SOW" : "Show SOW"}</button>
+                  <button onClick={handleSaveSow} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                </div>
               </div>
-              <textarea
-                value={sowText}
-                onChange={(e) => setSowText(e.target.value)}
-                placeholder="What you're building..."
-                rows={6}
-                className="w-full bg-transparent border border-border p-4 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
-              />
+              {sowVisible && (
+                <textarea
+                  value={sowText}
+                  onChange={(e) => setSowText(e.target.value)}
+                  placeholder="What you're building..."
+                  rows={6}
+                  className="w-full bg-transparent border border-border p-4 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
+                />
+              )}
             </div>
 
             {/* Phases */}
@@ -699,56 +704,63 @@ const InvoiceAdmin = () => {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Invoices</p>
-                <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
-                  {showInvoiceForm ? "Cancel" : "New Invoice"}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ? "Hide Invoices" : "Show Invoices"}</button>
+                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+                    {showInvoiceForm ? "Cancel" : "New Invoice"}
+                  </button>
+                </div>
               </div>
 
-              <AnimatePresence>
-                {showInvoiceForm && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-border mb-6">
-                    <form onSubmit={handleCreateInvoice} className="p-5 space-y-4">
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <select value={service} onChange={(e) => setService(e.target.value)} className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground">
-                          <option value="">Select service</option>
-                          {SERVICE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                        </select>
-                        <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
-                      </div>
-                      <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border font-mono text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
-                      <div className="flex gap-3">
-                        <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Create</Button>
-                      </div>
-                    </form>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {invoicesVisible && (
+                <>
+                  <AnimatePresence>
+                    {showInvoiceForm && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-border mb-6">
+                        <form onSubmit={handleCreateInvoice} className="p-5 space-y-4">
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <select value={service} onChange={(e) => setService(e.target.value)} className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground">
+                              <option value="">Select service</option>
+                              {SERVICE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+                            </select>
+                            <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                          </div>
+                          <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border font-mono text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                          <div className="flex gap-3">
+                            <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Create</Button>
+                          </div>
+                        </form>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-              {clientInvoices.length === 0 ? (
-                <p className="text-sm font-mono text-muted-foreground py-8 border-t border-border">No invoices.</p>
-              ) : (
-                <div className="border-t border-border">
-                  {clientInvoices.map((inv) => (
-                    <div key={inv.id} className="border-b border-border py-4 flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono font-bold text-foreground">{inv.service}</span>
-                          <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
+                  {clientInvoices.length === 0 ? (
+                    <p className="text-sm font-mono text-muted-foreground py-8 border-t border-border">No invoices.</p>
+                  ) : (
+                    <div className="border-t border-border">
+                      {clientInvoices.map((inv) => (
+                        <div key={inv.id} className="border-b border-border py-4 flex items-center justify-between gap-4">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-mono font-bold text-foreground">{inv.service}</span>
+                              <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
+                            </div>
+                            <p className="text-xs font-mono text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-lg font-mono font-bold">${inv.price.toLocaleString()}</span>
+                            {inv.status !== "paid" ? (
+                              <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
+                            ) : (
+                              <button onClick={() => handleSetStatus(inv.id, "approved")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-foreground">Unpaid</button>
+                            )}
+                            <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
+                          </div>
                         </div>
-                        <p className="text-xs font-mono text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-lg font-mono font-bold">${inv.price.toLocaleString()}</span>
-                        {inv.status !== "paid" ? (
-                          <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
-                        ) : (
-                          <button onClick={() => handleSetStatus(inv.id, "approved")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-foreground">Unpaid</button>
-                        )}
-                        <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </div>
           </div>
