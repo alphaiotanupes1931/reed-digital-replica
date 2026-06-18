@@ -174,14 +174,6 @@ const PaymentOptions = ({
               <p className="text-xs font-mono text-muted-foreground mt-1">Send to: {zelleHandle}</p>
             )}
           </div>
-          <a
-            href={zelleUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center justify-center"
-          >
-            Pay with Zelle
-          </a>
         </motion.div>
       )}
 
