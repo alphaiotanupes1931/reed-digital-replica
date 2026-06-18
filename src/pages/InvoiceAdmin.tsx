@@ -71,6 +71,11 @@ interface Invoice {
   payment_method?: "stripe" | "zelle" | string | null;
   hidden_from_client?: boolean;
   deactivated?: boolean;
+  payment_plan?: "one_time" | "monthly" | string | null;
+  plan_start_date?: string | null;
+  plan_end_date?: string | null;
+  plan_months?: number | null;
+  plan_monthly_amount?: number | null;
   clients?: Client;
 }
 
@@ -139,6 +144,9 @@ const InvoiceAdmin = () => {
   const [message, setMessage] = useState("");
   const [allowStripe, setAllowStripe] = useState(true);
   const [allowZelle, setAllowZelle] = useState(false);
+  const [paymentPlan, setPaymentPlan] = useState<"one_time" | "monthly">("one_time");
+  const [planStart, setPlanStart] = useState("");
+  const [planEnd, setPlanEnd] = useState("");
 
   // Deliverables
   const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);
@@ -155,6 +163,9 @@ const InvoiceAdmin = () => {
   const [editDepositDueDate, setEditDepositDueDate] = useState("");
   const [editAllowStripe, setEditAllowStripe] = useState(true);
   const [editAllowZelle, setEditAllowZelle] = useState(false);
+  const [editPaymentPlan, setEditPaymentPlan] = useState<"one_time" | "monthly">("one_time");
+  const [editPlanStart, setEditPlanStart] = useState("");
+  const [editPlanEnd, setEditPlanEnd] = useState("");
 
   const startEditInvoice = (inv: Invoice) => {
     setEditingInvoiceId(inv.id);
@@ -167,6 +178,9 @@ const InvoiceAdmin = () => {
     const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
     setEditAllowStripe(m.includes("stripe"));
     setEditAllowZelle(m.includes("zelle"));
+    setEditPaymentPlan((inv.payment_plan === "monthly" ? "monthly" : "one_time"));
+    setEditPlanStart(inv.plan_start_date || "");
+    setEditPlanEnd(inv.plan_end_date || "");
   };
 
   const handleUpdateInvoice = async (invoiceId: string) => {
@@ -180,6 +194,14 @@ const InvoiceAdmin = () => {
     }
     if (!editAllowStripe && !editAllowZelle) {
       toast({ title: "Select at least one payment method", variant: "destructive" });
+      return;
+    }
+    if (editPaymentPlan === "monthly" && (!editPlanStart || !editPlanEnd)) {
+      toast({ title: "Monthly plan needs start and end dates", variant: "destructive" });
+      return;
+    }
+    if (editPaymentPlan === "monthly" && editPlanStart && editPlanEnd && editPlanEnd < editPlanStart) {
+      toast({ title: "End date must be after start date", variant: "destructive" });
       return;
     }
     try {
@@ -198,6 +220,9 @@ const InvoiceAdmin = () => {
             ...(editAllowStripe ? ["stripe"] : []),
             ...(editAllowZelle ? ["zelle"] : []),
           ].join(","),
+          payment_plan: editPaymentPlan,
+          plan_start_date: editPaymentPlan === "monthly" ? editPlanStart : null,
+          plan_end_date: editPaymentPlan === "monthly" ? editPlanEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
@@ -353,6 +378,14 @@ const InvoiceAdmin = () => {
       toast({ title: "Deposit details required", variant: "destructive" });
       return;
     }
+    if (paymentPlan === "monthly" && (!planStart || !planEnd)) {
+      toast({ title: "Monthly plan needs start and end dates", variant: "destructive" });
+      return;
+    }
+    if (paymentPlan === "monthly" && planEnd < planStart) {
+      toast({ title: "End date must be after start date", variant: "destructive" });
+      return;
+    }
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
@@ -372,6 +405,9 @@ const InvoiceAdmin = () => {
             ...(allowStripe ? ["stripe"] : []),
             ...(allowZelle ? ["zelle"] : []),
           ].join(",") || "stripe",
+          payment_plan: paymentPlan,
+          plan_start_date: paymentPlan === "monthly" ? planStart : null,
+          plan_end_date: paymentPlan === "monthly" ? planEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
@@ -381,6 +417,7 @@ const InvoiceAdmin = () => {
       setService(""); setPrice(""); setDepositRequired(false);
       setDepositAmount(""); setDepositDueDate(""); setMessage("");
       setAllowStripe(true); setAllowZelle(false);
+      setPaymentPlan("one_time"); setPlanStart(""); setPlanEnd("");
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -750,6 +787,43 @@ const InvoiceAdmin = () => {
                             <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                           </div>
                           <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border font-mono text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                          {/* Payment Plan */}
+                          <div className="border-t border-border pt-4">
+                            <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">Payment Plan</p>
+                            <div className="flex gap-2 mb-3">
+                              <button type="button" onClick={() => setPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "one_time" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>One-time</button>
+                              <button type="button" onClick={() => setPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "monthly" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                            </div>
+                            {paymentPlan === "monthly" && (
+                              <div className="space-y-3">
+                                <div className="grid gap-3 md:grid-cols-2">
+                                  <label className="block">
+                                    <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
+                                    <input type="date" value={planStart} onChange={(e) => setPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                  </label>
+                                  <label className="block">
+                                    <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">End date</span>
+                                    <input type="date" value={planEnd} onChange={(e) => setPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                  </label>
+                                </div>
+                                {(() => {
+                                  const p = parseFloat(price);
+                                  if (!p || !planStart || !planEnd) return null;
+                                  const s = new Date(planStart);
+                                  const e = new Date(planEnd);
+                                  const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+                                  const monthly = p / months;
+                                  return (
+                                    <div className="border border-foreground/30 p-3 font-mono text-xs">
+                                      <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
+                                      <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
+                                      <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            )}
+                          </div>
                           <div className="flex gap-3">
                             <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Create</Button>
                           </div>
@@ -768,6 +842,11 @@ const InvoiceAdmin = () => {
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-mono font-bold text-foreground">{inv.service}</span>
                               <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
+                              {inv.payment_plan === "monthly" && (
+                                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/40 text-foreground/70">
+                                  Monthly · {inv.plan_months}mo · ${Number(inv.plan_monthly_amount || 0).toFixed(2)}/mo
+                                </span>
+                              )}
                             </div>
                             <p className="text-xs font-mono text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
                           </div>

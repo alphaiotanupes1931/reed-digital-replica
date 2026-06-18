@@ -22,6 +22,11 @@ interface Invoice {
   message: string | null;
   deliverables: { label: string; url: string }[] | null;
   payment_method?: "stripe" | "zelle" | string | null;
+  payment_plan?: "one_time" | "monthly" | string | null;
+  plan_start_date?: string | null;
+  plan_end_date?: string | null;
+  plan_months?: number | null;
+  plan_monthly_amount?: number | null;
 }
 
 const PROCESSING_FEE_RATE = 0.029;
@@ -95,12 +100,14 @@ const InvoiceDetailsCard = ({
 const PaymentOptions = ({
   invoice,
   onPay,
+  onPayMonthly,
   payingId,
   zelleHandle,
   bizMethods,
 }: {
   invoice: Invoice;
   onPay: (inv: Invoice, deposit: boolean) => void;
+  onPayMonthly: (inv: Invoice) => void;
   payingId: string | null;
   zelleHandle?: string | null;
   bizMethods?: string[] | null;
@@ -138,6 +145,41 @@ const PaymentOptions = ({
   const stripeSuffix = depositPending ? "-dep" : "-once";
 
   if (isPaid) return null;
+
+  const isMonthlyPlan = invoice.payment_plan === "monthly" && invoice.plan_monthly_amount && invoice.plan_months;
+  if (isMonthlyPlan && !depositPending) {
+    const monthly = Number(invoice.plan_monthly_amount);
+    const monthlyFee = Math.round((monthly * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+    const monthlyTotal = Math.round((monthly + monthlyFee) * 100) / 100;
+    return (
+      <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="border-2 border-foreground bg-background p-6"
+        >
+          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Monthly Payment Plan</p>
+          <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyTotal.toLocaleString()} / month</h3>
+          <p className="text-sm font-mono text-foreground/70 mb-1">
+            {invoice.plan_months} monthly payments · Total ${(monthlyTotal * Number(invoice.plan_months)).toLocaleString()}
+          </p>
+          <p className="text-xs font-mono text-emerald-500 mb-4">
+            Includes ${monthlyFee.toLocaleString()} processing fee per month
+          </p>
+          <button
+            onClick={() => onPayMonthly(invoice)}
+            disabled={payingId === invoice.id + "-monthly"}
+            className="w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+          >
+            {payingId === invoice.id + "-monthly" ? "Processing..." : "Start Monthly Plan (Stripe)"}
+          </button>
+          <p className="text-[10px] font-mono text-muted-foreground mt-3 text-center">
+            Card auto-charged each month. Cancels automatically after {invoice.plan_months} payments.
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (depositPending) {
     return (
@@ -218,6 +260,7 @@ const InvoiceDocument = ({
   clientName,
   clientEmail,
   onPay,
+  onPayMonthly,
   payingId,
   zelleHandle,
   bizMethods,
@@ -226,6 +269,7 @@ const InvoiceDocument = ({
   clientName: string;
   clientEmail: string;
   onPay: (inv: Invoice, deposit: boolean) => void;
+  onPayMonthly: (inv: Invoice) => void;
   payingId: string | null;
   zelleHandle?: string | null;
   bizMethods?: string[] | null;
@@ -240,6 +284,7 @@ const InvoiceDocument = ({
       <PaymentOptions
         invoice={invoice}
         onPay={onPay}
+        onPayMonthly={onPayMonthly}
         payingId={payingId}
         zelleHandle={zelleHandle}
         bizMethods={bizMethods}
@@ -362,6 +407,23 @@ const InvoicePortal = () => {
           invoice_id: invoice.id,
           pay_deposit: payDeposit,
           payment_type: "one_time",
+        },
+      });
+      if (res.error) throw res.error;
+      if (res.data?.url) window.location.href = res.data.url;
+    } catch (err: any) {
+      toast({ title: "Payment error", description: err.message, variant: "destructive" });
+      setPayingId(null);
+    }
+  };
+
+  const handlePayMonthly = async (invoice: Invoice) => {
+    setPayingId(invoice.id + "-monthly");
+    try {
+      const res = await supabase.functions.invoke("create-checkout", {
+        body: {
+          invoice_id: invoice.id,
+          pay_monthly_plan: true,
         },
       });
       if (res.error) throw res.error;
@@ -525,6 +587,7 @@ const InvoicePortal = () => {
                       clientName={clientName}
                       clientEmail={clientEmail}
                       onPay={handlePay}
+                      onPayMonthly={handlePayMonthly}
                       payingId={payingId}
                       zelleHandle={selectedBiz?.zelle_handle ?? null}
                       bizMethods={selectedBiz?.payment_methods ?? null}
