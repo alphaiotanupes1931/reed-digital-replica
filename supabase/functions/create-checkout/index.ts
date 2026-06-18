@@ -30,10 +30,11 @@ serve(async (req) => {
       include_maintenance,
       maintenance_price,
       maintenance_label,
+      pay_monthly_plan,
     } = await req.json();
     if (!invoice_id) throw new Error("invoice_id is required");
     const mode: "payment" | "subscription" =
-      payment_type === "subscription" || include_maintenance ? "subscription" : "payment";
+      payment_type === "subscription" || include_maintenance || pay_monthly_plan ? "subscription" : "payment";
 
     // Get invoice with client info
     const { data: invoice, error: invError } = await supabase
@@ -52,6 +53,66 @@ serve(async (req) => {
     const FEE_RATE = 0.029;
     const FEE_FLAT = 1.30;
     const addFee = (amount: number) => Math.round((amount + amount * FEE_RATE + FEE_FLAT) * 100) / 100;
+
+    // ── Monthly payment plan branch ─────────────────────────────────────────
+    if (pay_monthly_plan) {
+      if (invoice.payment_plan !== "monthly" || !invoice.plan_monthly_amount || !invoice.plan_end_date) {
+        throw new Error("This invoice has no monthly payment plan configured.");
+      }
+      const monthly = Number(invoice.plan_monthly_amount);
+      const months = Number(invoice.plan_months || 0);
+      const monthlyTotal = addFee(monthly);
+
+      // Stripe subscription that auto-cancels at plan end date.
+      const cancelAt = Math.floor(new Date(invoice.plan_end_date as string).getTime() / 1000);
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        customer_email: client.email,
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: `${invoice.service} — Monthly Plan (${months} months)`,
+                description: `${months} monthly payments of $${monthly.toFixed(2)} — ${client.company_name}`,
+              },
+              unit_amount: Math.round(monthlyTotal * 100),
+              recurring: { interval: "month" as const },
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "subscription",
+        subscription_data: {
+          cancel_at: cancelAt,
+          metadata: {
+            invoice_id: invoice.id,
+            client_id: client.id,
+            type: "invoice_monthly_plan",
+            months: String(months),
+          },
+        },
+        success_url: `${origin}/portal/thank-you`,
+        cancel_url: `${origin}/portal?payment=cancelled`,
+        metadata: {
+          invoice_id: invoice.id,
+          payment_type: "monthly_plan",
+        },
+      });
+
+      await supabase
+        .from("invoices")
+        .update({
+          stripe_checkout_session_id: session.id,
+          payment_type: "subscription",
+        })
+        .eq("id", invoice.id);
+
+      return new Response(JSON.stringify({ url: session.url }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Determine amount based on deposit or full payment
     let baseAmount: number;
