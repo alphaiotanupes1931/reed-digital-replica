@@ -102,6 +102,8 @@ const App = () => (
             <Route path="/home-office/login" element={<HomeOfficeLogin />} />
             <Route path="/home-office/welcome" element={<HomeOfficeWelcome />} />
             <Route path="/home-office/reset-password" element={<HomeOfficeResetPassword />} />
+           <Route path="/home-office/forgot-password" element={<HomeOfficeForgotPassword />} />
+           <Route path="/home-office/recovery-setup" element={<HomeOfficeRecoverySetup />} />
             <Route path="/home-office/onboarding" element={<HomeOfficeOnboarding />} />
             <Route path="/home-office" element={<HomeOffice />} />
             <Route path="/home-office/work-assistant" element={<WorkAssistant />} />
