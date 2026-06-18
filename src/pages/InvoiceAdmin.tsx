@@ -378,6 +378,14 @@ const InvoiceAdmin = () => {
       toast({ title: "Deposit details required", variant: "destructive" });
       return;
     }
+    if (paymentPlan === "monthly" && (!planStart || !planEnd)) {
+      toast({ title: "Monthly plan needs start and end dates", variant: "destructive" });
+      return;
+    }
+    if (paymentPlan === "monthly" && planEnd < planStart) {
+      toast({ title: "End date must be after start date", variant: "destructive" });
+      return;
+    }
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
@@ -397,6 +405,9 @@ const InvoiceAdmin = () => {
             ...(allowStripe ? ["stripe"] : []),
             ...(allowZelle ? ["zelle"] : []),
           ].join(",") || "stripe",
+          payment_plan: paymentPlan,
+          plan_start_date: paymentPlan === "monthly" ? planStart : null,
+          plan_end_date: paymentPlan === "monthly" ? planEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
@@ -406,6 +417,7 @@ const InvoiceAdmin = () => {
       setService(""); setPrice(""); setDepositRequired(false);
       setDepositAmount(""); setDepositDueDate(""); setMessage("");
       setAllowStripe(true); setAllowZelle(false);
+      setPaymentPlan("one_time"); setPlanStart(""); setPlanEnd("");
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
