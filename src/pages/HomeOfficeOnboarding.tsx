@@ -204,7 +204,7 @@ const HomeOfficeOnboarding = () => {
           className="mb-2"
         >
           <p className="text-[10px] uppercase tracking-[0.3em] text-brand">
-            Step {step} of 5
+            Step {step} of 7
           </p>
         </motion.div>
 
@@ -245,6 +245,67 @@ const HomeOfficeOnboarding = () => {
             key="step2"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
+            onSubmit={handleBirthPhoneNext}
+            className="space-y-6"
+          >
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">A few recovery details.</h1>
+              <p className="text-xs text-white/50 mt-2 leading-relaxed">
+                Please enter your <span className="text-brand">correct birthdate</span> — this will be used in password recovery if you ever get locked out.
+              </p>
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Birthdate</label>
+              <input type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} className={inputCls} required />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Phone number</label>
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} placeholder="(555) 555-5555" required />
+              <p className="text-[10px] text-white/40 mt-2 uppercase tracking-widest">Used for recovery only.</p>
+            </div>
+            <button type="submit" className={btnCls}>Continue</button>
+          </motion.form>
+        ) : step === 3 ? (
+          <motion.form
+            key="step3sec"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            onSubmit={handleSecurityNext}
+            className="space-y-6"
+          >
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Pick 2 security questions.</h1>
+              <p className="text-xs text-white/50 mt-2 leading-relaxed">
+                If you forget your password we'll ask these along with your email and birthdate. Answers are hashed before storage.
+              </p>
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Question 1</label>
+              <select value={q1} onChange={(e) => setQ1(e.target.value)} className={inputCls} required>
+                <option value="" className="bg-black">Select a question…</option>
+                {SECURITY_QUESTIONS.filter((q) => q !== q2).map((q) => (
+                  <option key={q} value={q} className="bg-black">{q}</option>
+                ))}
+              </select>
+              <input value={a1} onChange={(e) => setA1(e.target.value)} className={`${inputCls} mt-2`} placeholder="Your answer" required />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Question 2</label>
+              <select value={q2} onChange={(e) => setQ2(e.target.value)} className={inputCls} required>
+                <option value="" className="bg-black">Select a question…</option>
+                {SECURITY_QUESTIONS.filter((q) => q !== q1).map((q) => (
+                  <option key={q} value={q} className="bg-black">{q}</option>
+                ))}
+              </select>
+              <input value={a2} onChange={(e) => setA2(e.target.value)} className={`${inputCls} mt-2`} placeholder="Your answer" required />
+            </div>
+            <button type="submit" className={btnCls}>Continue</button>
+          </motion.form>
+        ) : step === 4 ? (
+          <motion.form
+            key="step2"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
             onSubmit={handleBusinessNext}
             className="space-y-6"
           >
@@ -270,7 +331,7 @@ const HomeOfficeOnboarding = () => {
               Continue
             </button>
           </motion.form>
-        ) : step === 3 ? (
+        ) : step === 5 ? (
           <motion.form
             key="step3"
             initial={{ opacity: 0, y: 8 }}
@@ -315,7 +376,7 @@ const HomeOfficeOnboarding = () => {
             )}
             <button type="submit" className={btnCls}>Continue</button>
           </motion.form>
-        ) : step === 4 ? (
+        ) : step === 6 ? (
           <motion.form
             key="step4"
             initial={{ opacity: 0, y: 8 }}
@@ -422,7 +483,7 @@ const HomeOfficeOnboarding = () => {
             <div className="flex items-center justify-between pt-2 text-[10px] uppercase tracking-widest">
               <button
                 type="button"
-                onClick={() => setStep(4)}
+                onClick={() => setStep(6)}
                 className="text-white/50 hover:text-brand transition-colors"
               >
                 ← Back
