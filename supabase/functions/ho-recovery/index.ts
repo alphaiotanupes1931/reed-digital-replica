@@ -93,7 +93,18 @@ Deno.serve(async (req) => {
       const okA2 = profile.security_answer_2_hash === a2;
 
       if (!okBirthdate || !okA1 || !okA2) {
-        return json({ error: "Verification failed." }, 401);
+        const wrong: string[] = [];
+        if (!okBirthdate) wrong.push("birthdate");
+        if (!okA1) wrong.push("question_1");
+        if (!okA2) wrong.push("question_2");
+        const labels = wrong.map((w) =>
+          w === "birthdate" ? "birthdate" : w === "question_1" ? "first security question" : "second security question"
+        );
+        const human =
+          labels.length === 1
+            ? `The ${labels[0]} you entered doesn't match our records.`
+            : `The ${labels.slice(0, -1).join(", ")} and ${labels.slice(-1)} you entered don't match our records.`;
+        return json({ error: human, wrong_fields: wrong }, 401);
       }
 
       const { error: uerr } = await supabase.auth.admin.updateUserById(user.id, { password: newPassword });

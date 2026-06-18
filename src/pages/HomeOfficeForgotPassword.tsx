@@ -21,6 +21,7 @@ const HomeOfficeForgotPassword = () => {
   const { toast } = useToast();
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
 
   const [email, setEmail] = useState("");
   const [birthdate, setBirthdate] = useState("");
@@ -71,11 +72,33 @@ const HomeOfficeForgotPassword = () => {
           new_password: newPassword,
         },
       });
-      if (error || data?.error) throw new Error(data?.error || error?.message || "Reset failed");
+      // supabase-js returns the response body in `data` even on non-2xx for edge functions
+      let errMsg: string | undefined = data?.error;
+      if (!errMsg && error) {
+        try {
+          const resp = (error as any)?.context?.response;
+          if (resp) {
+            const body = await resp.clone().json();
+            errMsg = body?.error;
+          }
+        } catch { /* ignore */ }
+        errMsg = errMsg || error.message || "Reset failed";
+      }
+      if (errMsg) throw new Error(errMsg);
       toast({ title: "Password updated", description: "You can now log in." });
       navigate("/home-office/login");
     } catch (err: any) {
-      toast({ title: "Verification failed", description: err.message, variant: "destructive" });
+      const next = failedAttempts + 1;
+      setFailedAttempts(next);
+      const description =
+        next >= 5
+          ? `${err.message} If you keep having trouble, please contact info@reeddigitalgroup.com for assistance.`
+          : err.message;
+      toast({
+        title: next >= 5 ? "Still having trouble?" : "Verification failed",
+        description,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
