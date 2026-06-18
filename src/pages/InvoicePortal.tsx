@@ -97,19 +97,26 @@ const PaymentOptions = ({
   onPay,
   payingId,
   zelleHandle,
+  bizMethods,
 }: {
   invoice: Invoice;
   onPay: (inv: Invoice, deposit: boolean) => void;
   payingId: string | null;
   zelleHandle?: string | null;
+  bizMethods?: string[] | null;
 }) => {
   const isPaid = invoice.status === "paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
 
-  const methods = (invoice.payment_method || "stripe")
-    .split(",")
-    .map((m) => m.trim().toLowerCase())
-    .filter(Boolean);
+  // Prefer the business's current profile setting so toggling Zelle/Stripe in
+  // the profile applies to every invoice. Fall back to per-invoice override.
+  const methods =
+    bizMethods && bizMethods.length > 0
+      ? bizMethods.map((m) => m.trim().toLowerCase()).filter(Boolean)
+      : (invoice.payment_method || "stripe")
+          .split(",")
+          .map((m) => m.trim().toLowerCase())
+          .filter(Boolean);
   const allowStripe = methods.includes("stripe");
   const allowZelle = methods.includes("zelle");
 
