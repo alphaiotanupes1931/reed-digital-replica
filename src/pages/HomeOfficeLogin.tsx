@@ -31,6 +31,77 @@ const clearStoredAuth = () => {
   }
 };
 
+// Realistic blinking eye centered in the rings
+const BlinkingEye = () => {
+  const [blink, setBlink] = useState(false);
+
+  useEffect(() => {
+    const schedule = () => {
+      const delay = 2500 + Math.random() * 4000; // 2.5–6.5s between blinks
+      const timer = setTimeout(() => {
+        setBlink(true);
+        setTimeout(() => setBlink(false), 180); // blink lasts 180ms
+        schedule();
+      }, delay);
+      return timer;
+    };
+    const t = schedule();
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <g>
+      {/* Sclera */}
+      <ellipse cx="0" cy="0" rx="28" ry="16" fill="#e8e6e1" />
+      {/* Sclera shading */}
+      <ellipse cx="0" cy="0" rx="28" ry="16" fill="url(#scleraGrad)" opacity="0.3" />
+      {/* Iris */}
+      <circle cx="0" cy="0" r="10" fill="url(#irisGrad)" />
+      {/* Iris detail rings */}
+      <circle cx="0" cy="0" r="8" fill="none" stroke="#1a3a2f" strokeWidth="0.6" opacity="0.4" />
+      <circle cx="0" cy="0" r="6" fill="none" stroke="#1a3a2f" strokeWidth="0.4" opacity="0.3" />
+      {/* Pupil */}
+      <circle cx="0" cy="0" r="4.5" fill="#0a0a0a" />
+      {/* Highlight */}
+      <circle cx="2.5" cy="-2.5" r="1.6" fill="white" opacity="0.9" />
+      <circle cx="-1.8" cy="2.2" r="0.7" fill="white" opacity="0.4" />
+      {/* Eyelid crease line */}
+      <motion.path
+        d="M -32 -2 Q 0 -20 32 -2"
+        fill="none"
+        stroke="white"
+        strokeWidth="0.5"
+        opacity="0.15"
+      />
+      {/* Upper eyelid — blinks */}
+      <motion.path
+        d={blink ? "M -32 -2 Q 0 0 32 -2 L 32 -22 L -32 -22 Z" : "M -32 -2 Q 0 -22 32 -2 L 32 -22 L -32 -22 Z"}
+        fill="black"
+        animate={{
+          d: blink
+            ? "M -32 -2 Q 0 0 32 -2 L 32 -22 L -32 -22 Z"
+            : "M -32 -2 Q 0 -22 32 -2 L 32 -22 L -32 -22 Z",
+        }}
+        transition={{ duration: 0.09, ease: "easeInOut" }}
+      />
+      {/* Lower eyelid — subtle */}
+      <motion.path
+        d={blink ? "M -32 2 Q 0 0 32 2 L 32 22 L -32 22 Z" : "M -32 2 Q 0 14 32 2 L 32 22 L -32 22 Z"}
+        fill="black"
+        animate={{
+          d: blink
+            ? "M -32 2 Q 0 0 32 2 L 32 22 L -32 22 Z"
+            : "M -32 2 Q 0 14 32 2 L 32 22 L -32 22 Z",
+        }}
+        transition={{ duration: 0.09, ease: "easeInOut" }}
+      />
+      {/* Lash hints */}
+      <line x1="-28" y1="-4" x2="-32" y2="-10" stroke="white" strokeWidth="0.4" opacity="0.25" />
+      <line x1="28" y1="-4" x2="32" y2="-10" stroke="white" strokeWidth="0.4" opacity="0.25" />
+    </g>
+  );
+};
+
 // Animated concentric rings of vertical dashes — built from SVG
 const AnimatedRings = () => {
   const rings = useMemo(() => {
@@ -48,6 +119,17 @@ const AnimatedRings = () => {
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
       <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
+        <defs>
+          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#2a5a4a" />
+            <stop offset="60%" stopColor="#1a3a2f" />
+            <stop offset="100%" stopColor="#0d1f18" />
+          </radialGradient>
+          <radialGradient id="scleraGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="70%" stopColor="white" stopOpacity="0" />
+            <stop offset="100%" stopColor="#b0aea9" stopOpacity="0.6" />
+          </radialGradient>
+        </defs>
         {rings.map((ring, ri) => (
           <motion.g
             key={ri}
@@ -83,6 +165,8 @@ const AnimatedRings = () => {
             })}
           </motion.g>
         ))}
+        {/* Center eye sits on top */}
+        <BlinkingEye />
       </svg>
     </div>
   );
