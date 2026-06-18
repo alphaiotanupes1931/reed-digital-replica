@@ -31,36 +31,6 @@ const clearStoredAuth = () => {
   }
 };
 
-// Realistic blinking eye — rendered as an overlay so it sits cleanly on top of the rings
-const BlinkingEyeOverlay = () => {
-  const [blink, setBlink] = useState(false);
-
-  useEffect(() => {
-    const schedule = () => {
-      const delay = 2500 + Math.random() * 4000;
-      const timer = setTimeout(() => {
-        setBlink(true);
-        setTimeout(() => setBlink(false), 180);
-        schedule();
-      }, delay);
-      return timer;
-    };
-    const t = schedule();
-    return () => clearTimeout(t);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-      {/* Debug: bright red circle to confirm overlay positioning */}
-      <svg width="200" height="200" viewBox="-100 -100 200 200" className="overflow-visible">
-        <circle cx="0" cy="0" r="40" fill="red" />
-        <text x="0" y="5" textAnchor="middle" fill="white" fontSize="12">
-          EYE
-        </text>
-      </svg>
-    </div>
-  );
-};
 
 // Animated concentric rings of vertical dashes — built from SVG
 const AnimatedRings = () => {
