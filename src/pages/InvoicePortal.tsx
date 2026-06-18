@@ -174,14 +174,6 @@ const PaymentOptions = ({
               <p className="text-xs font-mono text-muted-foreground mt-1">Send to: {zelleHandle}</p>
             )}
           </div>
-          <a
-            href={zelleUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center justify-center"
-          >
-            Pay with Zelle
-          </a>
         </motion.div>
       )}
 
@@ -204,7 +196,7 @@ const PaymentOptions = ({
             <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
             <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Card (Stripe)</h3>
             <p className="text-3xl font-mono font-bold text-foreground mb-2">${stripeTotal.toLocaleString()}</p>
-            <p className="text-xs font-mono text-destructive font-bold">Includes ${stripeFee.toLocaleString()} processing fee</p>
+            <p className="text-xs font-mono text-emerald-500 font-bold">Includes ${stripeFee.toLocaleString()} processing fee</p>
           </div>
           <button
             onClick={() => onPay(invoice, false)}
