@@ -71,6 +71,11 @@ interface Invoice {
   payment_method?: "stripe" | "zelle" | string | null;
   hidden_from_client?: boolean;
   deactivated?: boolean;
+  payment_plan?: "one_time" | "monthly" | string | null;
+  plan_start_date?: string | null;
+  plan_end_date?: string | null;
+  plan_months?: number | null;
+  plan_monthly_amount?: number | null;
   clients?: Client;
 }
 
@@ -139,6 +144,9 @@ const InvoiceAdmin = () => {
   const [message, setMessage] = useState("");
   const [allowStripe, setAllowStripe] = useState(true);
   const [allowZelle, setAllowZelle] = useState(false);
+  const [paymentPlan, setPaymentPlan] = useState<"one_time" | "monthly">("one_time");
+  const [planStart, setPlanStart] = useState("");
+  const [planEnd, setPlanEnd] = useState("");
 
   // Deliverables
   const [editingDeliverables, setEditingDeliverables] = useState<string | null>(null);
@@ -155,6 +163,9 @@ const InvoiceAdmin = () => {
   const [editDepositDueDate, setEditDepositDueDate] = useState("");
   const [editAllowStripe, setEditAllowStripe] = useState(true);
   const [editAllowZelle, setEditAllowZelle] = useState(false);
+  const [editPaymentPlan, setEditPaymentPlan] = useState<"one_time" | "monthly">("one_time");
+  const [editPlanStart, setEditPlanStart] = useState("");
+  const [editPlanEnd, setEditPlanEnd] = useState("");
 
   const startEditInvoice = (inv: Invoice) => {
     setEditingInvoiceId(inv.id);
@@ -167,6 +178,9 @@ const InvoiceAdmin = () => {
     const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
     setEditAllowStripe(m.includes("stripe"));
     setEditAllowZelle(m.includes("zelle"));
+    setEditPaymentPlan((inv.payment_plan === "monthly" ? "monthly" : "one_time"));
+    setEditPlanStart(inv.plan_start_date || "");
+    setEditPlanEnd(inv.plan_end_date || "");
   };
 
   const handleUpdateInvoice = async (invoiceId: string) => {
