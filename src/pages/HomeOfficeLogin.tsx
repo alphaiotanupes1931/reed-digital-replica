@@ -47,19 +47,8 @@ const AnimatedRings = () => {
 
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-      <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
-        <defs>
-          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#2a5a4a" />
-            <stop offset="60%" stopColor="#1a3a2f" />
-            <stop offset="100%" stopColor="#0d1f18" />
-          </radialGradient>
-          <radialGradient id="scleraGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="70%" stopColor="white" stopOpacity="0" />
-            <stop offset="100%" stopColor="#b0aea9" stopOpacity="0.6" />
-          </radialGradient>
-        </defs>
-        {rings.map((ring, ri) => (
+          <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
+            {rings.map((ring, ri) => (
           <motion.g
             key={ri}
             animate={{ rotate: ring.dir * 360 }}
