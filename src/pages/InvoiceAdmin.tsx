@@ -264,26 +264,6 @@ const InvoiceAdmin = () => {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  if (hasSession === false) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="max-w-md w-full text-center">
-          <Lock className="h-6 w-6 mx-auto mb-6 text-foreground/60" />
-          <h1 className="text-2xl font-mono font-bold text-foreground mb-3">Sign in required</h1>
-          <p className="text-sm font-mono text-muted-foreground mb-8">
-            Your session expired. Sign in to access the admin panel.
-          </p>
-          <Link
-            to="/home-office/login"
-            className="inline-block text-xs font-mono uppercase tracking-widest border-2 border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
-          >
-            Go to Sign In
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   // Load SOW into form when client selected
   useEffect(() => {
     if (selectedClientId) {
