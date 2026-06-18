@@ -204,7 +204,7 @@ const PaymentOptions = ({
             <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
             <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Card (Stripe)</h3>
             <p className="text-3xl font-mono font-bold text-foreground mb-2">${stripeTotal.toLocaleString()}</p>
-            <p className="text-xs font-mono text-muted-foreground">Includes ${stripeFee.toLocaleString()} processing fee</p>
+            <p className="text-xs font-mono text-destructive font-bold">Includes ${stripeFee.toLocaleString()} processing fee</p>
           </div>
           <button
             onClick={() => onPay(invoice, false)}
