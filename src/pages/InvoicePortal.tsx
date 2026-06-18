@@ -25,7 +25,7 @@ interface Invoice {
 }
 
 const PROCESSING_FEE_RATE = 0.029;
-const PROCESSING_FEE_FLAT = 0.30;
+const PROCESSING_FEE_FLAT = 1.30;
 
 const InvoiceDetailsCard = ({
   invoice,
