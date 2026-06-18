@@ -837,7 +837,8 @@ const InvoiceAdmin = () => {
                   ) : (
                     <div className="border-t border-border">
                       {clientInvoices.map((inv) => (
-                        <div key={inv.id} className="border-b border-border py-4 flex items-center justify-between gap-4">
+                        <div key={inv.id} className="border-b border-border py-4">
+                          <div className="flex items-center justify-between gap-4">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-mono font-bold text-foreground">{inv.service}</span>
@@ -852,6 +853,7 @@ const InvoiceAdmin = () => {
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-lg font-mono font-bold">${inv.price.toLocaleString()}</span>
+                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-foreground">{editingInvoiceId === inv.id ? "Close" : "Edit"}</button>
                             {inv.status !== "paid" ? (
                               <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
                             ) : (
@@ -859,6 +861,49 @@ const InvoiceAdmin = () => {
                             )}
                             <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
                           </div>
+                          </div>
+                          {editingInvoiceId === inv.id && (
+                            <div className="mt-4 border border-border p-4 space-y-4">
+                              <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Payment Plan</p>
+                              <div className="flex gap-2">
+                                <button type="button" onClick={() => setEditPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "one_time" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>One-time</button>
+                                <button type="button" onClick={() => setEditPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "monthly" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                              </div>
+                              {editPaymentPlan === "monthly" && (
+                                <div className="space-y-3">
+                                  <div className="grid gap-3 md:grid-cols-2">
+                                    <label className="block">
+                                      <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
+                                      <input type="date" value={editPlanStart} onChange={(e) => setEditPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                    </label>
+                                    <label className="block">
+                                      <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">End date</span>
+                                      <input type="date" value={editPlanEnd} onChange={(e) => setEditPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                    </label>
+                                  </div>
+                                  {(() => {
+                                    const p = parseFloat(editPrice);
+                                    if (!p || !editPlanStart || !editPlanEnd) return null;
+                                    const s = new Date(editPlanStart);
+                                    const e = new Date(editPlanEnd);
+                                    const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+                                    const monthly = p / months;
+                                    return (
+                                      <div className="border border-foreground/30 p-3 font-mono text-xs">
+                                        <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
+                                        <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
+                                        <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                              )}
+                              <div className="flex gap-2 pt-2">
+                                <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 font-mono text-xs uppercase tracking-widest rounded-none">Save</Button>
+                                <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-4 py-2 hover:border-foreground">Cancel</button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
