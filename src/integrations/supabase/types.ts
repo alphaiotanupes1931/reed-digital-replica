@@ -575,6 +575,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          birthdate: string | null
           business_id: string | null
           business_name: string | null
           cashapp_handle: string | null
@@ -583,9 +584,15 @@ export type Database = {
           id: string
           onboarded: boolean
           payment_methods: string[]
+          phone: string | null
           primary_goal: string | null
+          recovery_setup_complete: boolean
           referral_source: string | null
           role: string | null
+          security_answer_1_hash: string | null
+          security_answer_2_hash: string | null
+          security_question_1: string | null
+          security_question_2: string | null
           stripe_customer_id: string | null
           stripe_secret_key: string | null
           subscribed: boolean
@@ -594,6 +601,7 @@ export type Database = {
           zelle_handle: string | null
         }
         Insert: {
+          birthdate?: string | null
           business_id?: string | null
           business_name?: string | null
           cashapp_handle?: string | null
@@ -602,9 +610,15 @@ export type Database = {
           id?: string
           onboarded?: boolean
           payment_methods?: string[]
+          phone?: string | null
           primary_goal?: string | null
+          recovery_setup_complete?: boolean
           referral_source?: string | null
           role?: string | null
+          security_answer_1_hash?: string | null
+          security_answer_2_hash?: string | null
+          security_question_1?: string | null
+          security_question_2?: string | null
           stripe_customer_id?: string | null
           stripe_secret_key?: string | null
           subscribed?: boolean
@@ -613,6 +627,7 @@ export type Database = {
           zelle_handle?: string | null
         }
         Update: {
+          birthdate?: string | null
           business_id?: string | null
           business_name?: string | null
           cashapp_handle?: string | null
@@ -621,9 +636,15 @@ export type Database = {
           id?: string
           onboarded?: boolean
           payment_methods?: string[]
+          phone?: string | null
           primary_goal?: string | null
+          recovery_setup_complete?: boolean
           referral_source?: string | null
           role?: string | null
+          security_answer_1_hash?: string | null
+          security_answer_2_hash?: string | null
+          security_question_1?: string | null
+          security_question_2?: string | null
           stripe_customer_id?: string | null
           stripe_secret_key?: string | null
           subscribed?: boolean
