@@ -32,6 +32,8 @@ import HomeOffice from "./pages/HomeOffice";
 import HomeOfficeWelcome from "./pages/HomeOfficeWelcome";
 import HomeOfficeResetPassword from "./pages/HomeOfficeResetPassword";
 import HomeOfficeOnboarding from "./pages/HomeOfficeOnboarding";
+import HomeOfficeRecoverySetup from "./pages/HomeOfficeRecoverySetup";
+import HomeOfficeForgotPassword from "./pages/HomeOfficeForgotPassword";
 import WorkAssistant from "./pages/WorkAssistant";
 import Accounting from "./pages/Accounting";
 import AccountantView from "./pages/AccountantView";
