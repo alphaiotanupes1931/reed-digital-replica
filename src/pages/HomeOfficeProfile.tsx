@@ -70,7 +70,7 @@ const HomeOfficeProfile = () => {
       if (updateAnswers && (!a1.trim() || !a2.trim())) {
         throw new Error("Enter answers for both questions");
       }
-      const update: Record<string, unknown> = {
+      const update: any = {
         full_name: fullName.trim() || null,
         business_name: businessName.trim() || null,
         stripe_secret_key: stripeKey.trim() || null,
