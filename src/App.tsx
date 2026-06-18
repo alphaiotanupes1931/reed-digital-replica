@@ -14,7 +14,7 @@ import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
 import Pricing from "./pages/Pricing";
 
-import Work from "./pages/Work";
+
 import Portfolio from "./pages/Portfolio";
 import Testimonials from "./pages/Testimonials";
 import About from "./pages/About";
@@ -83,7 +83,7 @@ const App = () => (
             <Route path="/government" element={<Government />} />
             <Route path="/pricing" element={<Pricing />} />
             
-            <Route path="/work" element={<Work />} />
+            
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/about" element={<About />} />
