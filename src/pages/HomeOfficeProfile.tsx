@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SECURITY_QUESTIONS, hashAnswer } from "@/lib/security-questions";
 
 const PAYMENT_OPTIONS = ["zelle", "cashapp", "stripe"] as const;
 
@@ -15,12 +16,19 @@ const HomeOfficeProfile = () => {
   const [saving, setSaving] = useState(false);
   const [showKey, setShowKey] = useState(false);
 
+  const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [stripeKey, setStripeKey] = useState("");
   const [zelle, setZelle] = useState("");
   const [cashapp, setCashapp] = useState("");
   const [methods, setMethods] = useState<string[]>([]);
+  const [phone, setPhone] = useState("");
+  const [q1, setQ1] = useState("");
+  const [q2, setQ2] = useState("");
+  const [a1, setA1] = useState("");
+  const [a2, setA2] = useState("");
+  const [updateAnswers, setUpdateAnswers] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -29,9 +37,10 @@ const HomeOfficeProfile = () => {
         navigate("/home-office/login");
         return;
       }
+      setEmail(data.user.email || "");
       const { data: p } = await supabase
         .from("profiles")
-        .select("full_name, business_name, stripe_secret_key, zelle_handle, cashapp_handle, payment_methods")
+        .select("full_name, business_name, stripe_secret_key, zelle_handle, cashapp_handle, payment_methods, phone, security_question_1, security_question_2")
         .eq("user_id", data.user.id)
         .maybeSingle();
       if (p) {
@@ -41,6 +50,9 @@ const HomeOfficeProfile = () => {
         setZelle(p.zelle_handle || "");
         setCashapp(p.cashapp_handle || "");
         setMethods((p.payment_methods as string[]) || []);
+        setPhone(p.phone || "");
+        setQ1(p.security_question_1 || SECURITY_QUESTIONS[0]);
+        setQ2(p.security_question_2 || SECURITY_QUESTIONS[1]);
       }
       setLoading(false);
     })();
@@ -54,18 +66,31 @@ const HomeOfficeProfile = () => {
     try {
       const { data } = await supabase.auth.getUser();
       if (!data.user) throw new Error("Not signed in");
+      if (q1 === q2) throw new Error("Pick two different security questions");
+      if (updateAnswers && (!a1.trim() || !a2.trim())) {
+        throw new Error("Enter answers for both questions");
+      }
+      const update: Record<string, unknown> = {
+        full_name: fullName.trim() || null,
+        business_name: businessName.trim() || null,
+        stripe_secret_key: stripeKey.trim() || null,
+        zelle_handle: zelle.trim() || null,
+        cashapp_handle: cashapp.trim() || null,
+        payment_methods: methods,
+        phone: phone.trim() || null,
+        security_question_1: q1,
+        security_question_2: q2,
+      };
+      if (updateAnswers) {
+        update.security_answer_1_hash = await hashAnswer(a1);
+        update.security_answer_2_hash = await hashAnswer(a2);
+      }
       const { error } = await supabase
         .from("profiles")
-        .update({
-          full_name: fullName.trim() || null,
-          business_name: businessName.trim() || null,
-          stripe_secret_key: stripeKey.trim() || null,
-          zelle_handle: zelle.trim() || null,
-          cashapp_handle: cashapp.trim() || null,
-          payment_methods: methods,
-        })
+        .update(update)
         .eq("user_id", data.user.id);
       if (error) throw error;
+      setA1(""); setA2(""); setUpdateAnswers(false);
       toast({ title: "Saved" });
     } catch (err: any) {
       toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
@@ -98,9 +123,76 @@ const HomeOfficeProfile = () => {
                 <input className={inputCls} value={fullName} onChange={(e) => setFullName(e.target.value)} />
               </Field>
 
+              <Field label="Email" help="To change your email, contact info@reeddigitalgroup.com.">
+                <div className="flex gap-2">
+                  <input className={`${inputCls} flex-1 opacity-60 cursor-not-allowed`} value={email} readOnly disabled />
+                  <a
+                    href="mailto:info@reeddigitalgroup.com?subject=Email%20change%20request"
+                    className="px-3 flex items-center text-[10px] uppercase tracking-widest border-2 border-foreground/20 hover:border-brand"
+                  >
+                    Request Change
+                  </a>
+                </div>
+              </Field>
+
+              <Field label="Phone Number" help="Used for password recovery.">
+                <input
+                  type="tel"
+                  className={inputCls}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="555-123-4567"
+                />
+              </Field>
+
               <Field label="Business Name" help="Shown to your clients in the Client Portal.">
                 <input className={inputCls} value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
               </Field>
+
+              <div className="border-2 border-foreground/20 p-5 space-y-4">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-brand font-bold mb-1">Security Questions</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Used to verify it's you during password recovery. You can change the questions any time — leave the answers blank to keep your existing ones.
+                  </p>
+                </div>
+
+                <Field label="Question 1">
+                  <select className={inputCls} value={q1} onChange={(e) => setQ1(e.target.value)}>
+                    {SECURITY_QUESTIONS.filter((q) => q !== q2).map((q) => (
+                      <option key={q} value={q}>{q}</option>
+                    ))}
+                  </select>
+                </Field>
+                {updateAnswers && (
+                  <Field label="Answer 1">
+                    <input className={inputCls} value={a1} onChange={(e) => setA1(e.target.value)} />
+                  </Field>
+                )}
+
+                <Field label="Question 2">
+                  <select className={inputCls} value={q2} onChange={(e) => setQ2(e.target.value)}>
+                    {SECURITY_QUESTIONS.filter((q) => q !== q1).map((q) => (
+                      <option key={q} value={q}>{q}</option>
+                    ))}
+                  </select>
+                </Field>
+                {updateAnswers && (
+                  <Field label="Answer 2">
+                    <input className={inputCls} value={a2} onChange={(e) => setA2(e.target.value)} />
+                  </Field>
+                )}
+
+                <label className="flex items-center gap-2 text-xs text-foreground/70 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={updateAnswers}
+                    onChange={(e) => setUpdateAnswers(e.target.checked)}
+                    className="h-4 w-4 accent-brand"
+                  />
+                  Update my answers
+                </label>
+              </div>
 
               <div className="border-2 border-foreground/20 p-5">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-brand font-bold mb-1">Accept payments from clients</p>
