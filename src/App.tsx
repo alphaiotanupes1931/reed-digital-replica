@@ -13,7 +13,7 @@ import Index from "./pages/Index";
 import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
 import Pricing from "./pages/Pricing";
-import MaintenancePlans from "./pages/MaintenancePlans";
+
 import Work from "./pages/Work";
 import Portfolio from "./pages/Portfolio";
 import Testimonials from "./pages/Testimonials";
@@ -50,7 +50,7 @@ import AdminInvoices from "./pages/apps/AdminInvoices";
 import AdminBills from "./pages/apps/AdminBills";
 import AdminTaxes from "./pages/apps/AdminTaxes";
 import ClientPortal from "./pages/apps/ClientPortal";
-import Membership from "./pages/Membership";
+
 import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
 
@@ -82,7 +82,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/government" element={<Government />} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/maintenance-plans" element={<MaintenancePlans />} />
+            
             <Route path="/work" element={<Work />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/testimonials" element={<Testimonials />} />
@@ -121,7 +121,7 @@ const App = () => (
             <Route path="/apps/admin/bills" element={<AdminBills />} />
             <Route path="/apps/admin/taxes" element={<AdminTaxes />} />
             <Route path="/apps/client/portal" element={<ClientPortal />} />
-            <Route path="/membership" element={<Membership />} />
+            
             <Route path="/referral" element={<Referral />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

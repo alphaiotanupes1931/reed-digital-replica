@@ -22,7 +22,6 @@ const navItems: NavItem[] = [
     children: [
       { label: "Portfolio", href: "/portfolio", desc: "View our recent work" },
       { label: "Pricing", href: "/pricing", desc: "Transparent pricing plans" },
-      { label: "Maintenance Plans", href: "/maintenance-plans", desc: "Monthly care for your site" },
       { label: "Case Studies", href: "/work", desc: "In-depth project breakdowns" },
     ],
   },
@@ -37,7 +36,6 @@ const navItems: NavItem[] = [
   },
   { label: "Government", href: "/government" },
   { label: "App", href: "/home-office/welcome" },
-  { label: "Membership", href: "/membership" },
   { label: "Referral", href: "/referral" },
   { label: "Contact", href: "/contact" },
 ];
