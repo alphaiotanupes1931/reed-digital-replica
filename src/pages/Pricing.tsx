@@ -112,30 +112,22 @@ const PricingPage = () => {
 
               {/* Three rungs — moved to top, primary choice */}
               <ScrollReveal delay={0.05}>
-                <div className="mb-16 grid md:grid-cols-3 gap-4">
+                <div className="mb-16 grid md:grid-cols-2 gap-4">
                   {[
                     {
-                      t: "App Only",
+                      t: "Home Office by RDG",
                       p: "$20",
                       sub: "/mo",
-                      d: "Home Office app — invoices, bills, client portal.",
+                      d: "Invoices, bills, client portal. Subscribers unlock member perks — 15% off projects, free logo, priority support.",
                       cta: "Start Free Trial",
                       href: "/home-office/welcome",
-                    },
-                    {
-                      t: "Member",
-                      p: "$40",
-                      sub: "/mo",
-                      d: "App + 15% off projects + free logo + perks.",
-                      cta: "Join Now",
-                      href: "/membership",
                       popular: true,
                     },
                     {
                       t: "Project",
                       p: "$700+",
                       sub: "",
-                      d: "Full website or app build. Members save 15%.",
+                      d: "Full website or app build. Home Office subscribers save 15%.",
                       cta: "Book Call",
                       href: "/contact",
                     },

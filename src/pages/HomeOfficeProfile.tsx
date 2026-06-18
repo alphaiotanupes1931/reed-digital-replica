@@ -126,14 +126,19 @@ const HomeOfficeProfile = () => {
                 </div>
               </div>
 
-              <Field label="Zelle Email or Phone">
-                <input className={inputCls} value={zelle} onChange={(e) => setZelle(e.target.value)} placeholder="you@example.com or 555-1234" />
-              </Field>
+              {methods.includes("zelle") && (
+                <Field label="Zelle Email or Phone">
+                  <input className={inputCls} value={zelle} onChange={(e) => setZelle(e.target.value)} placeholder="you@example.com or 555-1234" />
+                </Field>
+              )}
 
-              <Field label="Cash App $Cashtag">
-                <input className={inputCls} value={cashapp} onChange={(e) => setCashapp(e.target.value)} placeholder="$yourtag" />
-              </Field>
+              {methods.includes("cashapp") && (
+                <Field label="Cash App $Cashtag">
+                  <input className={inputCls} value={cashapp} onChange={(e) => setCashapp(e.target.value)} placeholder="$yourtag" />
+                </Field>
+              )}
 
+              {methods.includes("stripe") && (
               <div className="border-2 border-foreground/20 p-5">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-brand font-bold mb-1">
                   Stripe Secret API Key <span className="text-foreground/50 normal-case tracking-normal">(optional)</span>
@@ -166,6 +171,7 @@ const HomeOfficeProfile = () => {
                   </button>
                 </div>
               </div>
+              )}
 
               <button
                 onClick={handleSave}
