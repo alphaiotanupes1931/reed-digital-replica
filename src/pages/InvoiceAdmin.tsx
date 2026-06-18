@@ -787,6 +787,43 @@ const InvoiceAdmin = () => {
                             <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                           </div>
                           <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border font-mono text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                          {/* Payment Plan */}
+                          <div className="border-t border-border pt-4">
+                            <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">Payment Plan</p>
+                            <div className="flex gap-2 mb-3">
+                              <button type="button" onClick={() => setPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "one_time" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>One-time</button>
+                              <button type="button" onClick={() => setPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "monthly" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                            </div>
+                            {paymentPlan === "monthly" && (
+                              <div className="space-y-3">
+                                <div className="grid gap-3 md:grid-cols-2">
+                                  <label className="block">
+                                    <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
+                                    <input type="date" value={planStart} onChange={(e) => setPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                  </label>
+                                  <label className="block">
+                                    <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">End date</span>
+                                    <input type="date" value={planEnd} onChange={(e) => setPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                  </label>
+                                </div>
+                                {(() => {
+                                  const p = parseFloat(price);
+                                  if (!p || !planStart || !planEnd) return null;
+                                  const s = new Date(planStart);
+                                  const e = new Date(planEnd);
+                                  const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+                                  const monthly = p / months;
+                                  return (
+                                    <div className="border border-foreground/30 p-3 font-mono text-xs">
+                                      <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
+                                      <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
+                                      <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            )}
+                          </div>
                           <div className="flex gap-3">
                             <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Create</Button>
                           </div>
