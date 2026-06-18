@@ -51,53 +51,70 @@ const BlinkingEye = () => {
 
   return (
     <g>
+      {/* Glow behind eye */}
+      <ellipse cx="0" cy="0" rx="120" ry="70" fill="white" opacity="0.04" />
+      <ellipse cx="0" cy="0" rx="80" ry="48" fill="white" opacity="0.06" />
+
       {/* Sclera */}
-      <ellipse cx="0" cy="0" rx="28" ry="16" fill="#e8e6e1" />
-      {/* Sclera shading */}
-      <ellipse cx="0" cy="0" rx="28" ry="16" fill="url(#scleraGrad)" opacity="0.3" />
+      <ellipse cx="0" cy="0" rx="70" ry="38" fill="#f5f4f0" />
+      {/* Sclera shading / shadow */}
+      <ellipse cx="0" cy="0" rx="70" ry="38" fill="url(#scleraGrad)" opacity="0.35" />
+      {/* Sclera top highlight */}
+      <ellipse cx="0" cy="-10" rx="56" ry="20" fill="white" opacity="0.25" />
+
       {/* Iris */}
-      <circle cx="0" cy="0" r="10" fill="url(#irisGrad)" />
-      {/* Iris detail rings */}
-      <circle cx="0" cy="0" r="8" fill="none" stroke="#1a3a2f" strokeWidth="0.6" opacity="0.4" />
-      <circle cx="0" cy="0" r="6" fill="none" stroke="#1a3a2f" strokeWidth="0.4" opacity="0.3" />
+      <circle cx="0" cy="0" r="24" fill="url(#irisGrad)" />
+      {/* Iris fibrous detail */}
+      <circle cx="0" cy="0" r="20" fill="none" stroke="#143326" strokeWidth="1.2" opacity="0.5" />
+      <circle cx="0" cy="0" r="16" fill="none" stroke="#1a3a2f" strokeWidth="0.8" opacity="0.4" />
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#143326" strokeWidth="0.6" opacity="0.3" />
+
       {/* Pupil */}
-      <circle cx="0" cy="0" r="4.5" fill="#0a0a0a" />
-      {/* Highlight */}
-      <circle cx="2.5" cy="-2.5" r="1.6" fill="white" opacity="0.9" />
-      <circle cx="-1.8" cy="2.2" r="0.7" fill="white" opacity="0.4" />
+      <circle cx="0" cy="0" r="10" fill="#050505" />
+      <circle cx="0" cy="0" r="6" fill="#000000" />
+
+      {/* Specular highlights */}
+      <circle cx="6" cy="-6" r="3.5" fill="white" opacity="0.95" />
+      <circle cx="6" cy="-6" r="1.8" fill="white" opacity="1" />
+      <circle cx="-4" cy="5" r="1.8" fill="white" opacity="0.35" />
+
       {/* Eyelid crease line */}
       <motion.path
-        d="M -32 -2 Q 0 -20 32 -2"
+        d="M -80 -4 Q 0 -48 80 -4"
         fill="none"
         stroke="white"
-        strokeWidth="0.5"
-        opacity="0.15"
+        strokeWidth="1"
+        opacity="0.12"
       />
+
       {/* Upper eyelid — blinks */}
       <motion.path
-        d={blink ? "M -32 -2 Q 0 0 32 -2 L 32 -22 L -32 -22 Z" : "M -32 -2 Q 0 -22 32 -2 L 32 -22 L -32 -22 Z"}
+        d={blink ? "M -80 -4 Q 0 0 80 -4 L 80 -60 L -80 -60 Z" : "M -80 -4 Q 0 -52 80 -4 L 80 -60 L -80 -60 Z"}
         fill="black"
         animate={{
           d: blink
-            ? "M -32 -2 Q 0 0 32 -2 L 32 -22 L -32 -22 Z"
-            : "M -32 -2 Q 0 -22 32 -2 L 32 -22 L -32 -22 Z",
+            ? "M -80 -4 Q 0 0 80 -4 L 80 -60 L -80 -60 Z"
+            : "M -80 -4 Q 0 -52 80 -4 L 80 -60 L -80 -60 Z",
         }}
-        transition={{ duration: 0.09, ease: "easeInOut" }}
+        transition={{ duration: 0.1, ease: "easeInOut" }}
       />
       {/* Lower eyelid — subtle */}
       <motion.path
-        d={blink ? "M -32 2 Q 0 0 32 2 L 32 22 L -32 22 Z" : "M -32 2 Q 0 14 32 2 L 32 22 L -32 22 Z"}
+        d={blink ? "M -80 4 Q 0 0 80 4 L 80 60 L -80 60 Z" : "M -80 4 Q 0 34 80 4 L 80 60 L -80 60 Z"}
         fill="black"
         animate={{
           d: blink
-            ? "M -32 2 Q 0 0 32 2 L 32 22 L -32 22 Z"
-            : "M -32 2 Q 0 14 32 2 L 32 22 L -32 22 Z",
+            ? "M -80 4 Q 0 0 80 4 L 80 60 L -80 60 Z"
+            : "M -80 4 Q 0 34 80 4 L 80 60 L -80 60 Z",
         }}
-        transition={{ duration: 0.09, ease: "easeInOut" }}
+        transition={{ duration: 0.1, ease: "easeInOut" }}
       />
+
       {/* Lash hints */}
-      <line x1="-28" y1="-4" x2="-32" y2="-10" stroke="white" strokeWidth="0.4" opacity="0.25" />
-      <line x1="28" y1="-4" x2="32" y2="-10" stroke="white" strokeWidth="0.4" opacity="0.25" />
+      <line x1="-65" y1="-10" x2="-75" y2="-22" stroke="white" strokeWidth="0.8" opacity="0.2" />
+      <line x1="-50" y1="-18" x2="-56" y2="-30" stroke="white" strokeWidth="0.7" opacity="0.18" />
+      <line x1="50" y1="-18" x2="56" y2="-30" stroke="white" strokeWidth="0.7" opacity="0.18" />
+      <line x1="65" y1="-10" x2="75" y2="-22" stroke="white" strokeWidth="0.8" opacity="0.2" />
     </g>
   );
 };
