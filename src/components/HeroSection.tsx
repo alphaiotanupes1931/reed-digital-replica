@@ -112,6 +112,12 @@ const HeroSection = () => {
             >
               View Our Work
             </Link>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center justify-center gap-2 border border-border px-8 py-4 text-sm font-medium hover:bg-secondary transition-colors"
+            >
+              See Prices
+            </Link>
           </motion.div>
         </div>
       </div>
