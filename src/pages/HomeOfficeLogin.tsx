@@ -272,45 +272,38 @@ const HomeOfficeLogin = () => {
               />
             </div>
 
-            {mode !== "forgot" && (
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={inputCls}
-                  required
-                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                />
-                {mode === "signup" && (
-                  <ul className="mt-3 space-y-1 text-[10px] uppercase tracking-widest">
-                    {PASSWORD_RULES.map((r) => {
-                      const ok = r.test(password);
-                      return (
-                        <li
-                          key={r.label}
-                          className={ok ? "text-brand" : "text-white/40"}
-                        >
-                          [{ok ? "x" : " "}] {r.label}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-            )}
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputCls}
+                required
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              />
+              {mode === "signup" && (
+                <ul className="mt-3 space-y-1 text-[10px] uppercase tracking-widest">
+                  {PASSWORD_RULES.map((r) => {
+                    const ok = r.test(password);
+                    return (
+                      <li key={r.label} className={ok ? "text-brand" : "text-white/40"}>
+                        [{ok ? "x" : " "}] {r.label}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
 
             <button type="submit" disabled={loading} className={btnCls}>
               {loading
                 ? "Working..."
                 : mode === "login"
                 ? "Log In"
-                : mode === "signup"
-                ? "Sign Up"
-                : "Send Reset Link"}
+                : "Sign Up"}
             </button>
 
             {mode === "login" && (
