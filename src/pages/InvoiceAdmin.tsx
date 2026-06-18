@@ -761,6 +761,17 @@ const InvoiceAdmin = () => {
               </div>
             </div>
 
+            {/* Contract */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Contract</p>
+                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-muted-foreground">Coming Soon</span>
+              </div>
+              <div className="border border-border p-6 text-center">
+                <p className="text-xs font-mono text-muted-foreground">Contract generation and e-signature will be available here.</p>
+              </div>
+            </div>
+
             {/* Invoices */}
             <div>
               <div className="flex items-center justify-between mb-4">
