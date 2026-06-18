@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { SECURITY_QUESTIONS, hashAnswer } from "@/lib/security-questions";
 
 const inputCls =
   "w-full bg-white/[0.04] border border-white/10 text-white px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand transition-colors";
@@ -26,9 +27,15 @@ const HomeOfficeOnboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [params] = useSearchParams();
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [phone, setPhone] = useState("");
+  const [q1, setQ1] = useState("");
+  const [a1, setA1] = useState("");
+  const [q2, setQ2] = useState("");
+  const [a2, setA2] = useState("");
   const [methods, setMethods] = useState<string[]>([]);
   const [zelle, setZelle] = useState("");
   const [cashapp, setCashapp] = useState("");
@@ -60,12 +67,12 @@ const HomeOfficeOnboarding = () => {
           if (p?.business_name) setBusinessName(p.business_name);
           // Returning from Stripe checkout
           if (params.get("checkout") === "success") {
-            setStep(5);
+            setStep(7);
             verifyAndEnter();
             return;
           }
           if (params.get("step") === "paywall" || p?.onboarded) {
-            setStep(5);
+            setStep(7);
           }
         });
     });
@@ -105,15 +112,31 @@ const HomeOfficeOnboarding = () => {
     setStep(2);
   };
 
+  const handleBirthPhoneNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!birthdate || !phone.trim()) return;
+    setStep(3);
+  };
+
+  const handleSecurityNext = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!q1 || !q2 || !a1.trim() || !a2.trim()) return;
+    if (q1 === q2) {
+      toast({ title: "Pick two different questions", variant: "destructive" });
+      return;
+    }
+    setStep(4);
+  };
+
   const handleBusinessNext = (e: React.FormEvent) => {
     e.preventDefault();
     if (!businessName.trim()) return;
-    setStep(3);
+    setStep(5);
   };
 
   const handlePaymentsNext = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep(4);
+    setStep(6);
   };
 
   const toggleMethod = (m: string) =>
@@ -124,6 +147,7 @@ const HomeOfficeOnboarding = () => {
     if (!referral || !userId) return;
     setLoading(true);
     try {
+      const [h1, h2] = await Promise.all([hashAnswer(a1), hashAnswer(a2)]);
       const { error } = await supabase
         .from("profiles")
         .upsert(
@@ -131,6 +155,13 @@ const HomeOfficeOnboarding = () => {
             user_id: userId,
             full_name: fullName.trim(),
             business_name: businessName.trim() || null,
+            birthdate,
+            phone: phone.trim(),
+            security_question_1: q1,
+            security_answer_1_hash: h1,
+            security_question_2: q2,
+            security_answer_2_hash: h2,
+            recovery_setup_complete: true,
             zelle_handle: zelle.trim() || null,
             cashapp_handle: cashapp.trim() || null,
             payment_methods: methods,
@@ -140,7 +171,7 @@ const HomeOfficeOnboarding = () => {
           { onConflict: "user_id" }
         );
       if (error) throw error;
-      setStep(5);
+      setStep(7);
     } catch (err: any) {
       toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
     } finally {
