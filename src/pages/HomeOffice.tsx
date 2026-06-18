@@ -44,11 +44,15 @@ const HomeOffice = () => {
       }
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, onboarded, subscribed, business_id, business_name")
+        .select("full_name, onboarded, subscribed, business_id, business_name, recovery_setup_complete")
         .eq("user_id", data.user.id)
         .maybeSingle();
       if (!profile?.onboarded) {
         navigate("/home-office/onboarding");
+        return;
+      }
+      if (!profile?.recovery_setup_complete) {
+        navigate("/home-office/recovery-setup");
         return;
       }
       // Hard paywall: must be subscribed (also re-verify via Stripe)
