@@ -113,6 +113,45 @@ serve(async (req) => {
       });
     }
 
+    if (action === "save_contract") {
+      const { client_id, contract_text } = data;
+      const { error } = await supabase
+        .from("clients")
+        .update({ contract_text: contract_text ?? null })
+        .eq("id", client_id)
+        .eq("owner_user_id", userId);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "set_contract_hidden") {
+      const { client_id, hidden } = data;
+      const { error } = await supabase
+        .from("clients")
+        .update({ contract_hidden: !!hidden })
+        .eq("id", client_id)
+        .eq("owner_user_id", userId);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "reset_contract_signature") {
+      const { client_id } = data;
+      const { error } = await supabase
+        .from("clients")
+        .update({ contract_signed_name: null, contract_signed_at: null })
+        .eq("id", client_id)
+        .eq("owner_user_id", userId);
+      if (error) throw error;
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "delete_sow_comment") {
       const { client_id, comment_index } = data;
       const { data: c } = await supabase.from("clients").select("sow_comments").eq("id", client_id).eq("owner_user_id", userId).maybeSingle();

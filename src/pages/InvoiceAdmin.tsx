@@ -45,6 +45,10 @@ interface Client {
   project_estimated_total: string | null;
   maintenance_plan: string | null;
   sow_hidden?: boolean;
+  contract_text?: string | null;
+  contract_hidden?: boolean;
+  contract_signed_name?: string | null;
+  contract_signed_at?: string | null;
   created_at: string;
 }
 
@@ -116,6 +120,9 @@ const InvoiceAdmin = () => {
   const [syncing, setSyncing] = useState(false);
   const [sowVisible, setSowVisible] = useState(true);
   const [invoicesVisible, setInvoicesVisible] = useState(true);
+  const [contractVisible, setContractVisible] = useState(true);
+  const [contractText, setContractText] = useState("");
+  const [contractHidden, setContractHidden] = useState(true);
 
   // Selected client for SOW/Invoice management
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -304,6 +311,8 @@ const InvoiceAdmin = () => {
         setProjectBuildCost(c.project_build_cost || "");
         setProjectMaintenanceCost(c.project_maintenance_cost || "");
         setProjectEstimatedTotal(c.project_estimated_total || "");
+        setContractText(c.contract_text || "");
+        setContractHidden(c.contract_hidden !== false);
       }
     }
   }, [selectedClientId, clients]);
@@ -364,6 +373,51 @@ const InvoiceAdmin = () => {
   };
   const addPhase = () => setPhases((p) => [...p, { name: `Phase ${p.length + 1}`, status: "pending" }]);
   const removePhase = (idx: number) => setPhases((p) => p.filter((_, i) => i !== idx));
+
+  const handleSaveContract = async () => {
+    if (!selectedClientId) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "save_contract", client_id: selectedClientId, contract_text: contractText, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Contract saved" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleToggleContractHidden = async () => {
+    if (!selectedClientId) return;
+    const next = !contractHidden;
+    setContractHidden(next);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_contract_hidden", client_id: selectedClientId, hidden: next, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: next ? "Contract hidden from client" : "Contract visible to client" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleResetSignature = async () => {
+    if (!selectedClientId) return;
+    if (!confirm("Clear the client's signature? They'll need to sign again.")) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "reset_contract_signature", client_id: selectedClientId, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Signature cleared" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
 
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -765,11 +819,42 @@ const InvoiceAdmin = () => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Contract</p>
-                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-muted-foreground">Coming Soon</span>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setContractVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractVisible ? "Hide" : "Show"}</button>
+                  <button onClick={handleToggleContractHidden} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ? "Publish to Client" : "Unpublish"}</button>
+                  <button onClick={handleSaveContract} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                </div>
               </div>
-              <div className="border border-border p-6 text-center">
-                <p className="text-xs font-mono text-muted-foreground">Contract generation and e-signature will be available here.</p>
-              </div>
+              {contractVisible && (() => {
+                const c = clients.find(x => x.id === selectedClientId);
+                const signedName = c?.contract_signed_name;
+                const signedAt = c?.contract_signed_at;
+                return (
+                  <div className="space-y-3">
+                    {signedName && signedAt ? (
+                      <div className="border-2 border-emerald-500 p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] font-mono uppercase tracking-widest text-emerald-600">Signed</p>
+                          <p className="text-2xl mt-1" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signedName}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground mt-1">on {new Date(signedAt).toLocaleString()}</p>
+                        </div>
+                        <button onClick={handleResetSignature} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors">Clear</button>
+                      </div>
+                    ) : (
+                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                        {contractHidden ? "Status: hidden from client" : "Status: awaiting client signature"}
+                      </p>
+                    )}
+                    <textarea
+                      value={contractText}
+                      onChange={(e) => setContractText(e.target.value)}
+                      placeholder="Paste the full contract text here..."
+                      rows={14}
+                      className="w-full bg-transparent border border-border p-4 font-mono text-xs leading-relaxed focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y whitespace-pre-wrap"
+                    />
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Invoices */}

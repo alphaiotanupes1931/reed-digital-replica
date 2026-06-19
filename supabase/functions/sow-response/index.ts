@@ -16,7 +16,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { email, action, message, status, comment_index, maintenance_plan } = await req.json();
+    const { email, action, message, status, comment_index, maintenance_plan, signed_name } = await req.json();
     if (!email) throw new Error("Email required");
 
     const supabase = createClient(
@@ -65,6 +65,16 @@ serve(async (req) => {
         throw new Error("Invalid maintenance plan");
       }
       updates.maintenance_plan = maintenance_plan ? maintenance_plan.trim() : null;
+    }
+
+    if (action === "sign_contract") {
+      if (client.contract_signed_at) throw new Error("Contract already signed");
+      if (!client.contract_text || !String(client.contract_text).trim()) throw new Error("No contract to sign");
+      if (client.contract_hidden) throw new Error("Contract not available");
+      const name = typeof signed_name === "string" ? signed_name.trim() : "";
+      if (!name || name.length < 2 || name.length > 120) throw new Error("Enter your full legal name");
+      updates.contract_signed_name = name;
+      updates.contract_signed_at = new Date().toISOString();
     }
 
     if (!Object.keys(updates).length) throw new Error("No update");
