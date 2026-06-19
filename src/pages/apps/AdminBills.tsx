@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAppsAuth } from "./useAppsAuth";
 import AppsShell from "./AppsShell";
 
-type Bill = { id: string; company_name: string; price: number; notes: string | null };
+type Bill = { id: string; company_name: string; price: number; notes: string | null; hidden: boolean };
 type Income = { id: string; source: string; price: number; category: string };
 
 export default function AdminBills() {
@@ -21,7 +21,7 @@ export default function AdminBills() {
     if (!user) return;
     setLoading(true);
     const [b, i] = await Promise.all([
-      supabase.from("monthly_bills").select("id, company_name, price, notes").eq("owner_user_id", user.id).order("created_at", { ascending: false }),
+      supabase.from("monthly_bills").select("id, company_name, price, notes, hidden").eq("owner_user_id", user.id).order("created_at", { ascending: false }),
       supabase.from("extra_income").select("id, source, price, category").eq("owner_user_id", user.id).order("created_at", { ascending: false }),
     ]);
     if (b.data) setBills(b.data as Bill[]);
@@ -38,6 +38,7 @@ export default function AdminBills() {
       company_name: bForm.company_name,
       price: parseFloat(bForm.price),
       notes: bForm.notes || null,
+      hidden: false,
       owner_user_id: user.id,
     } as any);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
@@ -65,7 +66,13 @@ export default function AdminBills() {
     load();
   };
 
-  const totalBills = bills.reduce((s, b) => s + Number(b.price || 0), 0);
+  const toggleHidden = async (id: string, hidden: boolean) => {
+    const { error } = await supabase.from("monthly_bills").update({ hidden: !hidden }).eq("id", id);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    setBills(prev => prev.map(b => b.id === id ? { ...b, hidden: !hidden } : b));
+  };
+
+  const totalBills = bills.filter(b => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
   const totalIncome = income.reduce((s, i) => s + Number(i.price || 0), 0);
   const net = totalIncome - totalBills;
 
@@ -97,10 +104,13 @@ export default function AdminBills() {
           <div className="space-y-2">
             {loading ? <p className="text-sm text-muted-foreground">Loading…</p> : bills.length === 0 ? <p className="text-sm text-muted-foreground">No bills yet.</p> :
               bills.map(b => (
-                <div key={b.id} className="flex items-center justify-between border border-foreground/15 rounded-md px-4 py-2.5">
+                <div key={b.id} className={`flex items-center justify-between border rounded-md px-4 py-2.5 ${b.hidden ? "border-foreground/10 bg-muted/30 opacity-60" : "border-foreground/15"}`}>
                   <div className="text-sm">{b.company_name}</div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium">${Number(b.price).toFixed(2)}</span>
+                    <span className={`text-sm font-medium ${b.hidden ? "line-through text-muted-foreground" : ""}`}>${Number(b.price).toFixed(2)}</span>
+                    <button onClick={() => toggleHidden(b.id, b.hidden)} className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground">
+                      {b.hidden ? "Show" : "Hide"}
+                    </button>
                     <button onClick={() => remove("monthly_bills", b.id)} className="text-xs text-muted-foreground hover:text-destructive">×</button>
                   </div>
                 </div>
