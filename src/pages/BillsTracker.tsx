@@ -150,6 +150,17 @@ const BillsTracker = () => {
     }
   };
 
+  const toggleHiddenBill = async (b: Bill) => {
+    try {
+      await api("update_bill", { id: b.id, hidden: !b.hidden });
+      setBills((prev) =>
+        prev.map((item) => (item.id === b.id ? { ...item, hidden: !item.hidden } : item))
+      );
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
   const incomeRows = incomeClients
