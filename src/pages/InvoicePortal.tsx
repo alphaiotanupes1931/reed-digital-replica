@@ -615,6 +615,76 @@ const InvoicePortal = () => {
                 <p className="text-sm font-mono text-muted-foreground mt-1">{clientEmail}</p>
               </div>
 
+              {contract && (
+                <div className="mt-8 border-2 border-foreground bg-background">
+                  <div className="border-b-2 border-foreground p-6 flex items-center justify-between">
+                    <span className="text-xs font-mono text-foreground uppercase tracking-widest">Contract</span>
+                    {contract.signed_name && contract.signed_at ? (
+                      <span className="text-xl font-mono font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">SIGNED</span>
+                    ) : (
+                      <span className="text-sm font-mono font-bold uppercase tracking-widest text-primary">AWAITING SIGNATURE</span>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground">{contract.text}</pre>
+                  </div>
+                  {contract.signed_name && contract.signed_at ? (
+                    <div className="border-t-2 border-foreground p-6 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Signed by</p>
+                        <p className="text-3xl mt-1" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{contract.signed_name}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground mt-1">on {new Date(contract.signed_at).toLocaleString()}</p>
+                      </div>
+                      <div
+                        className="border-4 border-emerald-500 text-emerald-500 px-4 py-2 font-mono font-black text-xl uppercase tracking-widest -rotate-6"
+                        style={{ boxShadow: "inset 0 0 0 2px hsl(var(--background))" }}
+                      >
+                        ✓ Signed
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="border-t-2 border-foreground p-6 space-y-3">
+                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Type your full legal name to sign</p>
+                      <Input
+                        value={signName}
+                        onChange={(e) => setSignName(e.target.value)}
+                        placeholder="Your full name"
+                        className="h-14 bg-transparent border-0 border-b border-border rounded-none text-2xl focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30"
+                        style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}
+                      />
+                      {signName.trim().length >= 2 && (
+                        <p className="text-xs font-mono text-muted-foreground">Preview: <span className="text-2xl text-foreground" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signName}</span></p>
+                      )}
+                      <Button
+                        onClick={() => setConfirmingSign(true)}
+                        disabled={signName.trim().length < 2}
+                        className="h-12 px-8 font-mono text-xs uppercase tracking-widest rounded-none"
+                      >
+                        Submit Signature
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {confirmingSign && (
+                <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6" onClick={() => !signing && setConfirmingSign(false)}>
+                  <div className="bg-background border-2 border-foreground max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+                    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Confirm signature</p>
+                    <p className="mt-4 text-sm font-mono text-foreground leading-relaxed">
+                      By clicking <span className="font-bold">Confirm & Sign</span>, you agree to be legally bound by the terms of this contract. Your typed name will serve as your electronic signature.
+                    </p>
+                    <p className="mt-4 text-3xl border-y border-border py-3 text-center" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signName}</p>
+                    <div className="mt-6 flex gap-3">
+                      <button onClick={() => setConfirmingSign(false)} disabled={signing} className="flex-1 h-11 border border-border font-mono text-xs uppercase tracking-widest hover:bg-muted">Cancel</button>
+                      <Button onClick={submitSignature} disabled={signing} className="flex-1 h-11 font-mono text-xs uppercase tracking-widest rounded-none">
+                        {signing ? "Signing..." : "Confirm & Sign"}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {invoices.length === 0 ? (
                 <div className="py-20 text-center border-2 border-dashed border-border mt-8">
                   <p className="text-2xl font-mono font-bold text-foreground">No invoice yet</p>
