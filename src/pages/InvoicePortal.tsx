@@ -147,43 +147,45 @@ const PaymentOptions = ({
   if (isPaid) return null;
 
   const isMonthlyPlan = invoice.payment_plan === "monthly" && invoice.plan_monthly_amount && invoice.plan_months;
-  if (isMonthlyPlan && !depositPending) {
-    const monthly = Number(invoice.plan_monthly_amount);
-    const monthlyFee = Math.round((monthly * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
-    const monthlyTotal = Math.round((monthly + monthlyFee) * 100) / 100;
-    return (
-      <div className="mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="border-2 border-foreground bg-background p-6"
+  const showMonthlyOption = isMonthlyPlan && !depositPending;
+  const monthly = Number(invoice.plan_monthly_amount || 0);
+  const monthlyFee = Math.round((monthly * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const monthlyTotal = Math.round((monthly + monthlyFee) * 100) / 100;
+
+  const MonthlyPlanCard = showMonthlyOption ? (
+    <div className="mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="border-2 border-foreground bg-background p-6"
+      >
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Option B · Monthly Payment Plan</p>
+        <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyTotal.toLocaleString()} / month</h3>
+        <p className="text-sm font-mono text-foreground/70 mb-1">
+          {invoice.plan_months} monthly payments · Total ${(monthlyTotal * Number(invoice.plan_months)).toLocaleString()}
+        </p>
+        <p className="text-xs font-mono text-emerald-500 mb-4">
+          Includes ${monthlyFee.toLocaleString()} processing fee per month
+        </p>
+        <button
+          onClick={() => onPayMonthly(invoice)}
+          disabled={payingId === invoice.id + "-monthly"}
+          className="w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
         >
-          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Monthly Payment Plan</p>
-          <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyTotal.toLocaleString()} / month</h3>
-          <p className="text-sm font-mono text-foreground/70 mb-1">
-            {invoice.plan_months} monthly payments · Total ${(monthlyTotal * Number(invoice.plan_months)).toLocaleString()}
-          </p>
-          <p className="text-xs font-mono text-emerald-500 mb-4">
-            Includes ${monthlyFee.toLocaleString()} processing fee per month
-          </p>
-          <button
-            onClick={() => onPayMonthly(invoice)}
-            disabled={payingId === invoice.id + "-monthly"}
-            className="w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
-          >
-            {payingId === invoice.id + "-monthly" ? "Processing..." : "Start Monthly Plan (Stripe)"}
-          </button>
-          <p className="text-[10px] font-mono text-muted-foreground mt-3 text-center">
-            Card auto-charged each month. Cancels automatically after {invoice.plan_months} payments.
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
+          {payingId === invoice.id + "-monthly" ? "Processing..." : "Start Monthly Plan (Stripe)"}
+        </button>
+        <p className="text-[10px] font-mono text-muted-foreground mt-3 text-center">
+          Card auto-charged each month. Cancels automatically after {invoice.plan_months} payments.
+        </p>
+      </motion.div>
+    </div>
+  ) : null;
 
   if (depositPending) {
     return (
-      <div className="mb-8">
+      <>
+        {MonthlyPlanCard}
+        <div className="mb-8">
         <button
           onClick={() => onPay(invoice, true)}
           disabled={payingId === invoice.id + "-dep"}
@@ -191,14 +193,19 @@ const PaymentOptions = ({
         >
           {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
         </button>
-      </div>
+        </div>
+      </>
     );
   }
 
   const both = allowZelle && allowStripe;
 
   return (
-    <div className={`mb-8 grid gap-4 ${both ? "md:grid-cols-[1fr_auto_1fr] items-stretch" : "grid-cols-1"}`}>
+    <>
+      {showMonthlyOption && (
+        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Option A · Pay in full</p>
+      )}
+      <div className={`mb-8 grid gap-4 ${both ? "md:grid-cols-[1fr_auto_1fr] items-stretch" : "grid-cols-1"}`}>
       {/* Zelle Card */}
       {allowZelle && (
         <motion.div
@@ -251,7 +258,9 @@ const PaymentOptions = ({
           </button>
         </motion.div>
       )}
-    </div>
+      </div>
+      {MonthlyPlanCard}
+    </>
   );
 };
 
