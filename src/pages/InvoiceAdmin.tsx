@@ -819,12 +819,11 @@ const InvoiceAdmin = () => {
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Contract</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setContractVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractVisible ? "Hide" : "Show"}</button>
                   <button onClick={handleToggleContractHidden} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ? "Publish to Client" : "Unpublish"}</button>
                   <button onClick={handleSaveContract} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
                 </div>
               </div>
-              {contractVisible && (() => {
+              {(() => {
                 const c = clients.find(x => x.id === selectedClientId);
                 const signedName = c?.contract_signed_name;
                 const signedAt = c?.contract_signed_at;
