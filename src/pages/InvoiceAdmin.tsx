@@ -120,6 +120,9 @@ const InvoiceAdmin = () => {
   const [syncing, setSyncing] = useState(false);
   const [sowVisible, setSowVisible] = useState(true);
   const [invoicesVisible, setInvoicesVisible] = useState(true);
+  const [contractVisible, setContractVisible] = useState(true);
+  const [contractText, setContractText] = useState("");
+  const [contractHidden, setContractHidden] = useState(true);
 
   // Selected client for SOW/Invoice management
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
