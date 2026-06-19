@@ -302,6 +302,16 @@ const InvoicePortal = () => {
   const [payingId, setPayingId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
 
+  type ContractInfo = {
+    text: string;
+    signed_name: string | null;
+    signed_at: string | null;
+  } | null;
+  const [contract, setContract] = useState<ContractInfo>(null);
+  const [signName, setSignName] = useState("");
+  const [confirmingSign, setConfirmingSign] = useState(false);
+  const [signing, setSigning] = useState(false);
+
   type Business = {
     user_id: string;
     business_name: string;
