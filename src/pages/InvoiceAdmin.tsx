@@ -855,7 +855,6 @@ const InvoiceAdmin = () => {
                   </div>
                 );
               })()}
-              </div>
             </div>
 
             {/* Invoices */}
