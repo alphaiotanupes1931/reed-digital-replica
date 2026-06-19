@@ -374,6 +374,51 @@ const InvoiceAdmin = () => {
   const addPhase = () => setPhases((p) => [...p, { name: `Phase ${p.length + 1}`, status: "pending" }]);
   const removePhase = (idx: number) => setPhases((p) => p.filter((_, i) => i !== idx));
 
+  const handleSaveContract = async () => {
+    if (!selectedClientId) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "save_contract", client_id: selectedClientId, contract_text: contractText, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Contract saved" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleToggleContractHidden = async () => {
+    if (!selectedClientId) return;
+    const next = !contractHidden;
+    setContractHidden(next);
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "set_contract_hidden", client_id: selectedClientId, hidden: next, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: next ? "Contract hidden from client" : "Contract visible to client" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleResetSignature = async () => {
+    if (!selectedClientId) return;
+    if (!confirm("Clear the client's signature? They'll need to sign again.")) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "reset_contract_signature", client_id: selectedClientId, password: ADMIN_PASSWORD },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Signature cleared" });
+      fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedClientId) return;
