@@ -418,6 +418,44 @@ const InvoiceAdmin = () => {
     }
   };
 
+  const handlePrintContract = () => {
+    const c = clients.find(x => x.id === selectedClientId);
+    if (!c) return;
+    const signedName = c.contract_signed_name;
+    const signedAt = c.contract_signed_at;
+    const text = (contractText || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const title = `Contract - ${c.name || "Client"}`;
+    const w = window.open("", "_blank", "width=900,height=1000");
+    if (!w) { toast({ title: "Pop-up blocked", description: "Allow pop-ups to print.", variant: "destructive" }); return; }
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
+      <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+      <style>
+        @page { margin: 0.75in; }
+        body { font-family: 'JetBrains Mono', monospace; color:#000; font-size:12px; line-height:1.6; }
+        h1 { font-size:14px; letter-spacing:0.2em; text-transform:uppercase; margin:0 0 4px; }
+        .meta { font-size:10px; color:#555; margin-bottom:24px; border-bottom:1px solid #000; padding-bottom:12px; }
+        pre { white-space:pre-wrap; font-family:'JetBrains Mono',monospace; font-size:12px; }
+        .sig { margin-top:48px; border-top:1px solid #000; padding-top:16px; }
+        .sig-label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#555; }
+        .sig-name { font-family:'Dancing Script',cursive; font-size:36px; margin:8px 0; }
+        .sig-printed { font-size:11px; }
+        .unsigned { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#a00; }
+      </style></head><body>
+      <h1>${title}</h1>
+      <div class="meta">${c.email || ""}${c.email && c.company ? " &middot; " : ""}${c.company || ""}<br/>Printed ${new Date().toLocaleString()}</div>
+      <pre>${text || "(no contract text)"}</pre>
+      <div class="sig">
+        ${signedName && signedAt ? `
+          <div class="sig-label">Client Signature</div>
+          <div class="sig-name">${signedName}</div>
+          <div class="sig-printed">${signedName} &mdash; signed ${new Date(signedAt).toLocaleString()}</div>
+        ` : `<div class="unsigned">Not yet signed</div>`}
+      </div>
+      <script>window.onload = () => { setTimeout(() => window.print(), 300); };</script>
+      </body></html>`);
+    w.document.close();
+  };
+
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedClientId) return;
