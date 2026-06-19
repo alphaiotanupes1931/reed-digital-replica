@@ -45,6 +45,10 @@ interface Client {
   project_estimated_total: string | null;
   maintenance_plan: string | null;
   sow_hidden?: boolean;
+  contract_text?: string | null;
+  contract_hidden?: boolean;
+  contract_signed_name?: string | null;
+  contract_signed_at?: string | null;
   created_at: string;
 }
 
