@@ -424,7 +424,7 @@ const InvoiceAdmin = () => {
     const signedName = c.contract_signed_name;
     const signedAt = c.contract_signed_at;
     const text = (contractText || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const title = `Contract - ${c.name || "Client"}`;
+    const title = `Contract - ${c.company_name || c.owner_name || "Client"}`;
     const w = window.open("", "_blank", "width=900,height=1000");
     if (!w) { toast({ title: "Pop-up blocked", description: "Allow pop-ups to print.", variant: "destructive" }); return; }
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
@@ -442,7 +442,7 @@ const InvoiceAdmin = () => {
         .unsigned { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#a00; }
       </style></head><body>
       <h1>${title}</h1>
-      <div class="meta">${c.email || ""}${c.email && c.company ? " &middot; " : ""}${c.company || ""}<br/>Printed ${new Date().toLocaleString()}</div>
+      <div class="meta">${c.email || ""}${c.email && c.company_name ? " &middot; " : ""}${c.company_name || ""}<br/>Printed ${new Date().toLocaleString()}</div>
       <pre>${text || "(no contract text)"}</pre>
       <div class="sig">
         ${signedName && signedAt ? `
