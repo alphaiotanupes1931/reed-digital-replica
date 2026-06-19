@@ -537,21 +537,25 @@ const BillsTracker = () => {
             ) : (
               <div className="border-2 border-foreground divide-y-2 divide-foreground">
                 {bills.map((b) => (
-                  <div key={b.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
+                  <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
-                      <p className="font-bold text-sm">{b.company_name}</p>
+                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{b.company_name}</p>
                       {b.notes && <p className="text-xs text-muted-foreground mt-1">{b.notes}</p>}
                     </div>
-                    <p className="font-bold text-sm">{fmt(Number(b.price))}</p>
+                    <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{fmt(Number(b.price))}</p>
+                    <Button size="sm" variant={b.hidden ? "outline" : "default"} onClick={() => toggleHiddenBill(b)}>
+                      {b.hidden ? "Show" : "Hide"}
+                    </Button>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
                       <Button size="sm" variant="outline" onClick={() => handleDelete(b.id)}>Delete</Button>
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalBills)}</p>
+                  <div />
                   <div />
                 </div>
               </div>
