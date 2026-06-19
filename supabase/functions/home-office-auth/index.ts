@@ -186,11 +186,12 @@ serve(async (req) => {
     }
 
     if (action === "update_bill") {
-      const { id, company_name, price, notes } = data;
+      const { id, company_name, price, notes, hidden } = data;
       const updates: Record<string, unknown> = {};
       if (company_name !== undefined) updates.company_name = company_name;
       if (price !== undefined) updates.price = Number(price) || 0;
       if (notes !== undefined) updates.notes = notes;
+      if (hidden !== undefined) updates.hidden = !!hidden;
       const { error } = await supabase.from("monthly_bills").update(updates).eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {

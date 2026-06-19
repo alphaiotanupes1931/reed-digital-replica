@@ -538,6 +538,7 @@ export type Database = {
         Row: {
           company_name: string
           created_at: string
+          hidden: boolean
           id: string
           notes: string | null
           owner_user_id: string | null
@@ -547,6 +548,7 @@ export type Database = {
         Insert: {
           company_name: string
           created_at?: string
+          hidden?: boolean
           id?: string
           notes?: string | null
           owner_user_id?: string | null
@@ -556,6 +558,7 @@ export type Database = {
         Update: {
           company_name?: string
           created_at?: string
+          hidden?: boolean
           id?: string
           notes?: string | null
           owner_user_id?: string | null

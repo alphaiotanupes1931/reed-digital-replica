@@ -19,7 +19,7 @@ const PLAN_LABELS: Record<string, string> = {
   cms: "Brochure + CMS", smb: "Small Business", landing: "Landing Page",
 };
 
-interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; }
+interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
 interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
@@ -150,7 +150,18 @@ const BillsTracker = () => {
     }
   };
 
-  const totalBills = bills.reduce((s, b) => s + Number(b.price || 0), 0);
+  const toggleHiddenBill = async (b: Bill) => {
+    try {
+      await api("update_bill", { id: b.id, hidden: !b.hidden });
+      setBills((prev) =>
+        prev.map((item) => (item.id === b.id ? { ...item, hidden: !item.hidden } : item))
+      );
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
   const incomeRows = incomeClients
     .map((c) => {
@@ -412,7 +423,10 @@ const BillsTracker = () => {
             <div className="border-2 border-foreground p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
               <p className="text-2xl font-bold mt-2">{fmt(totalBills)}</p>
-              <p className="text-xs text-muted-foreground mt-1">{bills.length} bill{bills.length === 1 ? "" : "s"}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {bills.filter((b) => !b.hidden).length} active
+                {bills.some((b) => b.hidden) && ` · ${bills.filter((b) => b.hidden).length} hidden`}
+              </p>
             </div>
             <div className={`border-2 p-6 ${net >= 0 ? "border-brand bg-brand/5" : "border-destructive bg-destructive/5"}`}>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -526,21 +540,25 @@ const BillsTracker = () => {
             ) : (
               <div className="border-2 border-foreground divide-y-2 divide-foreground">
                 {bills.map((b) => (
-                  <div key={b.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
+                  <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
-                      <p className="font-bold text-sm">{b.company_name}</p>
+                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{b.company_name}</p>
                       {b.notes && <p className="text-xs text-muted-foreground mt-1">{b.notes}</p>}
                     </div>
-                    <p className="font-bold text-sm">{fmt(Number(b.price))}</p>
+                    <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{fmt(Number(b.price))}</p>
+                    <Button size="sm" variant={b.hidden ? "outline" : "default"} onClick={() => toggleHiddenBill(b)}>
+                      {b.hidden ? "Show" : "Hide"}
+                    </Button>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
                       <Button size="sm" variant="outline" onClick={() => handleDelete(b.id)}>Delete</Button>
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalBills)}</p>
+                  <div />
                   <div />
                 </div>
               </div>
