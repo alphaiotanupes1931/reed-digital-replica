@@ -819,10 +819,42 @@ const InvoiceAdmin = () => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Contract</p>
-                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-muted-foreground">Coming Soon</span>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setContractVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractVisible ? "Hide" : "Show"}</button>
+                  <button onClick={handleToggleContractHidden} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ? "Publish to Client" : "Unpublish"}</button>
+                  <button onClick={handleSaveContract} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                </div>
               </div>
-              <div className="border border-border p-6 text-center">
-                <p className="text-xs font-mono text-muted-foreground">Contract generation and e-signature will be available here.</p>
+              {contractVisible && (() => {
+                const c = clients.find(x => x.id === selectedClientId);
+                const signedName = c?.contract_signed_name;
+                const signedAt = c?.contract_signed_at;
+                return (
+                  <div className="space-y-3">
+                    {signedName && signedAt ? (
+                      <div className="border-2 border-emerald-500 p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] font-mono uppercase tracking-widest text-emerald-600">Signed</p>
+                          <p className="text-2xl mt-1" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signedName}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground mt-1">on {new Date(signedAt).toLocaleString()}</p>
+                        </div>
+                        <button onClick={handleResetSignature} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors">Clear</button>
+                      </div>
+                    ) : (
+                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                        {contractHidden ? "Status: hidden from client" : "Status: awaiting client signature"}
+                      </p>
+                    )}
+                    <textarea
+                      value={contractText}
+                      onChange={(e) => setContractText(e.target.value)}
+                      placeholder="Paste the full contract text here..."
+                      rows={14}
+                      className="w-full bg-transparent border border-border p-4 font-mono text-xs leading-relaxed focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y whitespace-pre-wrap"
+                    />
+                  </div>
+                );
+              })()}
               </div>
             </div>
 
