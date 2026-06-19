@@ -453,6 +453,29 @@ const InvoicePortal = () => {
     }
   };
 
+  const submitSignature = async () => {
+    if (!clientEmail) return;
+    const name = signName.trim();
+    if (name.length < 2) {
+      toast({ title: "Enter your full legal name", variant: "destructive" });
+      return;
+    }
+    setSigning(true);
+    try {
+      const res = await supabase.functions.invoke("sow-response", {
+        body: { email: clientEmail, action: "sign_contract", signed_name: name },
+      });
+      if (res.error) throw res.error;
+      toast({ title: "Contract signed", description: "Thank you." });
+      setContract((c) => c ? { ...c, signed_name: name, signed_at: new Date().toISOString() } : c);
+      setConfirmingSign(false);
+      setSignName("");
+    } catch (err: any) {
+      toast({ title: "Could not sign", description: err.message, variant: "destructive" });
+    }
+    setSigning(false);
+  };
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
