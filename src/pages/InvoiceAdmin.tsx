@@ -311,6 +311,8 @@ const InvoiceAdmin = () => {
         setProjectBuildCost(c.project_build_cost || "");
         setProjectMaintenanceCost(c.project_maintenance_cost || "");
         setProjectEstimatedTotal(c.project_estimated_total || "");
+        setContractText(c.contract_text || "");
+        setContractHidden(c.contract_hidden !== false);
       }
     }
   }, [selectedClientId, clients]);
