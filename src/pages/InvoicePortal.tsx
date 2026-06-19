@@ -384,6 +384,15 @@ const InvoicePortal = () => {
     setClientName(clientData.company_name || clientData.owner_name || "");
     setClientEmail(clientData.email);
     localStorage.setItem("portal-email", addr);
+    if (clientData.contract_text && clientData.contract_hidden === false) {
+      setContract({
+        text: clientData.contract_text,
+        signed_name: clientData.contract_signed_name || null,
+        signed_at: clientData.contract_signed_at || null,
+      });
+    } else {
+      setContract(null);
+    }
     const { data: invData } = await supabase
       .from("invoices")
       .select("*")
