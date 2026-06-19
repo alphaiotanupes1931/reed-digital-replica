@@ -1,0 +1,1 @@
+ALTER TABLE public.monthly_bills ADD COLUMN IF NOT EXISTS hidden boolean NOT NULL DEFAULT false;
