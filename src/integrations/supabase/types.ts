@@ -160,6 +160,10 @@ export type Database = {
       clients: {
         Row: {
           company_name: string
+          contract_hidden: boolean
+          contract_signed_at: string | null
+          contract_signed_name: string | null
+          contract_text: string | null
           created_at: string
           email: string
           id: string
@@ -178,6 +182,10 @@ export type Database = {
         }
         Insert: {
           company_name: string
+          contract_hidden?: boolean
+          contract_signed_at?: string | null
+          contract_signed_name?: string | null
+          contract_text?: string | null
           created_at?: string
           email: string
           id?: string
@@ -196,6 +204,10 @@ export type Database = {
         }
         Update: {
           company_name?: string
+          contract_hidden?: boolean
+          contract_signed_at?: string | null
+          contract_signed_name?: string | null
+          contract_text?: string | null
           created_at?: string
           email?: string
           id?: string
