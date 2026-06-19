@@ -113,10 +113,6 @@ serve(async (req) => {
       });
     }
 
-    if (action === "delete_sow_comment") {
-      // handled below
-    }
-
     if (action === "save_contract") {
       const { client_id, contract_text } = data;
       const { error } = await supabase
@@ -156,7 +152,7 @@ serve(async (req) => {
       });
     }
 
-    if (action === "delete_sow_comment_DUP_MARKER_UNUSED") {
+    if (action === "delete_sow_comment") {
       const { client_id, comment_index } = data;
       const { data: c } = await supabase.from("clients").select("sow_comments").eq("id", client_id).eq("owner_user_id", userId).maybeSingle();
       const existing: Array<{ author: string; message: string; created_at: string }> = Array.isArray(c?.sow_comments) ? c!.sow_comments : [];
