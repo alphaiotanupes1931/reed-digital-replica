@@ -150,7 +150,7 @@ const BillsTracker = () => {
     }
   };
 
-  const totalBills = bills.reduce((s, b) => s + Number(b.price || 0), 0);
+  const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
   const incomeRows = incomeClients
     .map((c) => {
