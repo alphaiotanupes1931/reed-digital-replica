@@ -423,7 +423,10 @@ const BillsTracker = () => {
             <div className="border-2 border-foreground p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
               <p className="text-2xl font-bold mt-2">{fmt(totalBills)}</p>
-              <p className="text-xs text-muted-foreground mt-1">{bills.length} bill{bills.length === 1 ? "" : "s"}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {bills.filter((b) => !b.hidden).length} active
+                {bills.some((b) => b.hidden) && ` · ${bills.filter((b) => b.hidden).length} hidden`}
+              </p>
             </div>
             <div className={`border-2 p-6 ${net >= 0 ? "border-brand bg-brand/5" : "border-destructive bg-destructive/5"}`}>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
