@@ -19,7 +19,7 @@ const PLAN_LABELS: Record<string, string> = {
   cms: "Brochure + CMS", smb: "Small Business", landing: "Landing Page",
 };
 
-interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; }
+interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
 interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
