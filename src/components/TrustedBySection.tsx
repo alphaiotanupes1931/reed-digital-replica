@@ -21,7 +21,7 @@ const clients = [
   {
     name: "Palantir",
     display: "Palantir",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Palantir_Technologies_logo.svg/512px-Palantir_Technologies_logo.svg.png",
+    logoUrl: "https://www.hpcwire.com/bigdatawire/wp-content/uploads/sites/2/2021/05/Palantir.png",
   },
   {
     name: "MITRE",
