@@ -9,6 +9,7 @@ const clients = [
   { name: "MITRE", display: "MITRE" },
   { name: "University of Florida", display: "University of Florida" },
   { name: "Morgan State University", display: "Morgan State University" },
+  { name: "Park at 14th", display: "Park at 14th", logoUrl: "https://park14.com/wp-content/uploads/2021/06/ParkLogo-White.png" },
 ];
 
 const TrustedBySection = () => {
