@@ -57,10 +57,10 @@ const LogoItem = ({ client }: { client: typeof clients[0] }) => (
       <img
         src={client.logoUrl}
         alt={client.name}
-        className={`max-w-full max-h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300 ${
+        className={`max-w-full max-h-full object-contain transition-all duration-300 ${
           client.invert
             ? "invert dark:invert-0"
-            : "grayscale contrast-125 dark:invert"
+            : "dark:invert"
         }`}
         loading="lazy"
       />
