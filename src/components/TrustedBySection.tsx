@@ -6,12 +6,12 @@ const clients = [
   {
     name: "USPS",
     display: "USPS",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/United_States_Postal_Service_Logo.svg/512px-United_States_Postal_Service_Logo.svg.png",
+    logoUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPxDMkxxxlnOX0IY7lMNZImKViQz2B34TO1Q&s",
   },
   {
     name: "American Airlines",
     display: "American Airlines",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/American_Airlines_logo_2013.svg/512px-American_Airlines_logo_2013.svg.png",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/American_Airlines_wordmark_%282013%29.svg/500px-American_Airlines_wordmark_%282013%29.svg.png",
   },
   {
     name: "Lincoln Financial",
