@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import gener8torAsset from "@/assets/gener8tor.png.asset.json";
@@ -51,30 +52,33 @@ const clients = [
   },
 ];
 
-const LogoItem = ({ client }: { client: typeof clients[0] }) => (
-  <div className="flex shrink-0 items-center justify-center w-40 md:w-48 h-20 md:h-24 group">
-    {client.logoUrl ? (
-      <div className="relative flex h-12 md:h-14 w-32 md:w-40 items-center justify-center">
-        <span className="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-semibold text-foreground tracking-[0.08em] text-center leading-snug uppercase">
+const LogoItem = ({ client }: { client: typeof clients[0] }) => {
+  const [failed, setFailed] = useState(false);
+
+  if (!client.logoUrl || failed) {
+    return (
+      <div className="flex shrink-0 items-center justify-center w-40 md:w-48 h-20 md:h-24 group">
+        <span className="text-[10px] md:text-xs font-semibold text-center text-foreground transition-colors leading-snug whitespace-nowrap uppercase tracking-[0.08em]">
           {client.display}
         </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex shrink-0 items-center justify-center w-40 md:w-48 h-20 md:h-24 group">
+      <div className="relative flex h-12 md:h-14 w-32 md:w-40 items-center justify-center">
         <img
           src={client.logoUrl}
           alt={client.name}
-          className="relative z-[1] max-h-full max-w-full object-contain transition-opacity duration-300 bg-background"
+          className="relative z-[1] max-h-full max-w-full object-contain transition-opacity duration-300"
           loading="lazy"
-          onError={(event) => {
-            event.currentTarget.style.display = "none";
-          }}
+          onError={() => setFailed(true)}
         />
       </div>
-    ) : (
-      <span className="text-[10px] md:text-xs font-semibold text-center text-foreground transition-colors leading-snug whitespace-nowrap uppercase tracking-[0.08em]">
-        {client.display}
-      </span>
-    )}
-  </div>
-);
+    </div>
+  );
+};
 
 const TrustedBySection = () => {
   return (
