@@ -91,7 +91,7 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            Websites and apps for businesses that want to look great online.
+            Websites and apps for businesses that want to look great online — priced fairly.
           </motion.p>
 
           <motion.div 
