@@ -337,7 +337,7 @@ const PortfolioPage = () => {
             <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-8 text-center">
               Apps
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
               {appProjects.map((app, index) => (
                 <ScrollReveal key={app.title} delay={index * 0.05}>
                   <TiltCard>
@@ -346,6 +346,10 @@ const PortfolioPage = () => {
                 </ScrollReveal>
               ))}
             </div>
+
+            {/* Tech Stack Carousel */}
+            <ClientCarousel title="Common tech stack used" />
+
 
 
           </div>
