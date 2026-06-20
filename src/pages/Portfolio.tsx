@@ -11,7 +11,21 @@ import PortfolioFilter from "@/components/PortfolioFilter";
 import PortfolioSkeleton from "@/components/PortfolioSkeleton";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
+// App projects with store links and listing previews
+const appProjects = [
+  {
+    title: "DGM Consulting",
+    category: "Business",
+    developer: "DGM Consulting LLC",
+    description: "DGM Consulting empowers business owners to safeguard their enterprises through comprehensive risk assessment and strategic planning. Our innovative app delivers personalized business protection solutions in an easy-to-use, interactive format.",
+    icon: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/2d/b6/a8/2db6a896-060f-2a90-0e26-adc5d9a6b05f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/400x400bb.webp",
+    appStoreUrl: "https://apps.apple.com/us/app/dgm-consulting/id6749719732",
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.dgmconsulting.app",
+  },
+];
+
 // Website projects with live iframe previews
+
 const websiteProjects = [
   { title: "Reed Digital Group", category: "Agency", url: "https://reeddigitalgroup.com/" },
   { title: "Young ExeKutive", category: "Personal Brand", url: "https://youngexekutive.com/" },
@@ -33,7 +47,70 @@ const websiteProjects = [
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
 ];
 
+const AppListing = ({ app }: { app: typeof appProjects[0] }) => (
+  <div className="group block">
+    {/* App store listing preview */}
+    <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-sm">
+      {/* Browser chrome */}
+      <div className="absolute top-0 left-0 right-0 h-6 bg-secondary/80 backdrop-blur-sm flex items-center px-2 gap-1.5 z-10">
+        <div className="w-2 h-2 rounded-full bg-red-400/60" />
+        <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+        <div className="w-2 h-2 rounded-full bg-green-400/60" />
+        <div className="flex-1 mx-2">
+          <div className="bg-background/50 rounded-sm px-2 py-0.5 text-[8px] text-muted-foreground truncate">
+            apps.apple.com
+          </div>
+        </div>
+      </div>
+
+      {/* Listing content */}
+      <div className="absolute top-6 left-0 right-0 bottom-0 p-5 md:p-6 flex flex-col sm:flex-row gap-5 overflow-hidden">
+        <img
+          src={app.icon}
+          alt={app.title}
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover flex-shrink-0 border border-border bg-background"
+        />
+        <div className="flex-1 min-w-0">
+          <h4 className="text-base sm:text-lg font-medium leading-tight">{app.title}</h4>
+          <p className="text-xs text-muted-foreground mt-1">{app.developer}</p>
+          <span className="text-[10px] px-2 py-0.5 bg-primary/10 text-primary rounded mt-2 inline-block">
+            {app.category}
+          </span>
+          <p className="text-xs text-muted-foreground mt-3 line-clamp-3">{app.description}</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Store links */}
+    <div className="flex items-start justify-between gap-4">
+      <div>
+        <span className="text-xs text-muted-foreground font-mono block mb-1">{app.category}</span>
+        <span className="text-lg font-medium">{app.title}</span>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+        <a
+          href={app.appStoreUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono text-center"
+        >
+          App Store
+        </a>
+        <a
+          href={app.playStoreUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono text-center"
+        >
+          Google Play
+        </a>
+      </div>
+    </div>
+  </div>
+);
+
 // Get unique categories
+
 const allCategories = ["All", ...new Set(websiteProjects.map(p => p.category))];
 
 const PortfolioPage = () => {
@@ -132,6 +209,21 @@ const PortfolioPage = () => {
                 </ScrollReveal>
               ))}
             </div>
+
+            {/* Apps Section */}
+            <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-8 text-center">
+              Apps
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {appProjects.map((app, index) => (
+                <ScrollReveal key={app.title} delay={index * 0.05}>
+                  <TiltCard>
+                    <AppListing app={app} />
+                  </TiltCard>
+                </ScrollReveal>
+              ))}
+            </div>
+
 
           </div>
         </main>
