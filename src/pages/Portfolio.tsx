@@ -12,7 +12,19 @@ import PortfolioSkeleton from "@/components/PortfolioSkeleton";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
 // App projects with store links and listing previews
-const appProjects = [
+type AppProject = {
+  title: string;
+  category: string;
+  developer: string;
+  description: string;
+  icon?: string;
+  appStoreUrl?: string;
+  playStoreUrl?: string;
+  liveDemoUrl?: string;
+  status?: string;
+};
+
+const appProjects: AppProject[] = [
   {
     title: "DGM Consulting",
     category: "Business",
@@ -21,6 +33,14 @@ const appProjects = [
     icon: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/2d/b6/a8/2db6a896-060f-2a90-0e26-adc5d9a6b05f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/400x400bb.webp",
     appStoreUrl: "https://apps.apple.com/us/app/dgm-consulting/id6749719732",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.dgmconsulting.app",
+  },
+  {
+    title: "AIVA",
+    category: "AI Assistant",
+    developer: "Reed Digital Group",
+    description: "AIVA is an AI-powered virtual assistant delivering intelligent, conversational experiences. Currently in live demo — not yet released to the public.",
+    liveDemoUrl: "https://aiva-live-demo.vercel.app/",
+    status: "Unreleased — Live Demo",
   },
 ];
 
@@ -91,74 +111,121 @@ const StorePreview = ({ url, title }: { url: string; title: string }) => {
   );
 };
 
-const AppListing = ({ app }: { app: typeof appProjects[0] }) => {
-  const [activeStore, setActiveStore] = useState<"ios" | "android">("ios");
+const AppListing = ({ app }: { app: AppProject }) => {
+  const hasStores = Boolean(app.appStoreUrl || app.playStoreUrl);
+  const [activeStore, setActiveStore] = useState<"ios" | "android">(
+    app.appStoreUrl ? "ios" : "android"
+  );
 
   return (
     <div className="group block">
       {/* Tabbed store preview */}
       <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-sm">
-        {/* Browser chrome with tabs */}
-        <div className="absolute top-0 left-0 right-0 h-12 bg-secondary/80 backdrop-blur-sm flex items-end px-2 z-10">
-          <div className="flex gap-1">
-            <button
-              onClick={() => setActiveStore("ios")}
-              className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
-                activeStore === "ios" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              App Store
-            </button>
-            <button
-              onClick={() => setActiveStore("android")}
-              className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
-                activeStore === "android" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Google Play
-            </button>
-          </div>
-        </div>
+        {hasStores ? (
+          <>
+            {/* Browser chrome with tabs */}
+            <div className="absolute top-0 left-0 right-0 h-12 bg-secondary/80 backdrop-blur-sm flex items-end px-2 z-10">
+              <div className="flex gap-1">
+                {app.appStoreUrl && (
+                  <button
+                    onClick={() => setActiveStore("ios")}
+                    className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
+                      activeStore === "ios" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    App Store
+                  </button>
+                )}
+                {app.playStoreUrl && (
+                  <button
+                    onClick={() => setActiveStore("android")}
+                    className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
+                      activeStore === "android" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Google Play
+                  </button>
+                )}
+              </div>
+            </div>
 
-        <div className="absolute top-12 left-0 right-0 bottom-0">
-          {activeStore === "ios" ? (
-            <StorePreview url={app.appStoreUrl} title={`${app.title} - App Store`} />
-          ) : (
-            <StorePreview url={app.playStoreUrl} title={`${app.title} - Google Play`} />
-          )}
-        </div>
+            <div className="absolute top-12 left-0 right-0 bottom-0">
+              {activeStore === "ios" && app.appStoreUrl ? (
+                <StorePreview url={app.appStoreUrl} title={`${app.title} - App Store`} />
+              ) : app.playStoreUrl ? (
+                <StorePreview url={app.playStoreUrl} title={`${app.title} - Google Play`} />
+              ) : null}
+            </div>
+          </>
+        ) : app.liveDemoUrl ? (
+          <>
+            <div className="absolute top-0 left-0 right-0 h-12 bg-secondary/80 backdrop-blur-sm flex items-end px-2 z-10">
+              <div className="px-3 py-1.5 text-[10px] font-mono bg-background text-foreground">
+                Live Demo
+              </div>
+            </div>
+            <div className="absolute top-12 left-0 right-0 bottom-0">
+              <StorePreview url={app.liveDemoUrl} title={`${app.title} - Live Demo`} />
+            </div>
+          </>
+        ) : null}
       </div>
 
       {/* App info + store links */}
       <div className="flex items-start gap-4 mb-3">
-        <img
-          src={app.icon}
-          alt={app.title}
-          className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border bg-background"
-        />
+        {app.icon ? (
+          <img
+            src={app.icon}
+            alt={app.title}
+            className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border bg-background"
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-border bg-secondary flex items-center justify-center font-mono text-sm text-foreground">
+            {app.title.charAt(0)}
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <span className="text-xs text-muted-foreground font-mono block mb-0.5">{app.category}</span>
           <h4 className="text-lg font-medium leading-tight">{app.title}</h4>
+          {app.status && (
+            <span className="text-[10px] text-muted-foreground font-mono block mt-1 uppercase tracking-wider">
+              {app.status}
+            </span>
+          )}
         </div>
       </div>
       <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{app.description}</p>
       <div className="flex flex-wrap gap-2">
-        <a
-          href={app.appStoreUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
-        >
-          App Store
-        </a>
-        <a
-          href={app.playStoreUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
-        >
-          Google Play
-        </a>
+        {app.appStoreUrl && (
+          <a
+            href={app.appStoreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+          >
+            App Store
+          </a>
+        )}
+        {app.playStoreUrl && (
+          <a
+            href={app.playStoreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+          >
+            Google Play
+          </a>
+        )}
+        {app.liveDemoUrl && (
+          <a
+            href={app.liveDemoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+          >
+            Open Live Demo
+          </a>
+        )}
       </div>
     </div>
   );
