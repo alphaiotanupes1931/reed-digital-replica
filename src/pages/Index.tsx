@@ -3,7 +3,6 @@ import HeroSection from "@/components/HeroSection";
 import TrustedBySection from "@/components/TrustedBySection";
 import CredentialBar from "@/components/CredentialBar";
 import RecentAwardsSection from "@/components/RecentAwardsSection";
-import ClientCarousel from "@/components/ClientCarousel";
 import AsSeenOnSection from "@/components/AsSeenOnSection";
 import ClientLogosSection from "@/components/ClientLogosSection";
 import ServicesSection from "@/components/ServicesSection";
