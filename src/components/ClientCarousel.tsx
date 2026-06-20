@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const techLogos = [
   { name: "React", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" },
@@ -29,11 +30,29 @@ const ClientLogo = ({ name, logo }: { name: string; logo: string }) => (
   </motion.div>
 );
 
-const ClientCarousel = () => {
+interface ClientCarouselProps {
+  title?: string;
+}
+
+const ClientCarousel = ({ title }: ClientCarouselProps) => {
   return (
     <section className="py-12 overflow-hidden relative">
       {/* Section divider line */}
       <div className="section-line absolute top-0 left-0 right-0" />
+      
+      {title && (
+        <div className="container mb-8">
+          <ScrollReveal>
+            <motion.p
+              className="text-xs tracking-[0.3em] uppercase text-muted-foreground text-center"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+            >
+              {title}
+            </motion.p>
+          </ScrollReveal>
+        </div>
+      )}
       
       <div className="relative">
         {/* Fade edges */}
