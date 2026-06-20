@@ -52,16 +52,16 @@ const clients = [
 ];
 
 const LogoItem = ({ client }: { client: typeof clients[0] }) => (
-  <div className="flex shrink-0 items-center justify-center px-6 md:px-10 h-14 md:h-16 min-w-44 md:min-w-56 group">
+  <div className="flex shrink-0 items-center justify-center w-40 md:w-48 h-20 md:h-24 group">
     {client.logoUrl ? (
-      <div className="relative flex h-full w-full items-center justify-center">
-        <span className="absolute inset-0 flex items-center justify-center text-xs md:text-sm font-semibold text-foreground tracking-[0.08em] text-center leading-snug uppercase">
+      <div className="relative flex h-12 md:h-14 w-32 md:w-40 items-center justify-center">
+        <span className="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-semibold text-foreground tracking-[0.08em] text-center leading-snug uppercase">
           {client.display}
         </span>
         <img
           src={client.logoUrl}
           alt={client.name}
-          className={`relative z-[1] max-w-full max-h-10 md:max-h-12 object-contain transition-opacity duration-300 bg-background ${
+          className={`relative z-[1] max-h-full max-w-full object-contain transition-opacity duration-300 bg-background ${
             client.invert
               ? "invert dark:invert-0"
               : "dark:invert"
@@ -73,7 +73,7 @@ const LogoItem = ({ client }: { client: typeof clients[0] }) => (
         />
       </div>
     ) : (
-      <span className="text-xs md:text-sm font-semibold text-center text-foreground transition-colors leading-snug whitespace-nowrap uppercase tracking-[0.08em]">
+      <span className="text-[10px] md:text-xs font-semibold text-center text-foreground transition-colors leading-snug whitespace-nowrap uppercase tracking-[0.08em]">
         {client.display}
       </span>
     )}
