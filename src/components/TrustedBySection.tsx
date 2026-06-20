@@ -44,7 +44,11 @@ const clients = [
     logoUrl: "https://park14.com/wp-content/uploads/2021/06/ParkLogo-White.png",
     invert: true,
   },
-];
+  {
+    name: "gener8tor",
+    display: "gener8tor",
+    logoUrl: gener8torAsset.url,
+  },
 
 const LogoItem = ({ client }: { client: typeof clients[0] }) => (
   <div className="flex items-center justify-center px-8 md:px-14 h-14 md:h-16 group">
