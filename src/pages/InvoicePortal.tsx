@@ -443,7 +443,7 @@ const InvoicePortal = () => {
       if (res.error) throw res.error;
       if (res.data?.url) window.location.href = res.data.url;
     } catch (err: any) {
-      toast({ title: "Payment error", description: err.message, variant: "destructive" });
+      toast({ title: "Oopsie daisy...", description: "There is a technical issue. Contact support.", variant: "destructive" });
       setPayingId(null);
     }
   };
@@ -460,7 +460,7 @@ const InvoicePortal = () => {
       if (res.error) throw res.error;
       if (res.data?.url) window.location.href = res.data.url;
     } catch (err: any) {
-      toast({ title: "Payment error", description: err.message, variant: "destructive" });
+      toast({ title: "Oopsie daisy...", description: "There is a technical issue. Contact support.", variant: "destructive" });
       setPayingId(null);
     }
   };
