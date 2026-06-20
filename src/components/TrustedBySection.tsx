@@ -36,7 +36,7 @@ const clients = [
   {
     name: "Morgan State University",
     display: "Morgan State University",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Morgan_State_University_seal.svg/512px-Morgan_State_University_seal.svg.png",
+    logoUrl: "https://www.thecollegetour.com/wp-content/uploads/2023/08/FINAL-MSU_Web-Digital.jpg",
   },
   {
     name: "Park at 14th",
