@@ -210,6 +210,21 @@ const PortfolioPage = () => {
               ))}
             </div>
 
+            {/* Apps Section */}
+            <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-8 text-center">
+              Apps
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {appProjects.map((app, index) => (
+                <ScrollReveal key={app.title} delay={index * 0.05}>
+                  <TiltCard>
+                    <AppListing app={app} />
+                  </TiltCard>
+                </ScrollReveal>
+              ))}
+            </div>
+
+
           </div>
         </main>
         <Footer />
