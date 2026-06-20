@@ -26,7 +26,6 @@ const Index = () => {
         </div>
         <TrustedBySection />
         <CredentialBar />
-        <ClientCarousel />
         <AsSeenOnSection />
         <RecentAwardsSection />
         <ClientLogosSection />
