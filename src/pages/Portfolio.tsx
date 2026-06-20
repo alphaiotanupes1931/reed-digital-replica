@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -47,52 +47,107 @@ const websiteProjects = [
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
 ];
 
-const AppListing = ({ app }: { app: typeof appProjects[0] }) => (
-  <div className="group block">
-    {/* App store listing preview */}
-    <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-sm">
-      {/* Browser chrome */}
-      <div className="absolute top-0 left-0 right-0 h-6 bg-secondary/80 backdrop-blur-sm flex items-center px-2 gap-1.5 z-10">
-        <div className="w-2 h-2 rounded-full bg-red-400/60" />
-        <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
-        <div className="w-2 h-2 rounded-full bg-green-400/60" />
-        <div className="flex-1 mx-2">
-          <div className="bg-background/50 rounded-sm px-2 py-0.5 text-[8px] text-muted-foreground truncate">
-            apps.apple.com
+const StorePreview = ({ url, title }: { url: string; title: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!loaded) setFailed(true);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [loaded]);
+
+  return (
+    <div className="relative w-full h-full bg-muted">
+      {!loaded && !failed && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="w-8 h-8 border-2 border-muted-foreground/30 border-t-foreground rounded-full animate-spin mb-3" />
+          <span className="text-xs text-muted-foreground font-mono">Loading preview...</span>
+        </div>
+      )}
+      {failed && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+          <p className="text-sm text-muted-foreground mb-4">Store preview unavailable in this frame.</p>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs px-4 py-2 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+          >
+            Open in new tab
+          </a>
+        </div>
+      )}
+      <iframe
+        key={url}
+        src={url}
+        title={title}
+        className={`w-full h-full transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
+        onLoad={() => setLoaded(true)}
+        sandbox="allow-scripts allow-same-origin allow-forms"
+      />
+    </div>
+  );
+};
+
+const AppListing = ({ app }: { app: typeof appProjects[0] }) => {
+  const [activeStore, setActiveStore] = useState<"ios" | "android">("ios");
+
+  return (
+    <div className="group block">
+      {/* Tabbed store preview */}
+      <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-sm">
+        {/* Browser chrome with tabs */}
+        <div className="absolute top-0 left-0 right-0 h-12 bg-secondary/80 backdrop-blur-sm flex items-end px-2 z-10">
+          <div className="flex gap-1">
+            <button
+              onClick={() => setActiveStore("ios")}
+              className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
+                activeStore === "ios" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              App Store
+            </button>
+            <button
+              onClick={() => setActiveStore("android")}
+              className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
+                activeStore === "android" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Google Play
+            </button>
           </div>
+        </div>
+
+        <div className="absolute top-12 left-0 right-0 bottom-0">
+          {activeStore === "ios" ? (
+            <StorePreview url={app.appStoreUrl} title={`${app.title} - App Store`} />
+          ) : (
+            <StorePreview url={app.playStoreUrl} title={`${app.title} - Google Play`} />
+          )}
         </div>
       </div>
 
-      {/* Listing content */}
-      <div className="absolute top-6 left-0 right-0 bottom-0 p-5 md:p-6 flex flex-col sm:flex-row gap-5 overflow-hidden">
+      {/* App info + store links */}
+      <div className="flex items-start gap-4 mb-3">
         <img
           src={app.icon}
           alt={app.title}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover flex-shrink-0 border border-border bg-background"
+          className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border bg-background"
         />
         <div className="flex-1 min-w-0">
-          <h4 className="text-base sm:text-lg font-medium leading-tight">{app.title}</h4>
-          <p className="text-xs text-muted-foreground mt-1">{app.developer}</p>
-          <span className="text-[10px] px-2 py-0.5 bg-primary/10 text-primary rounded mt-2 inline-block">
-            {app.category}
-          </span>
-          <p className="text-xs text-muted-foreground mt-3 line-clamp-3">{app.description}</p>
+          <span className="text-xs text-muted-foreground font-mono block mb-0.5">{app.category}</span>
+          <h4 className="text-lg font-medium leading-tight">{app.title}</h4>
         </div>
       </div>
-    </div>
-
-    {/* Store links */}
-    <div className="flex items-start justify-between gap-4">
-      <div>
-        <span className="text-xs text-muted-foreground font-mono block mb-1">{app.category}</span>
-        <span className="text-lg font-medium">{app.title}</span>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+      <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{app.description}</p>
+      <div className="flex flex-wrap gap-2">
         <a
           href={app.appStoreUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono text-center"
+          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
         >
           App Store
         </a>
@@ -100,14 +155,14 @@ const AppListing = ({ app }: { app: typeof appProjects[0] }) => (
           href={app.playStoreUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono text-center"
+          className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
         >
           Google Play
         </a>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Get unique categories
 
