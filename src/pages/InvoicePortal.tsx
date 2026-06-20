@@ -148,9 +148,12 @@ const PaymentOptions = ({
 
   const isMonthlyPlan = invoice.payment_plan === "monthly" && invoice.plan_monthly_amount && invoice.plan_months;
   const showMonthlyOption = isMonthlyPlan && !depositPending;
-  const monthly = Number(invoice.plan_monthly_amount || 0);
-  const monthlyFee = Math.round((monthly * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
-  const monthlyTotal = Math.round((monthly + monthlyFee) * 100) / 100;
+  // Monthly plan total must equal the one-time Stripe total (price + single processing fee).
+  // We split that single total evenly across the plan months so the customer pays the
+  // same overall amount whether they pay once or monthly.
+  const months = Number(invoice.plan_months || 1);
+  const monthlyPerCharge = Math.round((stripeTotal / months) * 100) / 100;
+  const monthlyGrandTotal = stripeTotal;
 
   const MonthlyPlanCard = showMonthlyOption ? (
     <div className="mb-8">
@@ -160,12 +163,12 @@ const PaymentOptions = ({
         className="border-2 border-foreground bg-background p-6"
       >
         <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Option B · Monthly Payment Plan</p>
-        <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyTotal.toLocaleString()} / month</h3>
+        <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyPerCharge.toLocaleString()} / month</h3>
         <p className="text-sm font-mono text-foreground/70 mb-1">
-          {invoice.plan_months} monthly payments · Total ${(monthlyTotal * Number(invoice.plan_months)).toLocaleString()}
+          {months} monthly payments · Total ${monthlyGrandTotal.toLocaleString()}
         </p>
         <p className="text-xs font-mono text-emerald-500 mb-4">
-          Includes ${monthlyFee.toLocaleString()} processing fee per month
+          Same total as paying in full — processing fee split evenly
         </p>
         <button
           onClick={() => onPayMonthly(invoice)}
