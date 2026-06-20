@@ -45,9 +45,30 @@ const clients = [
   },
 ];
 
+const LogoItem = ({ client }: { client: typeof clients[0] }) => (
+  <div className="flex items-center justify-center px-8 md:px-14 h-14 md:h-16 group">
+    {client.logoUrl ? (
+      <img
+        src={client.logoUrl}
+        alt={client.name}
+        className={`max-w-full max-h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300 ${
+          client.invert
+            ? "invert dark:invert-0"
+            : "grayscale contrast-125 dark:invert"
+        }`}
+        loading="lazy"
+      />
+    ) : (
+      <span className="text-xs md:text-sm font-medium text-center text-muted-foreground group-hover:text-foreground transition-colors leading-snug whitespace-nowrap">
+        {client.display}
+      </span>
+    )}
+  </div>
+);
+
 const TrustedBySection = () => {
   return (
-    <section className="py-16 md:py-20 border-b border-border">
+    <section className="py-16 md:py-20 border-b border-border overflow-hidden">
       <div className="container">
         <ScrollReveal>
           <motion.p
@@ -58,33 +79,18 @@ const TrustedBySection = () => {
             Companies We&apos;ve Done Work For
           </motion.p>
         </ScrollReveal>
+      </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-px border border-border bg-border max-w-5xl mx-auto">
-          {clients.map((client, index) => (
-            <motion.div
-              key={client.name}
-              className="flex items-center justify-center p-6 md:p-8 bg-background group"
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.4 }}
-            >
-              {client.logoUrl ? (
-                <img
-                  src={client.logoUrl}
-                  alt={client.name}
-                  className={`max-w-full max-h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity ${
-                    client.invert
-                      ? "dark:invert-0 invert"
-                      : "grayscale contrast-125 dark:invert"
-                  }`}
-                  loading="lazy"
-                />
-              ) : (
-                <span className="text-xs md:text-sm font-medium text-center text-muted-foreground group-hover:text-foreground transition-colors leading-snug">
-                  {client.display}
-                </span>
-              )}
-            </motion.div>
+      <div className="relative mt-2">
+        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+        <div className="flex animate-scroll-left items-center">
+          {clients.map((client) => (
+            <LogoItem key={`first-${client.name}`} client={client} />
+          ))}
+          {clients.map((client) => (
+            <LogoItem key={`second-${client.name}`} client={client} />
           ))}
         </div>
       </div>
