@@ -9,6 +9,7 @@ import TiltCard from "@/components/TiltCard";
 import PageTransition from "@/components/PageTransition";
 import PortfolioFilter from "@/components/PortfolioFilter";
 import PortfolioSkeleton from "@/components/PortfolioSkeleton";
+import ClientCarousel from "@/components/ClientCarousel";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
 // App projects with store links and listing previews
