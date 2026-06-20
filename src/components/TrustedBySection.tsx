@@ -30,15 +30,26 @@ const TrustedBySection = () => {
           {clients.map((client, index) => (
             <motion.div
               key={client.name}
-              className="flex items-center justify-center p-6 md:p-8 bg-background group"
+              className={`flex items-center justify-center p-6 md:p-8 group ${
+                client.logoUrl ? "bg-foreground" : "bg-background"
+              }`}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05, duration: 0.4 }}
-              whileHover={{ backgroundColor: "hsl(var(--muted))" }}
+              whileHover={{ opacity: 0.9 }}
             >
-              <span className="text-xs md:text-sm font-medium text-center text-muted-foreground group-hover:text-foreground transition-colors leading-snug">
-                {client.display}
-              </span>
+              {client.logoUrl ? (
+                <img
+                  src={client.logoUrl}
+                  alt={client.name}
+                  className="max-w-full max-h-8 object-contain"
+                  loading="lazy"
+                />
+              ) : (
+                <span className="text-xs md:text-sm font-medium text-center text-muted-foreground group-hover:text-foreground transition-colors leading-snug">
+                  {client.display}
+                </span>
+              )}
             </motion.div>
           ))}
         </div>
