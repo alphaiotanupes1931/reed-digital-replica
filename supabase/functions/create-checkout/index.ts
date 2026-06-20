@@ -59,9 +59,11 @@ serve(async (req) => {
       if (invoice.payment_plan !== "monthly" || !invoice.plan_monthly_amount || !invoice.plan_end_date) {
         throw new Error("This invoice has no monthly payment plan configured.");
       }
-      const monthly = Number(invoice.plan_monthly_amount);
       const months = Number(invoice.plan_months || 0);
-      const monthlyTotal = addFee(monthly);
+      // Match the one-time Stripe total: full price + a single processing fee,
+      // split evenly across the plan months.
+      const oneTimeTotal = addFee(Number(invoice.price));
+      const monthlyTotal = Math.round((oneTimeTotal / Math.max(months, 1)) * 100) / 100;
 
       // Stripe subscription that auto-cancels at plan end date.
       const cancelAt = Math.floor(new Date(invoice.plan_end_date as string).getTime() / 1000);
@@ -75,7 +77,7 @@ serve(async (req) => {
               currency: "usd",
               product_data: {
                 name: `${invoice.service} — Monthly Plan (${months} months)`,
-                description: `${months} monthly payments of $${monthly.toFixed(2)} — ${client.company_name}`,
+                description: `${months} monthly payments of $${monthlyTotal.toFixed(2)} — ${client.company_name}`,
               },
               unit_amount: Math.round(monthlyTotal * 100),
               recurring: { interval: "month" as const },
