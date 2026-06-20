@@ -26,7 +26,7 @@ const clients = [
   {
     name: "MITRE",
     display: "MITRE",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Mitre_Corporation_logo.svg/512px-Mitre_Corporation_logo.svg.png",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Mitre_Corporation_logo.svg/3840px-Mitre_Corporation_logo.svg.png",
   },
   {
     name: "University of Florida",
