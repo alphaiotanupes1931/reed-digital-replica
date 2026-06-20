@@ -16,7 +16,7 @@ const clients = [
   {
     name: "Lincoln Financial",
     display: "Lincoln Financial",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Lincoln_Financial_Group_logo.svg/512px-Lincoln_Financial_Group_logo.svg.png",
+    logoUrl: "https://mms.businesswire.com/media/20240606449533/en/398522/22/LFG-B-HORZ_202_K.jpg",
   },
   {
     name: "Palantir",
