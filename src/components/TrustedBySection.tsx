@@ -57,7 +57,7 @@ const LogoItem = ({ client }: { client: typeof clients[0] }) => {
 
   if (!client.logoUrl || failed) {
     return (
-      <div className="flex shrink-0 items-center justify-center w-40 md:w-48 h-20 md:h-24 group">
+      <div className="flex shrink-0 items-center justify-center w-44 md:w-56 h-24 md:h-28 group">
         <span className="text-[10px] md:text-xs font-semibold text-center text-foreground transition-colors leading-snug whitespace-nowrap uppercase tracking-[0.08em]">
           {client.display}
         </span>
@@ -66,8 +66,8 @@ const LogoItem = ({ client }: { client: typeof clients[0] }) => {
   }
 
   return (
-    <div className="flex shrink-0 items-center justify-center w-40 md:w-48 h-20 md:h-24 group">
-      <div className="relative flex h-12 md:h-14 w-32 md:w-40 items-center justify-center">
+    <div className="flex shrink-0 items-center justify-center w-44 md:w-56 h-24 md:h-28 group">
+      <div className="relative flex h-14 md:h-16 w-36 md:w-44 items-center justify-center">
         <img
           src={client.logoUrl}
           alt={client.name}
