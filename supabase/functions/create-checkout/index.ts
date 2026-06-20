@@ -65,7 +65,8 @@ serve(async (req) => {
       const oneTimeTotal = addFee(Number(invoice.price));
       const monthlyTotal = Math.round((oneTimeTotal / Math.max(months, 1)) * 100) / 100;
 
-      // Stripe subscription that auto-cancels at plan end date.
+      // Plan end date stored in metadata so it can be enforced after the
+      // subscription is created (Checkout doesn't accept cancel_at directly).
       const cancelAt = Math.floor(new Date(invoice.plan_end_date as string).getTime() / 1000);
 
       const session = await stripe.checkout.sessions.create({
@@ -87,12 +88,12 @@ serve(async (req) => {
         ],
         mode: "subscription",
         subscription_data: {
-          cancel_at: cancelAt,
           metadata: {
             invoice_id: invoice.id,
             client_id: client.id,
             type: "invoice_monthly_plan",
             months: String(months),
+            cancel_at: String(cancelAt),
           },
         },
         success_url: `${origin}/portal/thank-you`,
