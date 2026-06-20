@@ -52,20 +52,28 @@ const clients = [
 ];
 
 const LogoItem = ({ client }: { client: typeof clients[0] }) => (
-  <div className="flex items-center justify-center px-8 md:px-14 h-14 md:h-16 group">
+  <div className="flex shrink-0 items-center justify-center px-6 md:px-10 h-14 md:h-16 min-w-44 md:min-w-56 group">
     {client.logoUrl ? (
-      <img
-        src={client.logoUrl}
-        alt={client.name}
-        className={`max-w-full max-h-full object-contain transition-all duration-300 ${
-          client.invert
-            ? "invert dark:invert-0"
-            : "dark:invert"
-        }`}
-        loading="lazy"
-      />
+      <div className="relative flex h-full w-full items-center justify-center">
+        <span className="absolute inset-0 flex items-center justify-center text-xs md:text-sm font-semibold text-foreground tracking-[0.08em] text-center leading-snug uppercase">
+          {client.display}
+        </span>
+        <img
+          src={client.logoUrl}
+          alt={client.name}
+          className={`relative z-[1] max-w-full max-h-10 md:max-h-12 object-contain transition-opacity duration-300 bg-background ${
+            client.invert
+              ? "invert dark:invert-0"
+              : "dark:invert"
+          }`}
+          loading="lazy"
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+          }}
+        />
+      </div>
     ) : (
-      <span className="text-xs md:text-sm font-medium text-center text-muted-foreground group-hover:text-foreground transition-colors leading-snug whitespace-nowrap">
+      <span className="text-xs md:text-sm font-semibold text-center text-foreground transition-colors leading-snug whitespace-nowrap uppercase tracking-[0.08em]">
         {client.display}
       </span>
     )}
