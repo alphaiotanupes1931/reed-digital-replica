@@ -13,6 +13,7 @@ import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
 // Website projects with live iframe previews
 const websiteProjects = [
+  { title: "Reed Digital Group", category: "Agency", url: "https://reeddigitalgroup.com/" },
   { title: "Young ExeKutive", category: "Personal Brand", url: "https://youngexekutive.com/" },
   { title: "Auntie Sam", category: "Food & Beverage", url: "https://auntiesam.vercel.app/", image: auntieSamPreview },
   { title: "Build With Marcus", category: "Home Services", url: "https://buildwithmarcus.com/" },

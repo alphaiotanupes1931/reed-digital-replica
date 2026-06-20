@@ -6,6 +6,13 @@ import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const projects = [
+  {
+    title: "Reed Digital Group",
+    category: "Digital Agency",
+    type: "Agency Website",
+    tools: ["React", "Tailwind CSS", "Framer Motion"],
+    url: "https://reeddigitalgroup.com/",
+  },
   { 
     title: "Young ExeKutive", 
     category: "Personal Brand", 
