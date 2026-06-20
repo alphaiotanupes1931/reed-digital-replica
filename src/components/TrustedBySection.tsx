@@ -11,7 +11,7 @@ const clients = [
   {
     name: "American Airlines",
     display: "American Airlines",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/American_Airlines_wordmark_%282013%29.svg/500px-American_Airlines_wordmark_%282013%29.svg.png",
+    logoUrl: "https://logos-world.net/wp-content/uploads/2020/11/American-Airlines-Logo.png",
   },
   {
     name: "Lincoln Financial",
