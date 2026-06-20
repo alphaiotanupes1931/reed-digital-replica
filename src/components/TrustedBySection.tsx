@@ -31,7 +31,7 @@ const clients = [
   {
     name: "University of Florida",
     display: "University of Florida",
-    logoUrl: "https://static.studyusa.com/school/aws_D5Mhl-qAiYO-oOys2hJbtkfVGIITMoSV_lg_1x.png?format=webp",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e0/UF_Monogram.svg",
   },
   {
     name: "Morgan State University",
