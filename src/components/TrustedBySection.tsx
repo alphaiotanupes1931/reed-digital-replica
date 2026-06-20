@@ -25,7 +25,7 @@ const TrustedBySection = () => {
           </motion.p>
         </ScrollReveal>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-px border border-border bg-border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px border border-border bg-border max-w-5xl mx-auto">
           {clients.map((client, index) => (
             <motion.div
               key={client.name}
