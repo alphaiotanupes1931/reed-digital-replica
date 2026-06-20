@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import gener8torAsset from "@/assets/gener8tor.png.asset.json";
+import park14Asset from "@/assets/park14-dark.png.asset.json";
 
 const clients = [
   {
@@ -41,8 +42,7 @@ const clients = [
   {
     name: "Park at 14th",
     display: "Park at 14th",
-    logoUrl: "https://park14.com/wp-content/uploads/2021/06/ParkLogo-White.png",
-    invert: true,
+    logoUrl: park14Asset.url,
   },
   {
     name: "gener8tor",
