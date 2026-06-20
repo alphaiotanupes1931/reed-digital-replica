@@ -61,11 +61,7 @@ const LogoItem = ({ client }: { client: typeof clients[0] }) => (
         <img
           src={client.logoUrl}
           alt={client.name}
-          className={`relative z-[1] max-h-full max-w-full object-contain transition-opacity duration-300 bg-background ${
-            client.invert
-              ? "invert dark:invert-0"
-              : "dark:invert"
-          }`}
+          className="relative z-[1] max-h-full max-w-full object-contain transition-opacity duration-300 bg-background"
           loading="lazy"
           onError={(event) => {
             event.currentTarget.style.display = "none";
