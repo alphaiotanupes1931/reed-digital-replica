@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import gener8torAsset from "@/assets/gener8tor.png.asset.json";
-import park14Asset from "@/assets/park14-dark.png.asset.json";
 
 const clients = [
   {
@@ -43,7 +42,7 @@ const clients = [
   {
     name: "Park at 14th",
     display: "Park at 14th",
-    logoUrl: park14Asset.url,
+    logoUrl: "https://static1.squarespace.com/static/5924c6e02994cae0dea58596/t/593ec7703e00be288f81db77/1497286516804/The+Park+logo+v3Black.png?format=1000w",
   },
   {
     name: "gener8tor",
