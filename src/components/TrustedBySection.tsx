@@ -46,7 +46,7 @@ const clients = [
   {
     name: "gener8tor",
     display: "gener8tor",
-    logoUrl: gener8torAsset.url,
+    logoUrl: "https://images.squarespace-cdn.com/content/v1/60e4724ea746166606f95abb/f28c5930-9148-4833-8e72-647be9edde1a/gener8tor-secondary-fullcolor%402x.png",
   },
 ];
 
