@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import gener8torAsset from "@/assets/gener8tor.png.asset.json";
-import park14Asset from "@/assets/park14-dark.png.asset.json";
 
 const clients = [
   {
