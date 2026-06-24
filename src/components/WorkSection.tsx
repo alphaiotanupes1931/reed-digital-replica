@@ -72,11 +72,11 @@ const projects = [
     url: "https://visionheartz.github.io/",
   },
   { 
-    title: "Conation Fitness", 
-    category: "Fitness", 
-    type: "Business Website",
-    tools: ["React", "Tailwind CSS"],
-    url: "https://conationfitness.com/",
+    title: "AVISIONSTUDIO", 
+    category: "Film & Cinematography", 
+    type: "Portfolio Website",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://hb3kkweb.vercel.app/",
   },
 ];
 

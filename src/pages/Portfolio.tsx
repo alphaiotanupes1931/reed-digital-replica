@@ -61,6 +61,7 @@ const websiteProjects = [
   { title: "Kappa Alpha Psi Fraternity Inc.", category: "Organization", url: "https://ainupes1931.com/" },
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
   { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
+  { title: "AVISIONSTUDIO", category: "Film & Cinematography", url: "https://hb3kkweb.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
   { title: "Alpha Iota Merch", category: "E-Commerce", url: "https://alphaiotamerch.com/" },
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
