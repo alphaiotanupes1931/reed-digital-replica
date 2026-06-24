@@ -95,7 +95,7 @@ const HomeOffice = () => {
   return (
     <div className="min-h-screen bg-background font-mono relative">
       {/* Sticky pill nav */}
-      <nav className="sticky top-4 z-40 mx-auto mt-4 w-[calc(100%-1.5rem)] max-w-5xl rounded-full border border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+      <nav className="sticky top-0 z-40 w-full border-b border-x-0 border-t-0 border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
           ← RDG
         </Link>
@@ -104,7 +104,7 @@ const HomeOffice = () => {
         </span>
         <button
           onClick={handleLogout}
-          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-foreground/15 hover:border-foreground/40 transition-colors"
+          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
         >
           Log out
         </button>
@@ -158,13 +158,13 @@ const HomeOffice = () => {
                       navigator.clipboard.writeText(businessId);
                       toast.success("Business ID copied");
                     }}
-                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/85 transition-colors"
+                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors"
                   >
                     Copy ID
                   </button>
                   <button
                     onClick={() => setShowInstructions(true)}
-                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 rounded-full border border-foreground/15 hover:border-foreground/40 transition-colors"
+                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 border border-foreground/15 hover:border-foreground/40 transition-colors"
                   >
                     Instructions
                   </button>
