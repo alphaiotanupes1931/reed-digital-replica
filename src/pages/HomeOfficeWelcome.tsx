@@ -11,7 +11,7 @@ const HomeOfficeWelcome = () => {
   return (
     <div className="min-h-screen bg-background text-foreground font-mono flex flex-col">
       {/* Top nav — Framer-style sticky pill */}
-      <nav className="sticky top-0 z-40 w-full rounded-full border border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+      <nav className="sticky top-0 z-40 w-full border-b border-x-0 border-t-0 border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
           ← Reed Digital Group
         </Link>
