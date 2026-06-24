@@ -11,7 +11,7 @@ const HomeOfficeWelcome = () => {
   return (
     <div className="min-h-screen bg-background text-foreground font-mono flex flex-col">
       {/* Top nav — Framer-style sticky pill */}
-      <nav className="sticky top-4 z-40 mx-auto mt-4 w-[calc(100%-1.5rem)] max-w-5xl rounded-full border border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+      <nav className="sticky top-0 z-40 w-full rounded-full border border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
           ← Reed Digital Group
         </Link>
@@ -22,7 +22,7 @@ const HomeOfficeWelcome = () => {
         </div>
         <Link
           to="/home-office/login"
-          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 rounded-full bg-foreground text-background hover:bg-foreground/85 transition-colors"
+          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 bg-foreground text-background hover:bg-foreground/85 transition-colors"
         >
           Sign in
         </Link>
@@ -33,7 +33,7 @@ const HomeOfficeWelcome = () => {
         <section className="relative px-6 md:px-12 pt-20 md:pt-28 pb-24 max-w-6xl mx-auto">
           {/* Eyebrow chip */}
           <div className="flex justify-center mb-8">
-            <span className="inline-flex items-center gap-3 rounded-full border border-foreground/15 bg-foreground/[0.03] px-4 py-1.5 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            <span className="inline-flex items-center gap-3 border border-foreground/15 bg-foreground/[0.03] px-4 py-1.5 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-brand" />
               New · v1 release
             </span>
@@ -53,13 +53,13 @@ const HomeOfficeWelcome = () => {
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/home-office/login?mode=signup"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-foreground text-background text-[11px] uppercase tracking-[0.25em] hover:bg-foreground/85 transition-colors"
+              className="inline-flex items-center justify-center px-7 py-3.5 bg-foreground text-background text-[11px] uppercase tracking-[0.25em] hover:bg-foreground/85 transition-colors"
             >
               Try free for 7 days
             </Link>
             <Link
               to="/home-office/login"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full border border-foreground/15 text-[11px] uppercase tracking-[0.25em] text-foreground/80 hover:border-foreground/40 hover:text-foreground transition-colors"
+              className="inline-flex items-center justify-center px-7 py-3.5 border border-foreground/15 text-[11px] uppercase tracking-[0.25em] text-foreground/80 hover:border-foreground/40 hover:text-foreground transition-colors"
             >
               I have an account
             </Link>
@@ -148,7 +148,7 @@ const HomeOfficeWelcome = () => {
 
             <Link
               to="/home-office/login?mode=signup"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-foreground text-background text-[11px] uppercase tracking-[0.25em] hover:bg-foreground/85 transition-colors"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-foreground text-background text-[11px] uppercase tracking-[0.25em] hover:bg-foreground/85 transition-colors"
             >
               Start free trial
             </Link>
