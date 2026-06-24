@@ -5,14 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import NotificationBell from "@/components/NotificationBell";
 
-type Link = { id: string; client_user_id: string; status: string; requested_at: string; accepted_at: string | null };
+type AcctLink = { id: string; client_user_id: string; status: string; requested_at: string; accepted_at: string | null };
 type ClientProfile = { user_id: string; full_name: string | null; business_name: string | null };
 
 export default function HomeOfficeAccountant() {
   const navigate = useNavigate();
   const [accountantId, setAccountantId] = useState("");
   const [fullName, setFullName] = useState("");
-  const [links, setLinks] = useState<Link[]>([]);
+  const [links, setLinks] = useState<AcctLink[]>([]);
   const [profiles, setProfiles] = useState<Record<string, ClientProfile>>({});
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,7 @@ export default function HomeOfficeAccountant() {
 
   const loadLinks = async () => {
     const { data: l } = await supabase.from("accountant_clients").select("id, client_user_id, status, requested_at, accepted_at").order("requested_at", { ascending: false });
-    const rows = (l || []) as Link[];
+    const rows = (l || []) as AcctLink[];
     setLinks(rows);
     if (rows.length > 0) {
       const ids = rows.map((r) => r.client_user_id);
