@@ -1,8 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -375,22 +373,26 @@ const BillsTracker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono relative overflow-hidden">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
-      </div>
-      <Header />
-      <main className="pt-32 pb-20 relative z-10">
-        <div className="container max-w-5xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Bills</h1>
-            <p className="text-sm text-muted-foreground mt-2">Monthly outflow vs. maintenance plan income.</p>
+    <div className="min-h-screen bg-background font-mono">
+      <nav className="sticky top-0 z-40 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+        <Link to="/home-office" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          ← Home Office
+        </Link>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Bills</span>
+        <span className="w-[120px]" />
+      </nav>
+      <main className="pt-16 md:pt-24 pb-24">
+        <div className="max-w-5xl mx-auto px-6 md:px-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-14">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Cashflow</div>
+            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
+              Bills <span className="italic text-brand">&amp; income.</span>
+            </h1>
+            <p className="mt-6 text-base text-muted-foreground max-w-lg">Monthly outflow vs. maintenance plan income.</p>
           </motion.div>
 
           {/* Summary */}
-          <div className="border-2 border-brand bg-brand/5 p-6 mb-4">
+          <div className="border border-foreground/10 bg-foreground/[0.02] rounded-2xl p-6 mb-4">
             <div className="flex items-baseline justify-between gap-4 flex-wrap">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
               <Button
@@ -412,7 +414,7 @@ const BillsTracker = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-            <div className="border-2 border-foreground p-6">
+            <div className="border border-foreground/10 rounded-2xl p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
               <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -420,7 +422,7 @@ const BillsTracker = () => {
                 {extraRows.length > 0 && ` + ${extraRows.length} manual`}
               </p>
             </div>
-            <div className="border-2 border-foreground p-6">
+            <div className="border border-foreground/10 rounded-2xl p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
               <p className="text-2xl font-bold mt-2">{fmt(totalBills)}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -536,9 +538,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : bills.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No bills yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No bills yet.</p>
             ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+              <div className="border border-foreground/10 rounded-2xl divide-y divide-foreground/10">
                 {bills.map((b) => (
                   <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
@@ -601,9 +603,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : incomeRows.length === 0 && extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No maintenance income yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No maintenance income yet.</p>
             ) : (
-              <div className={`border-2 divide-y-2 divide-foreground ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`border-2 divide-y divide-foreground/10 ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {incomeRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4">
                     <div>
@@ -677,9 +679,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : w2Rows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No W2 income yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No W2 income yet.</p>
             ) : (
-              <div className={`border-2 divide-y-2 divide-foreground ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`border-2 divide-y divide-foreground/10 ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {w2Rows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
                     <div>
@@ -738,9 +740,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : taxReminders.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No tax reminders yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No tax reminders yet.</p>
             ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+              <div className="border border-foreground/10 rounded-2xl divide-y divide-foreground/10">
                 {taxReminders.map((r) => {
                   const d = daysUntil(r.due_date);
                   let dueLabel = fmtDate(r.due_date);
@@ -780,7 +782,6 @@ const BillsTracker = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

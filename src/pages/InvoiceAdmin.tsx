@@ -753,7 +753,7 @@ const InvoiceAdmin = () => {
           </p>
           <Link
             to="/home-office/login"
-            className="inline-block text-xs font-mono uppercase tracking-widest border-2 border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
+            className="inline-block text-xs font-mono uppercase tracking-widest border border-foreground/10 rounded-2xl px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
           >
             Go to Sign In
           </Link>
@@ -900,7 +900,7 @@ const InvoiceAdmin = () => {
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Invoices</p>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ? "Hide Invoices" : "Show Invoices"}</button>
-                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border border-foreground/10 rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
                     {showInvoiceForm ? "Cancel" : "New Invoice"}
                   </button>
                 </div>
@@ -1052,27 +1052,33 @@ const InvoiceAdmin = () => {
 
   // ── Clients Dashboard ──
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
-      </div>
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <div className="pt-32 pb-8">
-          <Link to="/home-office" className="text-xs font-mono text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
-          <div className="flex items-start justify-between gap-4 mt-3">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">{displayName}</h1>
-              <p className="text-sm font-mono text-muted-foreground mt-1">{clients.length} clients · {invoices.length} invoices · ${totalRevenue.toLocaleString()} revenue</p>
-            </div>
-            <button onClick={() => setShowClientForm(!showClientForm)} className="text-xs font-mono uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors whitespace-nowrap">
+    <div className="min-h-screen bg-background font-mono">
+      <nav className="sticky top-0 z-40 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+        <Link to="/home-office" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          ← Home Office
+        </Link>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Invoices</span>
+        <span className="w-[120px]" />
+      </nav>
+      <div className="max-w-5xl mx-auto px-6 md:px-12">
+        <div className="pt-16 md:pt-24 pb-12">
+          <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Clients</div>
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
+              Hello, <span className="italic text-brand">{displayName}.</span>
+            </h1>
+            <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors whitespace-nowrap">
               {showClientForm ? "Cancel" : "Add Client"}
             </button>
           </div>
+          <p className="mt-6 text-sm text-muted-foreground">
+            {clients.length} clients · {invoices.length} invoices · ${totalRevenue.toLocaleString()} revenue
+          </p>
         </div>
 
         <AnimatePresence>
           {showClientForm && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border-2 border-foreground mb-8">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-foreground/10 rounded-2xl mb-8">
               <form onSubmit={handleCreateClient} className="p-6 space-y-4">
                 <div className="grid gap-4 md:grid-cols-3">
                   <input value={newOwnerName} onChange={(e) => setNewOwnerName(e.target.value)} placeholder="Name" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />

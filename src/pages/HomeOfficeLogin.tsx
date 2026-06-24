@@ -125,11 +125,7 @@ const HomeOfficeLogin = () => {
       {/* Main */}
       <main className="flex-1 grid md:grid-cols-2">
         {/* LEFT — editorial pane */}
-        <div className="hidden md:flex flex-col justify-between border-r border-foreground/10 p-12 lg:p-16 bg-foreground/[0.015]">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-            01 — Workspace
-          </div>
-
+        <div className="hidden md:flex flex-col justify-center border-r border-foreground/10 p-12 lg:p-16 bg-foreground/[0.015]">
           <div>
             <h2 className="text-4xl lg:text-6xl tracking-[-0.04em] leading-[1.02] font-medium">
               A quiet system
@@ -142,11 +138,6 @@ const HomeOfficeLogin = () => {
               Bills, notes, goals, taxes, and invoices — collected in one place,
               styled the way you'd actually use them.
             </p>
-          </div>
-
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-            <span>© Reed Digital Group</span>
-            <span>v 1.0</span>
           </div>
         </div>
 
