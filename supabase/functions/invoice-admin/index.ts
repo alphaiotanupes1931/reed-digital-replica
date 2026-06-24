@@ -367,7 +367,7 @@ serve(async (req) => {
         .from("invoices")
         .delete()
         .eq("id", invoice_id)
-        .eq("owner_user_id", userId);
+        .or(`owner_user_id.eq.${userId},owner_user_id.is.null`);
 
       if (error) throw error;
 
