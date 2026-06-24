@@ -6,19 +6,22 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
 
-type IncomeRow = { id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null };
-type W2Row = { id: string; year: number; employer: string; gross_wages: number; federal_withheld: number; state_withheld: number; notes: string | null };
+type IncomeRow = { id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null; date_precision: "day" | "month" };
+type W2DocRow = { id: string; year: number; employer: string; file_path: string; file_name: string; mime_type: string | null; size_bytes: number | null; notes: string | null; created_at: string };
 type ExpenseRow = { id: string; entry_date: string; category: string; description: string; amount: number; receipt_note: string | null };
 type MileageRow = { id: string; entry_date: string; purpose: string; miles: number; gas_amount: number; vehicle: string | null };
 type ReminderRow = { id: string; title: string; amount: number; due_date: string | null; paid: boolean; notes: string | null };
 type InvoiceRow = { id: string; service: string; price: number; status: string; due_date: string; paid_at: string | null; client_id: string };
 
 const EXPENSE_CATEGORIES = ["Equipment", "Software", "Office", "Meals", "Travel", "Utilities", "Marketing", "Other"];
-const TABS = ["Income", "W-2", "Expenses", "Mileage", "Reminders", "Calendar"] as const;
+const TABS = ["Income", "W-2 Forms", "Expenses", "Mileage", "Reminders", "Calendar"] as const;
 type Tab = typeof TABS[number];
 
 const fmt = (n: number) => `$${Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const todayISO = () => new Date().toISOString().slice(0, 10);
+const todayMonthISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`; };
+const monthLabel = (iso: string) => { const [y, m] = iso.split("-").map(Number); return new Date(y, (m || 1) - 1, 1).toLocaleString(undefined, { month: "long", year: "numeric" }); };
+const formatEntryDate = (iso: string, precision: "day" | "month") => precision === "month" ? monthLabel(iso) : iso;
 const yearStart = () => `${new Date().getFullYear()}-01-01`;
 const yearEnd = () => `${new Date().getFullYear()}-12-31`;
 
@@ -27,7 +30,7 @@ export default function Taxes() {
   const [userId, setUserId] = useState<string>("");
   const [profile, setProfile] = useState<{ full_name: string | null; business_name: string | null; accountant_email: string | null; accountant_name: string | null; last_accountant_notified_at: string | null } | null>(null);
   const [income, setIncome] = useState<IncomeRow[]>([]);
-  const [w2, setW2] = useState<W2Row[]>([]);
+  const [w2Docs, setW2Docs] = useState<W2DocRow[]>([]);
   const [expenses, setExpenses] = useState<ExpenseRow[]>([]);
   const [mileage, setMileage] = useState<MileageRow[]>([]);
   const [reminders, setReminders] = useState<ReminderRow[]>([]);
@@ -61,30 +64,48 @@ export default function Taxes() {
   const loadAll = async (uid: string) => {
     const [i, w, e, m, r, inv] = await Promise.all([
       supabase.from("tax_income_entries").select("*").eq("owner_user_id", uid).order("entry_date", { ascending: false }),
-      supabase.from("tax_w2_entries").select("*").eq("owner_user_id", uid).order("year", { ascending: false }),
+      supabase.from("tax_w2_documents").select("*").eq("owner_user_id", uid).order("year", { ascending: false }),
       supabase.from("tax_expenses").select("*").eq("owner_user_id", uid).order("entry_date", { ascending: false }),
       supabase.from("tax_mileage_entries").select("*").eq("owner_user_id", uid).order("entry_date", { ascending: false }),
       supabase.from("tax_reminders").select("*").eq("owner_user_id", uid).order("due_date", { ascending: true }),
       supabase.from("invoices").select("id, service, price, status, due_date, paid_at, client_id").eq("owner_user_id", uid),
     ]);
     if (i.data) setIncome(i.data as any);
-    if (w.data) setW2(w.data as any);
+    if (w.data) setW2Docs(w.data as any);
     if (e.data) setExpenses(e.data as any);
     if (m.data) setMileage(m.data as any);
     if (r.data) setReminders(r.data as any);
-    if (inv.data) setInvoices(inv.data as any);
+    if (inv.data) {
+      setInvoices(inv.data as any);
+      // Auto-import any newly paid invoices that haven't been pulled yet
+      const importedIds = new Set((i.data as any[] | null)?.map((r) => r.invoice_id).filter(Boolean) ?? []);
+      const newPaid = (inv.data as any[]).filter((p) => p.status === "paid" && !importedIds.has(p.id));
+      if (newPaid.length > 0) {
+        const rows = newPaid.map((p) => ({
+          owner_user_id: uid,
+          entry_date: (p.paid_at || p.due_date || todayISO()).slice(0, 10),
+          date_precision: "day",
+          source: `Invoice: ${p.service}`,
+          amount: Number(p.price),
+          invoice_id: p.id,
+        }));
+        await supabase.from("tax_income_entries").insert(rows as any);
+        const { data: refreshed } = await supabase.from("tax_income_entries").select("*").eq("owner_user_id", uid).order("entry_date", { ascending: false });
+        if (refreshed) setIncome(refreshed as any);
+      }
+    }
   };
 
   const totals = useMemo(() => {
     const inYear = (d: string | null) => !!d && d >= yearStart() && d <= yearEnd();
     const bizIncome = income.filter(i => inYear(i.entry_date)).reduce((s, i) => s + Number(i.amount), 0);
-    const w2Income = w2.filter(w => w.year === new Date().getFullYear()).reduce((s, w) => s + Number(w.gross_wages), 0);
+    const w2Count = w2Docs.filter(w => w.year === new Date().getFullYear()).length;
     const exp = expenses.filter(e => inYear(e.entry_date)).reduce((s, e) => s + Number(e.amount), 0);
     const miles = mileage.filter(m => inYear(m.entry_date)).reduce((s, m) => s + Number(m.miles), 0);
     const gas = mileage.filter(m => inYear(m.entry_date)).reduce((s, m) => s + Number(m.gas_amount), 0);
     const deductible = exp + miles * 0.67;
-    return { bizIncome, w2Income, exp, miles, gas, deductible };
-  }, [income, w2, expenses, mileage]);
+    return { bizIncome, w2Count, exp, miles, gas, deductible };
+  }, [income, w2Docs, expenses, mileage]);
 
   const pullFromInvoices = async () => {
     const paid = invoices.filter(i => i.status === "paid");
@@ -94,6 +115,7 @@ export default function Taxes() {
     const rows = toAdd.map(p => ({
       owner_user_id: userId,
       entry_date: (p.paid_at || p.due_date || todayISO()).slice(0, 10),
+      date_precision: "day",
       source: `Invoice: ${p.service}`,
       amount: Number(p.price),
       invoice_id: p.id,
@@ -157,7 +179,7 @@ export default function Taxes() {
           <div className="mt-10 grid grid-cols-2 md:grid-cols-5 border-2 border-foreground">
             {[
               { label: "Business Income", value: fmt(totals.bizIncome) },
-              { label: "W-2 Wages", value: fmt(totals.w2Income) },
+              { label: "W-2 Forms", value: `${totals.w2Count} on file` },
               { label: "Expenses", value: fmt(totals.exp) },
               { label: "Mileage", value: `${totals.miles.toFixed(0)} mi` },
               { label: "Est. Deductible", value: fmt(totals.deductible) },
@@ -197,7 +219,7 @@ export default function Taxes() {
 
           <div className="mt-8">
             {tab === "Income" && <IncomeTab userId={userId} rows={income} reload={() => loadAll(userId)} onPullInvoices={pullFromInvoices} />}
-            {tab === "W-2" && <W2Tab userId={userId} rows={w2} reload={() => loadAll(userId)} />}
+            {tab === "W-2 Forms" && <W2DocsTab userId={userId} rows={w2Docs} reload={() => loadAll(userId)} />}
             {tab === "Expenses" && <ExpensesTab userId={userId} rows={expenses} reload={() => loadAll(userId)} />}
             {tab === "Mileage" && <MileageTab userId={userId} rows={mileage} reload={() => loadAll(userId)} />}
             {tab === "Reminders" && <RemindersTab userId={userId} rows={reminders} reload={() => loadAll(userId)} />}
@@ -244,13 +266,14 @@ function EmptyRow({ cols, text }: { cols: number; text: string }) {
 }
 
 function IncomeTab({ userId, rows, reload, onPullInvoices }: { userId: string; rows: IncomeRow[]; reload: () => Promise<void>; onPullInvoices: () => Promise<void> }) {
-  const [form, setForm] = useState({ entry_date: todayISO(), source: "", amount: "", notes: "" });
+  const [form, setForm] = useState({ entry_date: todayISO(), source: "", amount: "", notes: "", precision: "day" as "day" | "month", month_value: new Date().toISOString().slice(0, 7) });
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.source) return;
-    const { error } = await supabase.from("tax_income_entries").insert({ owner_user_id: userId, entry_date: form.entry_date, source: form.source, amount: parseFloat(form.amount || "0"), notes: form.notes || null } as any);
+    const entry_date = form.precision === "month" ? `${form.month_value}-01` : form.entry_date;
+    const { error } = await supabase.from("tax_income_entries").insert({ owner_user_id: userId, entry_date, date_precision: form.precision, source: form.source, amount: parseFloat(form.amount || "0"), notes: form.notes || null } as any);
     if (error) return toast.error(error.message);
-    setForm({ entry_date: todayISO(), source: "", amount: "", notes: "" });
+    setForm({ entry_date: todayISO(), source: "", amount: "", notes: "", precision: "day", month_value: new Date().toISOString().slice(0, 7) });
     reload();
   };
   const remove = async (id: string) => { await supabase.from("tax_income_entries").delete().eq("id", id); reload(); };
@@ -258,13 +281,23 @@ function IncomeTab({ userId, rows, reload, onPullInvoices }: { userId: string; r
     <TableShell header={`Business income · ${rows.length} rows`} action={
       <button onClick={onPullInvoices} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand">Pull from Invoices</button>
     }>
-      <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[140px,2fr,1fr,2fr,auto] gap-2 p-3 border-b-2 border-foreground/20 bg-muted/30">
-        <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Source (client, gig, etc.)" value={form.source} onChange={e => setForm(s => ({ ...s, source: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
-      </form>
+      <div className="p-3 border-b-2 border-foreground/20 bg-muted/30 space-y-2">
+        <div className="flex gap-1 text-[10px] uppercase tracking-widest">
+          <button type="button" onClick={() => setForm(s => ({ ...s, precision: "day" }))} className={`px-3 py-1 border ${form.precision === "day" ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-muted-foreground hover:text-foreground"}`}>Exact day</button>
+          <button type="button" onClick={() => setForm(s => ({ ...s, precision: "month" }))} className={`px-3 py-1 border ${form.precision === "month" ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-muted-foreground hover:text-foreground"}`}>Month only</button>
+        </div>
+        <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[160px,2fr,1fr,2fr,auto] gap-2">
+          {form.precision === "day" ? (
+            <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          ) : (
+            <input type="month" value={form.month_value} onChange={e => setForm(s => ({ ...s, month_value: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          )}
+          <input placeholder="Source (client, gig, etc.)" value={form.source} onChange={e => setForm(s => ({ ...s, source: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
+        </form>
+      </div>
       <table className="w-full text-sm">
         <thead className="bg-muted/20">
           <tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -275,7 +308,7 @@ function IncomeTab({ userId, rows, reload, onPullInvoices }: { userId: string; r
           {rows.length === 0 && <EmptyRow cols={5} text="No income logged yet. Add a row above or pull from invoices." />}
           {rows.map(r => (
             <tr key={r.id} className="border-t border-foreground/10">
-              <td className="px-3 py-2 text-muted-foreground">{r.entry_date}</td>
+              <td className="px-3 py-2 text-muted-foreground">{formatEntryDate(r.entry_date, r.date_precision || "day")}</td>
               <td className="px-3 py-2">{r.source}{r.invoice_id && <span className="ml-2 text-[10px] text-brand uppercase">invoice</span>}</td>
               <td className="px-3 py-2 text-right font-semibold">{fmt(r.amount)}</td>
               <td className="px-3 py-2 text-muted-foreground">{r.notes || "—"}</td>
@@ -288,43 +321,85 @@ function IncomeTab({ userId, rows, reload, onPullInvoices }: { userId: string; r
   );
 }
 
-function W2Tab({ userId, rows, reload }: { userId: string; rows: W2Row[]; reload: () => Promise<void> }) {
-  const [form, setForm] = useState({ year: String(new Date().getFullYear()), employer: "", gross_wages: "", federal_withheld: "", state_withheld: "" });
-  const add = async (e: React.FormEvent) => {
+function W2DocsTab({ userId, rows, reload }: { userId: string; rows: W2DocRow[]; reload: () => Promise<void> }) {
+  const [form, setForm] = useState({ year: String(new Date().getFullYear()), employer: "", notes: "" });
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const upload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.employer) return;
-    const { error } = await supabase.from("tax_w2_entries").insert({ owner_user_id: userId, year: parseInt(form.year), employer: form.employer, gross_wages: parseFloat(form.gross_wages || "0"), federal_withheld: parseFloat(form.federal_withheld || "0"), state_withheld: parseFloat(form.state_withheld || "0") } as any);
-    if (error) return toast.error(error.message);
-    setForm({ year: String(new Date().getFullYear()), employer: "", gross_wages: "", federal_withheld: "", state_withheld: "" });
+    if (!file) { toast.error("Pick a W-2 file first."); return; }
+    if (!form.employer.trim()) { toast.error("Employer is required."); return; }
+    if (file.size > 15 * 1024 * 1024) { toast.error("File too large (15MB max)."); return; }
+    setUploading(true);
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${userId}/${form.year}/${Date.now()}-${safeName}`;
+      const up = await supabase.storage.from("w2-forms").upload(path, file, { contentType: file.type, upsert: false });
+      if (up.error) throw up.error;
+      const { error } = await supabase.from("tax_w2_documents").insert({
+        owner_user_id: userId, year: parseInt(form.year), employer: form.employer.trim(),
+        file_path: path, file_name: file.name, mime_type: file.type || null, size_bytes: file.size,
+        notes: form.notes.trim() || null,
+      } as any);
+      if (error) throw error;
+      toast.success("W-2 uploaded. Your accountant can now download it.");
+      setForm({ year: String(new Date().getFullYear()), employer: "", notes: "" });
+      setFile(null);
+      (document.getElementById("w2-file-input") as HTMLInputElement | null)?.value && ((document.getElementById("w2-file-input") as HTMLInputElement).value = "");
+      reload();
+    } catch (err: any) {
+      toast.error(err.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const download = async (r: W2DocRow) => {
+    const { data, error } = await supabase.storage.from("w2-forms").createSignedUrl(r.file_path, 60);
+    if (error || !data) { toast.error(error?.message || "Could not get download link"); return; }
+    window.open(data.signedUrl, "_blank");
+  };
+
+  const remove = async (r: W2DocRow) => {
+    if (!confirm(`Delete W-2 from ${r.employer} (${r.year})?`)) return;
+    await supabase.storage.from("w2-forms").remove([r.file_path]);
+    await supabase.from("tax_w2_documents").delete().eq("id", r.id);
     reload();
   };
-  const remove = async (id: string) => { await supabase.from("tax_w2_entries").delete().eq("id", id); reload(); };
+
   return (
-    <TableShell header={`W-2 income · ${rows.length} rows`}>
-      <form onSubmit={add} className="grid grid-cols-2 md:grid-cols-[90px,2fr,1fr,1fr,1fr,auto] gap-2 p-3 border-b-2 border-foreground/20 bg-muted/30">
-        <input placeholder="Year" value={form.year} onChange={e => setForm(s => ({ ...s, year: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Employer" value={form.employer} onChange={e => setForm(s => ({ ...s, employer: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="Gross wages" value={form.gross_wages} onChange={e => setForm(s => ({ ...s, gross_wages: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="Fed withheld" value={form.federal_withheld} onChange={e => setForm(s => ({ ...s, federal_withheld: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="State withheld" value={form.state_withheld} onChange={e => setForm(s => ({ ...s, state_withheld: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
+    <TableShell header={`W-2 forms on file · ${rows.length}`}>
+      <form onSubmit={upload} className="p-4 border-b-2 border-foreground/20 bg-muted/30 space-y-3">
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Upload your W-2 PDF or image so your accountant can download it directly.</p>
+        <div className="grid grid-cols-1 md:grid-cols-[90px,2fr,2fr] gap-2">
+          <input placeholder="Year" value={form.year} onChange={e => setForm(s => ({ ...s, year: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Employer" value={form.employer} onChange={e => setForm(s => ({ ...s, employer: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <input id="w2-file-input" type="file" accept="application/pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="text-sm" />
+          <button disabled={uploading} className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest disabled:opacity-50">{uploading ? "Uploading…" : "Upload W-2"}</button>
+        </div>
       </form>
       <table className="w-full text-sm">
         <thead className="bg-muted/20">
           <tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground">
-            <th className="px-3 py-2">Year</th><th className="px-3 py-2">Employer</th><th className="px-3 py-2 text-right">Gross</th><th className="px-3 py-2 text-right">Fed</th><th className="px-3 py-2 text-right">State</th><th className="px-3 py-2"></th>
+            <th className="px-3 py-2">Year</th><th className="px-3 py-2">Employer</th><th className="px-3 py-2">File</th><th className="px-3 py-2">Notes</th><th className="px-3 py-2"></th>
           </tr>
         </thead>
         <tbody>
-          {rows.length === 0 && <EmptyRow cols={6} text="No W-2 income added yet." />}
+          {rows.length === 0 && <EmptyRow cols={5} text="No W-2 forms uploaded yet." />}
           {rows.map(r => (
             <tr key={r.id} className="border-t border-foreground/10">
               <td className="px-3 py-2 text-muted-foreground">{r.year}</td>
               <td className="px-3 py-2">{r.employer}</td>
-              <td className="px-3 py-2 text-right font-semibold">{fmt(r.gross_wages)}</td>
-              <td className="px-3 py-2 text-right">{fmt(r.federal_withheld)}</td>
-              <td className="px-3 py-2 text-right">{fmt(r.state_withheld)}</td>
-              <td className="px-3 py-2 text-right"><button onClick={() => remove(r.id)} className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-destructive">Delete</button></td>
+              <td className="px-3 py-2 text-muted-foreground truncate max-w-[240px]">{r.file_name}</td>
+              <td className="px-3 py-2 text-muted-foreground">{r.notes || "—"}</td>
+              <td className="px-3 py-2 text-right whitespace-nowrap">
+                <button onClick={() => download(r)} className="text-[10px] uppercase tracking-widest border border-foreground/20 px-3 py-1 hover:border-brand hover:text-brand mr-1">Download</button>
+                <button onClick={() => remove(r)} className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-destructive">Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
