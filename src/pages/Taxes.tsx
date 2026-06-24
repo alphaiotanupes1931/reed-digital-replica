@@ -28,7 +28,9 @@ const yearEnd = () => `${new Date().getFullYear()}-12-31`;
 export default function Taxes() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string>("");
-  const [profile, setProfile] = useState<{ full_name: string | null; business_name: string | null; accountant_email: string | null; accountant_name: string | null; last_accountant_notified_at: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ full_name: string | null; business_name: string | null; accountant_email: string | null; accountant_name: string | null; last_accountant_notified_at: string | null; stripe_income_choice: string | null; stripe_income_key: string | null; linked_accountant_id: string | null } | null>(null);
+  const [linkedAcctName, setLinkedAcctName] = useState<string>("");
+  const [linkStatus, setLinkStatus] = useState<string>("");
   const [income, setIncome] = useState<IncomeRow[]>([]);
   const [w2Docs, setW2Docs] = useState<W2DocRow[]>([]);
   const [expenses, setExpenses] = useState<ExpenseRow[]>([]);
@@ -38,8 +40,10 @@ export default function Taxes() {
   const [tab, setTab] = useState<Tab>("Income");
   const [loading, setLoading] = useState(true);
   const [showAccountantModal, setShowAccountantModal] = useState(false);
-  const [accountantEmail, setAccountantEmail] = useState("");
-  const [accountantName, setAccountantName] = useState("");
+  const [accountantIdInput, setAccountantIdInput] = useState("");
+  const [showStripeModal, setShowStripeModal] = useState(false);
+  const [stripeKeyInput, setStripeKeyInput] = useState("");
+  const [savingStripe, setSavingStripe] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -53,12 +57,44 @@ export default function Taxes() {
   }, []);
 
   const loadProfile = async (uid: string) => {
-    const { data } = await supabase.from("profiles").select("full_name, business_name, accountant_email, accountant_name, last_accountant_notified_at").eq("user_id", uid).maybeSingle();
+    const { data } = await supabase.from("profiles").select("full_name, business_name, accountant_email, accountant_name, last_accountant_notified_at, stripe_income_choice, stripe_income_key, linked_accountant_id").eq("user_id", uid).maybeSingle();
     if (data) {
       setProfile(data as any);
-      setAccountantEmail((data as any).accountant_email || "");
-      setAccountantName((data as any).accountant_name || "");
+      const linkedId = (data as any).linked_accountant_id as string | null;
+      if (linkedId) {
+        const [{ data: link }, { data: acct }] = await Promise.all([
+          supabase.from("accountant_clients").select("status").eq("accountant_user_id", linkedId).eq("client_user_id", uid).maybeSingle(),
+          supabase.from("profiles").select("full_name, business_name").eq("user_id", linkedId).maybeSingle(),
+        ]);
+        setLinkStatus(link?.status || "");
+        setLinkedAcctName((acct as any)?.business_name || (acct as any)?.full_name || "Accountant");
+      }
+      // Trigger automatic Stripe income pull if connected
+      if ((data as any).stripe_income_choice === "stripe" && (data as any).stripe_income_key) {
+        supabase.functions.invoke("stripe-income-pull").then(() => loadAll(uid));
+      }
+      // Tax-season notification (April 1–April 15 window, once per year per user)
+      maybeQueueTaxSeasonNotice(uid);
     }
+  };
+
+  const maybeQueueTaxSeasonNotice = async (uid: string) => {
+    const now = new Date();
+    const year = now.getFullYear();
+    // Deadline April 15. Notify starting April 8 (1 week prior).
+    const deadline = new Date(year, 3, 15);
+    const windowStart = new Date(year, 3, 8);
+    if (now < windowStart || now > deadline) return;
+    const { data: prof } = await supabase.from("profiles").select("tax_season_notified_year").eq("user_id", uid).maybeSingle();
+    if ((prof as any)?.tax_season_notified_year === year) return;
+    await supabase.from("system_notifications").insert({
+      user_id: uid,
+      kind: "tax_season",
+      title: `Tax season starts ${deadline.toLocaleDateString(undefined, { month: "long", day: "numeric" })}`,
+      body: `You have one week. Make sure your income, expenses and W-2 forms are up to date.`,
+      cta_url: "/home-office/taxes",
+    } as any);
+    await supabase.from("profiles").update({ tax_season_notified_year: year } as any).eq("user_id", uid);
   };
 
   const loadAll = async (uid: string) => {
@@ -107,57 +143,55 @@ export default function Taxes() {
     return { bizIncome, w2Count, exp, miles, gas, deductible };
   }, [income, w2Docs, expenses, mileage]);
 
-  const pullFromInvoices = async () => {
-    const paid = invoices.filter(i => i.status === "paid");
-    const existing = new Set(income.map(i => i.invoice_id).filter(Boolean));
-    const toAdd = paid.filter(p => !existing.has(p.id));
-    if (toAdd.length === 0) { toast.info("No new paid invoices to import."); return; }
-    const rows = toAdd.map(p => ({
-      owner_user_id: userId,
-      entry_date: (p.paid_at || p.due_date || todayISO()).slice(0, 10),
-      date_precision: "day",
-      source: `Invoice: ${p.service}`,
-      amount: Number(p.price),
-      invoice_id: p.id,
-    }));
-    const { error } = await supabase.from("tax_income_entries").insert(rows as any);
+  const saveAccountantById = async () => {
+    const code = accountantIdInput.trim();
+    if (!code) return;
+    const { error } = await supabase.rpc("connect_accountant_by_id" as any, { _accountant_id: code } as any);
     if (error) { toast.error(error.message); return; }
-    toast.success(`Imported ${toAdd.length} invoice${toAdd.length === 1 ? "" : "s"}.`);
-    await loadAll(userId);
-  };
-
-  const saveAccountantContact = async () => {
-    const { error } = await supabase.from("profiles").update({ accountant_email: accountantEmail || null, accountant_name: accountantName || null } as any).eq("user_id", userId);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Accountant contact saved.");
+    toast.success("Request sent to your accountant.");
+    setAccountantIdInput("");
+    setShowAccountantModal(false);
     await loadProfile(userId);
   };
 
   const notifyAccountant = async () => {
-    if (!profile?.accountant_email) { setShowAccountantModal(true); return; }
-    const { data: settings } = await supabase.from("accountant_settings").select("share_token").eq("owner_user_id", userId).maybeSingle();
-    const ownerName = profile.business_name || profile.full_name || "Your client";
-    const portalLink = settings?.share_token ? `${window.location.origin}/accountant/${settings.share_token}` : "";
-    const subject = encodeURIComponent(`Tax info updated — ${ownerName}`);
-    const lines = [
-      `Hi ${profile.accountant_name || ""},`,
-      ``,
-      `${ownerName} just updated their tax info in the Home Office app.`,
-      ``,
-      `Current YTD snapshot:`,
-      `- Business income: ${fmt(totals.bizIncome)}`,
-      `- W-2 forms on file: ${totals.w2Count}`,
-      `- Expenses / write-offs: ${fmt(totals.exp)}`,
-      `- Mileage: ${totals.miles.toFixed(1)} mi (gas: ${fmt(totals.gas)})`,
-      ``,
-      portalLink ? `View the live data (read-only):\n${portalLink}\n\n(Use the passcode shared previously.)` : ``,
-      ``,
-      `Thanks!`,
-    ];
-    const body = encodeURIComponent(lines.join("\n"));
-    window.location.href = `mailto:${profile.accountant_email}?subject=${subject}&body=${body}`;
+    if (!profile?.linked_accountant_id || linkStatus !== "active") {
+      setShowAccountantModal(true);
+      return;
+    }
+    const { error } = await supabase.rpc("notify_my_accountant" as any, { _message: `YTD: income ${fmt(totals.bizIncome)} · expenses ${fmt(totals.exp)} · ${totals.miles.toFixed(0)} mi · ${totals.w2Count} W-2 on file.` } as any);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Accountant notified.");
     await supabase.from("profiles").update({ last_accountant_notified_at: new Date().toISOString() } as any).eq("user_id", userId);
     await loadProfile(userId);
+  };
+
+  const saveStripeChoice = async (choice: "stripe" | "manual", key?: string) => {
+    setSavingStripe(true);
+    try {
+      const updates: any = { stripe_income_choice: choice };
+      if (choice === "stripe") {
+        if (!key || !key.startsWith("sk_")) { toast.error("That doesn't look like a Stripe secret key (starts with sk_)"); return; }
+        updates.stripe_income_key = key;
+        updates.stripe_income_connected_at = new Date().toISOString();
+      } else {
+        updates.stripe_income_key = null;
+      }
+      const { error } = await supabase.from("profiles").update(updates).eq("user_id", userId);
+      if (error) throw error;
+      toast.success(choice === "stripe" ? "Stripe connected. Pulling charges…" : "Got it — Zelle/Cash App entered manually.");
+      setShowStripeModal(false);
+      setStripeKeyInput("");
+      await loadProfile(userId);
+      if (choice === "stripe") {
+        await supabase.functions.invoke("stripe-income-pull");
+        await loadAll(userId);
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setSavingStripe(false);
+    }
   };
 
   if (loading) {
@@ -173,8 +207,23 @@ export default function Taxes() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
             <button onClick={() => navigate("/home-office")} className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-brand">← Home Office</button>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Taxes</h1>
+            <p className="text-6xl md:text-7xl font-bold tracking-tight text-brand mt-1">{new Date().getFullYear()}</p>
             <p className="text-sm text-muted-foreground mt-2">Keep your accountant in the loop. Update once, notify with one click.</p>
           </motion.div>
+
+          {!profile?.stripe_income_choice && (
+            <div className="mt-8 border-2 border-brand bg-brand/10 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-brand">Action required</p>
+                <h2 className="text-lg font-bold mt-1">Do you use Stripe to collect business income?</h2>
+                <p className="text-xs text-muted-foreground mt-1">If yes, connect Stripe and we'll auto-pull every charge into your income. Zelle, Cash App, and cash always have to be entered manually.</p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => saveStripeChoice("manual")} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-4 py-2">No, manual only</button>
+                <button onClick={() => setShowStripeModal(true)} className="text-[10px] uppercase tracking-widest bg-foreground text-background px-4 py-2">Yes, connect Stripe</button>
+              </div>
+            </div>
+          )}
 
           <div className="mt-10 grid grid-cols-2 md:grid-cols-5 border-2 border-foreground">
             {[
@@ -195,16 +244,16 @@ export default function Taxes() {
             <div className="flex-1 min-w-[200px]">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Accountant</p>
               <p className="text-sm font-semibold mt-1">
-                {profile?.accountant_email ? `${profile.accountant_name || ""} <${profile.accountant_email}>` : "Not set"}
+                {profile?.linked_accountant_id ? `${linkedAcctName} ${linkStatus === "pending" ? "· awaiting acceptance" : ""}` : "Not set"}
               </p>
               {profile?.last_accountant_notified_at && (
                 <p className="text-[10px] text-muted-foreground mt-1">Last notified {new Date(profile.last_accountant_notified_at).toLocaleString()}</p>
               )}
             </div>
             <button onClick={() => setShowAccountantModal(true)} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-2 hover:border-brand hover:text-brand">
-              {profile?.accountant_email ? "Edit Contact" : "Set Contact"}
+              {profile?.linked_accountant_id ? "Change" : "Set Accountant"}
             </button>
-            <button onClick={notifyAccountant} className="text-[10px] uppercase tracking-widest bg-brand text-brand-foreground border-2 border-brand px-4 py-2 hover:bg-brand/90">
+            <button onClick={notifyAccountant} disabled={linkStatus !== "active"} className="text-[10px] uppercase tracking-widest bg-brand text-brand-foreground border-2 border-brand px-4 py-2 hover:bg-brand/90 disabled:opacity-50">
               Notify Accountant
             </button>
           </div>
@@ -218,7 +267,7 @@ export default function Taxes() {
           </div>
 
           <div className="mt-8">
-            {tab === "Income" && <IncomeTab userId={userId} rows={income} reload={() => loadAll(userId)} onPullInvoices={pullFromInvoices} />}
+            {tab === "Income" && <IncomeTab userId={userId} rows={income} reload={() => loadAll(userId)} />}
             {tab === "W-2 Forms" && <W2DocsTab userId={userId} rows={w2Docs} reload={() => loadAll(userId)} />}
             {tab === "Expenses" && <ExpensesTab userId={userId} rows={expenses} reload={() => loadAll(userId)} />}
             {tab === "Mileage" && <MileageTab userId={userId} rows={mileage} reload={() => loadAll(userId)} />}
@@ -232,15 +281,38 @@ export default function Taxes() {
       {showAccountantModal && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-6" onClick={() => setShowAccountantModal(false)}>
           <div className="bg-background border-2 border-foreground p-8 max-w-md w-full font-mono" onClick={e => e.stopPropagation()}>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Accountant Contact</p>
-            <h2 className="text-2xl font-bold mt-2">Who should we notify?</h2>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Connect Accountant</p>
+            <h2 className="text-2xl font-bold mt-2">Enter your accountant's ID</h2>
+            <p className="text-xs text-muted-foreground mt-2">Ask them for their Accountant ID (starts with <code>A-</code>). When they accept, you can notify them with one click.</p>
             <div className="mt-6 space-y-3">
-              <input value={accountantName} onChange={e => setAccountantName(e.target.value)} placeholder="Accountant name" className="w-full border-2 border-foreground/20 px-3 py-2 text-sm bg-background" />
-              <input value={accountantEmail} onChange={e => setAccountantEmail(e.target.value)} placeholder="accountant@email.com" type="email" className="w-full border-2 border-foreground/20 px-3 py-2 text-sm bg-background" />
+              <input value={accountantIdInput} onChange={e => setAccountantIdInput(e.target.value.toUpperCase())} placeholder="A-XXXXXX" className="w-full border-2 border-foreground/20 px-3 py-2 text-sm bg-background tracking-widest" autoFocus />
             </div>
             <div className="mt-6 flex gap-3">
               <button onClick={() => setShowAccountantModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-2">Cancel</button>
-              <button onClick={async () => { await saveAccountantContact(); setShowAccountantModal(false); }} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2">Save</button>
+              <button onClick={saveAccountantById} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2">Send request</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showStripeModal && (
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-6" onClick={() => setShowStripeModal(false)}>
+          <div className="bg-background border-2 border-foreground p-8 max-w-md w-full font-mono" onClick={e => e.stopPropagation()}>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Connect Stripe</p>
+            <h2 className="text-2xl font-bold mt-2">Paste your Stripe secret key</h2>
+            <ol className="text-xs text-muted-foreground mt-3 space-y-2 list-decimal pl-4">
+              <li>Open <span className="text-foreground">dashboard.stripe.com/apikeys</span></li>
+              <li>Click <span className="text-foreground">+ Create restricted key</span></li>
+              <li>Give it Read access to <span className="text-foreground">Charges</span></li>
+              <li>Copy and paste the <code>sk_…</code> key below</li>
+            </ol>
+            <div className="mt-4 space-y-3">
+              <input value={stripeKeyInput} onChange={e => setStripeKeyInput(e.target.value)} placeholder="sk_live_… or rk_live_…" type="password" className="w-full border-2 border-foreground/20 px-3 py-2 text-sm bg-background" autoFocus />
+              <p className="text-[10px] text-muted-foreground">Stored encrypted at rest. Used only to read your charges. Revoke any time in your Stripe dashboard.</p>
+            </div>
+            <div className="mt-6 flex gap-3">
+              <button onClick={() => setShowStripeModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-2">Cancel</button>
+              <button disabled={savingStripe} onClick={() => saveStripeChoice("stripe", stripeKeyInput)} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2 disabled:opacity-50">{savingStripe ? "Connecting…" : "Connect"}</button>
             </div>
           </div>
         </div>
