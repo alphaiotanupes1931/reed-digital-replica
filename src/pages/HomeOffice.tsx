@@ -107,13 +107,15 @@ const HomeOffice = () => {
         <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">
           Home Office {displayName ? `· ${displayName}` : ""}
         </span>
-        <button
-          onClick={handleLogout}
-          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
-        >
-          Log out
-        </button>
-        <div className="ml-2"><NotificationBell /></div>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <button
+            onClick={handleLogout}
+            className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
       </nav>
 
       <main className="pt-16 md:pt-24 pb-24 relative z-10">
