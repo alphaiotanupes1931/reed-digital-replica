@@ -337,7 +337,7 @@ function EmptyRow({ cols, text }: { cols: number; text: string }) {
   return <tr><td colSpan={cols} className="text-center text-xs text-muted-foreground py-10">{text}</td></tr>;
 }
 
-function IncomeTab({ userId, rows, reload, onPullInvoices }: { userId: string; rows: IncomeRow[]; reload: () => Promise<void>; onPullInvoices: () => Promise<void> }) {
+function IncomeTab({ userId, rows, reload }: { userId: string; rows: IncomeRow[]; reload: () => Promise<void> }) {
   const [form, setForm] = useState({ entry_date: todayISO(), source: "", amount: "", notes: "", precision: "day" as "day" | "month", month_value: new Date().toISOString().slice(0, 7) });
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -350,9 +350,7 @@ function IncomeTab({ userId, rows, reload, onPullInvoices }: { userId: string; r
   };
   const remove = async (id: string) => { await supabase.from("tax_income_entries").delete().eq("id", id); reload(); };
   return (
-    <TableShell header={`Business income · ${rows.length} rows`} action={
-      <button onClick={onPullInvoices} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand">Pull from Invoices</button>
-    }>
+    <TableShell header={`Business income · ${rows.length} rows · auto-imported from invoices & Stripe`}>
       <div className="p-3 border-b-2 border-foreground/20 bg-muted/30 space-y-2">
         <div className="flex gap-1 text-[10px] uppercase tracking-widest">
           <button type="button" onClick={() => setForm(s => ({ ...s, precision: "day" }))} className={`px-3 py-1 border ${form.precision === "day" ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-muted-foreground hover:text-foreground"}`}>Exact day</button>
