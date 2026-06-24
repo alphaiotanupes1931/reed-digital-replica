@@ -146,7 +146,7 @@ export default function Taxes() {
       ``,
       `Current YTD snapshot:`,
       `- Business income: ${fmt(totals.bizIncome)}`,
-      `- W-2 wages: ${fmt(totals.w2Income)}`,
+      `- W-2 forms on file: ${totals.w2Count}`,
       `- Expenses / write-offs: ${fmt(totals.exp)}`,
       `- Mileage: ${totals.miles.toFixed(1)} mi (gas: ${fmt(totals.gas)})`,
       ``,
