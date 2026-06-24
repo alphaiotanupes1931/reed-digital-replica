@@ -205,10 +205,9 @@ const HomeOffice = () => {
         </div>
       </main>
 
-      <footer className="px-6 md:px-12 py-10 border-t border-foreground/10">
-        <div className="max-w-5xl mx-auto flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          <span>© Reed Digital Group</span>
-          <Link to="/home-office/help" className="hover:text-foreground transition-colors">Help & Support</Link>
+      <footer className="px-6 md:px-12 py-8 border-t border-foreground/10">
+        <div className="max-w-5xl mx-auto flex items-center justify-end text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          <Link to="/home-office/help" className="hover:text-foreground transition-colors">Help</Link>
         </div>
       </footer>
 

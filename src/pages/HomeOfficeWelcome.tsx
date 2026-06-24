@@ -156,14 +156,11 @@ const HomeOfficeWelcome = () => {
         </section>
       </main>
 
-      <footer className="px-6 md:px-12 py-10 border-t border-foreground/10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          <span>© Reed Digital Group</span>
-          <div className="flex gap-6">
-            <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-            <Link to="/apps/legal/terms" className="hover:text-foreground transition-colors">Terms</Link>
-            <Link to="/apps/legal/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-          </div>
+      <footer className="px-6 md:px-12 py-8 border-t border-foreground/10">
+        <div className="max-w-6xl mx-auto flex items-center justify-end gap-6 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+          <Link to="/apps/legal/terms" className="hover:text-foreground transition-colors">Terms</Link>
+          <Link to="/apps/legal/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
         </div>
       </footer>
     </div>
