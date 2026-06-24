@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import NotificationBell from "@/components/NotificationBell";
 import { toast } from "sonner";
 
 const tiles = [
@@ -43,9 +44,13 @@ const HomeOffice = () => {
       }
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, onboarded, subscribed, business_id, business_name, recovery_setup_complete")
+        .select("full_name, onboarded, subscribed, business_id, business_name, recovery_setup_complete, account_type")
         .eq("user_id", data.user.id)
         .maybeSingle();
+      if (profile?.account_type === "accountant") {
+        navigate("/home-office/accountant", { replace: true });
+        return;
+      }
       if (!profile?.onboarded) {
         navigate("/home-office/onboarding");
         return;
@@ -102,12 +107,15 @@ const HomeOffice = () => {
         <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">
           Home Office {displayName ? `· ${displayName}` : ""}
         </span>
-        <button
-          onClick={handleLogout}
-          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
-        >
-          Log out
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <button
+            onClick={handleLogout}
+            className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
       </nav>
 
       <main className="pt-16 md:pt-24 pb-24 relative z-10">

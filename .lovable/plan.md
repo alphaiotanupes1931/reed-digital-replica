@@ -1,72 +1,91 @@
-## Tax Feature — Build Plan
+## Scope
 
-Scope confirmed: ship the full tax module now in the current JetBrains Mono / Old Gold styling. The Framer-style redesign happens as a follow-up after this lands and works.
+Ship everything in one pass across DB, edge functions, and UI.
 
-### What the client sees — `/home-office/taxes`
+---
 
-A single page with five sections, all editable inline:
+## 1. Invoice delete bug (fix first)
 
-1. **Income** — rows for business income (date, source, amount, notes). A "Pull from invoices" button auto-imports every paid invoice as a row (deduped by invoice id).
-2. **W-2 Income** — rows for each W-2 (employer, gross wages, federal withheld, state withheld, year).
-3. **Expenses & Write-offs** — rows with category (Equipment, Software, Office, Meals, Travel, Other), description, amount, date, optional receipt note.
-4. **Mileage & Gas** — rows with date, purpose, miles, gas $ spent, vehicle.
-5. **Reminders** — already exists; keep + surface on calendar.
+`InvoiceAdmin.tsx` deletes the row but RLS / soft-delete column is likely re-fetching it. I'll inspect — if it's a hard-delete that re-appears, it's a fetch ordering bug; if soft-delete, switch to a real `DELETE`. Verify via Playwright that a deleted invoice stays gone after reload.
 
-Top of page:
-- YTD totals strip: Business Income · W-2 Income · Total Expenses · Mileage (mi) · Estimated deductible
-- **Notify Accountant** button → sends email to the accountant on file saying "Your client [name] has updated their tax info — review here" with a link to the accountant tax portal.
-- Last-notified timestamp shown next to the button.
+---
 
-### Calendar view
+## 2. Year header on Taxes page
 
-Tab on the same page. Month grid showing:
-- Tax reminder due dates (gold dot)
-- Invoice due dates (outline dot)
-- Invoice paid dates (filled dot) with amount
-- Click a day → side panel lists everything on that date.
+Under the "Taxes" title add `{new Date().getFullYear()}` as a large display label. Updates automatically each year.
 
-### Accountant side — `/accountant/:token/taxes`
+---
 
-New dedicated read-only portal using the existing accountant invite token system. Shows the same five sections + YTD totals + calendar, plus a CSV export per section. No edit access.
+## 3. Tax season reminder (federal)
 
-### Email
+2026 federal individual return: **April 15, 2027**. One week prior trigger = **April 8, 2027**.
 
-New edge function `notify-accountant-tax` — sends through existing Lovable Emails infra (new template `accountant-tax-update.tsx`). Recipient = `accountant_settings.accountant_email`. Idempotency key = `tax-notify-<user_id>-<timestamp-bucket>` so spam-clicking doesn't double-send within a minute.
+- New table `system_notifications` (user-scoped, type, title, body, read_at, cta_url, dismissible).
+- Edge function `tax-season-reminder` (cron daily) inserts a notification for every owner one week before April 15 each year — formula `make_date(extract(year from now())::int, 4, 8)`.
+- Surface a bell badge in `HomeOffice.tsx` header + a banner on `/home-office/taxes` for unread tax-season notifications.
 
-### Database (migration)
+---
 
-New tables, all RLS-scoped to `owner_user_id = auth.uid()` with full grants:
-- `tax_income_entries` (date, source, amount, notes, invoice_id nullable for dedup)
-- `tax_w2_entries` (employer, year, gross_wages, federal_withheld, state_withheld)
-- `tax_expenses` (date, category, description, amount, receipt_note)
-- `tax_mileage_entries` (date, purpose, miles, gas_amount, vehicle)
-- Add `last_accountant_notified_at` column to `profiles`.
-- Reuse existing `tax_reminders` table as-is.
+## 4. Stripe income pull (per-user key)
 
-Accountant token policy: extend `accountant-view` edge function to also return these tables when called with a valid token.
+- Add `stripe_income_key` (text, nullable) + `stripe_income_connected_at` to `profiles`. Stored server-side; never exposed to client (`SELECT` policy excludes the column via a view).
+- Persistent banner on `/home-office/taxes` until user makes a choice: "Do you use Stripe to collect business income?" → **Yes** opens a modal to paste secret key + setup steps; **No** sets `stripe_income_choice = 'manual'` on profile and dismisses banner permanently. Zelle/CashApp note shown either way: "Those payments must be entered manually."
+- New edge function `stripe-income-pull`: reads the user's `stripe_income_key`, fetches `charges` since last sync (or year start), upserts into `tax_income_entries` deduped by `stripe_charge_id` (new column). Runs:
+  - on Taxes page mount
+  - via existing invoice auto-pull pattern
+- Remove the manual "Pull from invoices" button entirely — auto-pull runs on mount silently (already exists, just hide the button).
 
-### Pages / files touched
+---
 
-- New: `src/pages/Taxes.tsx`, `src/pages/AccountantTaxes.tsx`
-- New components: `TaxSpreadsheet.tsx`, `TaxCalendar.tsx`, `TaxTotalsBar.tsx`, `NotifyAccountantButton.tsx`
-- New edge function: `supabase/functions/notify-accountant-tax/index.ts`
-- New email template: `supabase/functions/_shared/transactional-email-templates/accountant-tax-update.tsx` + registry update
-- Edit: `App.tsx` routes, `HomeOffice.tsx` nav tile, `accountant-view/index.ts` to expose tax data, existing `AdminTaxes.tsx` stays for reminders-only quick add
-- Migration as described above
+## 5. Accountant accounts (new role + dashboard)
 
-### Out of scope for this build
+**Onboarding split:** First step of `HomeOfficeOnboarding.tsx` asks "I am a…" → **Business owner** | **Accountant**. Stored on `profiles.account_type`.
 
-- Framer-style redesign of landing / dashboard / auth (separate follow-up — I'll generate 3 design directions then)
-- Receipt file uploads (text notes only for v1)
-- Multi-year reporting (v1 = current calendar year)
+**Schema:**
+- `profiles.account_type` enum (`owner` | `accountant`), default `owner`.
+- `profiles.accountant_id` text (8-char, generated for accountants only, reuses `gen_business_id` style).
+- New table `accountant_clients` (accountant_user_id, client_user_id, status `pending|active|removed`, requested_at, accepted_at). RLS so both sides can read their own row.
+- Notifications table from §3 reused for "New client wants to connect" + "Notify accountant" actions.
 
-### Order of work
+**Owner flow:**
+- "Set Accountant" button on Taxes (and Profile). Modal asks for **Accountant ID** (replaces name/email entry). Submits → creates `accountant_clients` row + notification to accountant.
+- Existing "Notify accountant" button now just inserts a notification on the accountant's side (no email).
 
-1. Migration (you approve)
-2. Edge function + email template + deploy
-3. Client `/home-office/taxes` page with all 5 sections + totals + notify button
-4. Calendar tab pulling invoices + reminders
-5. Accountant `/accountant/:token/taxes` read-only portal
-6. Quick smoke test via Playwright
+**Accountant flow:**
+- After login, if `account_type='accountant'`, redirect to `/home-office/accountant` (new dashboard) instead of owner home.
+- Dashboard shows: their Accountant ID (copyable), pending client requests (Accept/Decline), active clients list. Clicking a client opens the existing read-only `AccountantView`-style screen but scoped via `accountant_clients`.
+- In-app bell for notifications.
 
-Sound good? Approve and I'll start with the migration.
+---
+
+## 6. Files to touch
+
+**DB migration**
+- `profiles`: add `account_type`, `accountant_id`, `stripe_income_key`, `stripe_income_connected_at`, `stripe_income_choice`.
+- new `accountant_clients`, `system_notifications`.
+- `tax_income_entries`: add `stripe_charge_id` (unique per owner).
+- Trigger to auto-gen `accountant_id` when `account_type='accountant'`.
+- Enable `pg_cron`/`pg_net` for tax-season cron.
+
+**Edge functions**
+- `stripe-income-pull` (new)
+- `tax-season-reminder` (new, cron'd)
+- `accountant-connect` (new — owner submits accountant_id, creates link + notification)
+
+**Frontend**
+- `HomeOfficeOnboarding.tsx`: role question first.
+- `HomeOffice.tsx`: notification bell, route by `account_type`.
+- `Taxes.tsx`: year header, Stripe banner/modal, Set Accountant by ID, remove pull-from-invoices button.
+- `InvoiceAdmin.tsx`: fix delete.
+- New `HomeOfficeAccountant.tsx` dashboard + route in `App.tsx`.
+- Small `NotificationBell.tsx` component.
+
+---
+
+## 7. Verification
+
+- Playwright: delete an invoice, reload, confirm it's gone.
+- Playwright: load Taxes, see "2026" header + Stripe banner.
+- Manual: create accountant account, copy ID, log in as owner, paste ID, see request appear on accountant dashboard.
+
+I'll request the user's Stripe secret key via `add_secret` only if needed for testing; the per-user key is stored in their own profile row, not the project secrets.

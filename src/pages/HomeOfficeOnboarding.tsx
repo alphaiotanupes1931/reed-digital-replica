@@ -27,7 +27,8 @@ const HomeOfficeOnboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [params] = useSearchParams();
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
+  const [step, setStep] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
+  const [accountType, setAccountType] = useState<"owner" | "accountant" | "">("");
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [birthdate, setBirthdate] = useState("");
@@ -59,12 +60,13 @@ const HomeOfficeOnboarding = () => {
       setUserId(data.user.id);
       supabase
         .from("profiles")
-        .select("full_name, business_name, onboarded, subscribed")
+        .select("full_name, business_name, onboarded, subscribed, account_type")
         .eq("user_id", data.user.id)
         .maybeSingle()
         .then(({ data: p }) => {
           if (p?.full_name) setFullName(p.full_name);
           if (p?.business_name) setBusinessName(p.business_name);
+          if (p?.account_type) setAccountType(p.account_type);
           // Returning from Stripe checkout
           if (params.get("checkout") === "success") {
             setStep(7);
@@ -73,6 +75,8 @@ const HomeOfficeOnboarding = () => {
           }
           if (params.get("step") === "paywall" || p?.onboarded) {
             setStep(7);
+          } else if (p?.account_type) {
+            setStep(1);
           }
         });
     });
@@ -106,9 +110,44 @@ const HomeOfficeOnboarding = () => {
     }
   };
 
+  const handleAccountTypeNext = async (type: "owner" | "accountant") => {
+    setAccountType(type);
+    if (!userId) return;
+    await supabase.from("profiles").upsert({ user_id: userId, account_type: type } as any, { onConflict: "user_id" });
+    if (type === "accountant") {
+      // Accountants: skip biz/payments/paywall steps and land on their dashboard.
+      // We still capture a name so they look like a person to clients.
+      setStep(1);
+    } else {
+      setStep(1);
+    }
+  };
+
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) return;
+    if (accountType === "accountant") {
+      // Accountant signup: save name + mark onboarded, send to accountant dashboard.
+      (async () => {
+        if (!userId) return;
+        setLoading(true);
+        try {
+          const { error } = await supabase.from("profiles").upsert({
+            user_id: userId,
+            full_name: fullName.trim(),
+            account_type: "accountant",
+            onboarded: true,
+            recovery_setup_complete: true,
+            subscribed: true,
+          } as any, { onConflict: "user_id" });
+          if (error) throw error;
+          navigate("/home-office/accountant", { replace: true });
+        } catch (err: any) {
+          toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
+        } finally { setLoading(false); }
+      })();
+      return;
+    }
     setStep(2);
   };
 
@@ -204,11 +243,33 @@ const HomeOfficeOnboarding = () => {
           className="mb-2"
         >
           <p className="text-[10px] uppercase tracking-[0.3em] text-brand">
-            Step {step} of 7
+            {step === 0 ? "Account type" : `Step ${step} of 7`}
           </p>
         </motion.div>
 
-        {step === 1 ? (
+        {step === 0 ? (
+          <motion.div
+            key="step0"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Are you a business owner or an accountant?</h1>
+              <p className="text-xs text-white/50 mt-2">We set up your workspace differently for each.</p>
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+              <button onClick={() => handleAccountTypeNext("owner")} className="text-left px-4 py-4 border border-white/10 hover:border-brand">
+                <div className="text-sm font-bold">Business owner</div>
+                <div className="text-xs text-white/50 mt-1">Track income, expenses, invoices, taxes, and notify your accountant.</div>
+              </button>
+              <button onClick={() => handleAccountTypeNext("accountant")} className="text-left px-4 py-4 border border-white/10 hover:border-brand">
+                <div className="text-sm font-bold">Accountant</div>
+                <div className="text-xs text-white/50 mt-1">Get an Accountant ID, accept client requests, and review their books.</div>
+              </button>
+            </div>
+          </motion.div>
+        ) : step === 1 ? (
           <motion.form
             key="step1"
             initial={{ opacity: 0, y: 8 }}

@@ -29,6 +29,7 @@ import InvoiceThankYou from "./pages/InvoiceThankYou";
 import InvoiceAdmin from "./pages/InvoiceAdmin";
 import HomeOfficeLogin from "./pages/HomeOfficeLogin";
 import HomeOffice from "./pages/HomeOffice";
+import HomeOfficeAccountant from "./pages/HomeOfficeAccountant";
 import HomeOfficeWelcome from "./pages/HomeOfficeWelcome";
 import HomeOfficeResetPassword from "./pages/HomeOfficeResetPassword";
 import HomeOfficeOnboarding from "./pages/HomeOfficeOnboarding";
@@ -107,6 +108,7 @@ const App = () => (
            <Route path="/home-office/recovery-setup" element={<HomeOfficeRecoverySetup />} />
             <Route path="/home-office/onboarding" element={<HomeOfficeOnboarding />} />
             <Route path="/home-office" element={<HomeOffice />} />
+            <Route path="/home-office/accountant" element={<HomeOfficeAccountant />} />
             <Route path="/home-office/work-assistant" element={<WorkAssistant />} />
             <Route path="/home-office/accounting" element={<Accounting />} />
             <Route path="/accountant/:token" element={<AccountantView />} />
