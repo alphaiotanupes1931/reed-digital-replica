@@ -1,8 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -375,18 +373,22 @@ const BillsTracker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono relative overflow-hidden">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
-      </div>
-      <Header />
-      <main className="pt-32 pb-20 relative z-10">
-        <div className="container max-w-5xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Bills</h1>
-            <p className="text-sm text-muted-foreground mt-2">Monthly outflow vs. maintenance plan income.</p>
+    <div className="min-h-screen bg-background font-mono">
+      <nav className="sticky top-0 z-40 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+        <Link to="/home-office" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          ← Home Office
+        </Link>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Bills</span>
+        <span className="w-[120px]" />
+      </nav>
+      <main className="pt-16 md:pt-24 pb-24">
+        <div className="max-w-5xl mx-auto px-6 md:px-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-14">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Cashflow</div>
+            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
+              Bills <span className="italic text-brand">&amp; income.</span>
+            </h1>
+            <p className="mt-6 text-base text-muted-foreground max-w-lg">Monthly outflow vs. maintenance plan income.</p>
           </motion.div>
 
           {/* Summary */}
