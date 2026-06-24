@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -16,9 +16,9 @@ const PASSWORD_RULES = [
 const validatePassword = (p: string) => PASSWORD_RULES.every((r) => r.test(p));
 
 const inputCls =
-  "w-full bg-white/[0.04] border border-white/10 text-white px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand transition-colors";
+  "w-full bg-transparent border-0 border-b border-foreground/15 text-foreground px-0 py-3 font-mono text-base focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground";
 const btnCls =
-  "w-full bg-brand text-brand-foreground py-3 font-mono text-sm uppercase tracking-widest hover:bg-brand/90 transition-colors disabled:opacity-50";
+  "w-full bg-foreground text-background py-4 font-mono text-[11px] uppercase tracking-[0.3em] hover:bg-foreground/85 transition-colors disabled:opacity-50";
 
 const clearStoredAuth = () => {
   sessionStorage.removeItem("ho-token");
@@ -32,61 +32,6 @@ const clearStoredAuth = () => {
 };
 
 
-// Animated concentric rings of vertical dashes — built from SVG
-const AnimatedRings = () => {
-  const rings = useMemo(() => {
-    return [
-      { r: 80, count: 16, len: 16, dur: 40, dir: 1 },
-      { r: 150, count: 28, len: 20, dur: 60, dir: -1 },
-      { r: 230, count: 40, len: 22, dur: 80, dir: 1 },
-      { r: 320, count: 54, len: 24, dur: 100, dir: -1 },
-      { r: 420, count: 70, len: 26, dur: 120, dir: 1 },
-      { r: 530, count: 88, len: 28, dur: 140, dir: -1 },
-    ];
-  }, []);
-
-  return (
-    <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-      <svg viewBox="-600 -600 1200 1200" className="w-full h-full">
-        {rings.map((ring, ri) => (
-          <motion.g
-            key={ri}
-            animate={{ rotate: ring.dir * 360 }}
-            transition={{ duration: ring.dur, repeat: Infinity, ease: "linear" }}
-            style={{ transformOrigin: "0 0" }}
-          >
-            {Array.from({ length: ring.count }).map((_, i) => {
-              const angle = (i / ring.count) * Math.PI * 2;
-              const x = Math.cos(angle) * ring.r;
-              const y = Math.sin(angle) * ring.r;
-              const rot = (angle * 180) / Math.PI + 90;
-              return (
-                <motion.rect
-                  key={i}
-                  x={-1}
-                  y={-ring.len / 2}
-                  width={2}
-                  height={ring.len}
-                  rx={1}
-                  fill="white"
-                  transform={`translate(${x}, ${y}) rotate(${rot})`}
-                  initial={{ opacity: 0.3 }}
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    delay: (i / ring.count) * 2 + ri * 0.2,
-                    ease: "easeInOut",
-                  }}
-                />
-              );
-            })}
-          </motion.g>
-        ))}
-      </svg>
-    </div>
-  );
-};
 
 const HomeOfficeLogin = () => {
   const [mode, setMode] = useState<Mode>("login");
@@ -166,145 +111,177 @@ const HomeOfficeLogin = () => {
   const onSubmit = mode === "login" ? handleLogin : handleSignup;
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2 bg-black font-mono text-white">
-      {/* LEFT — animated rings */}
-      <div className="relative hidden md:block bg-black overflow-hidden">
-        <AnimatedRings />
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="absolute top-8 left-8 z-10"
-        >
-          <p className="text-[10px] uppercase tracking-[0.3em] text-white/60">RDG</p>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-brand mt-1">Home Office</p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="absolute bottom-8 left-8 z-10 max-w-xs"
-        >
-          <p className="text-xs text-white/50 leading-relaxed">
-            Internal workspace. Track bills, notes, goals, taxes, and invoices —
-            all in one quiet system.
-          </p>
-        </motion.div>
-      </div>
+    <div className="min-h-screen bg-background font-mono text-foreground flex flex-col">
+      {/* Top bar */}
+      <nav className="border-b border-foreground/10 px-6 md:px-12 py-5 flex items-center justify-between">
+        <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          ← Reed Digital Group
+        </Link>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          Home Office
+        </span>
+      </nav>
 
-      {/* RIGHT — form */}
-      <div className="flex items-center justify-center px-6 py-12 md:py-0">
-        <div className="w-full max-w-sm">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
-            <h1 className="text-2xl font-bold tracking-tight">
-              {mode === "login"
-                ? "Log in to Home Office"
-                : "Create your account"}
-            </h1>
-            <p className="text-xs text-white/50 mt-2">
-              {mode === "login"
-                ? "Welcome back."
-                : "Set up your private workspace."}
-            </p>
-          </motion.div>
-
-          <div className="flex gap-1 mb-6 text-[10px] uppercase tracking-widest">
-            {(["login", "signup"] as Mode[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMode(m)}
-                className={`flex-1 py-2 border transition-colors ${
-                  mode === m
-                    ? "border-brand text-brand"
-                    : "border-white/10 text-white/50 hover:text-white hover:border-white/30"
-                }`}
-              >
-                {m}
-              </button>
-            ))}
+      {/* Main */}
+      <main className="flex-1 grid md:grid-cols-2">
+        {/* LEFT — editorial pane */}
+        <div className="hidden md:flex flex-col justify-between border-r border-foreground/10 p-12 lg:p-16 bg-foreground/[0.015]">
+          <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            01 — Workspace
           </div>
 
-          <motion.form
-            key={mode}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            onSubmit={onSubmit}
-            className="space-y-5"
-          >
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={inputCls}
-                required
-                autoComplete="email"
-              />
-            </div>
+          <div>
+            <h2 className="text-4xl lg:text-6xl tracking-[-0.04em] leading-[1.02] font-medium">
+              A quiet system
+              <br />
+              for <span className="italic text-brand">running</span>
+              <br />
+              your business.
+            </h2>
+            <p className="mt-8 text-sm text-muted-foreground max-w-sm leading-relaxed">
+              Bills, notes, goals, taxes, and invoices — collected in one place,
+              styled the way you'd actually use them.
+            </p>
+          </div>
 
-            <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={inputCls}
-                required
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
-              />
-              {mode === "signup" && (
-                <ul className="mt-3 space-y-1 text-[10px] uppercase tracking-widest">
-                  {PASSWORD_RULES.map((r) => {
-                    const ok = r.test(password);
-                    return (
-                      <li key={r.label} className={ok ? "text-brand" : "text-white/40"}>
-                        [{ok ? "x" : " "}] {r.label}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-
-            <button type="submit" disabled={loading} className={btnCls}>
-              {loading
-                ? "Working..."
-                : mode === "login"
-                ? "Log In"
-                : "Sign Up"}
-            </button>
-
-            {mode === "login" && (
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2">
-                <button
-                  type="button"
-                  onClick={() => navigate("/home-office/forgot-password")}
-                  className="text-white/50 hover:text-brand transition-colors"
-                >
-                  Forgot password?
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode("signup")}
-                  className="text-white/50 hover:text-brand transition-colors"
-                >
-                  Create account
-                </button>
-              </div>
-            )}
-          </motion.form>
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            <span>© Reed Digital Group</span>
+            <span>v 1.0</span>
+          </div>
         </div>
-      </div>
+
+        {/* RIGHT — form */}
+        <div className="flex items-center justify-center px-6 md:px-12 py-16">
+          <div className="w-full max-w-md">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-12"
+            >
+              <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">
+                {mode === "login" ? "Sign in" : "Get started"}
+              </div>
+              <h1 className="text-4xl md:text-5xl tracking-[-0.03em] leading-[1.05] font-medium">
+                {mode === "login" ? (
+                  <>Welcome <span className="italic text-brand">back.</span></>
+                ) : (
+                  <>Create your <span className="italic text-brand">account.</span></>
+                )}
+              </h1>
+              <p className="mt-4 text-sm text-muted-foreground">
+                {mode === "login"
+                  ? "Sign in to your Home Office."
+                  : "Set up your private workspace in under a minute."}
+              </p>
+            </motion.div>
+
+            {/* Tabs — minimal underline */}
+            <div className="flex gap-8 mb-10 text-[10px] uppercase tracking-[0.3em] border-b border-foreground/10">
+              {(["login", "signup"] as Mode[]).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className={`pb-3 -mb-px border-b transition-colors ${
+                    mode === m
+                      ? "border-foreground text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {m === "login" ? "Sign in" : "Sign up"}
+                </button>
+              ))}
+            </div>
+
+            <motion.form
+              key={mode}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              onSubmit={onSubmit}
+              className="space-y-8"
+            >
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={inputCls}
+                  placeholder="you@studio.com"
+                  required
+                  autoComplete="email"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-1">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={inputCls}
+                  placeholder="••••••••"
+                  required
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                />
+                {mode === "signup" && (
+                  <ul className="mt-4 space-y-1 text-[10px] uppercase tracking-[0.25em]">
+                    {PASSWORD_RULES.map((r) => {
+                      const ok = r.test(password);
+                      return (
+                        <li key={r.label} className={ok ? "text-brand" : "text-muted-foreground"}>
+                          [{ok ? "x" : " "}] {r.label}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+
+              <button type="submit" disabled={loading} className={btnCls}>
+                {loading
+                  ? "Working..."
+                  : mode === "login"
+                  ? "Sign in →"
+                  : "Create account →"}
+              </button>
+
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] pt-2">
+                {mode === "login" ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => navigate("/home-office/forgot-password")}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode("signup")}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Create account →
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setMode("login")}
+                    className="text-muted-foreground hover:text-foreground transition-colors ml-auto"
+                  >
+                    ← I already have an account
+                  </button>
+                )}
+              </div>
+            </motion.form>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
