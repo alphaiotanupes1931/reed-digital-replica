@@ -782,7 +782,6 @@ const BillsTracker = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
