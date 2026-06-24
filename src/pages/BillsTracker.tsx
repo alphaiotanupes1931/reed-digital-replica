@@ -390,7 +390,7 @@ const BillsTracker = () => {
           </motion.div>
 
           {/* Summary */}
-          <div className="border-2 border-brand bg-brand/5 p-6 mb-4">
+          <div className="border border-foreground/10 bg-foreground/[0.02] rounded-2xl p-6 mb-4">
             <div className="flex items-baseline justify-between gap-4 flex-wrap">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
               <Button
@@ -412,7 +412,7 @@ const BillsTracker = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-            <div className="border-2 border-foreground p-6">
+            <div className="border border-foreground/10 rounded-2xl p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
               <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -420,7 +420,7 @@ const BillsTracker = () => {
                 {extraRows.length > 0 && ` + ${extraRows.length} manual`}
               </p>
             </div>
-            <div className="border-2 border-foreground p-6">
+            <div className="border border-foreground/10 rounded-2xl p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
               <p className="text-2xl font-bold mt-2">{fmt(totalBills)}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -536,9 +536,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : bills.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No bills yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No bills yet.</p>
             ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+              <div className="border border-foreground/10 rounded-2xl divide-y divide-foreground/10">
                 {bills.map((b) => (
                   <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
@@ -601,9 +601,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : incomeRows.length === 0 && extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No maintenance income yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No maintenance income yet.</p>
             ) : (
-              <div className={`border-2 divide-y-2 divide-foreground ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`border-2 divide-y divide-foreground/10 ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {incomeRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4">
                     <div>
@@ -677,9 +677,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : w2Rows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No W2 income yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No W2 income yet.</p>
             ) : (
-              <div className={`border-2 divide-y-2 divide-foreground ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`border-2 divide-y divide-foreground/10 ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {w2Rows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
                     <div>
@@ -738,9 +738,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : taxReminders.length === 0 ? (
-              <p className="text-sm text-muted-foreground border-2 border-dashed border-border p-6">No tax reminders yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No tax reminders yet.</p>
             ) : (
-              <div className="border-2 border-foreground divide-y-2 divide-foreground">
+              <div className="border border-foreground/10 rounded-2xl divide-y divide-foreground/10">
                 {taxReminders.map((r) => {
                   const d = daysUntil(r.due_date);
                   let dueLabel = fmtDate(r.due_date);
