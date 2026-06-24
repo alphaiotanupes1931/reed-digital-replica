@@ -102,16 +102,22 @@ serve(async (req) => {
     }
 
     if (settings.show_taxes ?? true) {
-      const [{ data: income }, { data: w2 }, { data: expenses }, { data: mileage }, { data: reminders }] = await Promise.all([
-        supabase.from("tax_income_entries").select("id, entry_date, source, amount, notes, invoice_id").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
-        supabase.from("tax_w2_entries").select("id, year, employer, gross_wages, federal_withheld, state_withheld").eq("owner_user_id", ownerId).order("year", { ascending: false }),
+      const [{ data: income }, { data: w2Docs }, { data: expenses }, { data: mileage }, { data: reminders }] = await Promise.all([
+        supabase.from("tax_income_entries").select("id, entry_date, source, amount, notes, invoice_id, date_precision").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
+        supabase.from("tax_w2_documents").select("id, year, employer, file_path, file_name, mime_type, size_bytes, notes, created_at").eq("owner_user_id", ownerId).order("year", { ascending: false }),
         supabase.from("tax_expenses").select("id, entry_date, category, description, amount, receipt_note").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
         supabase.from("tax_mileage_entries").select("id, entry_date, purpose, miles, gas_amount, vehicle").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
         supabase.from("tax_reminders").select("id, title, amount, due_date, paid, notes").eq("owner_user_id", ownerId).order("due_date", { ascending: true }),
       ]);
+      const w2DocsWithUrls = await Promise.all(
+        (w2Docs ?? []).map(async (d: any) => {
+          const { data: signed } = await supabase.storage.from("w2-forms").createSignedUrl(d.file_path, 60 * 60);
+          return { ...d, download_url: signed?.signedUrl ?? null };
+        })
+      );
       result.taxes = {
         income: income ?? [],
-        w2: w2 ?? [],
+        w2_documents: w2DocsWithUrls,
         expenses: expenses ?? [],
         mileage: mileage ?? [],
         reminders: reminders ?? [],

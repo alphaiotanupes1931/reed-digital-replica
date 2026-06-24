@@ -760,6 +760,7 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          date_precision: string
           entry_date: string
           id: string
           invoice_id: string | null
@@ -771,6 +772,7 @@ export type Database = {
         Insert: {
           amount?: number
           created_at?: string
+          date_precision?: string
           entry_date?: string
           id?: string
           invoice_id?: string | null
@@ -782,6 +784,7 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          date_precision?: string
           entry_date?: string
           id?: string
           invoice_id?: string | null
@@ -861,6 +864,48 @@ export type Database = {
           paid?: boolean
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      tax_w2_documents: {
+        Row: {
+          created_at: string
+          employer: string
+          file_name: string
+          file_path: string
+          id: string
+          mime_type: string | null
+          notes: string | null
+          owner_user_id: string
+          size_bytes: number | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          employer: string
+          file_name: string
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          owner_user_id: string
+          size_bytes?: number | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          employer?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          owner_user_id?: string
+          size_bytes?: number | null
+          updated_at?: string
+          year?: number
         }
         Relationships: []
       }

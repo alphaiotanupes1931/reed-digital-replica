@@ -13,8 +13,8 @@ interface ViewData {
   notes?: Array<{ id: string; content: string; note_type: string; note_date: string }>;
   writeoffs?: unknown[];
   taxes?: {
-    income: Array<{ id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null }>;
-    w2: Array<{ id: string; year: number; employer: string; gross_wages: number; federal_withheld: number; state_withheld: number }>;
+    income: Array<{ id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null; date_precision?: "day" | "month" }>;
+    w2_documents: Array<{ id: string; year: number; employer: string; file_name: string; mime_type: string | null; size_bytes: number | null; notes: string | null; download_url: string | null; created_at: string }>;
     expenses: Array<{ id: string; entry_date: string; category: string; description: string; amount: number; receipt_note: string | null }>;
     mileage: Array<{ id: string; entry_date: string; purpose: string; miles: number; gas_amount: number; vehicle: string | null }>;
     reminders: Array<{ id: string; title: string; amount: number; due_date: string | null; paid: boolean; notes: string | null }>;
@@ -206,7 +206,7 @@ function exportCSV(filename: string, rows: Record<string, unknown>[]) {
 function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
   const year = new Date().getFullYear();
   const ytdIncome = taxes.income.filter((i) => i.entry_date?.startsWith(String(year))).reduce((s, i) => s + Number(i.amount), 0);
-  const ytdW2 = taxes.w2.filter((w) => w.year === year).reduce((s, w) => s + Number(w.gross_wages), 0);
+  const w2Count = taxes.w2_documents.filter((w) => w.year === year).length;
   const ytdExp = taxes.expenses.filter((e) => e.entry_date?.startsWith(String(year))).reduce((s, e) => s + Number(e.amount), 0);
   const ytdMiles = taxes.mileage.filter((m) => m.entry_date?.startsWith(String(year))).reduce((s, m) => s + Number(m.miles), 0);
   const ytdGas = taxes.mileage.filter((m) => m.entry_date?.startsWith(String(year))).reduce((s, m) => s + Number(m.gas_amount), 0);
@@ -228,7 +228,7 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
       <div className="grid grid-cols-2 md:grid-cols-5 border-2 border-foreground mb-6">
         {[
           { label: "Biz Income", value: fmt(ytdIncome) },
-          { label: "W-2 Wages", value: fmt(ytdW2) },
+          { label: "W-2 Forms", value: `${w2Count} on file` },
           { label: "Expenses", value: fmt(ytdExp) },
           { label: "Mileage", value: `${ytdMiles.toFixed(0)} mi` },
           { label: "Gas", value: fmt(ytdGas) },
@@ -244,13 +244,30 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
         <Block title="Business income" rows={taxes.income} file="business-income.csv">
           <table className="w-full text-sm">
             <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Source</th><th className="py-2 text-right">Amount</th></tr></thead>
-            <tbody>{taxes.income.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.source}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>))}</tbody>
+            <tbody>{taxes.income.map((r) => {
+              const dateLabel = r.date_precision === "month"
+                ? new Date(`${r.entry_date}T00:00:00`).toLocaleString(undefined, { month: "long", year: "numeric" })
+                : r.entry_date;
+              return (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{dateLabel}</td><td className="py-2">{r.source}{r.invoice_id && <span className="ml-2 text-[10px] text-brand uppercase">invoice</span>}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>);
+            })}</tbody>
           </table>
         </Block>
-        <Block title="W-2 income" rows={taxes.w2} file="w2-income.csv">
+        <Block title="W-2 forms" rows={taxes.w2_documents as any} file="w2-documents.csv">
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Year</th><th className="py-2">Employer</th><th className="py-2 text-right">Gross</th><th className="py-2 text-right">Fed</th><th className="py-2 text-right">State</th></tr></thead>
-            <tbody>{taxes.w2.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.year}</td><td className="py-2">{r.employer}</td><td className="py-2 text-right font-semibold">{fmt(r.gross_wages)}</td><td className="py-2 text-right">{fmt(r.federal_withheld)}</td><td className="py-2 text-right">{fmt(r.state_withheld)}</td></tr>))}</tbody>
+            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Year</th><th className="py-2">Employer</th><th className="py-2">File</th><th className="py-2">Notes</th><th className="py-2 text-right">Download</th></tr></thead>
+            <tbody>{taxes.w2_documents.map((r) => (
+              <tr key={r.id} className="border-t border-foreground/10">
+                <td className="py-2 text-muted-foreground">{r.year}</td>
+                <td className="py-2">{r.employer}</td>
+                <td className="py-2 text-muted-foreground truncate max-w-[260px]">{r.file_name}</td>
+                <td className="py-2 text-muted-foreground">{r.notes || "—"}</td>
+                <td className="py-2 text-right">
+                  {r.download_url ? (
+                    <a href={r.download_url} target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1 hover:border-brand hover:text-brand">Download</a>
+                  ) : <span className="text-[10px] text-muted-foreground">unavailable</span>}
+                </td>
+              </tr>
+            ))}</tbody>
           </table>
         </Block>
         <Block title="Expenses & write-offs" rows={taxes.expenses} file="expenses.csv">
