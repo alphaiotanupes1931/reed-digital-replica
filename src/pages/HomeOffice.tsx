@@ -12,6 +12,7 @@ const tiles = [
   { label: "Invoices", desc: "Clients, billing & payments", href: "/admin" },
   { label: "Bills", desc: "Monthly bills vs income", href: "/home-office/bills" },
   { label: "Accounting", desc: "Income, expenses & reports", href: "/home-office/accounting" },
+  { label: "Taxes", desc: "Spreadsheet, mileage & accountant updates", href: "/home-office/taxes" },
   { label: "Profile", desc: "Business info & payment setup", href: "/home-office/profile" },
   { label: "Help", desc: "Contact & support", href: "/home-office/help" },
 ];
