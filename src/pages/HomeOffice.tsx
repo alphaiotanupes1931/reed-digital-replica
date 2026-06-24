@@ -95,95 +95,124 @@ const HomeOffice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono relative overflow-hidden">
-      {/* Gold top bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
-
-      {/* RDG watermark */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">
-          RDG
+    <div className="min-h-screen bg-background font-mono relative">
+      {/* Sticky pill nav */}
+      <nav className="sticky top-4 z-40 mx-auto mt-4 w-[calc(100%-1.5rem)] max-w-5xl rounded-full border border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+        <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          ← RDG
+        </Link>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">
+          Home Office {displayName ? `· ${displayName}` : ""}
         </span>
-      </div>
+        <button
+          onClick={handleLogout}
+          className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-foreground/15 hover:border-foreground/40 transition-colors"
+        >
+          Log out
+        </button>
+      </nav>
 
-      <Header />
-      <main className="pt-32 pb-20 relative z-10">
-        <div className="container max-w-4xl mx-auto">
+      <main className="pt-16 md:pt-24 pb-24 relative z-10">
+        <div className="max-w-5xl mx-auto px-6 md:px-12">
+          {/* Hero */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-16"
+            className="mb-14"
           >
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Home Office</h1>
-            <p className="text-sm text-brand italic mt-1">by RDG</p>
-            <div className="flex items-center justify-between mt-4">
-              <p className="text-muted-foreground text-sm">
-                Welcome{displayName ? `, ${displayName}` : ""}
-              </p>
-              <button
-                onClick={handleLogout}
-                className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand transition-colors"
-              >
-                Log Out
-              </button>
+            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">
+              Dashboard
             </div>
+            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
+              Welcome back,
+              <br />
+              <span className="italic text-brand">{displayName || "friend"}.</span>
+            </h1>
+            <p className="mt-6 text-base text-muted-foreground max-w-lg">
+              Your business, one quiet workspace. Pick up where you left off.
+            </p>
+          </motion.div>
 
-            {businessId && (
-              <div className="mt-6 border-2 border-foreground p-5">
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                  Your Business ID
-                </p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <code className="text-xl md:text-2xl font-bold tracking-[0.2em] text-brand">
+          {/* Business ID card */}
+          {businessId && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="mb-12 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8"
+            >
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
+                    Your business ID
+                  </p>
+                  <code className="text-2xl md:text-3xl tracking-[0.2em] text-brand">
                     {businessId}
                   </code>
+                  <p className="text-xs text-muted-foreground mt-3 max-w-md">
+                    Share with clients to pay at{" "}
+                    <span className="text-foreground">reeddigitalgroup.com/portal</span>
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(businessId);
                       toast.success("Business ID copied");
                     }}
-                    className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand transition-colors"
+                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/85 transition-colors"
                   >
-                    Copy
+                    Copy ID
+                  </button>
+                  <button
+                    onClick={() => setShowInstructions(true)}
+                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 rounded-full border border-foreground/15 hover:border-foreground/40 transition-colors"
+                  >
+                    Instructions
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  Give this ID to your client so they can pay their invoice at{" "}
-                  <span className="text-foreground">https://reeddigitalgroup.com/portal</span>
-                </p>
-                <button
-                  onClick={() => setShowInstructions(true)}
-                  className="mt-3 text-xs underline text-brand hover:text-brand/80"
-                >
-                  Click here for instructions
-                </button>
               </div>
-            )}
-          </motion.div>
+            </motion.div>
+          )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Tiles grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10 rounded-2xl overflow-hidden">
             {tiles.map((tile, i) => (
               <motion.div
                 key={tile.label}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
+                transition={{ delay: 0.1 + i * 0.04 }}
               >
                 <Link
                   to={tile.href}
-                  className="block border-2 border-foreground p-8 hover:border-brand hover:bg-brand/5 transition-all group"
+                  className="block bg-background p-7 md:p-8 h-full hover:bg-foreground/[0.03] transition-colors group"
                 >
-                  <h2 className="text-lg font-bold tracking-tight group-hover:text-brand transition-colors">
+                  <div className="flex items-start justify-between mb-10">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-brand">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-hover:text-foreground transition-colors">
+                      Open →
+                    </span>
+                  </div>
+                  <h2 className="text-2xl tracking-tight mb-2 group-hover:text-brand transition-colors">
                     {tile.label}
                   </h2>
-                  <p className="text-xs text-muted-foreground mt-2">{tile.desc}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{tile.desc}</p>
                 </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </main>
-      <Footer />
+
+      <footer className="px-6 md:px-12 py-10 border-t border-foreground/10">
+        <div className="max-w-5xl mx-auto flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          <span>© Reed Digital Group</span>
+          <Link to="/home-office/help" className="hover:text-foreground transition-colors">Help & Support</Link>
+        </div>
+      </footer>
 
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
         <DialogContent className="max-w-lg font-mono">
