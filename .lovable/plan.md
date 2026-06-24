@@ -1,78 +1,72 @@
-## Accounting App — Accountant Access + Plaid Write-Offs
+## Tax Feature — Build Plan
 
-Build out the Accounting app so an accountant can be invited (via link or email) to view a published, scoped subset of your finances, and so bank transactions flow in via Plaid for write-off review with a soft monthly close.
+Scope confirmed: ship the full tax module now in the current JetBrains Mono / Old Gold styling. The Framer-style redesign happens as a follow-up after this lands and works.
 
-### 1. Accountant Access
+### What the client sees — `/home-office/taxes`
 
-**Two access modes, both supported:**
-- **Share link + passcode** — generates `/accountant/:token` URL with a 6-digit passcode. No account needed.
-- **Email invite** — sends invite email; accountant signs up, lands in a read-only accountant dashboard scoped to your data only.
+A single page with five sections, all editable inline:
 
-**Settings page (inside Accounting app):**
-- Toggle: Finances Published — ON/OFF (master switch the accountant view checks)
-- Per-app visibility toggles: Bills, Invoices + Revenue, Write-offs/Transactions, Notes (Notes default OFF)
-- List of active accountants — revoke access anytime
-- Generate / rotate share link
+1. **Income** — rows for business income (date, source, amount, notes). A "Pull from invoices" button auto-imports every paid invoice as a row (deduped by invoice id).
+2. **W-2 Income** — rows for each W-2 (employer, gross wages, federal withheld, state withheld, year).
+3. **Expenses & Write-offs** — rows with category (Equipment, Software, Office, Meals, Travel, Other), description, amount, date, optional receipt note.
+4. **Mileage & Gas** — rows with date, purpose, miles, gas $ spent, vehicle.
+5. **Reminders** — already exists; keep + surface on calendar.
 
-When "Finances Published" is OFF, the accountant view shows: "Finances are not currently published."
+Top of page:
+- YTD totals strip: Business Income · W-2 Income · Total Expenses · Mileage (mi) · Estimated deductible
+- **Notify Accountant** button → sends email to the accountant on file saying "Your client [name] has updated their tax info — review here" with a link to the accountant tax portal.
+- Last-notified timestamp shown next to the button.
 
-### 2. Plaid Integration (Sandbox first)
+### Calendar view
 
-- Plaid Link flow inside Accounting to connect bank accounts
-- Daily transaction sync via edge function (and manual "Sync now" button)
-- Transactions list grouped by month with check / X buttons for write-off classification
-- Categories pulled from Plaid; user confirms or overrides
+Tab on the same page. Month grid showing:
+- Tax reminder due dates (gold dot)
+- Invoice due dates (outline dot)
+- Invoice paid dates (filled dot) with amount
+- Click a day → side panel lists everything on that date.
 
-**Sandbox setup:** Add `PLAID_CLIENT_ID`, `PLAID_SECRET` (sandbox), `PLAID_ENV=sandbox` as secrets. Swap to production secret later — no code change.
+### Accountant side — `/accountant/:token/taxes`
 
-### 3. Monthly Close (Soft)
+New dedicated read-only portal using the existing accountant invite token system. Shows the same five sections + YTD totals + calendar, plus a CSV export per section. No edit access.
 
-- "Close [Month]" button per month
-- If month being closed is the current month → confirm dialog: "You're still in this month. Are you sure?"
-- Closed months show a "Reviewed" badge; transactions remain editable
-- Reopen button to clear close state
+### Email
 
-### 4. Published Accountant View
+New edge function `notify-accountant-tax` — sends through existing Lovable Emails infra (new template `accountant-tax-update.tsx`). Recipient = `accountant_settings.accountant_email`. Idempotency key = `tax-notify-<user_id>-<timestamp-bucket>` so spam-clicking doesn't double-send within a minute.
 
-Read-only dashboard at `/accountant/:token` (or `/accountant` for invited users) showing only the toggled-on sections:
-- **Bills** — list of monthly bills + total
-- **Invoices + Revenue** — paid invoices + revenue calendar
-- **Write-offs** — transactions table grouped by month, write-off totals, export CSV
-- **Notes** — only if explicitly shared
+### Database (migration)
 
----
+New tables, all RLS-scoped to `owner_user_id = auth.uid()` with full grants:
+- `tax_income_entries` (date, source, amount, notes, invoice_id nullable for dedup)
+- `tax_w2_entries` (employer, year, gross_wages, federal_withheld, state_withheld)
+- `tax_expenses` (date, category, description, amount, receipt_note)
+- `tax_mileage_entries` (date, purpose, miles, gas_amount, vehicle)
+- Add `last_accountant_notified_at` column to `profiles`.
+- Reuse existing `tax_reminders` table as-is.
 
-### Technical Details
+Accountant token policy: extend `accountant-view` edge function to also return these tables when called with a valid token.
 
-**Database (new tables):**
-- `accountant_settings` — `owner_user_id`, `published`, `show_bills`, `show_invoices`, `show_writeoffs`, `show_notes`, `share_token`, `share_passcode_hash`
-- `accountant_invites` — `id`, `owner_user_id`, `email`, `accepted_at`, `accountant_user_id`, `revoked_at`
-- `plaid_items` — `id`, `owner_user_id`, `access_token` (encrypted-at-rest), `item_id`, `institution_name`, `cursor`
-- `plaid_accounts` — `id`, `item_id`, `account_id`, `name`, `mask`, `type`
-- `bank_transactions` — `id`, `owner_user_id`, `account_id`, `plaid_transaction_id`, `date`, `name`, `amount`, `category`, `is_write_off` (nullable: null=unreviewed, true=yes, false=no), `notes`
-- `month_closes` — `owner_user_id`, `year`, `month`, `closed_at`
+### Pages / files touched
 
-All tables: RLS scoped to `owner_user_id = auth.uid()`. Accountant read access goes through a security-definer function that checks `accountant_invites.accepted_at` + `accountant_settings.published` + per-section toggles. Share-link access goes through a public edge function that validates `share_token + passcode`.
+- New: `src/pages/Taxes.tsx`, `src/pages/AccountantTaxes.tsx`
+- New components: `TaxSpreadsheet.tsx`, `TaxCalendar.tsx`, `TaxTotalsBar.tsx`, `NotifyAccountantButton.tsx`
+- New edge function: `supabase/functions/notify-accountant-tax/index.ts`
+- New email template: `supabase/functions/_shared/transactional-email-templates/accountant-tax-update.tsx` + registry update
+- Edit: `App.tsx` routes, `HomeOffice.tsx` nav tile, `accountant-view/index.ts` to expose tax data, existing `AdminTaxes.tsx` stays for reminders-only quick add
+- Migration as described above
 
-**Edge functions:**
-- `plaid-link-token` — creates link token for frontend Plaid Link
-- `plaid-exchange-token` — exchanges public_token for access_token, stores item
-- `plaid-sync-transactions` — pulls latest transactions (cursor-based)
-- `accountant-invite` — sends email invite via existing email infra
-- `accountant-share-view` — public endpoint, validates token+passcode, returns scoped data
+### Out of scope for this build
 
-**Frontend:**
-- `src/pages/Accounting.tsx` — replace "Coming Soon" with tabbed dashboard: Overview / Transactions / Bills / Invoices / Settings
-- `src/pages/AccountantView.tsx` — read-only accountant dashboard
-- `src/pages/AccountantShareLogin.tsx` — passcode entry for share links
-- New components: `PlaidLinkButton`, `TransactionRow`, `MonthCloseCard`, `AccountantSettings`
+- Framer-style redesign of landing / dashboard / auth (separate follow-up — I'll generate 3 design directions then)
+- Receipt file uploads (text notes only for v1)
+- Multi-year reporting (v1 = current calendar year)
 
-**Sequencing (I'll ship in this order so you can test as we go):**
-1. DB schema + Accounting Settings page (publish toggle, per-app permissions, generate share link)
-2. Accountant view (share-link flow + invite flow) — using existing Bills/Invoices data
-3. Plaid integration (sandbox) — Link, sync, transactions table
-4. Write-off review UI + monthly soft close
+### Order of work
 
-This is ~4 sizeable chunks. After you approve, I'll start with #1 and pause between phases so you can review each before I move on.
+1. Migration (you approve)
+2. Edge function + email template + deploy
+3. Client `/home-office/taxes` page with all 5 sections + totals + notify button
+4. Calendar tab pulling invoices + reminders
+5. Accountant `/accountant/:token/taxes` read-only portal
+6. Quick smoke test via Playwright
 
-**Before I start, I need:** `PLAID_CLIENT_ID` + `PLAID_SECRET` (sandbox) — I'll prompt you when we get to phase 3, not now. Phases 1 & 2 don't need Plaid.
+Sound good? Approve and I'll start with the migration.

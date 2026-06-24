@@ -60,6 +60,7 @@ serve(async (req) => {
         invoices: settings.show_invoices,
         writeoffs: settings.show_writeoffs,
         notes: settings.show_notes,
+        taxes: settings.show_taxes ?? true,
       },
     };
 
@@ -98,6 +99,23 @@ serve(async (req) => {
     if (settings.show_writeoffs) {
       // Phase 3 will add bank_transactions; placeholder for now
       result.writeoffs = [];
+    }
+
+    if (settings.show_taxes ?? true) {
+      const [{ data: income }, { data: w2 }, { data: expenses }, { data: mileage }, { data: reminders }] = await Promise.all([
+        supabase.from("tax_income_entries").select("id, entry_date, source, amount, notes, invoice_id").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
+        supabase.from("tax_w2_entries").select("id, year, employer, gross_wages, federal_withheld, state_withheld").eq("owner_user_id", ownerId).order("year", { ascending: false }),
+        supabase.from("tax_expenses").select("id, entry_date, category, description, amount, receipt_note").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
+        supabase.from("tax_mileage_entries").select("id, entry_date, purpose, miles, gas_amount, vehicle").eq("owner_user_id", ownerId).order("entry_date", { ascending: false }),
+        supabase.from("tax_reminders").select("id, title, amount, due_date, paid, notes").eq("owner_user_id", ownerId).order("due_date", { ascending: true }),
+      ]);
+      result.taxes = {
+        income: income ?? [],
+        w2: w2 ?? [],
+        expenses: expenses ?? [],
+        mileage: mileage ?? [],
+        reminders: reminders ?? [],
+      };
     }
 
     return new Response(JSON.stringify(result), {

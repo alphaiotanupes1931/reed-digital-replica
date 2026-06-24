@@ -61,6 +61,7 @@ export type Database = {
           show_bills: boolean
           show_invoices: boolean
           show_notes: boolean
+          show_taxes: boolean
           show_writeoffs: boolean
           updated_at: string
         }
@@ -74,6 +75,7 @@ export type Database = {
           show_bills?: boolean
           show_invoices?: boolean
           show_notes?: boolean
+          show_taxes?: boolean
           show_writeoffs?: boolean
           updated_at?: string
         }
@@ -87,6 +89,7 @@ export type Database = {
           show_bills?: boolean
           show_invoices?: boolean
           show_notes?: boolean
+          show_taxes?: boolean
           show_writeoffs?: boolean
           updated_at?: string
         }
@@ -605,6 +608,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          accountant_email: string | null
+          accountant_name: string | null
           birthdate: string | null
           business_id: string | null
           business_name: string | null
@@ -612,6 +617,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          last_accountant_notified_at: string | null
           onboarded: boolean
           payment_methods: string[]
           phone: string | null
@@ -631,6 +637,8 @@ export type Database = {
           zelle_handle: string | null
         }
         Insert: {
+          accountant_email?: string | null
+          accountant_name?: string | null
           birthdate?: string | null
           business_id?: string | null
           business_name?: string | null
@@ -638,6 +646,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          last_accountant_notified_at?: string | null
           onboarded?: boolean
           payment_methods?: string[]
           phone?: string | null
@@ -657,6 +666,8 @@ export type Database = {
           zelle_handle?: string | null
         }
         Update: {
+          accountant_email?: string | null
+          accountant_name?: string | null
           birthdate?: string | null
           business_id?: string | null
           business_name?: string | null
@@ -664,6 +675,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          last_accountant_notified_at?: string | null
           onboarded?: boolean
           payment_methods?: string[]
           phone?: string | null
@@ -708,6 +720,114 @@ export type Database = {
         }
         Relationships: []
       }
+      tax_expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          description: string
+          entry_date: string
+          id: string
+          owner_user_id: string
+          receipt_note: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description: string
+          entry_date?: string
+          id?: string
+          owner_user_id: string
+          receipt_note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description?: string
+          entry_date?: string
+          id?: string
+          owner_user_id?: string
+          receipt_note?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tax_income_entries: {
+        Row: {
+          amount: number
+          created_at: string
+          entry_date: string
+          id: string
+          invoice_id: string | null
+          notes: string | null
+          owner_user_id: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          entry_date?: string
+          id?: string
+          invoice_id?: string | null
+          notes?: string | null
+          owner_user_id: string
+          source: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          entry_date?: string
+          id?: string
+          invoice_id?: string | null
+          notes?: string | null
+          owner_user_id?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tax_mileage_entries: {
+        Row: {
+          created_at: string
+          entry_date: string
+          gas_amount: number
+          id: string
+          miles: number
+          owner_user_id: string
+          purpose: string
+          updated_at: string
+          vehicle: string | null
+        }
+        Insert: {
+          created_at?: string
+          entry_date?: string
+          gas_amount?: number
+          id?: string
+          miles?: number
+          owner_user_id: string
+          purpose: string
+          updated_at?: string
+          vehicle?: string | null
+        }
+        Update: {
+          created_at?: string
+          entry_date?: string
+          gas_amount?: number
+          id?: string
+          miles?: number
+          owner_user_id?: string
+          purpose?: string
+          updated_at?: string
+          vehicle?: string | null
+        }
+        Relationships: []
+      }
       tax_reminders: {
         Row: {
           amount: number
@@ -741,6 +861,45 @@ export type Database = {
           paid?: boolean
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      tax_w2_entries: {
+        Row: {
+          created_at: string
+          employer: string
+          federal_withheld: number
+          gross_wages: number
+          id: string
+          notes: string | null
+          owner_user_id: string
+          state_withheld: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          employer: string
+          federal_withheld?: number
+          gross_wages?: number
+          id?: string
+          notes?: string | null
+          owner_user_id: string
+          state_withheld?: number
+          updated_at?: string
+          year?: number
+        }
+        Update: {
+          created_at?: string
+          employer?: string
+          federal_withheld?: number
+          gross_wages?: number
+          id?: string
+          notes?: string | null
+          owner_user_id?: string
+          state_withheld?: number
+          updated_at?: string
+          year?: number
         }
         Relationships: []
       }
