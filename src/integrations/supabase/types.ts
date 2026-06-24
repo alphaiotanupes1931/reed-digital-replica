@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      accountant_clients: {
+        Row: {
+          accepted_at: string | null
+          accountant_user_id: string
+          client_user_id: string
+          created_at: string
+          id: string
+          requested_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accountant_user_id: string
+          client_user_id: string
+          created_at?: string
+          id?: string
+          requested_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accountant_user_id?: string
+          client_user_id?: string
+          created_at?: string
+          id?: string
+          requested_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       accountant_invites: {
         Row: {
           accepted_at: string | null
@@ -608,7 +641,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
           accountant_email: string | null
+          accountant_id: string | null
           accountant_name: string | null
           birthdate: string | null
           business_id: string | null
@@ -618,6 +653,7 @@ export type Database = {
           full_name: string | null
           id: string
           last_accountant_notified_at: string | null
+          linked_accountant_id: string | null
           onboarded: boolean
           payment_methods: string[]
           phone: string | null
@@ -630,14 +666,21 @@ export type Database = {
           security_question_1: string | null
           security_question_2: string | null
           stripe_customer_id: string | null
+          stripe_income_choice: string | null
+          stripe_income_connected_at: string | null
+          stripe_income_key: string | null
+          stripe_income_last_synced_at: string | null
           stripe_secret_key: string | null
           subscribed: boolean
+          tax_season_notified_year: number | null
           updated_at: string
           user_id: string
           zelle_handle: string | null
         }
         Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"]
           accountant_email?: string | null
+          accountant_id?: string | null
           accountant_name?: string | null
           birthdate?: string | null
           business_id?: string | null
@@ -647,6 +690,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           last_accountant_notified_at?: string | null
+          linked_accountant_id?: string | null
           onboarded?: boolean
           payment_methods?: string[]
           phone?: string | null
@@ -659,14 +703,21 @@ export type Database = {
           security_question_1?: string | null
           security_question_2?: string | null
           stripe_customer_id?: string | null
+          stripe_income_choice?: string | null
+          stripe_income_connected_at?: string | null
+          stripe_income_key?: string | null
+          stripe_income_last_synced_at?: string | null
           stripe_secret_key?: string | null
           subscribed?: boolean
+          tax_season_notified_year?: number | null
           updated_at?: string
           user_id: string
           zelle_handle?: string | null
         }
         Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
           accountant_email?: string | null
+          accountant_id?: string | null
           accountant_name?: string | null
           birthdate?: string | null
           business_id?: string | null
@@ -676,6 +727,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           last_accountant_notified_at?: string | null
+          linked_accountant_id?: string | null
           onboarded?: boolean
           payment_methods?: string[]
           phone?: string | null
@@ -688,8 +740,13 @@ export type Database = {
           security_question_1?: string | null
           security_question_2?: string | null
           stripe_customer_id?: string | null
+          stripe_income_choice?: string | null
+          stripe_income_connected_at?: string | null
+          stripe_income_key?: string | null
+          stripe_income_last_synced_at?: string | null
           stripe_secret_key?: string | null
           subscribed?: boolean
+          tax_season_notified_year?: number | null
           updated_at?: string
           user_id?: string
           zelle_handle?: string | null
@@ -717,6 +774,42 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      system_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          cta_url: string | null
+          dismissed_at: string | null
+          id: string
+          kind: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          cta_url?: string | null
+          dismissed_at?: string | null
+          id?: string
+          kind: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          cta_url?: string | null
+          dismissed_at?: string | null
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -767,6 +860,7 @@ export type Database = {
           notes: string | null
           owner_user_id: string
           source: string
+          stripe_charge_id: string | null
           updated_at: string
         }
         Insert: {
@@ -779,6 +873,7 @@ export type Database = {
           notes?: string | null
           owner_user_id: string
           source: string
+          stripe_charge_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -791,6 +886,7 @@ export type Database = {
           notes?: string | null
           owner_user_id?: string
           source?: string
+          stripe_charge_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -953,6 +1049,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      connect_accountant_by_id: {
+        Args: { _accountant_id: string }
+        Returns: string
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -961,6 +1061,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      gen_accountant_id: { Args: never; Returns: string }
       gen_business_id: { Args: never; Returns: string }
       list_businesses: {
         Args: never
@@ -995,6 +1096,7 @@ export type Database = {
         }
         Returns: number
       }
+      notify_my_accountant: { Args: { _message?: string }; Returns: undefined }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
@@ -1005,6 +1107,7 @@ export type Database = {
       }
     }
     Enums: {
+      account_type: "owner" | "accountant"
       invoice_status: "draft" | "approved" | "sent" | "paid"
     }
     CompositeTypes: {
@@ -1133,6 +1236,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_type: ["owner", "accountant"],
       invoice_status: ["draft", "approved", "sent", "paid"],
     },
   },
