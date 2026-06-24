@@ -6,12 +6,19 @@ import { Input } from "@/components/ui/input";
 
 interface ViewData {
   published: boolean;
-  sections: { bills: boolean; invoices: boolean; writeoffs: boolean; notes: boolean };
+  sections: { bills: boolean; invoices: boolean; writeoffs: boolean; notes: boolean; taxes?: boolean };
   owner: { full_name: string | null; business_name: string | null } | null;
   bills?: Array<{ id: string; company_name: string; price: number; notes: string | null }>;
   invoices?: Array<{ id: string; amount: number; status: string; paid_at: string | null; created_at: string; description: string | null }>;
   notes?: Array<{ id: string; content: string; note_type: string; note_date: string }>;
   writeoffs?: unknown[];
+  taxes?: {
+    income: Array<{ id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null }>;
+    w2: Array<{ id: string; year: number; employer: string; gross_wages: number; federal_withheld: number; state_withheld: number }>;
+    expenses: Array<{ id: string; entry_date: string; category: string; description: string; amount: number; receipt_note: string | null }>;
+    mileage: Array<{ id: string; entry_date: string; purpose: string; miles: number; gas_amount: number; vehicle: string | null }>;
+    reminders: Array<{ id: string; title: string; amount: number; due_date: string | null; paid: boolean; notes: string | null }>;
+  };
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -165,6 +172,8 @@ const AccountantView = () => {
                   </div>
                 </section>
               )}
+
+              {data.sections.taxes && data.taxes && <TaxesSection taxes={data.taxes} />}
             </div>
           </motion.div>
         </div>
@@ -174,3 +183,99 @@ const AccountantView = () => {
 };
 
 export default AccountantView;
+
+function fmt(n: number) {
+  return `$${Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function exportCSV(filename: string, rows: Record<string, unknown>[]) {
+  if (rows.length === 0) return;
+  const headers = Object.keys(rows[0]);
+  const escape = (v: unknown) => {
+    const s = v == null ? "" : String(v);
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csv = [headers.join(","), ...rows.map((r) => headers.map((h) => escape(r[h])).join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
+  const year = new Date().getFullYear();
+  const ytdIncome = taxes.income.filter((i) => i.entry_date?.startsWith(String(year))).reduce((s, i) => s + Number(i.amount), 0);
+  const ytdW2 = taxes.w2.filter((w) => w.year === year).reduce((s, w) => s + Number(w.gross_wages), 0);
+  const ytdExp = taxes.expenses.filter((e) => e.entry_date?.startsWith(String(year))).reduce((s, e) => s + Number(e.amount), 0);
+  const ytdMiles = taxes.mileage.filter((m) => m.entry_date?.startsWith(String(year))).reduce((s, m) => s + Number(m.miles), 0);
+  const ytdGas = taxes.mileage.filter((m) => m.entry_date?.startsWith(String(year))).reduce((s, m) => s + Number(m.gas_amount), 0);
+
+  const Block = ({ title, rows, file, children }: { title: string; rows: Record<string, unknown>[]; file: string; children: React.ReactNode }) => (
+    <div className="border-2 border-foreground/20 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xs uppercase tracking-widest text-muted-foreground">{title} · {rows.length} rows</h3>
+        <button onClick={() => exportCSV(file, rows)} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand">CSV</button>
+      </div>
+      {rows.length === 0 ? <p className="text-sm text-muted-foreground">Nothing here yet.</p> : children}
+    </div>
+  );
+
+  return (
+    <section>
+      <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Taxes · YTD {year}</h2>
+
+      <div className="grid grid-cols-2 md:grid-cols-5 border-2 border-foreground mb-6">
+        {[
+          { label: "Biz Income", value: fmt(ytdIncome) },
+          { label: "W-2 Wages", value: fmt(ytdW2) },
+          { label: "Expenses", value: fmt(ytdExp) },
+          { label: "Mileage", value: `${ytdMiles.toFixed(0)} mi` },
+          { label: "Gas", value: fmt(ytdGas) },
+        ].map((s, idx) => (
+          <div key={s.label} className={`p-4 ${idx > 0 ? "md:border-l-2 border-foreground" : ""} ${idx >= 2 ? "border-t-2 md:border-t-0 border-foreground" : ""}`}>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.label}</p>
+            <p className="text-lg font-bold mt-1">{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-6">
+        <Block title="Business income" rows={taxes.income} file="business-income.csv">
+          <table className="w-full text-sm">
+            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Source</th><th className="py-2 text-right">Amount</th></tr></thead>
+            <tbody>{taxes.income.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.source}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>))}</tbody>
+          </table>
+        </Block>
+        <Block title="W-2 income" rows={taxes.w2} file="w2-income.csv">
+          <table className="w-full text-sm">
+            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Year</th><th className="py-2">Employer</th><th className="py-2 text-right">Gross</th><th className="py-2 text-right">Fed</th><th className="py-2 text-right">State</th></tr></thead>
+            <tbody>{taxes.w2.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.year}</td><td className="py-2">{r.employer}</td><td className="py-2 text-right font-semibold">{fmt(r.gross_wages)}</td><td className="py-2 text-right">{fmt(r.federal_withheld)}</td><td className="py-2 text-right">{fmt(r.state_withheld)}</td></tr>))}</tbody>
+          </table>
+        </Block>
+        <Block title="Expenses & write-offs" rows={taxes.expenses} file="expenses.csv">
+          <table className="w-full text-sm">
+            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Category</th><th className="py-2">Description</th><th className="py-2 text-right">Amount</th></tr></thead>
+            <tbody>{taxes.expenses.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2"><span className="text-[10px] uppercase tracking-widest border border-foreground/20 px-2 py-0.5">{r.category}</span></td><td className="py-2">{r.description}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>))}</tbody>
+          </table>
+        </Block>
+        <Block title="Mileage & gas" rows={taxes.mileage} file="mileage.csv">
+          <table className="w-full text-sm">
+            <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Purpose</th><th className="py-2 text-right">Miles</th><th className="py-2 text-right">Gas</th><th className="py-2">Vehicle</th></tr></thead>
+            <tbody>{taxes.mileage.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.purpose}</td><td className="py-2 text-right font-semibold">{Number(r.miles).toFixed(1)}</td><td className="py-2 text-right">{fmt(r.gas_amount)}</td><td className="py-2 text-muted-foreground">{r.vehicle || "—"}</td></tr>))}</tbody>
+          </table>
+        </Block>
+        <Block title="Tax reminders" rows={taxes.reminders} file="reminders.csv">
+          <ul className="divide-y divide-foreground/10">
+            {taxes.reminders.map((r) => (
+              <li key={r.id} className={`py-3 flex justify-between text-sm ${r.paid ? "opacity-50 line-through" : ""}`}>
+                <span>{r.title} <span className="text-[10px] text-muted-foreground ml-2">{r.due_date || "no date"}</span></span>
+                <span className="font-semibold">{fmt(r.amount)}</span>
+              </li>
+            ))}
+          </ul>
+        </Block>
+      </div>
+    </section>
+  );
+}
