@@ -69,6 +69,18 @@ const BillsTracker = () => {
       return next;
     });
   };
+  const [hiddenExtraIds, setHiddenExtraIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("rdg-hidden-extra") || "[]"); }
+    catch { return []; }
+  });
+  const toggleHiddenExtra = (id: string) => {
+    setHiddenExtraIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem("rdg-hidden-extra", JSON.stringify(next));
+      return next;
+    });
+  };
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -195,8 +207,9 @@ const BillsTracker = () => {
   const visibleIncomeRows = incomeRows.filter((r) => !hiddenMaintenanceIds.includes(r.id));
   const totalIncome = visibleIncomeRows.reduce((s, r) => s + r.amount, 0);
   const extraRows = extraIncome.filter((r) => r.category !== "w2");
+  const visibleExtraRows = extraRows.filter((r) => !hiddenExtraIds.includes(r.id));
   const w2Rows = extraIncome.filter((r) => r.category === "w2");
-  const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const totalExtra = visibleExtraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
   const retainerIncome = totalIncome + totalExtra;
   const grandIncome = (includeMaintenance ? totalIncome : 0) + totalExtra + (includeW2 ? totalW2 : 0);
@@ -635,20 +648,24 @@ const BillsTracker = () => {
                     </div>
                   );
                 })}
-                {extraRows.map((r) => (
-                  <div key={r.id} className="grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4">
-                    <div>
-                      <p className="font-bold text-sm">{r.source}</p>
-                      {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                {extraRows.map((r) => {
+                  const isHidden = hiddenExtraIds.includes(r.id);
+                  return (
+                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
+                      <div>
+                        <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.source}</p>
+                        {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                      </div>
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
+                      <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(Number(r.price))}</p>
+                      <div className="flex gap-2 flex-wrap justify-end">
+                        <Button size="sm" variant="outline" onClick={() => toggleHiddenExtra(r.id)}>{isHidden ? "Show" : "Hide"}</Button>
+                        <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
+                      </div>
                     </div>
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
-                    <p className="font-bold text-sm text-brand">{fmt(Number(r.price))}</p>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
                   <p className="font-bold text-sm uppercase tracking-widest">
                     Total Income {includeMaintenance ? "" : "(excluded)"}
