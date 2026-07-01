@@ -648,20 +648,24 @@ const BillsTracker = () => {
                     </div>
                   );
                 })}
-                {extraRows.map((r) => (
-                  <div key={r.id} className="grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4">
-                    <div>
-                      <p className="font-bold text-sm">{r.source}</p>
-                      {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                {extraRows.map((r) => {
+                  const isHidden = hiddenExtraIds.includes(r.id);
+                  return (
+                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
+                      <div>
+                        <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.source}</p>
+                        {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                      </div>
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
+                      <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(Number(r.price))}</p>
+                      <div className="flex gap-2 flex-wrap justify-end">
+                        <Button size="sm" variant="outline" onClick={() => toggleHiddenExtra(r.id)}>{isHidden ? "Show" : "Hide"}</Button>
+                        <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
+                      </div>
                     </div>
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
-                    <p className="font-bold text-sm text-brand">{fmt(Number(r.price))}</p>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
                   <p className="font-bold text-sm uppercase tracking-widest">
                     Total Income {includeMaintenance ? "" : "(excluded)"}
