@@ -619,24 +619,22 @@ const BillsTracker = () => {
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No maintenance income yet.</p>
             ) : (
               <div className={`border-2 divide-y divide-foreground/10 ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
-                {incomeRows.map((r) => (
-                  {
-                    const isHidden = hiddenMaintenanceIds.includes(r.id);
-                    return (
-                      <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
-                        <div>
-                          <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.company_name}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{r.owner_name || r.email}</p>
-                        </div>
-                        <p className="text-xs uppercase tracking-widest text-muted-foreground">{r.planLabel}</p>
-                        <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(r.amount)}</p>
-                        <Button size="sm" variant="outline" onClick={() => toggleHiddenMaintenance(r.id)}>
-                          {isHidden ? "Show" : "Hide"}
-                        </Button>
+                {incomeRows.map((r) => {
+                  const isHidden = hiddenMaintenanceIds.includes(r.id);
+                  return (
+                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
+                      <div>
+                        <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.company_name}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{r.owner_name || r.email}</p>
                       </div>
-                    );
-                  }
-                ))}
+                      <p className="text-xs uppercase tracking-widest text-muted-foreground">{r.planLabel}</p>
+                      <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(r.amount)}</p>
+                      <Button size="sm" variant="outline" onClick={() => toggleHiddenMaintenance(r.id)}>
+                        {isHidden ? "Show" : "Hide"}
+                      </Button>
+                    </div>
+                  );
+                })}
                 {extraRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4">
                     <div>
