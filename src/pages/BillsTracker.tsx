@@ -57,6 +57,18 @@ const BillsTracker = () => {
     if (typeof window === "undefined") return true;
     return localStorage.getItem("rdg-include-maintenance") !== "false";
   });
+  const [hiddenMaintenanceIds, setHiddenMaintenanceIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("rdg-hidden-maintenance") || "[]"); }
+    catch { return []; }
+  });
+  const toggleHiddenMaintenance = (id: string) => {
+    setHiddenMaintenanceIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem("rdg-hidden-maintenance", JSON.stringify(next));
+      return next;
+    });
+  };
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -180,7 +192,8 @@ const BillsTracker = () => {
     })
     .filter((r) => r.amount > 0);
 
-  const totalIncome = incomeRows.reduce((s, r) => s + r.amount, 0);
+  const visibleIncomeRows = incomeRows.filter((r) => !hiddenMaintenanceIds.includes(r.id));
+  const totalIncome = visibleIncomeRows.reduce((s, r) => s + r.amount, 0);
   const extraRows = extraIncome.filter((r) => r.category !== "w2");
   const w2Rows = extraIncome.filter((r) => r.category === "w2");
   const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
@@ -607,14 +620,22 @@ const BillsTracker = () => {
             ) : (
               <div className={`border-2 divide-y divide-foreground/10 ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
                 {incomeRows.map((r) => (
-                  <div key={r.id} className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4">
-                    <div>
-                      <p className="font-bold text-sm">{r.company_name}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{r.owner_name || r.email}</p>
-                    </div>
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground">{r.planLabel}</p>
-                    <p className="font-bold text-sm text-brand">{fmt(r.amount)}</p>
-                  </div>
+                  {
+                    const isHidden = hiddenMaintenanceIds.includes(r.id);
+                    return (
+                      <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
+                        <div>
+                          <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.company_name}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{r.owner_name || r.email}</p>
+                        </div>
+                        <p className="text-xs uppercase tracking-widest text-muted-foreground">{r.planLabel}</p>
+                        <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(r.amount)}</p>
+                        <Button size="sm" variant="outline" onClick={() => toggleHiddenMaintenance(r.id)}>
+                          {isHidden ? "Show" : "Hide"}
+                        </Button>
+                      </div>
+                    );
+                  }
                 ))}
                 {extraRows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4">
