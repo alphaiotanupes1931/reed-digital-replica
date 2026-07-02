@@ -400,21 +400,19 @@ const BillsTracker = () => {
 
   return (
     <div className="min-h-screen bg-background font-mono">
-      <nav className="sticky top-0 z-40 w-full border-b border-foreground bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
-        <Link to="/home-office" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+      <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
+        <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
           ← Home Office
         </Link>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Bills</span>
+        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Bills</span>
         <span className="w-[120px]" />
       </nav>
-      <main className="pt-16 md:pt-24 pb-24">
+      <main className="pt-12 pb-24">
         <div className="max-w-5xl mx-auto px-6 md:px-12">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-14">
-            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Cashflow</div>
-            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
-              Bills <span className="italic text-brand">&amp; income.</span>
-            </h1>
-            <p className="mt-6 text-base text-muted-foreground max-w-lg">Monthly outflow vs. maintenance plan income.</p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Cashflow</div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Bills &amp; Income</h1>
+            <p className="mt-2 text-sm text-muted-foreground">Monthly outflow vs. maintenance plan income.</p>
           </motion.div>
 
           {/* Summary */}
