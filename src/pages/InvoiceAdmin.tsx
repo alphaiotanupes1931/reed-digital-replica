@@ -753,7 +753,7 @@ const InvoiceAdmin = () => {
           </p>
           <Link
             to="/home-office/login"
-            className="inline-block text-xs font-mono uppercase tracking-widest border border-foreground/10 rounded-2xl px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
+            className="inline-block text-xs font-mono uppercase tracking-widest border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
           >
             Go to Sign In
           </Link>
@@ -900,7 +900,7 @@ const InvoiceAdmin = () => {
                 <p className="text-sm font-mono text-foreground uppercase tracking-widest">Invoices</p>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ? "Hide Invoices" : "Show Invoices"}</button>
-                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border border-foreground/10 rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
                     {showInvoiceForm ? "Cancel" : "New Invoice"}
                   </button>
                 </div>
@@ -1053,7 +1053,7 @@ const InvoiceAdmin = () => {
   // ── Clients Dashboard ──
   return (
     <div className="min-h-screen bg-background font-mono">
-      <nav className="sticky top-0 z-40 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+      <nav className="sticky top-0 z-40 w-full border-b border-foreground bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/home-office" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
           ← Home Office
         </Link>
@@ -1078,7 +1078,7 @@ const InvoiceAdmin = () => {
 
         <AnimatePresence>
           {showClientForm && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-foreground/10 rounded-2xl mb-8">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-foreground mb-8">
               <form onSubmit={handleCreateClient} className="p-6 space-y-4">
                 <div className="grid gap-4 md:grid-cols-3">
                   <input value={newOwnerName} onChange={(e) => setNewOwnerName(e.target.value)} placeholder="Name" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
