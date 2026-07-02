@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import NotificationBell from "@/components/NotificationBell";
@@ -98,125 +97,83 @@ const HomeOffice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono relative">
-      {/* Sticky pill nav */}
-      <nav className="sticky top-0 z-40 w-full border-b border-x-0 border-t-0 border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
-        <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+    <div className="min-h-screen bg-background font-mono">
+      <nav className="border-b border-foreground/10 px-6 py-4 flex items-center justify-between">
+        <Link to="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
           ← RDG
         </Link>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">
+        <span className="text-xs uppercase tracking-widest text-muted-foreground hidden md:block">
           Home Office {displayName ? `· ${displayName}` : ""}
         </span>
         <div className="flex items-center gap-2">
           <NotificationBell />
           <button
             onClick={handleLogout}
-            className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
+            className="text-xs uppercase tracking-widest px-3 py-2 border border-foreground/20 hover:border-foreground/50"
           >
             Log out
           </button>
         </div>
       </nav>
 
-      <main className="pt-16 md:pt-24 pb-24 relative z-10">
-        <div className="max-w-5xl mx-auto px-6 md:px-12">
-          {/* Hero */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-14"
-          >
-            <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">
-              Dashboard
+      <main className="max-w-5xl mx-auto px-6 py-10">
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl tracking-tight font-bold">
+            Welcome back{displayName ? `, ${displayName}` : ""}.
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Pick up where you left off.
+          </p>
+        </div>
+
+        {businessId && (
+          <div className="mb-8 border border-foreground/15 p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                Your business ID
+              </p>
+              <code className="text-xl md:text-2xl tracking-widest text-brand">{businessId}</code>
+              <p className="text-xs text-muted-foreground mt-2">
+                Share with clients to pay at{" "}
+                <span className="text-foreground">reeddigitalgroup.com/portal</span>
+              </p>
             </div>
-            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
-              Welcome back,
-              <br />
-              <span className="italic text-brand">{displayName || "friend"}.</span>
-            </h1>
-            <p className="mt-6 text-base text-muted-foreground max-w-lg">
-              Your business, one quiet workspace. Pick up where you left off.
-            </p>
-          </motion.div>
-
-          {/* Business ID card */}
-          {businessId && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="mb-12 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8"
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
-                    Your business ID
-                  </p>
-                  <code className="text-2xl md:text-3xl tracking-[0.2em] text-brand">
-                    {businessId}
-                  </code>
-                  <p className="text-xs text-muted-foreground mt-3 max-w-md">
-                    Share with clients to pay at{" "}
-                    <span className="text-foreground">reeddigitalgroup.com/portal</span>
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(businessId);
-                      toast.success("Business ID copied");
-                    }}
-                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors"
-                  >
-                    Copy ID
-                  </button>
-                  <button
-                    onClick={() => setShowInstructions(true)}
-                    className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 border border-foreground/15 hover:border-foreground/40 transition-colors"
-                  >
-                    Instructions
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Tiles grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10 rounded-2xl overflow-hidden">
-            {tiles.map((tile, i) => (
-              <motion.div
-                key={tile.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.04 }}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(businessId);
+                  toast.success("Business ID copied");
+                }}
+                className="text-xs uppercase tracking-widest px-4 py-2 bg-foreground text-background hover:bg-foreground/85"
               >
-                <Link
-                  to={tile.href}
-                  className="block bg-background p-7 md:p-8 h-full hover:bg-foreground/[0.03] transition-colors group"
-                >
-                  <div className="flex items-start justify-between mb-10">
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-brand">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-hover:text-foreground transition-colors">
-                      Open →
-                    </span>
-                  </div>
-                  <h2 className="text-2xl tracking-tight mb-2 group-hover:text-brand transition-colors">
-                    {tile.label}
-                  </h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{tile.desc}</p>
-                </Link>
-              </motion.div>
-            ))}
+                Copy ID
+              </button>
+              <button
+                onClick={() => setShowInstructions(true)}
+                className="text-xs uppercase tracking-widest px-4 py-2 border border-foreground/20 hover:border-foreground/50"
+              >
+                Instructions
+              </button>
+            </div>
           </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {tiles.map((tile) => (
+            <Link
+              key={tile.label}
+              to={tile.href}
+              className="block border border-foreground/15 p-6 hover:border-foreground/40 transition-colors"
+            >
+              <h2 className="text-lg mb-1">{tile.label}</h2>
+              <p className="text-sm text-muted-foreground">{tile.desc}</p>
+            </Link>
+          ))}
         </div>
       </main>
 
-      <footer className="px-6 md:px-12 py-8 border-t border-foreground/10">
-        <div className="max-w-5xl mx-auto flex items-center justify-end text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          <Link to="/home-office/help" className="hover:text-foreground transition-colors">Help</Link>
-        </div>
+      <footer className="px-6 py-6 border-t border-foreground/10 flex justify-end text-xs uppercase tracking-widest text-muted-foreground">
+        <Link to="/home-office/help" className="hover:text-foreground">Help</Link>
       </footer>
 
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
