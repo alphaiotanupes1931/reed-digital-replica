@@ -1053,25 +1053,23 @@ const InvoiceAdmin = () => {
   // ── Clients Dashboard ──
   return (
     <div className="min-h-screen bg-background font-mono">
-      <nav className="sticky top-0 z-40 w-full border-b border-foreground bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
-        <Link to="/home-office" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+      <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
+        <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
           ← Home Office
         </Link>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Invoices</span>
+        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Invoices</span>
         <span className="w-[120px]" />
       </nav>
       <div className="max-w-5xl mx-auto px-6 md:px-12">
-        <div className="pt-16 md:pt-24 pb-12">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Clients</div>
+        <div className="pt-12 pb-10">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Clients</div>
           <div className="flex items-end justify-between gap-4 flex-wrap">
-            <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
-              Hello, <span className="italic text-brand">{displayName}.</span>
-            </h1>
-            <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors whitespace-nowrap">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Hello, {displayName}</h1>
+            <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-widest px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors whitespace-nowrap">
               {showClientForm ? "Cancel" : "Add Client"}
             </button>
           </div>
-          <p className="mt-6 text-sm text-muted-foreground">
+          <p className="mt-3 text-sm text-muted-foreground">
             {clients.length} clients · {invoices.length} invoices · ${totalRevenue.toLocaleString()} revenue
           </p>
         </div>
