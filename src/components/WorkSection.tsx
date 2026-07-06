@@ -76,7 +76,7 @@ const projects = [
     category: "Film & Cinematography", 
     type: "Portfolio Website",
     tools: ["React", "Tailwind CSS", "Vercel"],
-    url: "https://hb3kkweb.vercel.app/",
+    url: "https://theavisionstudio.com/",
   },
 ];
 
