@@ -71,6 +71,13 @@ const projects = [
     tools: ["Shopify", "Custom Theme", "JavaScript"],
     url: "https://visionheartz.github.io/",
   },
+  {
+    title: "TradeMind",
+    category: "Finance",
+    type: "AI Trading Coach",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://trademindaicoach.com/",
+  },
   { 
     title: "AVISIONSTUDIO", 
     category: "Film & Cinematography", 
