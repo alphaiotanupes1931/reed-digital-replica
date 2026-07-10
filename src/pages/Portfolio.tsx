@@ -55,6 +55,7 @@ const websiteProjects = [
   { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
   { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/", slug: "shilom-ai" },
   { title: "DGM Consulting", category: "Consulting", url: "https://consultdgm.com/", slug: "dgm-consulting" },
+  { title: "TradeMind", category: "Finance", url: "https://trademindaicoach.com/" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
   { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/" },
   { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/", slug: "oqp-solutions" },
