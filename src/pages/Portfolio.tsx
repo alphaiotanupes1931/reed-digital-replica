@@ -63,6 +63,7 @@ const websiteProjects = [
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
   { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
   { title: "AVISIONSTUDIO", category: "Film & Cinematography", url: "https://theavisionstudio.com/" },
+  { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
   { title: "Alpha Iota Merch", category: "E-Commerce", url: "https://alphaiotamerch.com/" },
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
