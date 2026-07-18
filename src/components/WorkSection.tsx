@@ -35,6 +35,13 @@ const projects = [
     url: "https://planetbaltimore.vercel.app/",
   },
   {
+    title: "Shilom AI",
+    category: "Technology",
+    type: "AI Platform",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://shilomai.com/",
+  },
+  {
     title: "Friends of Jessica Showell",
     category: "Political Campaign",
     type: "Campaign Website",
