@@ -8,6 +8,7 @@ const services = [
   { title: "Booking", desc: "Customers book you 24/7." },
   { title: "Business Software", desc: "Custom tools for your team." },
   { title: "Cybersecurity", desc: "Keep your business safe." },
+  { title: "Restaurant Menus", desc: "Digital and printed menus for your restaurant." },
   { title: "Updates", desc: "We keep your site running." },
 ];
 
