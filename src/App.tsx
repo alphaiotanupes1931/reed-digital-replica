@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import CapabilityStatement from "./pages/CapabilityStatement";
 import Government from "./pages/Government";
 import Pricing from "./pages/Pricing";
+import Services from "./pages/Services";
 
 
 import Portfolio from "./pages/Portfolio";
@@ -84,6 +85,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/government" element={<Government />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/services" element={<Services />} />
             
             
             <Route path="/portfolio" element={<Portfolio />} />
