@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   {
     label: "Services",
     children: [
+      { label: "Services", href: "/services", desc: "Everything we build & offer" },
       { label: "Portfolio", href: "/portfolio", desc: "View our recent work" },
       { label: "Pricing", href: "/pricing", desc: "Transparent pricing plans" },
     ],
@@ -34,7 +35,6 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Government", href: "/government" },
-  { label: "App", href: "/home-office/welcome" },
   { label: "Referral", href: "/referral" },
   { label: "Contact", href: "/contact" },
 ];
