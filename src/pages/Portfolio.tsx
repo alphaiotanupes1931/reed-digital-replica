@@ -69,6 +69,7 @@ const websiteProjects = [
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
+  { title: "Archives of Lo", category: "Art", url: "https://archivesoflo.com/" },
 ];
 
 const StorePreview = ({ url, title }: { url: string; title: string }) => {

@@ -42,6 +42,13 @@ const projects = [
     url: "https://shilomai.com/",
   },
   {
+    title: "Archives of Lo",
+    category: "Art",
+    type: "Artist Portfolio & Shop",
+    tools: ["React", "Tailwind CSS", "Vercel"],
+    url: "https://archivesoflo.com/",
+  },
+  {
     title: "Friends of Jessica Showell",
     category: "Political Campaign",
     type: "Campaign Website",
