@@ -70,6 +70,7 @@ const websiteProjects = [
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
   { title: "Archives of Lo", category: "Art", url: "https://archivesoflo.com/" },
+  { title: "Geek Beats", category: "Music", url: "https://geekbeats.vercel.app/" },
 ];
 
 const StorePreview = ({ url, title }: { url: string; title: string }) => {
