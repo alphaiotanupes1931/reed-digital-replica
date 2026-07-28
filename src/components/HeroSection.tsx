@@ -14,6 +14,12 @@ const HeroSection = () => {
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showIntroVeil, setShowIntroVeil] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowIntroVeil(false), 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   const typeSpeed = 80;
   const deleteSpeed = 40;
@@ -62,6 +68,12 @@ const HeroSection = () => {
           <div className="absolute inset-0 bg-background/90" />
           <div className="absolute inset-0 bg-foreground/20" />
         </div>
+        {/* Intro veil: hides the player's play/pause controls on load */}
+        <div
+          className={`absolute inset-0 z-20 bg-muted transition-opacity duration-700 ${
+            showIntroVeil ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        />
       </div>
 
       <div className="container relative z-10">
