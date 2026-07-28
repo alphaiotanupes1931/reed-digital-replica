@@ -17,7 +17,7 @@ const HeroSection = () => {
   const [showIntroVeil, setShowIntroVeil] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowIntroVeil(false), 3000);
+    const t = setTimeout(() => setShowIntroVeil(false), 5000);
     return () => clearTimeout(t);
   }, []);
 
