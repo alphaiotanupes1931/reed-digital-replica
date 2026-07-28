@@ -67,13 +67,13 @@ const HeroSection = () => {
           />
           <div className="absolute inset-0 bg-background/90" />
           <div className="absolute inset-0 bg-foreground/20" />
+          {/* Intro veil: hides the player's play/pause controls on load */}
+          <div
+            className={`absolute inset-0 bg-muted transition-opacity duration-700 ${
+              showIntroVeil ? "opacity-100" : "opacity-0"
+            }`}
+          />
         </div>
-        {/* Intro veil: hides the player's play/pause controls on load */}
-        <div
-          className={`absolute inset-0 z-20 bg-muted transition-opacity duration-700 ${
-            showIntroVeil ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        />
       </div>
 
       <div className="container relative z-10">
