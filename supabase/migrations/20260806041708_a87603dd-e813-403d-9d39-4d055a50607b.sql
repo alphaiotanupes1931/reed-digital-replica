@@ -1,0 +1,1 @@
+update public.profiles set zelle_handle = 'reeddigitalgroup@gmail.com' where business_name = 'Reed Digital Group';
