@@ -137,9 +137,9 @@ const PaymentOptions = ({
   const stripeTotal = Math.round((baseAmount + stripeFee) * 100) / 100;
   const zelleTotal = baseAmount;
 
-  const zelleUrl = zelleHandle && zelleHandle.trim().length > 0
-    ? `mailto:${encodeURIComponent(zelleHandle)}?subject=${encodeURIComponent("Zelle payment — " + invoice.service)}`
-    : "https://www.zellepay.com/";
+  const zelleEmail =
+    zelleHandle && zelleHandle.trim().length > 0 ? zelleHandle.trim() : "reeddigitalgroup@gmail.com";
+  const zelleUrl = `mailto:${zelleEmail}?subject=${encodeURIComponent("Zelle payment — " + invoice.service)}`;
 
   const zelleSuffix = depositPending ? "-dep" : "-once";
   const stripeSuffix = depositPending ? "-dep" : "-once";
@@ -222,10 +222,14 @@ const PaymentOptions = ({
             <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Zelle</h3>
             <p className="text-3xl font-mono font-bold text-foreground mb-2">${zelleTotal.toLocaleString()}</p>
             <p className="text-xs font-mono text-emerald-500">No processing fee</p>
-            {zelleHandle && (
-              <p className="text-xs font-mono text-muted-foreground mt-1">Send to: {zelleHandle}</p>
-            )}
+            <p className="text-xs font-mono text-muted-foreground mt-1">Send to: {zelleEmail}</p>
           </div>
+          <a
+            href={zelleUrl}
+            className="mt-6 w-full h-14 flex items-center justify-center text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+          >
+            Pay with Zelle
+          </a>
         </motion.div>
       )}
 
