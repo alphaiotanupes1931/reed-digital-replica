@@ -860,6 +860,50 @@ const InvoiceAdmin = () => {
           <p className="text-sm font-mono text-muted-foreground mt-1">{selectedClient.email}</p>
 
           <div className="mt-10 space-y-8">
+            {/* Client details */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Client Details</p>
+                <button
+                  onClick={handleSaveClientDetails}
+                  disabled={savingDetails}
+                  className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+                >
+                  {savingDetails ? "Saving..." : "Save"}
+                </button>
+              </div>
+              <div className="grid md:grid-cols-3 gap-3">
+                <div>
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Business Name</label>
+                  <Input
+                    value={editCompany}
+                    onChange={(e) => setEditCompany(e.target.value)}
+                    maxLength={120}
+                    className="mt-1 h-11 bg-transparent border border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Contact Name</label>
+                  <Input
+                    value={editOwner}
+                    onChange={(e) => setEditOwner(e.target.value)}
+                    maxLength={120}
+                    className="mt-1 h-11 bg-transparent border border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Email</label>
+                  <Input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    maxLength={255}
+                    className="mt-1 h-11 bg-transparent border border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Scope of Work */}
             <div>
               <div className="flex items-center justify-between mb-3">
