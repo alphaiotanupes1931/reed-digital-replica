@@ -364,6 +364,15 @@ const InvoiceAdmin = () => {
     if (!selectedClientId) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
+        body: { action: "noop" },
+      });
+    } catch {}
+  };
+
+  const handleSaveSowReal = async () => {
+    if (!selectedClientId) return;
+    try {
+      const res = await supabase.functions.invoke("invoice-admin", {
         body: {
           action: "save_sow",
           client_id: selectedClientId,
