@@ -95,6 +95,38 @@ serve(async (req) => {
       });
     }
 
+    if (action === "update_client") {
+      const { client_id, company_name, owner_name, email } = data;
+      const updates: Record<string, unknown> = {};
+      if (typeof company_name === "string" && company_name.trim().length > 0) updates.company_name = company_name.trim();
+      if (typeof owner_name === "string") updates.owner_name = owner_name.trim() || null;
+      if (typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        updates.email = email.trim().toLowerCase();
+      } else if (email !== undefined) {
+        return new Response(JSON.stringify({ error: "Invalid email address" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (Object.keys(updates).length === 0) {
+        return new Response(JSON.stringify({ error: "Nothing to update" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: updated, error } = await supabase
+        .from("clients")
+        .update(updates)
+        .eq("id", client_id)
+        .eq("owner_user_id", userId)
+        .select()
+        .maybeSingle();
+      if (error) throw error;
+      return new Response(JSON.stringify({ client: updated }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "save_sow") {
       const { client_id, scope_of_work, phases, owner_name, company_name, project_type, project_build_cost, project_maintenance_cost, project_estimated_total } = data;
       const updates: Record<string, unknown> = {};
