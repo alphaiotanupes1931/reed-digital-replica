@@ -11,6 +11,23 @@ import logo from "@/assets/rdg-header-logo.png";
 import RevenueCalendar from "@/components/RevenueCalendar";
 
 const ADMIN_PASSWORD = "shell0423";
+
+// Surfaces the real message returned by the edge function instead of the
+// generic "Edge Function returned a non-2xx status code".
+const fnError = async (res: any): Promise<Error> => {
+  const bodyMsg = (res?.data as any)?.error;
+  if (bodyMsg) return new Error(bodyMsg);
+  try {
+    const ctx = res?.error?.context;
+    if (ctx && typeof ctx.json === "function") {
+      const body = await ctx.clone().json();
+      if (body?.error) return new Error(body.error);
+    }
+  } catch {
+    /* ignore */
+  }
+  return new Error(res?.error?.message || "Request failed");
+};
 const PROCESSING_FEE_RATE = 0.029;
 const PROCESSING_FEE_FLAT = 0.30;
 
@@ -232,7 +249,7 @@ const InvoiceAdmin = () => {
           password: ADMIN_PASSWORD,
         },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Invoice updated" });
       setEditingInvoiceId(null);
       fetchData();
@@ -332,7 +349,7 @@ const InvoiceAdmin = () => {
           password: ADMIN_PASSWORD,
         },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Client added" });
       setShowClientForm(false);
       setNewOwnerName(""); setNewCompanyName(""); setNewEmail("");
@@ -359,7 +376,7 @@ const InvoiceAdmin = () => {
           password: ADMIN_PASSWORD,
         },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Scope of work saved" });
       fetchData();
     } catch (err: any) {
@@ -379,7 +396,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "save_contract", client_id: selectedClientId, contract_text: contractText, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Contract saved" });
       fetchData();
     } catch (err: any) {
@@ -395,7 +412,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "set_contract_hidden", client_id: selectedClientId, hidden: next, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: next ? "Contract hidden from client" : "Contract visible to client" });
       fetchData();
     } catch (err: any) {
@@ -410,7 +427,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "reset_contract_signature", client_id: selectedClientId, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Signature cleared" });
       fetchData();
     } catch (err: any) {
@@ -502,7 +519,7 @@ const InvoiceAdmin = () => {
           password: ADMIN_PASSWORD,
         },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Invoice created" });
       setShowInvoiceForm(false);
       setService(""); setPrice(""); setDepositRequired(false);
@@ -522,7 +539,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "delete_client", client_id: clientId, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       if (selectedClientId === clientId) setSelectedClientId(null);
       await fetchData();
       toast({ title: "Client removed" });
@@ -537,7 +554,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "delete_invoice", invoice_id: invoiceId, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Invoice deleted" });
       fetchData();
     } catch (err: any) {
@@ -552,7 +569,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "delete_sow_comment", client_id: selectedClientId, comment_index: commentIndex, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Comment deleted" });
       fetchData();
     } catch (err: any) {
@@ -567,7 +584,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "set_status", invoice_id: invoiceId, status, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: status === "paid" ? "Marked as paid" : "Marked as unpaid" });
       fetchData();
     } catch (err: any) {
@@ -580,7 +597,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       const label = method === "zelle" ? "Zelle" : method === "stripe,zelle" || method === "zelle,stripe" ? "Stripe + Zelle" : "Stripe";
       toast({ title: `Payment method set to ${label}` });
       fetchData();
@@ -594,7 +611,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "set_visibility", invoice_id: invoiceId, hidden_from_client: !currentlyHidden, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: !currentlyHidden ? "Hidden from client" : "Visible to client" });
       fetchData();
     } catch (err: any) {
@@ -641,7 +658,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "get_payment_history", client_id: clientId, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       const d = res.data as any;
       setPaymentHistory((p) => ({ ...p, [clientId]: { open: true, loading: false, payments: d.payments, count: d.count, total: d.total } }));
     } catch (err: any) {
@@ -696,7 +713,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "sync_payments", password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       const updated = res.data?.updated || 0;
       if (updated > 0) toast({ title: `${updated} invoice(s) marked as paid` });
     } catch (err: any) {
@@ -714,7 +731,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       toast({ title: "Deliverable added" });
       setNewDelLabel(""); setNewDelUrl("");
       fetchData();
@@ -731,7 +748,7 @@ const InvoiceAdmin = () => {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
       });
-      if (res.error) throw res.error;
+      if (res.error) throw await fnError(res);
       fetchData();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
