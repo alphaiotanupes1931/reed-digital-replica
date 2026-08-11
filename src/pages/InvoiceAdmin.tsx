@@ -329,6 +329,9 @@ const InvoiceAdmin = () => {
         setProjectEstimatedTotal(c.project_estimated_total || "");
         setContractText(c.contract_text || "");
         setContractHidden(c.contract_hidden !== false);
+        setEditCompany(c.company_name || "");
+        setEditOwner(c.owner_name || "");
+        setEditEmail(c.email || "");
       }
     }
   }, [selectedClientId, clients]);
