@@ -360,16 +360,35 @@ const InvoiceAdmin = () => {
     }
   };
 
-  const handleSaveSow = async () => {
+  const [editCompany, setEditCompany] = useState("");
+  const [editOwner, setEditOwner] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [savingDetails, setSavingDetails] = useState(false);
+
+  const handleSaveClientDetails = async () => {
     if (!selectedClientId) return;
+    setSavingDetails(true);
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "noop" },
+        body: {
+          action: "update_client",
+          client_id: selectedClientId,
+          company_name: editCompany,
+          owner_name: editOwner,
+          email: editEmail,
+          password: ADMIN_PASSWORD,
+        },
       });
-    } catch {}
+      if (res.error) throw await fnError(res);
+      toast({ title: "Client details saved" });
+      await fetchData();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+    setSavingDetails(false);
   };
 
-  const handleSaveSowReal = async () => {
+  const handleSaveSow = async () => {
     if (!selectedClientId) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
