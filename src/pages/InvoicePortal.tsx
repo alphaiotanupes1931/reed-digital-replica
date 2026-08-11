@@ -501,12 +501,9 @@ const InvoicePortal = () => {
             <button
               onClick={() => {
                 localStorage.removeItem("portal-email");
-                localStorage.removeItem("portal-biz-code");
                 setLoggedIn(false);
                 setInvoices([]);
                 setEmail("");
-                setBizCode("");
-                setSelectedBiz(null);
               }}
               className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-widest"
             >
@@ -543,31 +540,27 @@ const InvoicePortal = () => {
                 transition={{ delay: 0.5 }}
                 className="w-full max-w-sm mb-6"
               >
-                <p className="text-xs font-mono text-muted-foreground text-center mb-2">Business ID</p>
-                <Input
-                  type="text"
-                  inputMode="text"
-                  autoCapitalize="characters"
-                  placeholder="ABCD1234"
-                  value={bizCode}
+                <p className="text-xs font-mono text-muted-foreground text-center mb-2">Business</p>
+                <select
+                  value={selectedBiz?.user_id || ""}
                   onChange={(e) => {
-                    const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
-                    setBizCode(v);
-                    setSelectedBiz(null);
+                    const biz = businesses.find((b) => b.user_id === e.target.value) || null;
+                    setSelectedBiz(biz);
                     setBizError(null);
-                    if (v.length === 8) lookupBusiness(v);
                   }}
-                  className="h-12 text-center font-mono tracking-[0.4em] text-base rounded-none border-border focus-visible:border-foreground"
-                />
+                  disabled={bizLookupLoading}
+                  className="w-full h-12 px-3 bg-transparent border border-border rounded-none font-mono text-sm text-center text-foreground focus:outline-none focus:border-foreground"
+                >
+                  {bizLookupLoading && <option value="">Loading...</option>}
+                  {!bizLookupLoading && businesses.length === 0 && <option value="">No businesses available</option>}
+                  {businesses.map((b) => (
+                    <option key={b.user_id} value={b.user_id}>
+                      {b.business_name}
+                    </option>
+                  ))}
+                </select>
                 <div className="mt-2 min-h-[1.25rem] text-center text-xs font-mono">
-                  {bizLookupLoading && <span className="text-muted-foreground">Looking up...</span>}
-                  {!bizLookupLoading && selectedBiz && (
-                    <span className="text-primary">Paying: <span className="font-bold text-foreground">{selectedBiz.business_name}</span></span>
-                  )}
-                  {!bizLookupLoading && bizError && <span className="text-destructive">{bizError}</span>}
-                  {!bizLookupLoading && !selectedBiz && !bizError && (
-                    <span className="text-muted-foreground">Ask for the 8-character ID.</span>
-                  )}
+                  {bizError && <span className="text-destructive">{bizError}</span>}
                 </div>
               </motion.div>
 
