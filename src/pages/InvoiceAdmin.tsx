@@ -11,6 +11,23 @@ import logo from "@/assets/rdg-header-logo.png";
 import RevenueCalendar from "@/components/RevenueCalendar";
 
 const ADMIN_PASSWORD = "shell0423";
+
+// Surfaces the real message returned by the edge function instead of the
+// generic "Edge Function returned a non-2xx status code".
+const fnError = async (res: any): Promise<Error> => {
+  const bodyMsg = (res?.data as any)?.error;
+  if (bodyMsg) return new Error(bodyMsg);
+  try {
+    const ctx = res?.error?.context;
+    if (ctx && typeof ctx.json === "function") {
+      const body = await ctx.clone().json();
+      if (body?.error) return new Error(body.error);
+    }
+  } catch {
+    /* ignore */
+  }
+  return new Error(res?.error?.message || "Request failed");
+};
 const PROCESSING_FEE_RATE = 0.029;
 const PROCESSING_FEE_FLAT = 0.30;
 
