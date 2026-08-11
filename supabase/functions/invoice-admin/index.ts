@@ -95,10 +95,6 @@ serve(async (req) => {
       });
     }
 
-    if (action === "save_sow") {
-      // handled below
-    }
-
     if (action === "update_client") {
       const { client_id, company_name, owner_name, email } = data;
       const updates: Record<string, unknown> = {};
