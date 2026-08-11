@@ -336,33 +336,27 @@ const InvoicePortal = () => {
     cashapp_handle?: string | null;
     payment_methods?: string[] | null;
   };
-  const [bizCode, setBizCode] = useState(() => localStorage.getItem("portal-biz-code") || "");
   const [selectedBiz, setSelectedBiz] = useState<Business | null>(null);
-  const [bizLookupLoading, setBizLookupLoading] = useState(false);
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [bizLookupLoading, setBizLookupLoading] = useState(true);
   const [bizError, setBizError] = useState<string | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const lookupBusiness = async (code: string): Promise<Business | null> => {
-    const c = code.trim().toUpperCase();
-    if (c.length < 4) {
-      setSelectedBiz(null);
-      setBizError(null);
-      return null;
-    }
+  const loadBusinesses = async (): Promise<Business[]> => {
     setBizLookupLoading(true);
     setBizError(null);
-    const { data, error } = await supabase.rpc("lookup_business_by_code", { p_code: c });
+    const { data, error } = await supabase.rpc("list_businesses");
     setBizLookupLoading(false);
-    if (error || !Array.isArray(data) || data.length === 0) {
-      setSelectedBiz(null);
-      setBizError("No business found");
-      return null;
+    if (error || !Array.isArray(data)) {
+      setBizError("Could not load businesses");
+      return [];
     }
-    const biz = data[0] as Business;
-    setSelectedBiz(biz);
-    setBizError(null);
-    localStorage.setItem("portal-biz-code", c);
-    return biz;
+    const list = (data as Business[]).filter((b) =>
+      (b.business_name || "").toLowerCase().includes("reed digital group")
+    );
+    setBusinesses(list);
+    if (list.length > 0) setSelectedBiz(list[0]);
+    return list;
   };
 
   useEffect(() => {
@@ -373,11 +367,9 @@ const InvoicePortal = () => {
 
   useEffect(() => {
     (async () => {
-      const savedCode = localStorage.getItem("portal-biz-code");
+      const list = await loadBusinesses();
       const savedEmail = localStorage.getItem("portal-email");
-      if (!savedCode || !savedEmail) return;
-      const biz = await lookupBusiness(savedCode);
-      if (biz) await loadClientData(savedEmail, biz, false);
+      if (savedEmail && list.length > 0) await loadClientData(savedEmail, list[0], false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -425,7 +417,7 @@ const InvoicePortal = () => {
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedBiz) {
-      setBizError("Enter business ID first");
+      setBizError("Select a business first");
       return;
     }
     setLoading(true);
