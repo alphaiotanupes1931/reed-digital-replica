@@ -54,7 +54,7 @@ const WorkPage = () => {
                 <div className="text-center mt-16">
                   <Link 
                     to="/portfolio"
-                    className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                    className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
                     View Full Portfolio
                   </Link>

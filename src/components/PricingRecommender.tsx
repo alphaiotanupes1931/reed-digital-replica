@@ -253,13 +253,13 @@ const PricingRecommender = () => {
             <div className="flex flex-wrap gap-3">
               <Link
                 to="/contact"
-                className="inline-block bg-brand text-brand-foreground px-6 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
+                className="inline-block bg-brand text-brand-foreground rounded-full px-6 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
               >
                 Book Free Consultation →
               </Link>
               <button
                 onClick={reset}
-                className="inline-block border border-border px-6 py-3 text-sm font-medium hover:border-foreground transition-colors"
+                className="inline-block border border-border rounded-full px-6 py-3 text-sm font-medium hover:border-foreground transition-colors"
               >
                 Start Over
               </button>

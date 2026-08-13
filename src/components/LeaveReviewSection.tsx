@@ -28,7 +28,7 @@ const LeaveReviewSection = () => {
               href={GOOGLE_REVIEW_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-medium hover:bg-primary transition-colors group"
+              className="inline-flex items-center gap-3 bg-foreground text-background rounded-full px-8 py-4 font-medium hover:bg-primary transition-colors group"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

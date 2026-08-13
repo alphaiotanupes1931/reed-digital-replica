@@ -103,7 +103,7 @@ const PricingPage = () => {
                   </p>
                   <Link
                     to="/contact"
-                    className="inline-block bg-brand text-brand-foreground px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
+                    className="inline-block bg-brand text-brand-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
                   >
                     Book Free Call →
                   </Link>
@@ -279,7 +279,7 @@ const PricingPage = () => {
                   <div className="text-center mt-6">
                     <Link
                       to="/contact"
-                      className="inline-block bg-brand text-brand-foreground px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
+                      className="inline-block bg-brand text-brand-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-brand/90 transition-colors"
                     >
                       Get a Quote →
                     </Link>
@@ -371,7 +371,7 @@ const PricingPage = () => {
                 <div className="text-center">
                   <Link 
                     to="/contact" 
-                    className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                    className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
                     Book Free Consultation
                   </Link>

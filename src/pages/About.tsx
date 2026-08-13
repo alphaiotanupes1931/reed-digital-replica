@@ -436,7 +436,7 @@ const AboutPage = () => {
             <ScrollReveal delay={0.3}>
               <div className="text-center pb-20">
                 <motion.div 
-                  className="inline-flex items-center gap-3 px-6 py-3 border border-border"
+                  className="inline-flex items-center gap-3 rounded-full px-6 py-3 border border-border"
                   whileHover={{ borderColor: "hsl(var(--primary))" }}
                 >
                   <Shield className="w-4 h-4 text-primary" />

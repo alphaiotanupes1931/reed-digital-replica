@@ -94,7 +94,7 @@ const FAQPage = () => {
                   </p>
                   <Link 
                     to="/contact" 
-                    className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                    className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
                     Contact Us
                   </Link>

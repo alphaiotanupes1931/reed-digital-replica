@@ -239,7 +239,7 @@ const MaintenancePlans = () => {
             <button
               onClick={scrollToPlans}
               data-magnetic
-              className="inline-flex items-center gap-3 bg-foreground text-background px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="inline-flex items-center gap-3 bg-foreground text-background rounded-full px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
             >
               See Plans Below
               <span aria-hidden="true">↓</span>
@@ -383,7 +383,7 @@ const MaintenancePlans = () => {
               <Link
                 to="/contact"
                 data-magnetic
-                className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="inline-flex items-center gap-3 bg-foreground text-background rounded-full px-8 py-4 font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 Contact Us
                 <span aria-hidden="true">→</span>
