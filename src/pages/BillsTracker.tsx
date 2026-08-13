@@ -244,7 +244,7 @@ const BillsTracker = () => {
       }
       setEditingSalary(false);
       toast({ title: "Income updated" });
-      load();
+      fetchAll();
     } catch (e: any) {
       toast({ title: "Could not save", description: e.message, variant: "destructive" });
     }
