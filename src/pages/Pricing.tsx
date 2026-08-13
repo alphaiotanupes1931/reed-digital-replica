@@ -135,7 +135,7 @@ const PricingPage = () => {
                     <div
                       key={r.t}
                       className={`border rounded-md p-6 flex flex-col ${
-                        r.popular ? "border-brand border-2" : "border-border"
+                        r.popular ? "border-brand" : "border-border"
                       }`}
                     >
                       {r.popular && (

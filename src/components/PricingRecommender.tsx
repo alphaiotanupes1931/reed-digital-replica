@@ -157,7 +157,7 @@ const PricingRecommender = () => {
   const progress = Math.min(step, questions.length) / questions.length;
 
   return (
-    <div className="border-2 border-border p-6 md:p-10 bg-card">
+    <div className="border border-border rounded-2xl p-6 md:p-10 bg-card">
       <div className="flex items-baseline justify-between mb-2">
         <h3 className="text-sm text-primary uppercase tracking-wider">
           Plan Finder

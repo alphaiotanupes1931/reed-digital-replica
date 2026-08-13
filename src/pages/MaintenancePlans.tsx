@@ -108,7 +108,7 @@ const PlanCard = ({ plan, gridCols }: { plan: Plan; gridCols: number }) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}
     transition={{ duration: 0.5 }}
-    className={`relative flex flex-col border-2 p-6 md:p-8 bg-card transition-all ${
+    className={`relative flex flex-col border rounded-2xl p-6 md:p-8 bg-card transition-all ${
       plan.popular
         ? "border-primary shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.35)] md:scale-[1.03] z-10"
         : "border-border hover:border-foreground/30"
