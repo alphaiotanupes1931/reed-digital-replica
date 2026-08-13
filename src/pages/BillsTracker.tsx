@@ -410,152 +410,72 @@ const BillsTracker = () => {
       <main className="pt-12 pb-24">
         <div className="max-w-5xl mx-auto px-6 md:px-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Cashflow</div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Bills &amp; Income</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Monthly outflow vs. maintenance plan income.</p>
           </motion.div>
 
-          {/* Summary */}
-          <div className="border border-foreground bg-foreground/[0.02] p-6 mb-4">
-            <div className="flex items-baseline justify-between gap-4 flex-wrap">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
-              <Button
-                type="button"
-                variant={includeMaintenance ? "default" : "outline"}
-                size="sm"
-                onClick={toggleMaintenance}
-              >
-                {includeMaintenance ? "Including Maintenance" : "Exclude Maintenance"}
-              </Button>
+          {/* Summary — three numbers, nothing else */}
+          <div className="flex items-start gap-10 md:gap-16 border-b border-foreground/15 pb-8 mb-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Income</p>
+              <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
             </div>
-            <p className="text-4xl font-bold mt-2 text-brand">{fmt(grandIncome * 12)}</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              {fmt(grandIncome)}/mo × 12
-            </p>
-            <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-              <li>
-                Maintenance {includeMaintenance ? "(included)" : "(excluded)"}:{" "}
-                <span className={`font-bold ${includeMaintenance ? "text-foreground" : "line-through"}`}>{fmt(totalIncome)}/mo</span>
-              </li>
-              <li>
-                Manual income (included): <span className="font-bold text-foreground">{fmt(totalExtra)}/mo</span>
-              </li>
-              <li>
-                W2 take-home {includeW2 ? "(included)" : "(excluded)"}:{" "}
-                <span className={`font-bold ${includeW2 ? "text-foreground" : "line-through"}`}>{fmt(totalW2)}/mo</span>
-                {totalW2 > 0 && includeW2 && <> ({fmt(totalW2 * 12)}/yr)</>}
-              </li>
-            </ul>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-            <div className="border border-foreground p-6">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
-              <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {includeMaintenance ? `${visibleIncomeRows.length} client${visibleIncomeRows.length === 1 ? "" : "s"}` : "no maintenance"}
-                {visibleExtraRows.length > 0 && ` + ${visibleExtraRows.length} manual`}
-                {includeW2 && w2Rows.length > 0 && ` + ${w2Rows.length} W2`}
-              </p>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Bills</p>
+              <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(totalBills)}</p>
             </div>
-            <div className="border border-foreground p-6">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
-              <p className="text-2xl font-bold mt-2">{fmt(totalBills)}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {bills.filter((b) => !b.hidden).length} active
-                {bills.some((b) => b.hidden) && ` · ${bills.filter((b) => b.hidden).length} hidden`}
-              </p>
-            </div>
-            <div className={`border-2 p-6 ${net >= 0 ? "border-brand bg-brand/5" : "border-destructive bg-destructive/5"}`}>
+            <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {net >= 0 ? "Surplus" : "Shortfall"}
+                {net >= 0 ? "Left Over" : "Short"}
               </p>
-              <p className={`text-2xl font-bold mt-2 ${net >= 0 ? "text-brand" : "text-destructive"}`}>
+              <p className={`text-2xl md:text-3xl font-bold mt-1 ${net >= 0 ? "text-brand" : "text-destructive"}`}>
                 {net >= 0 ? fmt(net) : `-${fmt(Math.abs(net))}`}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {net >= 0 ? "Income covers bills." : `Need ${fmt(Math.abs(net))} more / mo to break even.`}
               </p>
             </div>
           </div>
 
-          {/* Six Figures Goal */}
-          <div className={`border-2 p-6 mb-12 ${sixFigGap <= 0 ? "border-brand bg-brand/5" : "border-foreground"}`}>
-            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-3">
-              <div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Retainer Goal</p>
-                  {!editingGoal && (
-                    <button
-                      onClick={() => { setGoalDraft(String(goalAmount)); setEditingGoal(true); }}
-                      className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline"
-                    >
-                      Edit
-                    </button>
-                  )}
+          {/* Goal — one line + bar */}
+          <div className="mb-12">
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              {editingGoal ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">$</span>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={goalDraft}
+                    onChange={(e) => setGoalDraft(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditingGoal(false); }}
+                    autoFocus
+                    className="h-9 w-32"
+                  />
+                  <Button size="sm" onClick={saveGoal}>Save</Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditingGoal(false)}>Cancel</Button>
                 </div>
-                {editingGoal ? (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-sm text-muted-foreground">$</span>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={goalDraft}
-                      onChange={(e) => setGoalDraft(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditingGoal(false); }}
-                      autoFocus
-                      className="h-9 w-32"
-                    />
-                    <span className="text-xs text-muted-foreground">/ mo</span>
-                    <Button size="sm" onClick={saveGoal}>Save</Button>
-                    <Button size="sm" variant="outline" onClick={() => setEditingGoal(false)}>Cancel</Button>
-                  </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Target: {fmt(goalAmount)} / mo · {fmt(goalAmount * 12)} / yr
-                  </p>
-                )}
-              </div>
-              <div className="text-right">
-                {sixFigGap <= 0 ? (
-                  <>
-                    <p className="text-2xl font-bold text-brand">Goal Hit ✓</p>
-                    <p className="text-xs text-muted-foreground mt-1">{fmt(Math.abs(sixFigGap))} / mo over target.</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Still need</p>
-                    <p className="text-2xl font-bold">{fmt(sixFigGap)}<span className="text-sm text-muted-foreground"> / mo</span></p>
-                  </>
-                )}
-              </div>
+              ) : (
+                <button
+                  onClick={() => { setGoalDraft(String(goalAmount)); setEditingGoal(true); }}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Goal {fmt(retainerIncome)} / {fmt(goalAmount)} · {sixFigPct.toFixed(0)}%
+                </button>
+              )}
             </div>
-            <div className="h-2 w-full bg-foreground/10 relative overflow-hidden">
+            <div className="h-1.5 w-full bg-foreground/10 relative overflow-hidden">
               <div
                 className="absolute inset-y-0 left-0 bg-brand transition-all duration-500"
                 style={{ width: `${sixFigPct}%` }}
               />
-            </div>
-            <div className="flex items-center justify-between mt-2">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {fmt(retainerIncome)} of {fmt(goalAmount)} (retainers only)
-              </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {sixFigPct.toFixed(1)}%
-              </p>
             </div>
           </div>
 
           {/* Add/Edit Bill */}
           <div
             ref={formRef}
-            className={`border-2 p-6 mb-12 transition-colors ${
-              editingId ? "border-brand bg-brand/5" : "border-foreground"
+            className={`border p-6 mb-12 transition-colors ${
+              editingId ? "border-brand bg-brand/5" : "border-foreground/20"
             }`}
           >
-            <h2 className="text-lg font-bold tracking-tight mb-4">
-              {editingId ? "Edit Bill" : "Add a Monthly Bill"}
-            </h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
               <Input placeholder="Company (e.g. Adobe)" value={company} onChange={(e) => setCompany(e.target.value)} required />
               <Input type="number" step="0.01" min="0" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
@@ -575,7 +495,7 @@ const BillsTracker = () => {
             ) : bills.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No bills yet.</p>
             ) : (
-              <div className="border border-foreground divide-y divide-foreground/10">
+              <div className="border border-foreground/20 divide-y divide-foreground/10">
                 {bills.map((b) => (
                   <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
@@ -615,15 +535,11 @@ const BillsTracker = () => {
                 {includeMaintenance ? "Including in Totals" : "Exclude from Totals"}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below. Toggle above to include or exclude from your combined income.</p>
-
+            <div className="mb-4" />
             <div
               ref={extraFormRef}
-              className={`border-2 p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground"}`}
+              className={`border p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground/20"}`}
             >
-              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
-                {editingExtraId ? "Edit Maintenance Entry" : "Add Maintenance Income"}
-              </h3>
               <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Source / Client" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
                 <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
@@ -640,7 +556,7 @@ const BillsTracker = () => {
             ) : incomeRows.length === 0 && extraRows.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No maintenance income yet.</p>
             ) : (
-              <div className={`border-2 divide-y divide-foreground/10 ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`divide-y divide-foreground/10 border ${includeMaintenance ? "border-foreground/20" : "border-foreground/10 opacity-70"}`}>
                 {incomeRows.map((r) => {
                   const isHidden = hiddenMaintenanceIds.includes(r.id);
                   return (
@@ -713,17 +629,12 @@ const BillsTracker = () => {
                 {includeW2 ? "Including W2 in Totals" : "Exclude from Totals"}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Add W2 paychecks here. <span className="font-bold text-foreground">Only enter your take-home pay</span> (after taxes, insurance, and other deductions) — not gross. Toggle the button above to include or exclude this income from your monthly totals and goal progress.
-            </p>
+            <p className="text-xs text-muted-foreground mb-4">Enter take-home pay, not gross.</p>
 
             <div
               ref={w2FormRef}
-              className={`border-2 p-6 mb-6 transition-colors ${editingW2Id ? "border-brand bg-brand/5" : "border-foreground"}`}
+              className={`border p-6 mb-6 transition-colors ${editingW2Id ? "border-brand bg-brand/5" : "border-foreground/20"}`}
             >
-              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
-                {editingW2Id ? "Edit W2 Block" : "Add a W2 Block"}
-              </h3>
               <form onSubmit={handleW2Submit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Employer (e.g. Acme Corp)" value={w2Source} onChange={(e) => setW2Source(e.target.value)} required />
                 <Input type="number" step="0.01" min="0" placeholder="Monthly take-home $" value={w2Price} onChange={(e) => setW2Price(e.target.value)} required />
@@ -740,7 +651,7 @@ const BillsTracker = () => {
             ) : w2Rows.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No W2 income yet.</p>
             ) : (
-              <div className={`border-2 divide-y divide-foreground/10 ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`divide-y divide-foreground/10 border ${includeW2 ? "border-foreground/20" : "border-foreground/10 opacity-70"}`}>
                 {w2Rows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
                     <div>
@@ -801,7 +712,7 @@ const BillsTracker = () => {
             ) : taxReminders.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No tax reminders yet.</p>
             ) : (
-              <div className="border border-foreground divide-y divide-foreground/10">
+              <div className="border border-foreground/20 divide-y divide-foreground/10">
                 {taxReminders.map((r) => {
                   const d = daysUntil(r.due_date);
                   let dueLabel = fmtDate(r.due_date);
