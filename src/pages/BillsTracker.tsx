@@ -495,7 +495,7 @@ const BillsTracker = () => {
             ) : bills.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No bills yet.</p>
             ) : (
-              <div className="border border-foreground divide-y divide-foreground/10">
+              <div className="border border-foreground/20 divide-y divide-foreground/10">
                 {bills.map((b) => (
                   <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
@@ -556,7 +556,7 @@ const BillsTracker = () => {
             ) : incomeRows.length === 0 && extraRows.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No maintenance income yet.</p>
             ) : (
-              <div className={`border-2 divide-y divide-foreground/10 ${includeMaintenance ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`divide-y divide-foreground/10 border ${includeMaintenance ? "border-foreground/20" : "border-foreground/10 opacity-70"}`}>
                 {incomeRows.map((r) => {
                   const isHidden = hiddenMaintenanceIds.includes(r.id);
                   return (
@@ -651,7 +651,7 @@ const BillsTracker = () => {
             ) : w2Rows.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No W2 income yet.</p>
             ) : (
-              <div className={`border-2 divide-y divide-foreground/10 ${includeW2 ? "border-foreground" : "border-foreground/30 opacity-70"}`}>
+              <div className={`divide-y divide-foreground/10 border ${includeW2 ? "border-foreground/20" : "border-foreground/10 opacity-70"}`}>
                 {w2Rows.map((r) => (
                   <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
                     <div>
@@ -712,7 +712,7 @@ const BillsTracker = () => {
             ) : taxReminders.length === 0 ? (
               <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No tax reminders yet.</p>
             ) : (
-              <div className="border border-foreground divide-y divide-foreground/10">
+              <div className="border border-foreground/20 divide-y divide-foreground/10">
                 {taxReminders.map((r) => {
                   const d = daysUntil(r.due_date);
                   let dueLabel = fmtDate(r.due_date);
