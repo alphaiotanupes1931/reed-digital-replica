@@ -6,19 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-// Mirror of MAINTENANCE_PLAN_CATALOG in InvoicePortal — keep prices in sync.
-const PLAN_PRICES: Record<string, number> = {
-  "cms:Standard": 200, "cms:Growth": 300, "cms:Pro": 400, "cms:Elite": 500,
-  "smb:Standard": 100, "smb:Growth": 200, "smb:Pro": 300,
-  "landing:Standard": 50, "landing:Growth": 100,
-};
-
-const PLAN_LABELS: Record<string, string> = {
-  cms: "Brochure + CMS", smb: "Small Business", landing: "Landing Page",
-};
-
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
-interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
@@ -26,7 +14,6 @@ const BillsTracker = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [bills, setBills] = useState<Bill[]>([]);
-  const [incomeClients, setIncomeClients] = useState<IncomeClient[]>([]);
   const [extraIncome, setExtraIncome] = useState<ExtraIncome[]>([]);
   const [taxReminders, setTaxReminders] = useState<TaxReminder[]>([]);
   const [company, setCompany] = useState("");
@@ -55,22 +42,6 @@ const BillsTracker = () => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("rdg-include-w2") === "true";
   });
-  const [includeMaintenance, setIncludeMaintenance] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    return localStorage.getItem("rdg-include-maintenance") !== "false";
-  });
-  const [hiddenMaintenanceIds, setHiddenMaintenanceIds] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem("rdg-hidden-maintenance") || "[]"); }
-    catch { return []; }
-  });
-  const toggleHiddenMaintenance = (id: string) => {
-    setHiddenMaintenanceIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      localStorage.setItem("rdg-hidden-maintenance", JSON.stringify(next));
-      return next;
-    });
-  };
   const [hiddenExtraIds, setHiddenExtraIds] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try { return JSON.parse(localStorage.getItem("rdg-hidden-extra") || "[]"); }
@@ -111,14 +82,12 @@ const BillsTracker = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [b, c, e, t] = await Promise.all([
+      const [b, e, t] = await Promise.all([
         api("get_bills"),
-        api("get_maintenance_income"),
         api("get_extra_income"),
         api("get_tax_reminders"),
       ]);
       setBills((b as { bills: Bill[] }).bills || []);
-      setIncomeClients((c as { clients: IncomeClient[] }).clients || []);
       setExtraIncome((e as { items: ExtraIncome[] }).items || []);
       setTaxReminders((t as { items: TaxReminder[] }).items || []);
     } catch (err: any) {
