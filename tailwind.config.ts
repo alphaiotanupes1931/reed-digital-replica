@@ -9,7 +9,7 @@ export default {
       center: true,
       padding: "1.5rem",
       screens: {
-        "2xl": "1280px",
+        "2xl": "1120px",
       },
     },
     extend: {
@@ -69,7 +69,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["JetBrains Mono", "monospace"],
+        sans: ["Figtree", "system-ui", "sans-serif"],
+        display: ["Outfit", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
