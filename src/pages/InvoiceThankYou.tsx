@@ -202,7 +202,7 @@ const InvoiceThankYou = () => {
         >
           <Link
             to="/"
-            className="inline-flex items-center gap-4 h-14 px-10 text-sm uppercase tracking-[0.2em] border border-border text-foreground hover:bg-foreground hover:text-background rounded-none transition-colors"
+            className="inline-flex items-center gap-4 h-14 px-10 text-sm uppercase tracking-[0.2em] border border-border text-foreground hover:bg-foreground hover:text-background rounded-xl transition-colors"
           >
             <img src={logo} alt="" className="h-4" />
             Visit the RDG Home

@@ -831,8 +831,8 @@ const InvoiceAdmin = () => {
             </motion.h1>
             <AdminSubtext />
             <motion.form onSubmit={handleLogin} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="space-y-4">
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-14 bg-transparent border-0 border-b border-border rounded-none text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30" />
-              <Button type="submit" variant="outline" className="w-full h-12 text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground">
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-14 bg-transparent border-0 border-b border-border text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30" />
+              <Button type="submit" variant="outline" className="w-full h-12 text-xs uppercase tracking-[0.2em] rounded-xl border-border hover:border-foreground hover:bg-transparent text-foreground">
                 <Lock className="mr-2 h-3.5 w-3.5" />Enter
               </Button>
             </motion.form>
@@ -879,7 +879,7 @@ const InvoiceAdmin = () => {
                     value={editCompany}
                     onChange={(e) => setEditCompany(e.target.value)}
                     maxLength={120}
-                    className="mt-1 h-11 bg-transparent border border-border rounded-none text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                    className="mt-1 h-11 bg-transparent border border-border rounded-xl text-sm focus-visible:ring-0 focus-visible:border-foreground"
                   />
                 </div>
                 <div>
@@ -888,7 +888,7 @@ const InvoiceAdmin = () => {
                     value={editOwner}
                     onChange={(e) => setEditOwner(e.target.value)}
                     maxLength={120}
-                    className="mt-1 h-11 bg-transparent border border-border rounded-none text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                    className="mt-1 h-11 bg-transparent border border-border rounded-xl text-sm focus-visible:ring-0 focus-visible:border-foreground"
                   />
                 </div>
                 <div>
@@ -898,7 +898,7 @@ const InvoiceAdmin = () => {
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
                     maxLength={255}
-                    className="mt-1 h-11 bg-transparent border border-border rounded-none text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                    className="mt-1 h-11 bg-transparent border border-border rounded-xl text-sm focus-visible:ring-0 focus-visible:border-foreground"
                   />
                 </div>
               </div>
@@ -934,7 +934,7 @@ const InvoiceAdmin = () => {
                 {phases.map((p, i) => (
                   <div key={i} className="flex gap-3 items-center border border-border rounded-2xl p-3">
                     <span className="text-xs text-muted-foreground w-6">{i + 1}</span>
-                    <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-none text-sm flex-1 px-0" />
+                    <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-xl text-sm flex-1 px-0" />
                     <select value={p.status} onChange={(e) => updatePhase(i, { status: e.target.value as PhaseStatus })} className="bg-transparent border border-border text-xs uppercase px-2 py-1">
                       {PHASE_STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace("_","")}</option>)}
                     </select>
@@ -1050,7 +1050,7 @@ const InvoiceAdmin = () => {
                             )}
                           </div>
                           <div className="flex gap-3">
-                            <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-none">Create</Button>
+                            <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-xl">Create</Button>
                           </div>
                         </form>
                       </motion.div>
@@ -1124,7 +1124,7 @@ const InvoiceAdmin = () => {
                                 </div>
                               )}
                               <div className="flex gap-2 pt-2">
-                                <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 text-xs uppercase tracking-widest rounded-none">Save</Button>
+                                <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 text-xs uppercase tracking-widest rounded-xl">Save</Button>
                                 <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground">Cancel</button>
                               </div>
                             </div>
@@ -1175,7 +1175,7 @@ const InvoiceAdmin = () => {
                   <input value={newCompanyName} onChange={(e) => setNewCompanyName(e.target.value)} placeholder="Business" className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                   <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                 </div>
-                <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-none">Add</Button>
+                <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-xl">Add</Button>
               </form>
             </motion.div>
           )}

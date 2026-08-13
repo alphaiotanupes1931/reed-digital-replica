@@ -549,7 +549,7 @@ const InvoicePortal = () => {
                     setBizError(null);
                   }}
                   disabled={bizLookupLoading}
-                  className="w-full h-12 px-3 bg-transparent border border-border rounded-none text-sm text-center text-foreground focus:outline-none focus:border-foreground"
+                  className="w-full h-12 px-3 bg-transparent border border-border rounded-xl text-sm text-center text-foreground focus:outline-none focus:border-foreground"
                 >
                   {bizLookupLoading && <option value="">Loading...</option>}
                   {!bizLookupLoading && businesses.length === 0 && <option value="">No businesses available</option>}
@@ -577,7 +577,7 @@ const InvoicePortal = () => {
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-transparent border-0 border-b border-border rounded-none text-center text-base focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
+                    className="h-14 bg-transparent border-0 border-b border-border text-center text-base focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
                     required
                   />
                 </div>
@@ -585,7 +585,7 @@ const InvoicePortal = () => {
                   type="submit"
                   disabled={loading || !selectedBiz}
                   variant="outline"
-                  className="w-full h-12 text-sm uppercase tracking-widest rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
+                  className="w-full h-12 text-xs uppercase tracking-widest rounded-full bg-foreground text-background hover:bg-foreground/85 border-transparent"
                 >
                   {loading ? (
                     <motion.div
@@ -650,7 +650,7 @@ const InvoicePortal = () => {
                         value={signName}
                         onChange={(e) => setSignName(e.target.value)}
                         placeholder="Your full name"
-                        className="h-14 bg-transparent border-0 border-b border-border rounded-none text-2xl focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30"
+                        className="h-14 bg-transparent border-0 border-b border-border rounded-xl text-2xl focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30"
                         style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}
                       />
                       {signName.trim().length >= 2 && (
@@ -659,7 +659,7 @@ const InvoicePortal = () => {
                       <Button
                         onClick={() => setConfirmingSign(true)}
                         disabled={signName.trim().length < 2}
-                        className="h-12 px-8 text-xs uppercase tracking-widest rounded-none"
+                        className="h-12 px-8 text-xs uppercase tracking-widest rounded-xl"
                       >
                         Submit Signature
                       </Button>
@@ -678,7 +678,7 @@ const InvoicePortal = () => {
                     <p className="mt-4 text-3xl border-y border-border py-3 text-center" style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}>{signName}</p>
                     <div className="mt-6 flex gap-3">
                       <button onClick={() => setConfirmingSign(false)} disabled={signing} className="flex-1 h-11 border border-border text-xs uppercase tracking-widest hover:bg-muted">Cancel</button>
-                      <Button onClick={submitSignature} disabled={signing} className="flex-1 h-11 text-xs uppercase tracking-widest rounded-none">
+                      <Button onClick={submitSignature} disabled={signing} className="flex-1 h-11 text-xs uppercase tracking-widest rounded-xl">
                         {signing ?"Signing..." :"Confirm & Sign"}
                       </Button>
                     </div>
