@@ -55,6 +55,7 @@ import AdminTaxes from "./pages/apps/AdminTaxes";
 import ClientPortal from "./pages/apps/ClientPortal";
 
 import Referral from "./pages/Referral";
+import Unsubscribe from "./pages/Unsubscribe";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -98,6 +99,7 @@ const App = () => (
             <Route path="/capability-statement" element={<CapabilityStatement />} />
             <Route path="/case-study/:slug" element={<CaseStudy />} />
             <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/portal" element={<InvoicePortal />} />
             <Route path="/portal/thank-you" element={<InvoiceThankYou />} />
             <Route path="/invoice" element={<Navigate to="/portal" replace />} />
