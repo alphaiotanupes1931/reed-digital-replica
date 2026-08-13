@@ -98,7 +98,10 @@ const HomeOfficeLogin = () => {
       if (data.session) {
         await routeAfterAuth(data.session.access_token, data.session.user.id);
       } else {
-        toast({ title:"Account created", description:"Log in to continue." });
+        toast({
+          title:"Check your email",
+          description: `We sent a confirmation link to ${email}. Click it to activate your account, then sign in.`,
+        });
         setMode("login");
       }
     } catch (err: any) {
