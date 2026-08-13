@@ -104,7 +104,7 @@ const AccountantView = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
       <main className="pt-16 pb-20">
         <div className="container max-w-4xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

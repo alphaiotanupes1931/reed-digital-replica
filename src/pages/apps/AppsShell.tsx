@@ -13,7 +13,7 @@ export default function AppsShell({
 }) {
   return (
     <div className="min-h-screen bg-background font-apps">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
       <header className="border-b border-foreground/10 px-6 md:px-10 py-5 flex items-center justify-between">
         <Link to="/apps" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft size={14} />

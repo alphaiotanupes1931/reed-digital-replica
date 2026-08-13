@@ -15,7 +15,7 @@ const CapabilityStatement = () => {
 
       <div className="max-w-4xl mx-auto bg-background border border-border overflow-hidden print:border-0">
         {/* Header */}
-        <div className="bg-foreground text-background p-8">
+        <div className="bg-foreground text-background rounded-full p-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-5">
               <img 
@@ -184,7 +184,7 @@ const CapabilityStatement = () => {
         </div>
 
         {/* Footer */}
-        <div className="bg-foreground text-background py-4 px-8">
+        <div className="bg-foreground text-background rounded-full py-4 px-8">
           <p className="text-xs text-center opacity-60 font-mono">
             Reed Digital Group LLC — Modern Technology Solutions for Government & Commercial Clients
           </p>

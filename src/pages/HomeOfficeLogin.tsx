@@ -18,7 +18,7 @@ const validatePassword = (p: string) => PASSWORD_RULES.every((r) => r.test(p));
 const inputCls =
 "w-full bg-background border border-border text-foreground px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground";
 const btnCls =
-"w-full bg-foreground text-background py-3 text-xs uppercase tracking-widest hover:bg-foreground/85 transition-colors disabled:opacity-50";
+"w-full bg-foreground text-background rounded-full py-3 text-xs uppercase tracking-widest hover:bg-foreground/85 transition-colors disabled:opacity-50";
 
 const clearStoredAuth = () => {
   sessionStorage.removeItem("ho-token");

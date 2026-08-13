@@ -200,7 +200,7 @@ export default function Taxes() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
       <Header />
       <main className="pt-28 pb-20">
         <div className="container max-w-6xl mx-auto px-6">
@@ -212,7 +212,7 @@ export default function Taxes() {
           </motion.div>
 
           {!profile?.stripe_income_choice && (
-            <div className="mt-8 border-2 border-brand bg-brand/10 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="mt-8 border-2 border-brand bg-brand rounded-full/10 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-brand">Action required</p>
                 <h2 className="text-lg font-bold mt-1">Do you use Stripe to collect business income?</h2>
@@ -220,7 +220,7 @@ export default function Taxes() {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => saveStripeChoice("manual")} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-4 py-2">No, manual only</button>
-                <button onClick={() => setShowStripeModal(true)} className="text-[10px] uppercase tracking-widest bg-foreground text-background px-4 py-2">Yes, connect Stripe</button>
+                <button onClick={() => setShowStripeModal(true)} className="text-[10px] uppercase tracking-widest bg-foreground text-background rounded-full px-4 py-2">Yes, connect Stripe</button>
               </div>
             </div>
           )}
@@ -289,7 +289,7 @@ export default function Taxes() {
             </div>
             <div className="mt-6 flex gap-3">
               <button onClick={() => setShowAccountantModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-2">Cancel</button>
-              <button onClick={saveAccountantById} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2">Send request</button>
+              <button onClick={saveAccountantById} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background rounded-full px-3 py-2">Send request</button>
             </div>
           </div>
         </div>
@@ -312,7 +312,7 @@ export default function Taxes() {
             </div>
             <div className="mt-6 flex gap-3">
               <button onClick={() => setShowStripeModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-2">Cancel</button>
-              <button disabled={savingStripe} onClick={() => saveStripeChoice("stripe", stripeKeyInput)} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2 disabled:opacity-50">{savingStripe ?"Connecting…" :"Connect"}</button>
+              <button disabled={savingStripe} onClick={() => saveStripeChoice("stripe", stripeKeyInput)} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background rounded-full px-3 py-2 disabled:opacity-50">{savingStripe ?"Connecting…" :"Connect"}</button>
             </div>
           </div>
         </div>
@@ -365,7 +365,7 @@ function IncomeTab({ userId, rows, reload }: { userId: string; rows: IncomeRow[]
           <input placeholder="Source (client, gig, etc.)" value={form.source} onChange={e => setForm(s => ({ ...s, source: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
           <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
           <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
-          <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
+          <button className="bg-foreground text-background rounded-full px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
         </form>
       </div>
       <table className="w-full text-sm">
@@ -449,7 +449,7 @@ function W2DocsTab({ userId, rows, reload }: { userId: string; rows: W2DocRow[];
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <input id="w2-file-input" type="file" accept="application/pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="text-sm" />
-          <button disabled={uploading} className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest disabled:opacity-50">{uploading ?"Uploading…" :"Upload W-2"}</button>
+          <button disabled={uploading} className="bg-foreground text-background rounded-full px-4 py-1.5 text-[10px] uppercase tracking-widest disabled:opacity-50">{uploading ?"Uploading…" :"Upload W-2"}</button>
         </div>
       </form>
       <table className="w-full text-sm">
@@ -499,7 +499,7 @@ function ExpensesTab({ userId, rows, reload }: { userId: string; rows: ExpenseRo
         <input placeholder="What did you buy?" value={form.description} onChange={e => setForm(s => ({ ...s, description: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <input placeholder="Receipt note" value={form.receipt_note} onChange={e => setForm(s => ({ ...s, receipt_note: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
-        <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
+        <button className="bg-foreground text-background rounded-full px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
       </form>
       <table className="w-full text-sm">
         <thead className="bg-muted/20">
@@ -545,7 +545,7 @@ function MileageTab({ userId, rows, reload }: { userId: string; rows: MileageRow
         <input type="number" step="0.1" placeholder="Miles" value={form.miles} onChange={e => setForm(s => ({ ...s, miles: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <input type="number" step="0.01" placeholder="Gas $" value={form.gas_amount} onChange={e => setForm(s => ({ ...s, gas_amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <input placeholder="Vehicle" value={form.vehicle} onChange={e => setForm(s => ({ ...s, vehicle: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
-        <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
+        <button className="bg-foreground text-background rounded-full px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
       </form>
       <table className="w-full text-sm">
         <thead className="bg-muted/20">
@@ -590,7 +590,7 @@ function RemindersTab({ userId, rows, reload }: { userId: string; rows: Reminder
         <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <input type="date" value={form.due_date} onChange={e => setForm(s => ({ ...s, due_date: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <input placeholder="Notes" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
-        <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
+        <button className="bg-foreground text-background rounded-full px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
       </form>
       <div className="divide-y divide-foreground/10">
         {rows.length === 0 && <p className="p-10 text-center text-xs text-muted-foreground">No reminders yet.</p>}

@@ -89,7 +89,7 @@ export default function HomeOfficeAccountant() {
               <code className="text-2xl md:text-3xl tracking-[0.2em] text-brand">{accountantId ||"—"}</code>
               <p className="text-xs text-muted-foreground mt-3 max-w-md">Share this with your clients. They enter it in their Taxes tab to connect their books to you.</p>
             </div>
-            <button onClick={copyId} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85">Copy ID</button>
+            <button onClick={copyId} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background rounded-full hover:bg-foreground/85">Copy ID</button>
           </div>
 
           <section className="mb-12">
@@ -109,7 +109,7 @@ export default function HomeOfficeAccountant() {
                       </div>
                       <div className="flex gap-2">
                         <button onClick={() => decline(l.id)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Decline</button>
-                        <button onClick={() => accept(l.id)} className="text-[10px] uppercase tracking-widest bg-foreground text-background px-4 py-1.5">Accept</button>
+                        <button onClick={() => accept(l.id)} className="text-[10px] uppercase tracking-widest bg-foreground text-background rounded-full px-4 py-1.5">Accept</button>
                       </div>
                     </div>
                   );

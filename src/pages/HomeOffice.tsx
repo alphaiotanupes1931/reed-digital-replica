@@ -144,7 +144,7 @@ const HomeOffice = () => {
                   navigator.clipboard.writeText(businessId);
                   toast.success("Business ID copied");
                 }}
-                className="text-xs uppercase tracking-widest px-4 py-2 bg-foreground text-background hover:bg-foreground/85"
+                className="text-xs uppercase tracking-widest px-4 py-2 bg-foreground text-background rounded-full hover:bg-foreground/85"
               >
                 Copy ID
               </button>

@@ -87,7 +87,7 @@ const Referral = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-brand text-brand-foreground px-8 py-4 text-xs uppercase tracking-[0.3em] hover:bg-brand/90 transition-colors"
+              className="w-full bg-brand rounded-full text-brand-foreground px-8 py-4 text-xs uppercase tracking-[0.3em] hover:bg-brand rounded-full/90 transition-colors"
             >
               Draft email & send →
             </button>

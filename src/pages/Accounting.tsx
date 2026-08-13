@@ -231,7 +231,7 @@ const Accounting = () => {
                     </div>
                     {newPasscode && (
                       <div className="flex gap-2 items-center">
-                        <code className="flex-1 px-3 py-2 bg-brand/10 text-lg tracking-widest font-bold">{newPasscode}</code>
+                        <code className="flex-1 px-3 py-2 bg-brand rounded-full/10 text-lg tracking-widest font-bold">{newPasscode}</code>
                         <Button variant="outline" size="sm" onClick={() => copy(newPasscode)}>Copy</Button>
                       </div>
                     )}

@@ -101,7 +101,7 @@ const HomeOfficeProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
       <Header />
       <main className="pt-32 pb-20">
         <div className="container max-w-2xl mx-auto">

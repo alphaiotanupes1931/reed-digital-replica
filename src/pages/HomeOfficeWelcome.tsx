@@ -16,7 +16,7 @@ const HomeOfficeWelcome = () => {
         </Link>
         <Link
           to="/home-office/login"
-          className="text-xs uppercase tracking-widest px-4 py-2 bg-foreground text-background hover:bg-foreground/85"
+          className="text-xs uppercase tracking-widest px-4 py-2 bg-foreground text-background rounded-full hover:bg-foreground/85"
         >
           Sign in
         </Link>
@@ -33,7 +33,7 @@ const HomeOfficeWelcome = () => {
           <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/home-office/login?mode=signup"
-              className="px-6 py-3 bg-foreground text-background text-xs uppercase tracking-widest hover:bg-foreground/85"
+              className="px-6 py-3 bg-foreground text-background rounded-full text-xs uppercase tracking-widest hover:bg-foreground/85"
             >
               Try free for 7 days
             </Link>
@@ -74,7 +74,7 @@ const HomeOfficeWelcome = () => {
             </ul>
             <Link
               to="/home-office/login?mode=signup"
-              className="inline-block px-6 py-3 bg-foreground text-background text-xs uppercase tracking-widest hover:bg-foreground/85"
+              className="inline-block px-6 py-3 bg-foreground text-background rounded-full text-xs uppercase tracking-widest hover:bg-foreground/85"
             >
               Start free trial
             </Link>

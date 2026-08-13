@@ -12,7 +12,7 @@ const HomeOfficeHelp = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
       </div>

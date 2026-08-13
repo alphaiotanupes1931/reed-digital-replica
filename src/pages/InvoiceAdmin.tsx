@@ -1157,7 +1157,7 @@ const InvoiceAdmin = () => {
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Clients</div>
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Hello, {displayName}</h1>
-            <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-widest px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors whitespace-nowrap">
+            <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-widest px-4 py-2.5 bg-foreground text-background rounded-full hover:bg-foreground/85 transition-colors whitespace-nowrap">
               {showClientForm ?"Cancel" :"Add Client"}
             </button>
           </div>
