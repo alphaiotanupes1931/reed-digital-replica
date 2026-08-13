@@ -436,63 +436,6 @@ const BillsTracker = () => {
             )}
           </div>
 
-          {/* Other income (not counted in totals) */}
-          <div>
-            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
-              <h2 className="text-lg font-bold tracking-tight">Other Income</h2>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Not counted in totals</span>
-            </div>
-            <div className="mb-4" />
-            <div
-              ref={extraFormRef}
-              className={`border p-6 mb-6 transition-colors ${editingExtraId ?"border-brand bg-brand/5" :"border-border"}`}
-            >
-              <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
-                <Input placeholder="Source / Client" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
-                <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
-                <Input placeholder="Notes (optional)" value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
-                <div className="flex gap-2">
-                  <Button type="submit">{editingExtraId ?"Save" :"Add"}</Button>
-                  {editingExtraId && <Button type="button" variant="outline" onClick={cancelEditExtra}>Cancel</Button>}
-                </div>
-              </form>
-            </div>
-
-            {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
-            ) : extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No other income yet.</p>
-            ) : (
-              <div className="divide-y divide-foreground/10 border border-border">
-                {extraRows.map((r) => {
-                  const isHidden = hiddenExtraIds.includes(r.id);
-                  return (
-                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ?"opacity-50" :""}`}>
-                      <div>
-                        <p className={`font-bold text-sm ${isHidden ?"line-through" :""}`}>{r.source}</p>
-                        {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
-                      </div>
-                      <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
-                      <p className={`font-bold text-sm ${isHidden ?"text-muted-foreground line-through" :"text-brand"}`}>{fmt(Number(r.price))}</p>
-                      <div className="flex gap-2 flex-wrap justify-end">
-                        <Button size="sm" variant="outline" onClick={() => toggleHiddenExtra(r.id)}>{isHidden ?"Show" :"Hide"}</Button>
-                        <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
-                        <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
-                      </div>
-                    </div>
-                  );
-                })}
-                {extraRows.length > 0 && (
-                  <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground/5">
-                    <p className="font-bold text-sm uppercase tracking-widest">Other Income (not counted)</p>
-                    <div />
-                    <p className="font-bold text-sm">{fmt(totalExtra)}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
           {/* Tax Reminders */}
           <div className="mt-12">
             <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
