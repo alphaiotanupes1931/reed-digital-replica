@@ -675,12 +675,26 @@ const BillsTracker = () => {
                     </div>
                   );
                 })}
+                {incomeRows.length > 0 && (
+                  <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground/5">
+                    <p className="font-bold text-sm uppercase tracking-widest">
+                      Maintenance Plans {includeMaintenance ? "(included)" : "(excluded)"}
+                    </p>
+                    <div />
+                    <p className={`font-bold text-sm ${includeMaintenance ? "" : "line-through text-muted-foreground"}`}>{fmt(totalIncome)}</p>
+                  </div>
+                )}
+                {extraRows.length > 0 && (
+                  <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground/5">
+                    <p className="font-bold text-sm uppercase tracking-widest">Manual Income (included)</p>
+                    <div />
+                    <p className="font-bold text-sm">{fmt(totalExtra)}</p>
+                  </div>
+                )}
                 <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">
-                    Total Income {includeMaintenance ? "" : "(excluded)"}
-                  </p>
+                  <p className="font-bold text-sm uppercase tracking-widest">Counted in Totals</p>
                   <div />
-                  <p className="font-bold text-sm">{fmt(totalIncome + totalExtra)}</p>
+                  <p className="font-bold text-sm">{fmt((includeMaintenance ? totalIncome : 0) + totalExtra)}</p>
                 </div>
               </div>
             )}
