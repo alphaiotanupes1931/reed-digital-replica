@@ -415,9 +415,35 @@ const BillsTracker = () => {
 
           {/* Summary — three numbers, nothing else */}
           <div className="flex items-start gap-10 md:gap-16 border-b border-foreground/15 pb-8 mb-4">
-            <div>
+             <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Income</p>
-              <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
+              {editingSalary ? (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-muted-foreground">$</span>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={salaryDraft}
+                    onChange={(e) => setSalaryDraft(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") saveSalary(); if (e.key === "Escape") setEditingSalary(false); }}
+                    autoFocus
+                    className="h-9 w-32"
+                  />
+                  <Button size="sm" onClick={saveSalary}>Save</Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditingSalary(false)}>Cancel</Button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
+                  <button
+                    onClick={() => { setSalaryDraft(totalW2 ? String(totalW2) : ""); setEditingSalary(true); }}
+                    className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline mt-1"
+                  >
+                    Edit salary ({fmt(totalW2)})
+                  </button>
+                </>
+              )}
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Bills</p>
