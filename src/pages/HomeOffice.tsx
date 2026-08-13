@@ -1,6 +1,5 @@
 import { useEffect, useState } from"react";
 import { useNavigate, Link } from"react-router-dom";
-import BackLink from"@/components/BackLink";
 import hoLogo from"@/assets/ho-logo.png.asset.json";
 import { supabase } from"@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from"@/components/ui/dialog";
