@@ -467,6 +467,11 @@ const BillsTracker = () => {
               ) : (
                 <>
                   <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
+                    Salary {fmt(includeW2 ? totalW2 : 0)}
+                    {totalExtra > 0 ? ` + Other ${fmt(totalExtra)}` : ""}
+                    {includeMaintenance && totalIncome > 0 ? ` + Retainers ${fmt(totalIncome)}` : ""}
+                  </p>
                   <button
                     onClick={() => { setSalaryDraft(totalW2 ? String(totalW2) : ""); setEditingSalary(true); }}
                     className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline mt-1"
