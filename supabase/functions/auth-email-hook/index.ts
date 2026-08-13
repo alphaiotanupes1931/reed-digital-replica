@@ -17,12 +17,12 @@ const corsHeaders = {
 }
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
+  signup: 'Reed Digital Group - Confirm your email',
+  invite: "Reed Digital Group - You've been invited",
+  magiclink: 'Reed Digital Group - Your login link',
+  recovery: 'Reed Digital Group - Reset your password',
+  email_change: 'Reed Digital Group - Confirm your new email',
+  reauthentication: 'Reed Digital Group - Your verification code',
 }
 
 // Template mapping

@@ -35,7 +35,7 @@ const Email = ({ clientName, amount, invoiceUrl }: Props) => (
 
 export const template = {
   component: Email,
-  subject: 'Your invoice is ready',
+  subject: 'Reed Digital Group - Your invoice is ready',
   displayName: 'Invoice ready',
   previewData: { clientName: 'Jordan', amount: '$1,250.00', invoiceUrl: 'https://reeddigitalgroup.com/pay' },
 } satisfies TemplateEntry
