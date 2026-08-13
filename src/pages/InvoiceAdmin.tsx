@@ -1,39 +1,39 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Lock, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useTypingEffect } from "@/hooks/use-typing-effect";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
-import logo from "@/assets/rdg-header-logo.png";
-import RevenueCalendar from "@/components/RevenueCalendar";
+import { useState, useEffect } from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { Lock, ChevronRight } from"lucide-react";
+import { Link } from"react-router-dom";
+import { useTypingEffect } from"@/hooks/use-typing-effect";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { supabase } from"@/integrations/supabase/client";
+import { toast } from"@/hooks/use-toast";
+import logo from"@/assets/rdg-header-logo.png";
+import RevenueCalendar from"@/components/RevenueCalendar";
 
-const ADMIN_PASSWORD = "shell0423";
+const ADMIN_PASSWORD ="shell0423";
 
 // Surfaces the real message returned by the edge function instead of the
-// generic "Edge Function returned a non-2xx status code".
+// generic"Edge Function returned a non-2xx status code".
 const fnError = async (res: any): Promise<Error> => {
   const bodyMsg = (res?.data as any)?.error;
   if (bodyMsg) return new Error(bodyMsg);
   try {
     const ctx = res?.error?.context;
-    if (ctx && typeof ctx.json === "function") {
+    if (ctx && typeof ctx.json ==="function") {
       const body = await ctx.clone().json();
       if (body?.error) return new Error(body.error);
     }
   } catch {
     /* ignore */
   }
-  return new Error(res?.error?.message || "Request failed");
+  return new Error(res?.error?.message ||"Request failed");
 };
 const PROCESSING_FEE_RATE = 0.029;
 const PROCESSING_FEE_FLAT = 0.30;
 
-const SERVICE_OPTIONS = ["Website Development", "App Development"];
+const SERVICE_OPTIONS = ["Website Development","App Development"];
 
-const PHASE_STATUS_OPTIONS = ["pending", "in_progress", "complete"] as const;
+const PHASE_STATUS_OPTIONS = ["pending","in_progress","complete"] as const;
 type PhaseStatus = typeof PHASE_STATUS_OPTIONS[number];
 
 interface Phase {
@@ -42,7 +42,7 @@ interface Phase {
 }
 
 interface SowComment {
-  author: "client" | "admin";
+  author:"client" |"admin";
   message: string;
   created_at: string;
 }
@@ -54,7 +54,7 @@ interface Client {
   owner_name: string | null;
   scope_of_work: string | null;
   phases: Phase[] | null;
-  sow_status: "pending" | "approved" | "rejected" | string;
+  sow_status:"pending" |"approved" |"rejected" | string;
   sow_comments: SowComment[] | null;
   project_type: string | null;
   project_build_cost: string | null;
@@ -80,7 +80,7 @@ interface Invoice {
   service: string;
   price: number;
   due_date: string;
-  status: "draft" | "approved" | "sent" | "paid";
+  status:"draft" |"approved" |"sent" |"paid";
   deposit_required: boolean;
   deposit_amount: number | null;
   deposit_due_date: string | null;
@@ -89,10 +89,10 @@ interface Invoice {
   paid_at?: string | null;
   message: string | null;
   deliverables: Deliverable[] | null;
-  payment_method?: "stripe" | "zelle" | string | null;
+  payment_method?:"stripe" |"zelle" | string | null;
   hidden_from_client?: boolean;
   deactivated?: boolean;
-  payment_plan?: "one_time" | "monthly" | string | null;
+  payment_plan?:"one_time" |"monthly" | string | null;
   plan_start_date?: string | null;
   plan_end_date?: string | null;
   plan_months?: number | null;
@@ -101,10 +101,10 @@ interface Invoice {
 }
 
 const DEFAULT_PHASES: Phase[] = [
-  { name: "Discovery", status: "pending" },
-  { name: "Design", status: "pending" },
-  { name: "Development", status: "pending" },
-  { name: "Launch", status: "pending" },
+  { name:"Discovery", status:"pending" },
+  { name:"Design", status:"pending" },
+  { name:"Development", status:"pending" },
+  { name:"Launch", status:"pending" },
 ];
 
 const AdminSubtext = () => {
@@ -125,7 +125,7 @@ const calculateTotal = (amount: number) =>
 const InvoiceAdmin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     // PIN gate removed — auto-authenticate
-    if (typeof window !== "undefined") localStorage.setItem("admin-auth", ADMIN_PASSWORD);
+    if (typeof window !=="undefined") localStorage.setItem("admin-auth", ADMIN_PASSWORD);
     return true;
   });
   const [hasSession, setHasSession] = useState<boolean | null>(null);
@@ -167,7 +167,7 @@ const InvoiceAdmin = () => {
   const [message, setMessage] = useState("");
   const [allowStripe, setAllowStripe] = useState(true);
   const [allowZelle, setAllowZelle] = useState(false);
-  const [paymentPlan, setPaymentPlan] = useState<"one_time" | "monthly">("one_time");
+  const [paymentPlan, setPaymentPlan] = useState<"one_time" |"monthly">("one_time");
   const [planStart, setPlanStart] = useState("");
   const [planEnd, setPlanEnd] = useState("");
 
@@ -186,7 +186,7 @@ const InvoiceAdmin = () => {
   const [editDepositDueDate, setEditDepositDueDate] = useState("");
   const [editAllowStripe, setEditAllowStripe] = useState(true);
   const [editAllowZelle, setEditAllowZelle] = useState(false);
-  const [editPaymentPlan, setEditPaymentPlan] = useState<"one_time" | "monthly">("one_time");
+  const [editPaymentPlan, setEditPaymentPlan] = useState<"one_time" |"monthly">("one_time");
   const [editPlanStart, setEditPlanStart] = useState("");
   const [editPlanEnd, setEditPlanEnd] = useState("");
 
@@ -194,43 +194,43 @@ const InvoiceAdmin = () => {
     setEditingInvoiceId(inv.id);
     setEditService(inv.service);
     setEditPrice(String(inv.price));
-    setEditMessage(inv.message || "");
+    setEditMessage(inv.message ||"");
     setEditDepositRequired(!!inv.deposit_required);
-    setEditDepositAmount(inv.deposit_amount != null ? String(inv.deposit_amount) : "");
-    setEditDepositDueDate(inv.deposit_due_date || "");
-    const m = (inv.payment_method || "stripe").split(",").map(x => x.trim()).filter(Boolean);
+    setEditDepositAmount(inv.deposit_amount != null ? String(inv.deposit_amount) :"");
+    setEditDepositDueDate(inv.deposit_due_date ||"");
+    const m = (inv.payment_method ||"stripe").split(",").map(x => x.trim()).filter(Boolean);
     setEditAllowStripe(m.includes("stripe"));
     setEditAllowZelle(m.includes("zelle"));
-    setEditPaymentPlan((inv.payment_plan === "monthly" ? "monthly" : "one_time"));
-    setEditPlanStart(inv.plan_start_date || "");
-    setEditPlanEnd(inv.plan_end_date || "");
+    setEditPaymentPlan((inv.payment_plan ==="monthly" ?"monthly" :"one_time"));
+    setEditPlanStart(inv.plan_start_date ||"");
+    setEditPlanEnd(inv.plan_end_date ||"");
   };
 
   const handleUpdateInvoice = async (invoiceId: string) => {
     if (!editService || !editPrice) {
-      toast({ title: "Service and price required", variant: "destructive" });
+      toast({ title:"Service and price required", variant:"destructive" });
       return;
     }
     if (editDepositRequired && (!editDepositAmount || !editDepositDueDate)) {
-      toast({ title: "Deposit details required", variant: "destructive" });
+      toast({ title:"Deposit details required", variant:"destructive" });
       return;
     }
     if (!editAllowStripe && !editAllowZelle) {
-      toast({ title: "Select at least one payment method", variant: "destructive" });
+      toast({ title:"Select at least one payment method", variant:"destructive" });
       return;
     }
-    if (editPaymentPlan === "monthly" && (!editPlanStart || !editPlanEnd)) {
-      toast({ title: "Monthly plan needs start and end dates", variant: "destructive" });
+    if (editPaymentPlan ==="monthly" && (!editPlanStart || !editPlanEnd)) {
+      toast({ title:"Monthly plan needs start and end dates", variant:"destructive" });
       return;
     }
-    if (editPaymentPlan === "monthly" && editPlanStart && editPlanEnd && editPlanEnd < editPlanStart) {
-      toast({ title: "End date must be after start date", variant: "destructive" });
+    if (editPaymentPlan ==="monthly" && editPlanStart && editPlanEnd && editPlanEnd < editPlanStart) {
+      toast({ title:"End date must be after start date", variant:"destructive" });
       return;
     }
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
-          action: "update_invoice",
+          action:"update_invoice",
           invoice_id: invoiceId,
           service: editService,
           price: parseFloat(editPrice),
@@ -244,17 +244,17 @@ const InvoiceAdmin = () => {
             ...(editAllowZelle ? ["zelle"] : []),
           ].join(","),
           payment_plan: editPaymentPlan,
-          plan_start_date: editPaymentPlan === "monthly" ? editPlanStart : null,
-          plan_end_date: editPaymentPlan === "monthly" ? editPlanEnd : null,
+          plan_start_date: editPaymentPlan ==="monthly" ? editPlanStart : null,
+          plan_end_date: editPaymentPlan ==="monthly" ? editPlanEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Invoice updated" });
+      toast({ title:"Invoice updated" });
       setEditingInvoiceId(null);
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -263,9 +263,9 @@ const InvoiceAdmin = () => {
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       localStorage.setItem("admin-auth", ADMIN_PASSWORD);
-      toast({ title: "Authenticated" });
+      toast({ title:"Authenticated" });
     } else {
-      toast({ title: "Invalid password", variant: "destructive" });
+      toast({ title:"Invalid password", variant:"destructive" });
     }
   };
 
@@ -274,10 +274,10 @@ const InvoiceAdmin = () => {
     try {
       const [invRes, clRes] = await Promise.all([
         supabase.functions.invoke("invoice-admin", {
-          body: { action: "list_invoices", password: ADMIN_PASSWORD },
+          body: { action:"list_invoices", password: ADMIN_PASSWORD },
         }),
         supabase.functions.invoke("invoice-admin", {
-          body: { action: "list_clients", password: ADMIN_PASSWORD },
+          body: { action:"list_clients", password: ADMIN_PASSWORD },
         }),
       ]);
       if (invRes.error) throw invRes.error;
@@ -285,7 +285,7 @@ const InvoiceAdmin = () => {
       if (invRes.data?.invoices) setInvoices(invRes.data.invoices as Invoice[]);
       if (clRes.data?.clients) setClients(clRes.data.clients as Client[]);
     } catch (err: any) {
-      toast({ title: "Error loading data", description: err.message, variant: "destructive" });
+      toast({ title:"Error loading data", description: err.message, variant:"destructive" });
     }
     setLoading(false);
   };
@@ -306,7 +306,7 @@ const InvoiceAdmin = () => {
         .select("full_name")
         .eq("user_id", data.user.id)
         .maybeSingle();
-      setDisplayName(profile?.full_name || data.user.email?.split("@")[0] || "Admin");
+      setDisplayName(profile?.full_name || data.user.email?.split("@")[0] ||"Admin");
     })();
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setHasSession(!!s?.user));
     return () => sub.subscription.unsubscribe();
@@ -317,21 +317,21 @@ const InvoiceAdmin = () => {
     if (selectedClientId) {
       const c = clients.find((x) => x.id === selectedClientId);
       if (c) {
-        setSowText(c.scope_of_work || "");
+        setSowText(c.scope_of_work ||"");
         setPhases(
           (Array.isArray(c.phases) && c.phases.length > 0
             ? c.phases
             : DEFAULT_PHASES) as Phase[]
         );
-        setProjectType(c.project_type || "");
-        setProjectBuildCost(c.project_build_cost || "");
-        setProjectMaintenanceCost(c.project_maintenance_cost || "");
-        setProjectEstimatedTotal(c.project_estimated_total || "");
-        setContractText(c.contract_text || "");
+        setProjectType(c.project_type ||"");
+        setProjectBuildCost(c.project_build_cost ||"");
+        setProjectMaintenanceCost(c.project_maintenance_cost ||"");
+        setProjectEstimatedTotal(c.project_estimated_total ||"");
+        setContractText(c.contract_text ||"");
         setContractHidden(c.contract_hidden !== false);
-        setEditCompany(c.company_name || "");
-        setEditOwner(c.owner_name || "");
-        setEditEmail(c.email || "");
+        setEditCompany(c.company_name ||"");
+        setEditOwner(c.owner_name ||"");
+        setEditEmail(c.email ||"");
       }
     }
   }, [selectedClientId, clients]);
@@ -339,13 +339,13 @@ const InvoiceAdmin = () => {
   const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newOwnerName || !newCompanyName || !newEmail) {
-      toast({ title: "All fields required", variant: "destructive" });
+      toast({ title:"All fields required", variant:"destructive" });
       return;
     }
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
-          action: "create_client",
+          action:"create_client",
           owner_name: newOwnerName,
           company_name: newCompanyName,
           email: newEmail.toLowerCase().trim(),
@@ -353,13 +353,13 @@ const InvoiceAdmin = () => {
         },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Client added" });
+      toast({ title:"Client added" });
       setShowClientForm(false);
       setNewOwnerName(""); setNewCompanyName(""); setNewEmail("");
       await fetchData();
       if (res.data?.client?.id) setSelectedClientId(res.data.client.id);
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -374,7 +374,7 @@ const InvoiceAdmin = () => {
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
-          action: "update_client",
+          action:"update_client",
           client_id: selectedClientId,
           company_name: editCompany,
           owner_name: editOwner,
@@ -383,10 +383,10 @@ const InvoiceAdmin = () => {
         },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Client details saved" });
+      toast({ title:"Client details saved" });
       await fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
     setSavingDetails(false);
   };
@@ -396,7 +396,7 @@ const InvoiceAdmin = () => {
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
-          action: "save_sow",
+          action:"save_sow",
           client_id: selectedClientId,
           scope_of_work: sowText,
           phases,
@@ -408,30 +408,30 @@ const InvoiceAdmin = () => {
         },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Scope of work saved" });
+      toast({ title:"Scope of work saved" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
   const updatePhase = (idx: number, patch: Partial<Phase>) => {
     setPhases((prev) => prev.map((p, i) => (i === idx ? { ...p, ...patch } : p)));
   };
-  const addPhase = () => setPhases((p) => [...p, { name: `Phase ${p.length + 1}`, status: "pending" }]);
+  const addPhase = () => setPhases((p) => [...p, { name: `Phase ${p.length + 1}`, status:"pending" }]);
   const removePhase = (idx: number) => setPhases((p) => p.filter((_, i) => i !== idx));
 
   const handleSaveContract = async () => {
     if (!selectedClientId) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "save_contract", client_id: selectedClientId, contract_text: contractText, password: ADMIN_PASSWORD },
+        body: { action:"save_contract", client_id: selectedClientId, contract_text: contractText, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Contract saved" });
+      toast({ title:"Contract saved" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -441,13 +441,13 @@ const InvoiceAdmin = () => {
     setContractHidden(next);
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "set_contract_hidden", client_id: selectedClientId, hidden: next, password: ADMIN_PASSWORD },
+        body: { action:"set_contract_hidden", client_id: selectedClientId, hidden: next, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: next ? "Contract hidden from client" : "Contract visible to client" });
+      toast({ title: next ?"Contract hidden from client" :"Contract visible to client" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -456,13 +456,13 @@ const InvoiceAdmin = () => {
     if (!confirm("Clear the client's signature? They'll need to sign again.")) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "reset_contract_signature", client_id: selectedClientId, password: ADMIN_PASSWORD },
+        body: { action:"reset_contract_signature", client_id: selectedClientId, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Signature cleared" });
+      toast({ title:"Signature cleared" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -471,10 +471,10 @@ const InvoiceAdmin = () => {
     if (!c) return;
     const signedName = c.contract_signed_name;
     const signedAt = c.contract_signed_at;
-    const text = (contractText || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const title = `Contract - ${c.company_name || c.owner_name || "Client"}`;
-    const w = window.open("", "_blank", "width=900,height=1000");
-    if (!w) { toast({ title: "Pop-up blocked", description: "Allow pop-ups to print.", variant: "destructive" }); return; }
+    const text = (contractText ||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const title = `Contract - ${c.company_name || c.owner_name ||"Client"}`;
+    const w = window.open("","_blank","width=900,height=1000");
+    if (!w) { toast({ title:"Pop-up blocked", description:"Allow pop-ups to print.", variant:"destructive" }); return; }
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
       <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
       <style>
@@ -490,8 +490,8 @@ const InvoiceAdmin = () => {
         .unsigned { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#a00; }
       </style></head><body>
       <h1>${title}</h1>
-      <div class="meta">${c.email || ""}${c.email && c.company_name ? " &middot; " : ""}${c.company_name || ""}<br/>Printed ${new Date().toLocaleString()}</div>
-      <pre>${text || "(no contract text)"}</pre>
+      <div class="meta">${c.email ||""}${c.email && c.company_name ?" &middot;" :""}${c.company_name ||""}<br/>Printed ${new Date().toLocaleString()}</div>
+      <pre>${text ||"(no contract text)"}</pre>
       <div class="sig">
         ${signedName && signedAt ? `
           <div class="sig-label">Client Signature</div>
@@ -510,25 +510,25 @@ const InvoiceAdmin = () => {
     const client = clients.find((c) => c.id === selectedClientId);
     if (!client) return;
     if (!service || !price) {
-      toast({ title: "Service and price required", variant: "destructive" });
+      toast({ title:"Service and price required", variant:"destructive" });
       return;
     }
     if (depositRequired && (!depositAmount || !depositDueDate)) {
-      toast({ title: "Deposit details required", variant: "destructive" });
+      toast({ title:"Deposit details required", variant:"destructive" });
       return;
     }
-    if (paymentPlan === "monthly" && (!planStart || !planEnd)) {
-      toast({ title: "Monthly plan needs start and end dates", variant: "destructive" });
+    if (paymentPlan ==="monthly" && (!planStart || !planEnd)) {
+      toast({ title:"Monthly plan needs start and end dates", variant:"destructive" });
       return;
     }
-    if (paymentPlan === "monthly" && planEnd < planStart) {
-      toast({ title: "End date must be after start date", variant: "destructive" });
+    if (paymentPlan ==="monthly" && planEnd < planStart) {
+      toast({ title:"End date must be after start date", variant:"destructive" });
       return;
     }
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
         body: {
-          action: "create_invoice",
+          action:"create_invoice",
           client_id: client.id,
           company_name: client.company_name,
           email: client.email,
@@ -543,15 +543,15 @@ const InvoiceAdmin = () => {
           payment_method: [
             ...(allowStripe ? ["stripe"] : []),
             ...(allowZelle ? ["zelle"] : []),
-          ].join(",") || "stripe",
+          ].join(",") ||"stripe",
           payment_plan: paymentPlan,
-          plan_start_date: paymentPlan === "monthly" ? planStart : null,
-          plan_end_date: paymentPlan === "monthly" ? planEnd : null,
+          plan_start_date: paymentPlan ==="monthly" ? planStart : null,
+          plan_end_date: paymentPlan ==="monthly" ? planEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Invoice created" });
+      toast({ title:"Invoice created" });
       setShowInvoiceForm(false);
       setService(""); setPrice(""); setDepositRequired(false);
       setDepositAmount(""); setDepositDueDate(""); setMessage("");
@@ -559,7 +559,7 @@ const InvoiceAdmin = () => {
       setPaymentPlan("one_time"); setPlanStart(""); setPlanEnd("");
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -568,14 +568,14 @@ const InvoiceAdmin = () => {
     if (!confirm(`Permanently remove ${name} and ALL their invoices? This cannot be undone.`)) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "delete_client", client_id: clientId, password: ADMIN_PASSWORD },
+        body: { action:"delete_client", client_id: clientId, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
       if (selectedClientId === clientId) setSelectedClientId(null);
       await fetchData();
-      toast({ title: "Client removed" });
+      toast({ title:"Client removed" });
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -583,13 +583,13 @@ const InvoiceAdmin = () => {
     if (!confirm("Permanently remove this invoice? This cannot be undone.")) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "delete_invoice", invoice_id: invoiceId, password: ADMIN_PASSWORD },
+        body: { action:"delete_invoice", invoice_id: invoiceId, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Invoice deleted" });
+      toast({ title:"Invoice deleted" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -598,78 +598,78 @@ const InvoiceAdmin = () => {
     if (!confirm("Delete this comment?")) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "delete_sow_comment", client_id: selectedClientId, comment_index: commentIndex, password: ADMIN_PASSWORD },
+        body: { action:"delete_sow_comment", client_id: selectedClientId, comment_index: commentIndex, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Comment deleted" });
+      toast({ title:"Comment deleted" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
-  const handleSetStatus = async (invoiceId: string, status: "approved" | "paid") => {
-    const label = status === "paid" ? "Mark this invoice as PAID?" : "Mark this invoice as UNPAID?";
+  const handleSetStatus = async (invoiceId: string, status:"approved" |"paid") => {
+    const label = status ==="paid" ?"Mark this invoice as PAID?" :"Mark this invoice as UNPAID?";
     if (!confirm(label)) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "set_status", invoice_id: invoiceId, status, password: ADMIN_PASSWORD },
+        body: { action:"set_status", invoice_id: invoiceId, status, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: status === "paid" ? "Marked as paid" : "Marked as unpaid" });
+      toast({ title: status ==="paid" ?"Marked as paid" :"Marked as unpaid" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
   const handleSetPaymentMethod = async (invoiceId: string, method: string) => {
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
+        body: { action:"set_payment_method", invoice_id: invoiceId, payment_method: method, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      const label = method === "zelle" ? "Zelle" : method === "stripe,zelle" || method === "zelle,stripe" ? "Stripe + Zelle" : "Stripe";
+      const label = method ==="zelle" ?"Zelle" : method ==="stripe,zelle" || method ==="zelle,stripe" ?"Stripe + Zelle" :"Stripe";
       toast({ title: `Payment method set to ${label}` });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
   const handleToggleVisibility = async (invoiceId: string, currentlyHidden: boolean) => {
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "set_visibility", invoice_id: invoiceId, hidden_from_client: !currentlyHidden, password: ADMIN_PASSWORD },
+        body: { action:"set_visibility", invoice_id: invoiceId, hidden_from_client: !currentlyHidden, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: !currentlyHidden ? "Hidden from client" : "Visible to client" });
+      toast({ title: !currentlyHidden ?"Hidden from client" :"Visible to client" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
   const handleToggleDeactivated = async (invoiceId: string, currentlyDeactivated: boolean) => {
     const next = !currentlyDeactivated;
     const label = next
-      ? "Deactivate this invoice? The client will no longer see it and their email will be free to receive a new active invoice."
-      : "Reactivate this invoice? It will become this client's active invoice again.";
+      ?"Deactivate this invoice? The client will no longer see it and their email will be free to receive a new active invoice."
+      :"Reactivate this invoice? It will become this client's active invoice again.";
     if (!confirm(label)) return;
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "set_deactivated", invoice_id: invoiceId, deactivated: next, password: ADMIN_PASSWORD },
+        body: { action:"set_deactivated", invoice_id: invoiceId, deactivated: next, password: ADMIN_PASSWORD },
       });
       // Edge function returns non-2xx for conflict; surface its error message.
       if (res.error) {
-        const msg = (res.data as any)?.error || res.error.message || "Action blocked";
-        toast({ title: "Cannot reactivate", description: msg, variant: "destructive" });
+        const msg = (res.data as any)?.error || res.error.message ||"Action blocked";
+        toast({ title:"Cannot reactivate", description: msg, variant:"destructive" });
         return;
       }
-      toast({ title: next ? "Invoice deactivated" : "Invoice reactivated" });
+      toast({ title: next ?"Invoice deactivated" :"Invoice reactivated" });
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -687,7 +687,7 @@ const InvoiceAdmin = () => {
     setPaymentHistory((p) => ({ ...p, [clientId]: { ...(p[clientId] || {}), open: true, loading: true } }));
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "get_payment_history", client_id: clientId, password: ADMIN_PASSWORD },
+        body: { action:"get_payment_history", client_id: clientId, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
       const d = res.data as any;
@@ -709,10 +709,10 @@ const InvoiceAdmin = () => {
   };
 
   // Auto-calculate estimated total from build + maintenance cost strings.
-  // Supports "$500", "$500-800", "500 - 800", "N/A", etc. Maintenance is treated as monthly.
+  // Supports"$500","$500-800","500 - 800","N/A", etc. Maintenance is treated as monthly.
   const parseCostRange = (raw: string): [number, number] | null => {
     if (!raw) return null;
-    const cleaned = raw.replace(/[$,\s]/g, "");
+    const cleaned = raw.replace(/[$,\s]/g,"");
     if (!cleaned || /n\/?a/i.test(cleaned)) return null;
     const parts = cleaned.split(/[-–—to]+/i).filter(Boolean);
     const nums = parts.map((p) => parseFloat(p)).filter((n) => !isNaN(n));
@@ -742,13 +742,13 @@ const InvoiceAdmin = () => {
     setSyncing(true);
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "sync_payments", password: ADMIN_PASSWORD },
+        body: { action:"sync_payments", password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
       const updated = res.data?.updated || 0;
       if (updated > 0) toast({ title: `${updated} invoice(s) marked as paid` });
     } catch (err: any) {
-      toast({ title: "Sync error", description: err.message, variant: "destructive" });
+      toast({ title:"Sync error", description: err.message, variant:"destructive" });
     }
     setSyncing(false);
   };
@@ -760,14 +760,14 @@ const InvoiceAdmin = () => {
     const updated = [...current, { label: newDelLabel, url: newDelUrl }];
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
+        body: { action:"update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
-      toast({ title: "Deliverable added" });
+      toast({ title:"Deliverable added" });
       setNewDelLabel(""); setNewDelUrl("");
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -777,31 +777,31 @@ const InvoiceAdmin = () => {
     const updated = current.filter((_, i) => i !== index);
     try {
       const res = await supabase.functions.invoke("invoice-admin", {
-        body: { action: "update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
+        body: { action:"update_deliverables", invoice_id: invoiceId, deliverables: updated, password: ADMIN_PASSWORD },
       });
       if (res.error) throw await fnError(res);
       fetchData();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
-  const paidCount = invoices.filter((i) => i.status === "paid").length;
-  const totalRevenue = invoices.filter((i) => i.status === "paid").reduce((s, i) => s + i.price, 0);
-  const pendingCount = invoices.filter((i) => i.status !== "paid" && i.status !== "draft").length;
+  const paidCount = invoices.filter((i) => i.status ==="paid").length;
+  const totalRevenue = invoices.filter((i) => i.status ==="paid").reduce((s, i) => s + i.price, 0);
+  const pendingCount = invoices.filter((i) => i.status !=="paid" && i.status !=="draft").length;
 
   if (hasSession === false) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
         <div className="max-w-md w-full text-center">
           <Lock className="h-6 w-6 mx-auto mb-6 text-foreground/60" />
-          <h1 className="text-2xl font-mono font-bold text-foreground mb-3">Sign in required</h1>
-          <p className="text-sm font-mono text-muted-foreground mb-8">
+          <h1 className="text-2xl font-bold text-foreground mb-3">Sign in required</h1>
+          <p className="text-sm text-muted-foreground mb-8">
             Your session expired. Sign in to access the admin panel.
           </p>
           <Link
             to="/home-office/login"
-            className="inline-block text-xs font-mono uppercase tracking-widest border border-border rounded-2xl px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
+            className="inline-block text-xs uppercase tracking-widest border border-border rounded-2xl px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
           >
             Go to Sign In
           </Link>
@@ -826,12 +826,12 @@ const InvoiceAdmin = () => {
 
         <div className="flex-1 flex flex-col items-center justify-center p-4">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="w-full max-w-sm">
-            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-4 text-center">
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="text-5xl md:text-7xl font-bold text-foreground tracking-tight mb-4 text-center">
               <em>Admin</em> <span className="text-lg md:text-2xl text-primary font-normal">by RDG</span>
             </motion.h1>
             <AdminSubtext />
             <motion.form onSubmit={handleLogin} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="space-y-4">
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30" />
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-14 bg-transparent border-0 border-b border-border rounded-none text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30" />
               <Button type="submit" variant="outline" className="w-full h-12 text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground">
                 <Lock className="mr-2 h-3.5 w-3.5" />Enter
               </Button>
@@ -853,11 +853,11 @@ const InvoiceAdmin = () => {
           <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
         </div>
         <div className="max-w-4xl mx-auto px-6 pt-32 pb-8 relative z-10">
-          <button onClick={() => setSelectedClientId(null)} className="text-xs font-mono text-muted-foreground hover:text-brand uppercase tracking-widest">
+          <button onClick={() => setSelectedClientId(null)} className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">
             ← All Clients
           </button>
-          <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight mt-3">{selectedClient.company_name}</h1>
-          <p className="text-sm font-mono text-muted-foreground mt-1">{selectedClient.email}</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mt-3">{selectedClient.company_name}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{selectedClient.email}</p>
 
           <div className="mt-10 space-y-8">
             {/* Client details */}
@@ -867,38 +867,38 @@ const InvoiceAdmin = () => {
                 <button
                   onClick={handleSaveClientDetails}
                   disabled={savingDetails}
-                  className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+                  className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
                 >
-                  {savingDetails ? "Saving..." : "Save"}
+                  {savingDetails ?"Saving..." :"Save"}
                 </button>
               </div>
               <div className="grid md:grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Business Name</label>
+                  <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Business Name</label>
                   <Input
                     value={editCompany}
                     onChange={(e) => setEditCompany(e.target.value)}
                     maxLength={120}
-                    className="mt-1 h-11 bg-transparent border border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                    className="mt-1 h-11 bg-transparent border border-border rounded-none text-sm focus-visible:ring-0 focus-visible:border-foreground"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Contact Name</label>
+                  <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Contact Name</label>
                   <Input
                     value={editOwner}
                     onChange={(e) => setEditOwner(e.target.value)}
                     maxLength={120}
-                    className="mt-1 h-11 bg-transparent border border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                    className="mt-1 h-11 bg-transparent border border-border rounded-none text-sm focus-visible:ring-0 focus-visible:border-foreground"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Email</label>
+                  <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Email</label>
                   <Input
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
                     maxLength={255}
-                    className="mt-1 h-11 bg-transparent border border-border rounded-none font-mono text-sm focus-visible:ring-0 focus-visible:border-foreground"
+                    className="mt-1 h-11 bg-transparent border border-border rounded-none text-sm focus-visible:ring-0 focus-visible:border-foreground"
                   />
                 </div>
               </div>
@@ -909,8 +909,8 @@ const InvoiceAdmin = () => {
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-foreground uppercase tracking-widest">Scope of Work</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setSowVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{sowVisible ? "Hide SOW" : "Show SOW"}</button>
-                  <button onClick={handleSaveSow} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                  <button onClick={() => setSowVisible(v => !v)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{sowVisible ?"Hide SOW" :"Show SOW"}</button>
+                  <button onClick={handleSaveSow} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
                 </div>
               </div>
               {sowVisible && (
@@ -919,7 +919,7 @@ const InvoiceAdmin = () => {
                   onChange={(e) => setSowText(e.target.value)}
                   placeholder="What you're building..."
                   rows={6}
-                  className="w-full bg-transparent border border-border rounded-2xl p-4 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
+                  className="w-full bg-transparent border border-border rounded-2xl p-4 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
                 />
               )}
             </div>
@@ -928,17 +928,17 @@ const InvoiceAdmin = () => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-foreground uppercase tracking-widest">Phases</p>
-                <button onClick={addPhase} className="text-xs font-mono uppercase tracking-widest text-foreground hover:text-primary">+ Add</button>
+                <button onClick={addPhase} className="text-xs uppercase tracking-widest text-foreground hover:text-primary">+ Add</button>
               </div>
               <div className="space-y-2">
                 {phases.map((p, i) => (
                   <div key={i} className="flex gap-3 items-center border border-border rounded-2xl p-3">
-                    <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}</span>
-                    <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm flex-1 px-0" />
+                    <span className="text-xs text-muted-foreground w-6">{i + 1}</span>
+                    <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-none text-sm flex-1 px-0" />
                     <select value={p.status} onChange={(e) => updatePhase(i, { status: e.target.value as PhaseStatus })} className="bg-transparent border border-border text-xs uppercase px-2 py-1">
-                      {PHASE_STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace("_", " ")}</option>)}
+                      {PHASE_STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace("_","")}</option>)}
                     </select>
-                    <button onClick={() => removePhase(i)} className="text-xs font-mono text-destructive hover:underline">remove</button>
+                    <button onClick={() => removePhase(i)} className="text-xs text-destructive hover:underline">remove</button>
                   </div>
                 ))}
               </div>
@@ -949,9 +949,9 @@ const InvoiceAdmin = () => {
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-foreground uppercase tracking-widest">Contract</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handlePrintContract()} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Print / Save PDF</button>
-                  <button onClick={handleToggleContractHidden} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ? "Publish to Client" : "Unpublish"}</button>
-                  <button onClick={handleSaveContract} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                  <button onClick={() => handlePrintContract()} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Print / Save PDF</button>
+                  <button onClick={handleToggleContractHidden} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ?"Publish to Client" :"Unpublish"}</button>
+                  <button onClick={handleSaveContract} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
                 </div>
               </div>
               {(() => {
@@ -963,15 +963,15 @@ const InvoiceAdmin = () => {
                     {signedName && signedAt ? (
                       <div className="border-2 border-emerald-500 p-4 flex items-center justify-between">
                         <div>
-                          <p className="text-[10px] font-mono uppercase tracking-widest text-emerald-600">Signed</p>
-                          <p className="text-2xl mt-1" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signedName}</p>
-                          <p className="text-[10px] font-mono text-muted-foreground mt-1">on {new Date(signedAt).toLocaleString()}</p>
+                          <p className="text-[10px] uppercase tracking-widest text-emerald-600">Signed</p>
+                          <p className="text-2xl mt-1" style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}>{signedName}</p>
+                          <p className="text-[10px] text-muted-foreground mt-1">on {new Date(signedAt).toLocaleString()}</p>
                         </div>
-                        <button onClick={handleResetSignature} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors">Clear</button>
+                        <button onClick={handleResetSignature} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors">Clear</button>
                       </div>
                     ) : (
-                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                        {contractHidden ? "Status: hidden from client" : "Status: awaiting client signature"}
+                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {contractHidden ?"Status: hidden from client" :"Status: awaiting client signature"}
                       </p>
                     )}
                     <textarea
@@ -979,7 +979,7 @@ const InvoiceAdmin = () => {
                       onChange={(e) => setContractText(e.target.value)}
                       placeholder="Paste the full contract text here..."
                       rows={14}
-                      className="w-full bg-transparent border border-border rounded-2xl p-4 font-mono text-xs leading-relaxed focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y whitespace-pre-wrap"
+                      className="w-full bg-transparent border border-border rounded-2xl p-4 text-xs leading-relaxed focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y whitespace-pre-wrap"
                     />
                   </div>
                 );
@@ -991,9 +991,9 @@ const InvoiceAdmin = () => {
               <div className="flex items-center justify-between mb-4">
                 <p className="text-sm text-foreground uppercase tracking-widest">Invoices</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ? "Hide Invoices" : "Show Invoices"}</button>
-                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
-                    {showInvoiceForm ? "Cancel" : "New Invoice"}
+                  <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ?"Hide Invoices" :"Show Invoices"}</button>
+                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+                    {showInvoiceForm ?"Cancel" :"New Invoice"}
                   </button>
                 </div>
               </div>
@@ -1002,33 +1002,33 @@ const InvoiceAdmin = () => {
                 <>
                   <AnimatePresence>
                     {showInvoiceForm && (
-                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-border mb-6">
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height:"auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-border mb-6">
                         <form onSubmit={handleCreateInvoice} className="p-5 space-y-4">
                           <div className="grid gap-4 md:grid-cols-2">
-                            <select value={service} onChange={(e) => setService(e.target.value)} className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground">
+                            <select value={service} onChange={(e) => setService(e.target.value)} className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground">
                               <option value="">Select service</option>
                               {SERVICE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                             </select>
-                            <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                            <input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                           </div>
-                          <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border font-mono text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                          <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message (optional)" rows={2} className="w-full bg-transparent border-b border-border text-sm resize-none focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                           {/* Payment Plan */}
                           <div className="border-t border-border pt-4">
-                            <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">Payment Plan</p>
+                            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Payment Plan</p>
                             <div className="flex gap-2 mb-3">
-                              <button type="button" onClick={() => setPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "one_time" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>One-time</button>
-                              <button type="button" onClick={() => setPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "monthly" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                              <button type="button" onClick={() => setPaymentPlan("one_time")} className={`flex-1 text-xs  uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan ==="one_time" ?"border-foreground bg-foreground text-background rounded-full" :"border-border hover:border-foreground"}`}>One-time</button>
+                              <button type="button" onClick={() => setPaymentPlan("monthly")} className={`flex-1 text-xs  uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan ==="monthly" ?"border-foreground bg-foreground text-background rounded-full" :"border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
                             </div>
-                            {paymentPlan === "monthly" && (
+                            {paymentPlan ==="monthly" && (
                               <div className="space-y-3">
                                 <div className="grid gap-3 md:grid-cols-2">
                                   <label className="block">
-                                    <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
-                                    <input type="date" value={planStart} onChange={(e) => setPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                    <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
+                                    <input type="date" value={planStart} onChange={(e) => setPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                   </label>
                                   <label className="block">
-                                    <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">End date</span>
-                                    <input type="date" value={planEnd} onChange={(e) => setPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                    <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">End date</span>
+                                    <input type="date" value={planEnd} onChange={(e) => setPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                   </label>
                                 </div>
                                 {(() => {
@@ -1039,7 +1039,7 @@ const InvoiceAdmin = () => {
                                   const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
                                   const monthly = p / months;
                                   return (
-                                    <div className="border border-border rounded-2xl p-3 font-mono text-xs">
+                                    <div className="border border-border rounded-2xl p-3 text-xs">
                                       <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
                                       <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
                                       <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
@@ -1058,7 +1058,7 @@ const InvoiceAdmin = () => {
                   </AnimatePresence>
 
                   {clientInvoices.length === 0 ? (
-                    <p className="text-sm font-mono text-muted-foreground py-8 border-t border-border">No invoices.</p>
+                    <p className="text-sm text-muted-foreground py-8 border-t border-border">No invoices.</p>
                   ) : (
                     <div className="border-t border-border">
                       {clientInvoices.map((inv) => (
@@ -1066,44 +1066,44 @@ const InvoiceAdmin = () => {
                           <div className="flex items-center justify-between gap-4">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-mono font-bold text-foreground">{inv.service}</span>
-                              <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
-                              {inv.payment_plan === "monthly" && (
-                                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-foreground/70">
+                              <span className=" font-bold text-foreground">{inv.service}</span>
+                              <span className={`text-[10px]  uppercase tracking-widest px-2 py-0.5 border ${inv.status ==="paid" ?"border-emerald-500 text-emerald-500" :"border-primary text-primary"}`}>{inv.status}</span>
+                              {inv.payment_plan ==="monthly" && (
+                                <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-foreground/70">
                                   Monthly · {inv.plan_months}mo · ${Number(inv.plan_monthly_amount || 0).toFixed(2)}/mo
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs font-mono text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{new Date(inv.created_at).toLocaleDateString()}</p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-lg font-mono font-bold">${inv.price.toLocaleString()}</span>
-                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">{editingInvoiceId === inv.id ? "Close" : "Edit"}</button>
-                            {inv.status !== "paid" ? (
-                              <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
+                            <span className="text-lg font-bold">${inv.price.toLocaleString()}</span>
+                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">{editingInvoiceId === inv.id ?"Close" :"Edit"}</button>
+                            {inv.status !=="paid" ? (
+                              <button onClick={() => handleSetStatus(inv.id,"paid")} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
                             ) : (
-                              <button onClick={() => handleSetStatus(inv.id, "approved")} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">Unpaid</button>
+                              <button onClick={() => handleSetStatus(inv.id,"approved")} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">Unpaid</button>
                             )}
-                            <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
+                            <button onClick={() => handleDelete(inv.id)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
                           </div>
                           </div>
                           {editingInvoiceId === inv.id && (
                             <div className="mt-4 border border-border rounded-2xl p-4 space-y-4">
-                              <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Payment Plan</p>
+                              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Payment Plan</p>
                               <div className="flex gap-2">
-                                <button type="button" onClick={() => setEditPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "one_time" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>One-time</button>
-                                <button type="button" onClick={() => setEditPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "monthly" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                                <button type="button" onClick={() => setEditPaymentPlan("one_time")} className={`flex-1 text-xs  uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan ==="one_time" ?"border-foreground bg-foreground text-background rounded-full" :"border-border hover:border-foreground"}`}>One-time</button>
+                                <button type="button" onClick={() => setEditPaymentPlan("monthly")} className={`flex-1 text-xs  uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan ==="monthly" ?"border-foreground bg-foreground text-background rounded-full" :"border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
                               </div>
-                              {editPaymentPlan === "monthly" && (
+                              {editPaymentPlan ==="monthly" && (
                                 <div className="space-y-3">
                                   <div className="grid gap-3 md:grid-cols-2">
                                     <label className="block">
-                                      <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
-                                      <input type="date" value={editPlanStart} onChange={(e) => setEditPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                      <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Start date</span>
+                                      <input type="date" value={editPlanStart} onChange={(e) => setEditPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                     </label>
                                     <label className="block">
-                                      <span className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">End date</span>
-                                      <input type="date" value={editPlanEnd} onChange={(e) => setEditPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 font-mono text-sm focus:outline-none focus:border-foreground" />
+                                      <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">End date</span>
+                                      <input type="date" value={editPlanEnd} onChange={(e) => setEditPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                     </label>
                                   </div>
                                   {(() => {
@@ -1114,7 +1114,7 @@ const InvoiceAdmin = () => {
                                     const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
                                     const monthly = p / months;
                                     return (
-                                      <div className="border border-border rounded-2xl p-3 font-mono text-xs">
+                                      <div className="border border-border rounded-2xl p-3 text-xs">
                                         <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
                                         <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
                                         <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
@@ -1125,7 +1125,7 @@ const InvoiceAdmin = () => {
                               )}
                               <div className="flex gap-2 pt-2">
                                 <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 text-xs uppercase tracking-widest rounded-none">Save</Button>
-                                <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground">Cancel</button>
+                                <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground">Cancel</button>
                               </div>
                             </div>
                           )}
@@ -1158,7 +1158,7 @@ const InvoiceAdmin = () => {
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Hello, {displayName}</h1>
             <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-widest px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85 transition-colors whitespace-nowrap">
-              {showClientForm ? "Cancel" : "Add Client"}
+              {showClientForm ?"Cancel" :"Add Client"}
             </button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
@@ -1168,12 +1168,12 @@ const InvoiceAdmin = () => {
 
         <AnimatePresence>
           {showClientForm && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-foreground mb-8">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height:"auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border border-foreground mb-8">
               <form onSubmit={handleCreateClient} className="p-6 space-y-4">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <input value={newOwnerName} onChange={(e) => setNewOwnerName(e.target.value)} placeholder="Name" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
-                  <input value={newCompanyName} onChange={(e) => setNewCompanyName(e.target.value)} placeholder="Business" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
-                  <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                  <input value={newOwnerName} onChange={(e) => setNewOwnerName(e.target.value)} placeholder="Name" className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                  <input value={newCompanyName} onChange={(e) => setNewCompanyName(e.target.value)} placeholder="Business" className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
+                  <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" className="bg-transparent border-b border-border p-3 text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                 </div>
                 <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-none">Add</Button>
               </form>
@@ -1181,24 +1181,24 @@ const InvoiceAdmin = () => {
           )}
         </AnimatePresence>
 
-        {invoices.some((i) => i.status === "paid") && (
+        {invoices.some((i) => i.status ==="paid") && (
           <RevenueCalendar invoices={invoices as any} />
         )}
 
         <div>
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="h-5 w-5 border border-foreground/30 border-t-foreground rounded-full" />
+              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease:"linear" }} className="h-5 w-5 border border-foreground/30 border-t-foreground rounded-full" />
             </div>
           ) : clients.length === 0 ? (
             <div className="py-20 text-center border-t border-border">
-              <p className="text-lg font-mono">No clients yet.</p>
+              <p className="text-lg">No clients yet.</p>
             </div>
           ) : (
             <div className="border-t border-border">
               {clients.map((c) => {
                 const cInvoices = invoices.filter((inv) => inv.client_id === c.id);
-                const cPaid = cInvoices.filter((inv) => inv.status === "paid").length;
+                const cPaid = cInvoices.filter((inv) => inv.status ==="paid").length;
                 const cTotal = cInvoices.reduce((s, inv) => s + inv.price, 0);
                 return (
                   <div
@@ -1207,14 +1207,14 @@ const InvoiceAdmin = () => {
                     className="w-full text-left border-b border-border py-5 hover:bg-foreground/5 transition-colors group cursor-pointer flex items-center justify-between gap-4"
                   >
                     <div className="min-w-0">
-                      <p className="font-mono font-bold text-foreground text-base">{c.company_name}</p>
-                      <p className="text-sm font-mono text-muted-foreground">{c.email} · {cInvoices.length} invoices · {cPaid} paid</p>
+                      <p className=" font-bold text-foreground text-base">{c.company_name}</p>
+                      <p className="text-sm text-muted-foreground">{c.email} · {cInvoices.length} invoices · {cPaid} paid</p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0">
-                      <span className="text-xl font-mono font-bold">${cTotal.toLocaleString()}</span>
+                      <span className="text-xl font-bold">${cTotal.toLocaleString()}</span>
                       <button
                         onClick={(e) => handleDeleteClient(e, c.id, c.company_name)}
-                        className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive"
+                        className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive"
                       >
                         Remove
                       </button>

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useEffect, useState } from"react";
+import { useParams } from"react-router-dom";
+import { motion } from"framer-motion";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
 interface ViewData {
   published: boolean;
@@ -13,7 +13,7 @@ interface ViewData {
   notes?: Array<{ id: string; content: string; note_type: string; note_date: string }>;
   writeoffs?: unknown[];
   taxes?: {
-    income: Array<{ id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null; date_precision?: "day" | "month" }>;
+    income: Array<{ id: string; entry_date: string; source: string; amount: number; notes: string | null; invoice_id: string | null; date_precision?:"day" |"month" }>;
     w2_documents: Array<{ id: string; year: number; employer: string; file_name: string; mime_type: string | null; size_bytes: number | null; notes: string | null; download_url: string | null; created_at: string }>;
     expenses: Array<{ id: string; entry_date: string; category: string; description: string; amount: number; receipt_note: string | null }>;
     mileage: Array<{ id: string; entry_date: string; purpose: string; miles: number; gas_amount: number; vehicle: string | null }>;
@@ -38,13 +38,13 @@ const AccountantView = () => {
     setError(null);
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/accountant-view`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+        method:"POST",
+        headers: {"Content-Type":"application/json", apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
         body: JSON.stringify({ token, passcode }),
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error || "Could not load");
+        setError(json.error ||"Could not load");
       } else {
         setData(json);
         sessionStorage.setItem(`acc-${token}`, passcode);
@@ -68,7 +68,7 @@ const AccountantView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  const ownerName = data?.owner?.business_name || data?.owner?.full_name || "Owner";
+  const ownerName = data?.owner?.business_name || data?.owner?.full_name ||"Owner";
 
   if (!data) {
     return (
@@ -85,13 +85,13 @@ const AccountantView = () => {
             maxLength={6}
             placeholder="000000"
             value={passcode}
-            onChange={(e) => setPasscode(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => setPasscode(e.target.value.replace(/\D/g,""))}
             className="text-center text-xl tracking-widest"
             autoFocus
           />
           {error && <p className="text-xs text-destructive">{error}</p>}
           <Button type="submit" className="w-full" disabled={submitting || passcode.length < 6}>
-            {submitting ? "CHECKING…" : "VIEW FINANCES"}
+            {submitting ?"CHECKING…" :"VIEW FINANCES"}
           </Button>
         </form>
       </div>
@@ -99,7 +99,7 @@ const AccountantView = () => {
   }
 
   const billsTotal = (data.bills ?? []).reduce((s, b) => s + Number(b.price || 0), 0);
-  const paidInvoices = (data.invoices ?? []).filter((i) => i.status === "paid");
+  const paidInvoices = (data.invoices ?? []).filter((i) => i.status ==="paid");
   const revenueTotal = paidInvoices.reduce((s, i) => s + Number(i.amount || 0), 0);
 
   return (
@@ -123,7 +123,7 @@ const AccountantView = () => {
                       <ul className="mt-6 divide-y-2 divide-foreground/10">
                         {paidInvoices.slice(0, 50).map((inv) => (
                           <li key={inv.id} className="py-3 flex justify-between text-sm">
-                            <span>{inv.description || "Invoice"}</span>
+                            <span>{inv.description ||"Invoice"}</span>
                             <span className="font-bold">${Number(inv.amount).toFixed(2)}</span>
                           </li>
                         ))}
@@ -192,11 +192,11 @@ function exportCSV(filename: string, rows: Record<string, unknown>[]) {
   if (rows.length === 0) return;
   const headers = Object.keys(rows[0]);
   const escape = (v: unknown) => {
-    const s = v == null ? "" : String(v);
+    const s = v == null ?"" : String(v);
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   const csv = [headers.join(","), ...rows.map((r) => headers.map((h) => escape(r[h])).join(","))].join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
+  const blob = new Blob([csv], { type:"text/csv" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = filename;
@@ -225,15 +225,15 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
     <section>
       <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Taxes · YTD {year}</h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 border-2 border-foreground mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 border border-border mb-6">
         {[
-          { label: "Biz Income", value: fmt(ytdIncome) },
-          { label: "W-2 Forms", value: `${w2Count} on file` },
-          { label: "Expenses", value: fmt(ytdExp) },
-          { label: "Mileage", value: `${ytdMiles.toFixed(0)} mi` },
-          { label: "Gas", value: fmt(ytdGas) },
+          { label:"Biz Income", value: fmt(ytdIncome) },
+          { label:"W-2 Forms", value: `${w2Count} on file` },
+          { label:"Expenses", value: fmt(ytdExp) },
+          { label:"Mileage", value: `${ytdMiles.toFixed(0)} mi` },
+          { label:"Gas", value: fmt(ytdGas) },
         ].map((s, idx) => (
-          <div key={s.label} className={`p-4 ${idx > 0 ? "md:border-l-2 border-foreground" : ""} ${idx >= 2 ? "border-t-2 md:border-t-0 border-foreground" : ""}`}>
+          <div key={s.label} className={`p-4 ${idx > 0 ?"md:border-l-2 border-foreground" :""} ${idx >= 2 ?"border-t-2 md:border-t-0 border-foreground" :""}`}>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.label}</p>
             <p className="text-lg font-bold mt-1">{s.value}</p>
           </div>
@@ -245,8 +245,8 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
           <table className="w-full text-sm">
             <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Source</th><th className="py-2 text-right">Amount</th></tr></thead>
             <tbody>{taxes.income.map((r) => {
-              const dateLabel = r.date_precision === "month"
-                ? new Date(`${r.entry_date}T00:00:00`).toLocaleString(undefined, { month: "long", year: "numeric" })
+              const dateLabel = r.date_precision ==="month"
+                ? new Date(`${r.entry_date}T00:00:00`).toLocaleString(undefined, { month:"long", year:"numeric" })
                 : r.entry_date;
               return (<tr key={r.id} className="border-t border-border"><td className="py-2 text-muted-foreground">{dateLabel}</td><td className="py-2">{r.source}{r.invoice_id && <span className="ml-2 text-[10px] text-brand uppercase">invoice</span>}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>);
             })}</tbody>
@@ -260,7 +260,7 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
                 <td className="py-2 text-muted-foreground">{r.year}</td>
                 <td className="py-2">{r.employer}</td>
                 <td className="py-2 text-muted-foreground truncate max-w-[260px]">{r.file_name}</td>
-                <td className="py-2 text-muted-foreground">{r.notes || "—"}</td>
+                <td className="py-2 text-muted-foreground">{r.notes ||"—"}</td>
                 <td className="py-2 text-right">
                   {r.download_url ? (
                     <a href={r.download_url} target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1 hover:border-brand hover:text-brand">Download</a>
@@ -279,14 +279,14 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
         <Block title="Mileage & gas" rows={taxes.mileage} file="mileage.csv">
           <table className="w-full text-sm">
             <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Purpose</th><th className="py-2 text-right">Miles</th><th className="py-2 text-right">Gas</th><th className="py-2">Vehicle</th></tr></thead>
-            <tbody>{taxes.mileage.map((r) => (<tr key={r.id} className="border-t border-border"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.purpose}</td><td className="py-2 text-right font-semibold">{Number(r.miles).toFixed(1)}</td><td className="py-2 text-right">{fmt(r.gas_amount)}</td><td className="py-2 text-muted-foreground">{r.vehicle || "—"}</td></tr>))}</tbody>
+            <tbody>{taxes.mileage.map((r) => (<tr key={r.id} className="border-t border-border"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.purpose}</td><td className="py-2 text-right font-semibold">{Number(r.miles).toFixed(1)}</td><td className="py-2 text-right">{fmt(r.gas_amount)}</td><td className="py-2 text-muted-foreground">{r.vehicle ||"—"}</td></tr>))}</tbody>
           </table>
         </Block>
         <Block title="Tax reminders" rows={taxes.reminders} file="reminders.csv">
           <ul className="divide-y divide-foreground/10">
             {taxes.reminders.map((r) => (
-              <li key={r.id} className={`py-3 flex justify-between text-sm ${r.paid ? "opacity-50 line-through" : ""}`}>
-                <span>{r.title} <span className="text-[10px] text-muted-foreground ml-2">{r.due_date || "no date"}</span></span>
+              <li key={r.id} className={`py-3 flex justify-between text-sm ${r.paid ?"opacity-50 line-through" :""}`}>
+                <span>{r.title} <span className="text-[10px] text-muted-foreground ml-2">{r.due_date ||"no date"}</span></span>
                 <span className="font-semibold">{fmt(r.amount)}</span>
               </li>
             ))}

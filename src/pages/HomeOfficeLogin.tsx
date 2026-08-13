@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from"react";
+import { useNavigate, Link } from"react-router-dom";
+import { motion } from"framer-motion";
+import { supabase } from"@/integrations/supabase/client";
+import { useToast } from"@/hooks/use-toast";
 
-type Mode = "login" | "signup";
+type Mode ="login" |"signup";
 
 const PASSWORD_RULES = [
-  { test: (p: string) => p.length >= 8, label: "At least 8 characters" },
-  { test: (p: string) => /[A-Z]/.test(p), label: "1 uppercase letter" },
-  { test: (p: string) => /[0-9]/.test(p), label: "1 number" },
-  { test: (p: string) => /[^A-Za-z0-9]/.test(p), label: "1 special character" },
+  { test: (p: string) => p.length >= 8, label:"At least 8 characters" },
+  { test: (p: string) => /[A-Z]/.test(p), label:"1 uppercase letter" },
+  { test: (p: string) => /[0-9]/.test(p), label:"1 number" },
+  { test: (p: string) => /[^A-Za-z0-9]/.test(p), label:"1 special character" },
 ];
 
 const validatePassword = (p: string) => PASSWORD_RULES.every((r) => r.test(p));
 
 const inputCls =
-  "w-full bg-background border border-border text-foreground px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground";
+"w-full bg-background border border-border text-foreground px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground";
 const btnCls =
-  "w-full bg-foreground text-background py-3 text-xs uppercase tracking-widest hover:bg-foreground/85 transition-colors disabled:opacity-50";
+"w-full bg-foreground text-background py-3 text-xs uppercase tracking-widest hover:bg-foreground/85 transition-colors disabled:opacity-50";
 
 const clearStoredAuth = () => {
   sessionStorage.removeItem("ho-token");
@@ -46,7 +46,7 @@ const HomeOfficeLogin = () => {
     sessionStorage.setItem("ho-token", accessToken);
     // Owner bypass — skip onboarding/paywall entirely
     const { data: u } = await supabase.auth.getUser();
-    if (u.user?.email?.toLowerCase() === "terellebony@gmail.com" || u.user?.email?.toLowerCase() === "kimorataylor294@gmail.com") {
+    if (u.user?.email?.toLowerCase() ==="terellebony@gmail.com" || u.user?.email?.toLowerCase() ==="kimorataylor294@gmail.com") {
       navigate("/home-office");
       return;
     }
@@ -55,12 +55,12 @@ const HomeOfficeLogin = () => {
       .select("onboarded")
       .eq("user_id", userId)
       .maybeSingle();
-    navigate(profile?.onboarded ? "/home-office" : "/home-office/onboarding");
+    navigate(profile?.onboarded ?"/home-office" :"/home-office/onboarding");
   };
 
   useEffect(() => {
     clearStoredAuth();
-    supabase.auth.signOut({ scope: "global" } as any).catch(() => undefined);
+    supabase.auth.signOut({ scope:"global" } as any).catch(() => undefined);
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -71,7 +71,7 @@ const HomeOfficeLogin = () => {
       if (error) throw error;
       if (data.session) await routeAfterAuth(data.session.access_token, data.session.user.id);
     } catch (err: any) {
-      toast({ title: "Login failed", description: err.message, variant: "destructive" });
+      toast({ title:"Login failed", description: err.message, variant:"destructive" });
     } finally {
       setLoading(false);
     }
@@ -81,9 +81,9 @@ const HomeOfficeLogin = () => {
     e.preventDefault();
     if (!validatePassword(password)) {
       toast({
-        title: "Weak password",
-        description: "Must have 8+ chars, 1 uppercase, 1 number, 1 special character.",
-        variant: "destructive",
+        title:"Weak password",
+        description:"Must have 8+ chars, 1 uppercase, 1 number, 1 special character.",
+        variant:"destructive",
       });
       return;
     }
@@ -98,17 +98,17 @@ const HomeOfficeLogin = () => {
       if (data.session) {
         await routeAfterAuth(data.session.access_token, data.session.user.id);
       } else {
-        toast({ title: "Account created", description: "Log in to continue." });
+        toast({ title:"Account created", description:"Log in to continue." });
         setMode("login");
       }
     } catch (err: any) {
-      toast({ title: "Signup failed", description: err.message, variant: "destructive" });
+      toast({ title:"Signup failed", description: err.message, variant:"destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const onSubmit = mode === "login" ? handleLogin : handleSignup;
+  const onSubmit = mode ==="login" ? handleLogin : handleSignup;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -123,26 +123,26 @@ const HomeOfficeLogin = () => {
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <h1 className="text-3xl md:text-4xl tracking-tight font-bold">
-              {mode === "login" ? "Welcome back" : "Create your account"}
+              {mode ==="login" ?"Welcome back" :"Create your account"}
             </h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              {mode === "login" ? "Sign in to your Home Office." : "Set up your workspace in under a minute."}
+              {mode ==="login" ?"Sign in to your Home Office." :"Set up your workspace in under a minute."}
             </p>
           </div>
 
           <div className="flex gap-6 mb-6 text-xs uppercase tracking-widest border-b border-border">
-            {(["login", "signup"] as Mode[]).map((m) => (
+            {(["login","signup"] as Mode[]).map((m) => (
               <button
                 key={m}
                 type="button"
                 onClick={() => setMode(m)}
                 className={`pb-2 -mb-px border-b-2 transition-colors ${
                   mode === m
-                    ? "border-foreground text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    ?"border-foreground text-foreground"
+                    :"border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {m === "login" ? "Sign in" : "Sign up"}
+                {m ==="login" ?"Sign in" :"Sign up"}
               </button>
             ))}
           </div>
@@ -170,15 +170,15 @@ const HomeOfficeLogin = () => {
                 className={inputCls}
                 placeholder="••••••••"
                 required
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                autoComplete={mode ==="signup" ?"new-password" :"current-password"}
               />
-              {mode === "signup" && (
+              {mode ==="signup" && (
                 <ul className="mt-3 space-y-1 text-xs">
                   {PASSWORD_RULES.map((r) => {
                     const ok = r.test(password);
                     return (
-                      <li key={r.label} className={ok ? "text-brand" : "text-muted-foreground"}>
-                        [{ok ? "x" : " "}] {r.label}
+                      <li key={r.label} className={ok ?"text-brand" :"text-muted-foreground"}>
+                        [{ok ?"x" :""}] {r.label}
                       </li>
                     );
                   })}
@@ -187,11 +187,11 @@ const HomeOfficeLogin = () => {
             </div>
 
             <button type="submit" disabled={loading} className={btnCls}>
-              {loading ? "Working..." : mode === "login" ? "Sign in" : "Create account"}
+              {loading ?"Working..." : mode ==="login" ?"Sign in" :"Create account"}
             </button>
 
             <div className="flex items-center justify-between text-xs uppercase tracking-widest pt-2">
-              {mode === "login" ? (
+              {mode ==="login" ? (
                 <>
                   <button
                     type="button"

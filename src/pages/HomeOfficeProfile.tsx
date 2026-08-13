@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { SECURITY_QUESTIONS, hashAnswer } from "@/lib/security-questions";
+import { useEffect, useState } from"react";
+import { Link, useNavigate } from"react-router-dom";
+import { motion } from"framer-motion";
+import { supabase } from"@/integrations/supabase/client";
+import { useToast } from"@/hooks/use-toast";
+import Header from"@/components/Header";
+import Footer from"@/components/Footer";
+import { SECURITY_QUESTIONS, hashAnswer } from"@/lib/security-questions";
 
-const PAYMENT_OPTIONS = ["zelle", "cashapp", "stripe"] as const;
+const PAYMENT_OPTIONS = ["zelle","cashapp","stripe"] as const;
 
 const HomeOfficeProfile = () => {
   const navigate = useNavigate();
@@ -37,20 +37,20 @@ const HomeOfficeProfile = () => {
         navigate("/home-office/login");
         return;
       }
-      setEmail(data.user.email || "");
+      setEmail(data.user.email ||"");
       const { data: p } = await supabase
         .from("profiles")
         .select("full_name, business_name, stripe_secret_key, zelle_handle, cashapp_handle, payment_methods, phone, security_question_1, security_question_2")
         .eq("user_id", data.user.id)
         .maybeSingle();
       if (p) {
-        setFullName(p.full_name || "");
-        setBusinessName(p.business_name || "");
-        setStripeKey(p.stripe_secret_key || "");
-        setZelle(p.zelle_handle || "");
-        setCashapp(p.cashapp_handle || "");
+        setFullName(p.full_name ||"");
+        setBusinessName(p.business_name ||"");
+        setStripeKey(p.stripe_secret_key ||"");
+        setZelle(p.zelle_handle ||"");
+        setCashapp(p.cashapp_handle ||"");
         setMethods((p.payment_methods as string[]) || []);
-        setPhone(p.phone || "");
+        setPhone(p.phone ||"");
         setQ1(p.security_question_1 || SECURITY_QUESTIONS[0]);
         setQ2(p.security_question_2 || SECURITY_QUESTIONS[1]);
       }
@@ -91,9 +91,9 @@ const HomeOfficeProfile = () => {
         .eq("user_id", data.user.id);
       if (error) throw error;
       setA1(""); setA2(""); setUpdateAnswers(false);
-      toast({ title: "Saved" });
+      toast({ title:"Saved" });
     } catch (err: any) {
-      toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
+      toast({ title:"Couldn't save", description: err.message, variant:"destructive" });
     } finally {
       setSaving(false);
     }
@@ -208,7 +208,7 @@ const HomeOfficeProfile = () => {
                         type="button"
                         onClick={() => toggleMethod(m)}
                         className={`px-3 py-2 text-xs uppercase tracking-widest border-2 transition-colors ${
-                          on ? "border-brand bg-brand/10 text-brand" : "border-border text-foreground/60 hover:border-foreground/40"
+                          on ?"border-brand bg-brand/10 text-brand" :"border-border text-foreground/60 hover:border-foreground/40"
                         }`}
                       >
                         {m}
@@ -238,18 +238,18 @@ const HomeOfficeProfile = () => {
                 <p className="text-xs text-muted-foreground leading-relaxed mb-3">
                   Add your Stripe secret key so your clients can pay by card directly to your Stripe account through the Client Portal.
                   <br /><br />
-                  <strong className="text-foreground">How to get one:</strong> Sign in at{" "}
+                  <strong className="text-foreground">How to get one:</strong> Sign in at{""}
                   <a className="text-brand underline" target="_blank" rel="noreferrer" href="https://dashboard.stripe.com/apikeys">
                     dashboard.stripe.com/apikeys
-                  </a>{" "}
-                  → "Secret key" → click "Reveal" → copy. It starts with <code className="text-brand">sk_live_</code> or <code className="text-brand">sk_test_</code>.
+                  </a>{""}
+                  →"Secret key" → click"Reveal" → copy. It starts with <code className="text-brand">sk_live_</code> or <code className="text-brand">sk_test_</code>.
                   <br /><br />
                   <strong className="text-foreground">Why we need it:</strong> The app uses it to create checkout sessions that route the money straight to you. It's stored on your row only. Leave blank if you don't want card payments — Zelle/Cash App will still work.
                 </p>
                 <div className="flex gap-2">
                   <input
                     className={`${inputCls} flex-1`}
-                    type={showKey ? "text" : "password"}
+                    type={showKey ?"text" :"password"}
                     value={stripeKey}
                     onChange={(e) => setStripeKey(e.target.value)}
                     placeholder="sk_live_..."
@@ -259,7 +259,7 @@ const HomeOfficeProfile = () => {
                     onClick={() => setShowKey((v) => !v)}
                     className="px-3 text-[10px] uppercase tracking-widest border-2 border-border hover:border-brand"
                   >
-                    {showKey ? "Hide" : "Show"}
+                    {showKey ?"Hide" :"Show"}
                   </button>
                 </div>
               </div>
@@ -268,9 +268,9 @@ const HomeOfficeProfile = () => {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full bg-brand text-brand-foreground py-3 text-xs uppercase tracking-widest hover:bg-brand/90 disabled:opacity-50"
+                className="w-full bg-brand text-brand-foreground rounded-full py-3 text-xs uppercase tracking-widest hover:bg-brand/90 disabled:opacity-50"
               >
-                {saving ? "Saving…" : "Save Changes"}
+                {saving ?"Saving…" :"Save Changes"}
               </button>
             </div>
           )}
@@ -282,7 +282,7 @@ const HomeOfficeProfile = () => {
 };
 
 const inputCls =
-  "w-full bg-background border-2 border-border px-3 py-2 text-sm focus:outline-none focus:border-brand transition-colors";
+"w-full bg-background border-2 border-border px-3 py-2 text-sm focus:outline-none focus:border-brand transition-colors";
 
 const Field = ({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) => (
   <div>

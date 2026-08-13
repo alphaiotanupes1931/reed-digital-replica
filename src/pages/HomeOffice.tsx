@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import NotificationBell from "@/components/NotificationBell";
-import { toast } from "sonner";
+import { useEffect, useState } from"react";
+import { useNavigate, Link } from"react-router-dom";
+import { supabase } from"@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from"@/components/ui/dialog";
+import NotificationBell from"@/components/NotificationBell";
+import { toast } from"sonner";
 
 const tiles = [
-  { label: "Notes", desc: "Daily notes, goals & standups", href: "/home-office/work-assistant" },
-  { label: "Invoices", desc: "Clients, billing & payments", href: "/admin" },
-  { label: "Bills", desc: "Monthly bills vs income", href: "/home-office/bills" },
-  { label: "Accounting", desc: "Income, expenses & reports", href: "/home-office/accounting" },
-  { label: "Taxes", desc: "Spreadsheet, mileage & accountant updates", href: "/home-office/taxes" },
-  { label: "Profile", desc: "Business info & payment setup", href: "/home-office/profile" },
-  { label: "Help", desc: "Contact & support", href: "/home-office/help" },
+  { label:"Notes", desc:"Daily notes, goals & standups", href:"/home-office/work-assistant" },
+  { label:"Invoices", desc:"Clients, billing & payments", href:"/admin" },
+  { label:"Bills", desc:"Monthly bills vs income", href:"/home-office/bills" },
+  { label:"Accounting", desc:"Income, expenses & reports", href:"/home-office/accounting" },
+  { label:"Taxes", desc:"Spreadsheet, mileage & accountant updates", href:"/home-office/taxes" },
+  { label:"Profile", desc:"Business info & payment setup", href:"/home-office/profile" },
+  { label:"Help", desc:"Contact & support", href:"/home-office/help" },
 ];
 
 const HomeOffice = () => {
@@ -30,15 +30,15 @@ const HomeOffice = () => {
         return;
       }
       // Owner bypass — full access, no onboarding/paywall
-      if (data.user.email?.toLowerCase() === "terellebony@gmail.com" || data.user.email?.toLowerCase() === "kimorataylor294@gmail.com") {
+      if (data.user.email?.toLowerCase() ==="terellebony@gmail.com" || data.user.email?.toLowerCase() ==="kimorataylor294@gmail.com") {
         const { data: profile } = await supabase
           .from("profiles")
           .select("full_name, business_id, business_name")
           .eq("user_id", data.user.id)
           .maybeSingle();
-        setDisplayName(profile?.full_name || "Terelle");
-        setBusinessId(profile?.business_id || "");
-        setBusinessName(profile?.business_name || "Reed Digital Group");
+        setDisplayName(profile?.full_name ||"Terelle");
+        setBusinessId(profile?.business_id ||"");
+        setBusinessName(profile?.business_name ||"Reed Digital Group");
         return;
       }
       const { data: profile } = await supabase
@@ -46,7 +46,7 @@ const HomeOffice = () => {
         .select("full_name, onboarded, subscribed, business_id, business_name, recovery_setup_complete, account_type")
         .eq("user_id", data.user.id)
         .maybeSingle();
-      if (profile?.account_type === "accountant") {
+      if (profile?.account_type ==="accountant") {
         navigate("/home-office/accountant", { replace: true });
         return;
       }
@@ -71,15 +71,15 @@ const HomeOffice = () => {
           return;
         }
       }
-      setDisplayName(profile.full_name || "");
-      setBusinessId(profile.business_id || "");
-      setBusinessName(profile.business_name || "");
+      setDisplayName(profile.full_name ||"");
+      setBusinessId(profile.business_id ||"");
+      setBusinessName(profile.business_name ||"");
     })();
   }, [navigate]);
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut({ scope: "global" } as any);
+      await supabase.auth.signOut({ scope:"global" } as any);
     } catch {
       // ignore
     }
@@ -103,7 +103,7 @@ const HomeOffice = () => {
           ← RDG
         </Link>
         <span className="text-xs uppercase tracking-widest text-muted-foreground hidden md:block">
-          Home Office {displayName ? `· ${displayName}` : ""}
+          Home Office {displayName ? `· ${displayName}` :""}
         </span>
         <div className="flex items-center gap-2">
           <NotificationBell />
@@ -119,7 +119,7 @@ const HomeOffice = () => {
       <main className="max-w-5xl mx-auto px-6 py-10">
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl tracking-tight font-bold">
-            Welcome back{displayName ? `, ${displayName}` : ""}.
+            Welcome back{displayName ? `, ${displayName}` :""}.
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Pick up where you left off.
@@ -134,7 +134,7 @@ const HomeOffice = () => {
               </p>
               <code className="text-xl md:text-2xl tracking-widest text-brand">{businessId}</code>
               <p className="text-xs text-muted-foreground mt-2">
-                Share with clients to pay at{" "}
+                Share with clients to pay at{""}
                 <span className="text-foreground">reeddigitalgroup.com/portal</span>
               </p>
             </div>
@@ -177,7 +177,7 @@ const HomeOffice = () => {
       </footer>
 
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
-        <DialogContent className="max-w-lg font-mono">
+        <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>How clients pay you</DialogTitle>
             <DialogDescription>Share these 3 steps with your client.</DialogDescription>
@@ -196,7 +196,7 @@ const HomeOffice = () => {
               </p>
               <button
                 onClick={() => {
-                  const subject = `Invoice from ${businessName || "us"}`;
+                  const subject = `Invoice from ${businessName ||"us"}`;
                   const body = `Hi,\n\nYour invoice is ready. Here's how to pay:\n\n1. Go to: https://reeddigitalgroup.com/portal\n2. Enter our Business ID: ${businessId}\n3. Enter the email address this invoice was sent to\n4. Pay with card, Zelle, or Cash App\n\nThanks,\n${displayName || businessName}`;
                   navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
                   toast.success("Email copied to clipboard");
@@ -207,7 +207,7 @@ const HomeOffice = () => {
               </button>
             </div>
             <pre className="text-xs whitespace-pre-wrap bg-muted/30 border border-border rounded-2xl p-3 leading-relaxed">
-{`Subject: Invoice from ${businessName || "us"}
+{`Subject: Invoice from ${businessName ||"us"}
 
 Hi,
 

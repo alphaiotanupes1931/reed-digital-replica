@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useEffect } from"react";
+import { useNavigate, Link } from"react-router-dom";
+import { motion } from"framer-motion";
+import Header from"@/components/Header";
+import Footer from"@/components/Footer";
 
 const HomeOfficeHelp = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const HomeOfficeHelp = () => {
             </Link>
 
             <div className="mt-12 space-y-6">
-              <div className="border-2 border-foreground p-6">
+              <div className="border border-border rounded-2xl p-6">
                 <h2 className="text-xs uppercase tracking-widest font-bold mb-3">Contact</h2>
                 <div className="space-y-3">
                   <a href="mailto:reeddigitalgroup@gmail.com" className="block text-sm hover:text-brand transition-colors">

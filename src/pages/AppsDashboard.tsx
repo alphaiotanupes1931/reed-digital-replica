@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { toast } from "@/hooks/use-toast";
+import { useEffect, useState } from"react";
+import { Link, useNavigate } from"react-router-dom";
+import { motion } from"framer-motion";
+import { supabase } from"@/integrations/supabase/client";
+import Header from"@/components/Header";
+import Footer from"@/components/Footer";
+import { toast } from"@/hooks/use-toast";
 
 const adminApps = [
-  { label: "Invoice Admin", desc: "Create, send, and manage invoices for your clients.", href: "/apps/admin/invoices" },
-  { label: "Bills Tracker", desc: "Track monthly bills, recurring income, and net cash position.", href: "/apps/admin/bills" },
-  { label: "Tax Tracker", desc: "Log quarterly estimates and tax obligations.", href: "/apps/admin/taxes" },
+  { label:"Invoice Admin", desc:"Create, send, and manage invoices for your clients.", href:"/apps/admin/invoices" },
+  { label:"Bills Tracker", desc:"Track monthly bills, recurring income, and net cash position.", href:"/apps/admin/bills" },
+  { label:"Tax Tracker", desc:"Log quarterly estimates and tax obligations.", href:"/apps/admin/taxes" },
 ];
 
 const clientApps = [
-  { label: "Client Portal", desc: "The page your clients open to view & pay invoices you've sent.", href: "/apps/client/portal" },
+  { label:"Client Portal", desc:"The page your clients open to view & pay invoices you've sent.", href:"/apps/client/portal" },
 ];
 
 const AppsDashboard = () => {
@@ -48,7 +48,7 @@ const AppsDashboard = () => {
         name:
           profile?.full_name ||
           (u.user_metadata?.full_name as string) ||
-          (u.email?.split("@")[0] ?? "there"),
+          (u.email?.split("@")[0] ??"there"),
       });
     };
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => sync(session));
@@ -67,12 +67,12 @@ const AppsDashboard = () => {
   const copyId = async () => {
     if (!businessId) return;
     await navigator.clipboard.writeText(businessId);
-    toast({ title: "Business ID copied" });
+    toast({ title:"Business ID copied" });
   };
 
   const copyPortalLink = async () => {
     await navigator.clipboard.writeText("https://reeddigitalgroup.com/portal");
-    toast({ title: "Portal link copied", description: "Send this to your clients along with your Business ID." });
+    toast({ title:"Portal link copied", description:"Send this to your clients along with your Business ID." });
   };
 
   return (
@@ -89,7 +89,7 @@ const AppsDashboard = () => {
           >
             <div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                Welcome back, {user?.name || "Elaine"}
+                Welcome back, {user?.name ||"Elaine"}
               </h1>
               {user?.email && (
                 <p className="text-sm text-muted-foreground mt-3">Signed in as {user.email}</p>
@@ -97,7 +97,7 @@ const AppsDashboard = () => {
             </div>
             <button
               onClick={signOut}
-              className="text-xs uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors"
+              className="text-xs uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors"
             >
               Sign Out
             </button>
@@ -108,7 +108,7 @@ const AppsDashboard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="border-2 border-foreground p-6 mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+              className="border border-border rounded-2xl p-6 mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
             >
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2">
@@ -116,13 +116,13 @@ const AppsDashboard = () => {
                 </p>
                 <p className="text-3xl md:text-4xl font-bold tracking-[0.3em] text-brand">{businessId}</p>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Clients enter this at <span className="text-foreground">/portal</span> to find {businessName || "your business"}. Keep it private — anyone with it can look up your business name.
+                  Clients enter this at <span className="text-foreground">/portal</span> to find {businessName ||"your business"}. Keep it private — anyone with it can look up your business name.
                 </p>
               </div>
               <div className="flex flex-col gap-2 shrink-0">
                 <button
                   onClick={copyId}
-                  className="text-xs uppercase tracking-widest border-2 border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors"
+                  className="text-xs uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors"
                 >
                   Copy ID
                 </button>
@@ -137,8 +137,8 @@ const AppsDashboard = () => {
           )}
 
           {[
-            { title: "Admin", subtitle: "Management", items: adminApps },
-            { title: "Client", subtitle: "What you share with your clients.", items: clientApps },
+            { title:"Admin", subtitle:"Management", items: adminApps },
+            { title:"Client", subtitle:"What you share with your clients.", items: clientApps },
           ].map((section, sIdx) => (
             <section key={section.title} className="mb-12">
               <div className="flex items-baseline justify-between mb-4">
@@ -155,7 +155,7 @@ const AppsDashboard = () => {
                   >
                     <Link
                       to={app.href}
-                      className="block border-2 border-foreground p-8 hover:border-brand hover:bg-brand/5 transition-all group h-full"
+                      className="block border border-border rounded-2xl p-8 hover:border-brand hover:bg-brand/5 transition-all group h-full"
                     >
                       <h3 className="text-lg font-bold tracking-tight mb-4 group-hover:text-brand transition-colors">
                         {app.label}

@@ -1,15 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link } from"react-router-dom";
 
 const features = [
-  { t: "Notes & daily planner", d: "Capture every thought, plan the day, stay in motion." },
-  { t: "Bills tracker", d: "See what's due, what's paid, what's coming next." },
-  { t: "Send invoices, get paid", d: "Branded invoices, Stripe checkout, instant payouts." },
-  { t: "Client portal", d: "One shared space for files, updates, and approvals." },
+  { t:"Notes & daily planner", d:"Capture every thought, plan the day, stay in motion." },
+  { t:"Bills tracker", d:"See what's due, what's paid, what's coming next." },
+  { t:"Send invoices, get paid", d:"Branded invoices, Stripe checkout, instant payouts." },
+  { t:"Client portal", d:"One shared space for files, updates, and approvals." },
 ];
 
 const HomeOfficeWelcome = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground font-mono flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
         <Link to="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
           ← Reed Digital Group

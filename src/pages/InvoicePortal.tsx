@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
-import { useSearchParams, Link } from "react-router-dom";
-import logo from "@/assets/rdg-header-logo.png";
+import { useState, useEffect } from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { ArrowRight } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { supabase } from"@/integrations/supabase/client";
+import { toast } from"@/hooks/use-toast";
+import { useSearchParams, Link } from"react-router-dom";
+import logo from"@/assets/rdg-header-logo.png";
 
 interface Invoice {
   id: string;
   service: string;
   price: number;
   due_date: string;
-  status: "draft" | "approved" | "sent" | "paid";
+  status:"draft" |"approved" |"sent" |"paid";
   deposit_required: boolean;
   deposit_amount: number | null;
   deposit_due_date: string | null;
@@ -21,8 +21,8 @@ interface Invoice {
   created_at: string;
   message: string | null;
   deliverables: { label: string; url: string }[] | null;
-  payment_method?: "stripe" | "zelle" | string | null;
-  payment_plan?: "one_time" | "monthly" | string | null;
+  payment_method?:"stripe" |"zelle" | string | null;
+  payment_plan?:"one_time" |"monthly" | string | null;
   plan_start_date?: string | null;
   plan_end_date?: string | null;
   plan_months?: number | null;
@@ -41,7 +41,7 @@ const InvoiceDetailsCard = ({
   clientName: string;
   clientEmail: string;
 }) => {
-  const isPaid = invoice.status === "paid";
+  const isPaid = invoice.status ==="paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
   const basePrice = invoice.price;
 
@@ -49,7 +49,7 @@ const InvoiceDetailsCard = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="border-2 border-foreground mb-6 bg-background"
+      className="border border-border mb-6 bg-background"
     >
       {/* Header */}
       <div className="border-b-2 border-foreground p-6 flex items-start justify-between">
@@ -58,12 +58,12 @@ const InvoiceDetailsCard = ({
           <span className="text-xs text-foreground uppercase tracking-widest">Invoice</span>
         </div>
         {isPaid ? (
-          <span className="text-xl font-mono font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">
+          <span className="text-xl font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">
             PAID
           </span>
         ) : (
-          <span className="text-sm font-mono font-bold uppercase tracking-widest text-primary">
-            {depositPending ? "DEPOSIT DUE" : "PENDING"}
+          <span className="text-sm font-bold uppercase tracking-widest text-primary">
+            {depositPending ?"DEPOSIT DUE" :"PENDING"}
           </span>
         )}
       </div>
@@ -71,13 +71,13 @@ const InvoiceDetailsCard = ({
       {/* Bill To / From */}
       <div className="border-b-2 border-foreground p-6 grid md:grid-cols-2 gap-6">
         <div>
-          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Bill To</p>
-          <p className="text-lg font-mono font-bold text-foreground">{clientName}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Bill To</p>
+          <p className="text-lg font-bold text-foreground">{clientName}</p>
           <p className="text-sm text-foreground">{clientEmail}</p>
         </div>
         <div>
-          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">From</p>
-          <p className="text-lg font-mono font-bold text-foreground">Reed Digital Group</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">From</p>
+          <p className="text-lg font-bold text-foreground">Reed Digital Group</p>
           <p className="text-sm text-foreground">reeddigitalgroup@gmail.com</p>
         </div>
       </div>
@@ -86,11 +86,11 @@ const InvoiceDetailsCard = ({
       <div className="p-6">
         <div className="flex justify-between items-center py-2 border-b border-border">
           <span className="text-sm text-foreground">{invoice.service}</span>
-          <span className="text-sm font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
+          <span className="text-sm font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
         <div className="flex justify-between items-center pt-4">
-          <span className="text-lg font-mono font-bold text-foreground">Total</span>
-          <span className="text-2xl font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
+          <span className="text-lg font-bold text-foreground">Total</span>
+          <span className="text-2xl font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
       </div>
     </motion.div>
@@ -112,7 +112,7 @@ const PaymentOptions = ({
   zelleHandle?: string | null;
   bizMethods?: string[] | null;
 }) => {
-  const isPaid = invoice.status === "paid";
+  const isPaid = invoice.status ==="paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
 
   // Prefer the business's current profile setting so toggling Zelle/Stripe in
@@ -120,7 +120,7 @@ const PaymentOptions = ({
   const methods =
     bizMethods && bizMethods.length > 0
       ? bizMethods.map((m) => m.trim().toLowerCase()).filter(Boolean)
-      : (invoice.payment_method || "stripe")
+      : (invoice.payment_method ||"stripe")
           .split(",")
           .map((m) => m.trim().toLowerCase())
           .filter(Boolean);
@@ -138,15 +138,15 @@ const PaymentOptions = ({
   const zelleTotal = baseAmount;
 
   const zelleEmail =
-    zelleHandle && zelleHandle.trim().length > 0 ? zelleHandle.trim() : "reeddigitalgroup@gmail.com";
-  const zelleUrl = `mailto:${zelleEmail}?subject=${encodeURIComponent("Zelle payment — " + invoice.service)}`;
+    zelleHandle && zelleHandle.trim().length > 0 ? zelleHandle.trim() :"reeddigitalgroup@gmail.com";
+  const zelleUrl = `mailto:${zelleEmail}?subject=${encodeURIComponent("Zelle payment —" + invoice.service)}`;
 
-  const zelleSuffix = depositPending ? "-dep" : "-once";
-  const stripeSuffix = depositPending ? "-dep" : "-once";
+  const zelleSuffix = depositPending ?"-dep" :"-once";
+  const stripeSuffix = depositPending ?"-dep" :"-once";
 
   if (isPaid) return null;
 
-  const isMonthlyPlan = invoice.payment_plan === "monthly" && invoice.plan_monthly_amount && invoice.plan_months;
+  const isMonthlyPlan = invoice.payment_plan ==="monthly" && invoice.plan_monthly_amount && invoice.plan_months;
   const showMonthlyOption = isMonthlyPlan && !depositPending;
   // Monthly plan total must equal the one-time Stripe total (price + single processing fee).
   // We split that single total evenly across the plan months so the customer pays the
@@ -160,24 +160,24 @@ const PaymentOptions = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="border-2 border-foreground bg-background p-6"
+        className="border border-border bg-background p-6"
       >
-        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Option B · Monthly Payment Plan</p>
-        <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyPerCharge.toLocaleString()} / month</h3>
+        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Option B · Monthly Payment Plan</p>
+        <h3 className="text-2xl font-bold text-foreground mb-1">${monthlyPerCharge.toLocaleString()} / month</h3>
         <p className="text-sm text-foreground/70 mb-1">
           {months} monthly payments · Total ${monthlyGrandTotal.toLocaleString()}
         </p>
-        <p className="text-xs font-mono text-emerald-500 mb-4">
+        <p className="text-xs text-emerald-500 mb-4">
           Same total as paying in full — processing fee split evenly
         </p>
         <button
           onClick={() => onPayMonthly(invoice)}
-          disabled={payingId === invoice.id + "-monthly"}
-          className="w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+          disabled={payingId === invoice.id +"-monthly"}
+          className="w-full h-14 text-sm uppercase tracking-widest border border-border text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
         >
-          {payingId === invoice.id + "-monthly" ? "Processing..." : "Start Monthly Plan (Stripe)"}
+          {payingId === invoice.id +"-monthly" ?"Processing..." :"Start Monthly Plan (Stripe)"}
         </button>
-        <p className="text-[10px] font-mono text-muted-foreground mt-3 text-center">
+        <p className="text-[10px] text-muted-foreground mt-3 text-center">
           Card auto-charged each month. Cancels automatically after {invoice.plan_months} payments.
         </p>
       </motion.div>
@@ -191,10 +191,10 @@ const PaymentOptions = ({
         <div className="mb-8">
         <button
           onClick={() => onPay(invoice, true)}
-          disabled={payingId === invoice.id + "-dep"}
-          className="w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+          disabled={payingId === invoice.id +"-dep"}
+          className="w-full h-14 text-sm uppercase tracking-widest border border-border text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
         >
-          {payingId === invoice.id + "-dep" ? "Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
+          {payingId === invoice.id +"-dep" ?"Processing..." : `Pay Deposit — $${invoice.deposit_amount?.toLocaleString()}`}
         </button>
         </div>
       </>
@@ -206,27 +206,27 @@ const PaymentOptions = ({
   return (
     <>
       {showMonthlyOption && (
-        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Option A · Pay in full</p>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Option A · Pay in full</p>
       )}
-      <div className={`mb-8 grid gap-4 ${both ? "md:grid-cols-[1fr_auto_1fr] items-stretch" : "grid-cols-1"}`}>
+      <div className={`mb-8 grid gap-4 ${both ?"md:grid-cols-[1fr_auto_1fr] items-stretch" :"grid-cols-1"}`}>
       {/* Zelle Card */}
       {allowZelle && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="border-2 border-foreground bg-background p-6 flex flex-col"
+          className="border border-border bg-background p-6 flex flex-col"
         >
           <div className="flex-1">
-            <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
-            <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Zelle</h3>
-            <p className="text-3xl font-mono font-bold text-foreground mb-2">${zelleTotal.toLocaleString()}</p>
-            <p className="text-xs font-mono text-emerald-500">No processing fee</p>
-            <p className="text-xs font-mono text-muted-foreground mt-1">Send to: {zelleEmail}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
+            <h3 className="text-2xl font-bold text-foreground mb-1">Zelle</h3>
+            <p className="text-3xl font-bold text-foreground mb-2">${zelleTotal.toLocaleString()}</p>
+            <p className="text-xs text-emerald-500">No processing fee</p>
+            <p className="text-xs text-muted-foreground mt-1">Send to: {zelleEmail}</p>
           </div>
           <a
             href={zelleUrl}
-            className="mt-6 w-full h-14 flex items-center justify-center text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+            className="mt-6 w-full h-14 flex items-center justify-center text-sm uppercase tracking-widest border border-border text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Pay with Zelle
           </a>
@@ -236,7 +236,7 @@ const PaymentOptions = ({
       {/* OR Divider */}
       {both && (
         <div className="flex items-center justify-center">
-          <span className="text-4xl md:text-5xl font-mono font-black text-primary tracking-tight">OR</span>
+          <span className="text-4xl md:text-5xl font-black text-primary tracking-tight">OR</span>
         </div>
       )}
 
@@ -246,22 +246,22 @@ const PaymentOptions = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="border-2 border-foreground bg-background p-6 flex flex-col"
+          className="border border-border bg-background p-6 flex flex-col"
         >
           <div className="flex-1">
-            <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
-            <h3 className="text-2xl font-mono font-bold text-foreground mb-1">Card (Stripe)</h3>
-            <p className="text-3xl font-mono font-bold text-foreground mb-2">${stripeTotal.toLocaleString()}</p>
-            <p className="text-xs font-mono text-emerald-500 font-bold">Includes ${stripeFee.toLocaleString()} processing fee</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Pay with</p>
+            <h3 className="text-2xl font-bold text-foreground mb-1">Card (Stripe)</h3>
+            <p className="text-3xl font-bold text-foreground mb-2">${stripeTotal.toLocaleString()}</p>
+            <p className="text-xs text-emerald-500 font-bold">Includes ${stripeFee.toLocaleString()} processing fee</p>
           </div>
           <button
             onClick={() => onPay(invoice, false)}
             disabled={payingId === invoice.id + stripeSuffix}
-            className="mt-6 w-full h-14 text-sm font-mono uppercase tracking-widest border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+            className="mt-6 w-full h-14 text-sm uppercase tracking-widest border border-border text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
           >
             {payingId === invoice.id + stripeSuffix
-              ? "Processing..."
-              : "Pay with Card (Stripe)"}
+              ?"Processing..."
+              :"Pay with Card (Stripe)"}
           </button>
         </motion.div>
       )}
@@ -310,7 +310,7 @@ const InvoiceDocument = ({
 };
 
 const InvoicePortal = () => {
-  const [email, setEmail] = useState(() => localStorage.getItem("portal-email") || "");
+  const [email, setEmail] = useState(() => localStorage.getItem("portal-email") ||"");
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -352,7 +352,7 @@ const InvoicePortal = () => {
       return [];
     }
     const list = (data as Business[]).filter((b) =>
-      (b.business_name || "").toLowerCase().includes("reed digital group")
+      (b.business_name ||"").toLowerCase().includes("reed digital group")
     );
     setBusinesses(list);
     if (list.length > 0) setSelectedBiz(list[0]);
@@ -360,8 +360,8 @@ const InvoicePortal = () => {
   };
 
   useEffect(() => {
-    if (searchParams.get("payment") === "success") {
-      toast({ title: "Payment successful", description: "Thank you." });
+    if (searchParams.get("payment") ==="success") {
+      toast({ title:"Payment successful", description:"Thank you." });
     }
   }, [searchParams]);
 
@@ -384,12 +384,12 @@ const InvoicePortal = () => {
       .maybeSingle();
 
     if (!clientData) {
-      if (showError) toast({ title: "No account found", description: `No invoices for ${addr}.`, variant: "destructive" });
+      if (showError) toast({ title:"No account found", description: `No invoices for ${addr}.`, variant:"destructive" });
       localStorage.removeItem("portal-email");
       return false;
     }
 
-    setClientName(clientData.company_name || clientData.owner_name || "");
+    setClientName(clientData.company_name || clientData.owner_name ||"");
     setClientEmail(clientData.email);
     localStorage.setItem("portal-email", addr);
     if (clientData.contract_text && clientData.contract_hidden === false) {
@@ -406,7 +406,7 @@ const InvoicePortal = () => {
       .select("*")
       .eq("client_id", clientData.id)
       .eq("deactivated", false)
-      .in("status", ["approved", "sent", "paid"])
+      .in("status", ["approved","sent","paid"])
       .order("created_at", { ascending: false });
 
     setInvoices((invData as unknown as Invoice[]) || []);
@@ -426,26 +426,26 @@ const InvoicePortal = () => {
   };
 
   const handlePay = async (invoice: Invoice, payDeposit: boolean) => {
-    const suffix = payDeposit ? "-dep" : "-once";
+    const suffix = payDeposit ?"-dep" :"-once";
     setPayingId(invoice.id + suffix);
     try {
       const res = await supabase.functions.invoke("create-checkout", {
         body: {
           invoice_id: invoice.id,
           pay_deposit: payDeposit,
-          payment_type: "one_time",
+          payment_type:"one_time",
         },
       });
       if (res.error) throw res.error;
       if (res.data?.url) window.location.href = res.data.url;
     } catch (err: any) {
-      toast({ title: "Oopsie daisy...", description: "There is a technical issue. Contact support.", variant: "destructive" });
+      toast({ title:"Oopsie daisy...", description:"There is a technical issue. Contact support.", variant:"destructive" });
       setPayingId(null);
     }
   };
 
   const handlePayMonthly = async (invoice: Invoice) => {
-    setPayingId(invoice.id + "-monthly");
+    setPayingId(invoice.id +"-monthly");
     try {
       const res = await supabase.functions.invoke("create-checkout", {
         body: {
@@ -456,7 +456,7 @@ const InvoicePortal = () => {
       if (res.error) throw res.error;
       if (res.data?.url) window.location.href = res.data.url;
     } catch (err: any) {
-      toast({ title: "Oopsie daisy...", description: "There is a technical issue. Contact support.", variant: "destructive" });
+      toast({ title:"Oopsie daisy...", description:"There is a technical issue. Contact support.", variant:"destructive" });
       setPayingId(null);
     }
   };
@@ -465,21 +465,21 @@ const InvoicePortal = () => {
     if (!clientEmail) return;
     const name = signName.trim();
     if (name.length < 2) {
-      toast({ title: "Enter your full legal name", variant: "destructive" });
+      toast({ title:"Enter your full legal name", variant:"destructive" });
       return;
     }
     setSigning(true);
     try {
       const res = await supabase.functions.invoke("sow-response", {
-        body: { email: clientEmail, action: "sign_contract", signed_name: name },
+        body: { email: clientEmail, action:"sign_contract", signed_name: name },
       });
       if (res.error) throw res.error;
-      toast({ title: "Contract signed", description: "Thank you." });
+      toast({ title:"Contract signed", description:"Thank you." });
       setContract((c) => c ? { ...c, signed_name: name, signed_at: new Date().toISOString() } : c);
       setConfirmingSign(false);
       setSignName("");
     } catch (err: any) {
-      toast({ title: "Could not sign", description: err.message, variant: "destructive" });
+      toast({ title:"Could not sign", description: err.message, variant:"destructive" });
     }
     setSigning(false);
   };
@@ -528,11 +528,11 @@ const InvoicePortal = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="text-5xl md:text-7xl font-mono font-bold text-foreground tracking-tight mb-2 text-center"
+                className="text-5xl md:text-7xl font-bold text-foreground tracking-tight mb-2 text-center"
               >
                 Pay Invoice
               </motion.h1>
-              <p className="text-sm font-mono text-muted-foreground mb-12 text-center">Enter your info to see your bill.</p>
+              <p className="text-sm text-muted-foreground mb-12 text-center">Enter your info to see your bill.</p>
 
               <motion.div
                 initial={{ opacity: 0 }}
@@ -540,16 +540,16 @@ const InvoicePortal = () => {
                 transition={{ delay: 0.5 }}
                 className="w-full max-w-sm mb-6"
               >
-                <p className="text-xs font-mono text-muted-foreground text-center mb-2">Business</p>
+                <p className="text-xs text-muted-foreground text-center mb-2">Business</p>
                 <select
-                  value={selectedBiz?.user_id || ""}
+                  value={selectedBiz?.user_id ||""}
                   onChange={(e) => {
                     const biz = businesses.find((b) => b.user_id === e.target.value) || null;
                     setSelectedBiz(biz);
                     setBizError(null);
                   }}
                   disabled={bizLookupLoading}
-                  className="w-full h-12 px-3 bg-transparent border border-border rounded-none font-mono text-sm text-center text-foreground focus:outline-none focus:border-foreground"
+                  className="w-full h-12 px-3 bg-transparent border border-border rounded-none text-sm text-center text-foreground focus:outline-none focus:border-foreground"
                 >
                   {bizLookupLoading && <option value="">Loading...</option>}
                   {!bizLookupLoading && businesses.length === 0 && <option value="">No businesses available</option>}
@@ -559,7 +559,7 @@ const InvoicePortal = () => {
                     </option>
                   ))}
                 </select>
-                <div className="mt-2 min-h-[1.25rem] text-center text-xs font-mono">
+                <div className="mt-2 min-h-[1.25rem] text-center text-xs">
                   {bizError && <span className="text-destructive">{bizError}</span>}
                 </div>
               </motion.div>
@@ -577,7 +577,7 @@ const InvoicePortal = () => {
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-base focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
+                    className="h-14 bg-transparent border-0 border-b border-border rounded-none text-center text-base focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 text-foreground"
                     required
                   />
                 </div>
@@ -585,12 +585,12 @@ const InvoicePortal = () => {
                   type="submit"
                   disabled={loading || !selectedBiz}
                   variant="outline"
-                  className="w-full h-12 font-mono text-sm uppercase tracking-widest rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
+                  className="w-full h-12 text-sm uppercase tracking-widest rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground"
                 >
                   {loading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      transition={{ repeat: Infinity, duration: 1, ease:"linear" }}
                       className="h-4 w-4 border border-foreground/30 border-t-foreground rounded-full"
                     />
                   ) : (
@@ -610,51 +610,51 @@ const InvoicePortal = () => {
               transition={{ duration: 0.5 }}
             >
               <div className="py-10 border-b border-border">
-                <h1 className="text-3xl md:text-4xl font-mono font-bold text-foreground tracking-tight">
-                  {clientName ? `Hi, ${clientName}` : "Hi"}
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+                  {clientName ? `Hi, ${clientName}` :"Hi"}
                 </h1>
-                <p className="text-sm font-mono text-muted-foreground mt-1">{clientEmail}</p>
+                <p className="text-sm text-muted-foreground mt-1">{clientEmail}</p>
               </div>
 
               {contract && (
-                <div className="mt-8 border-2 border-foreground bg-background">
+                <div className="mt-8 border border-border bg-background">
                   <div className="border-b-2 border-foreground p-6 flex items-center justify-between">
                     <span className="text-xs text-foreground uppercase tracking-widest">Contract</span>
                     {contract.signed_name && contract.signed_at ? (
-                      <span className="text-xl font-mono font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">SIGNED</span>
+                      <span className="text-xl font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">SIGNED</span>
                     ) : (
-                      <span className="text-sm font-mono font-bold uppercase tracking-widest text-primary">AWAITING SIGNATURE</span>
+                      <span className="text-sm font-bold uppercase tracking-widest text-primary">AWAITING SIGNATURE</span>
                     )}
                   </div>
                   <div className="p-6">
-                    <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground">{contract.text}</pre>
+                    <pre className="whitespace-pre-wrap text-xs leading-relaxed text-foreground">{contract.text}</pre>
                   </div>
                   {contract.signed_name && contract.signed_at ? (
                     <div className="border-t-2 border-foreground p-6 flex items-center justify-between">
                       <div>
-                        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Signed by</p>
-                        <p className="text-3xl mt-1" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{contract.signed_name}</p>
-                        <p className="text-[10px] font-mono text-muted-foreground mt-1">on {new Date(contract.signed_at).toLocaleString()}</p>
+                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Signed by</p>
+                        <p className="text-3xl mt-1" style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}>{contract.signed_name}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1">on {new Date(contract.signed_at).toLocaleString()}</p>
                       </div>
                       <div
-                        className="border-4 border-emerald-500 text-emerald-500 px-4 py-2 font-mono font-black text-xl uppercase tracking-widest -rotate-6"
-                        style={{ boxShadow: "inset 0 0 0 2px hsl(var(--background))" }}
+                        className="border border-emerald-500 text-emerald-500 px-4 py-2 font-black text-xl uppercase tracking-widest -rotate-6"
+                        style={{ boxShadow:"inset 0 0 0 2px hsl(var(--background))" }}
                       >
                         ✓ Signed
                       </div>
                     </div>
                   ) : (
                     <div className="border-t-2 border-foreground p-6 space-y-3">
-                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Type your full legal name to sign</p>
+                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Type your full legal name to sign</p>
                       <Input
                         value={signName}
                         onChange={(e) => setSignName(e.target.value)}
                         placeholder="Your full name"
                         className="h-14 bg-transparent border-0 border-b border-border rounded-none text-2xl focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30"
-                        style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}
+                        style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}
                       />
                       {signName.trim().length >= 2 && (
-                        <p className="text-xs font-mono text-muted-foreground">Preview: <span className="text-2xl text-foreground" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signName}</span></p>
+                        <p className="text-xs text-muted-foreground">Preview: <span className="text-2xl text-foreground" style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}>{signName}</span></p>
                       )}
                       <Button
                         onClick={() => setConfirmingSign(true)}
@@ -670,16 +670,16 @@ const InvoicePortal = () => {
 
               {confirmingSign && (
                 <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6" onClick={() => !signing && setConfirmingSign(false)}>
-                  <div className="bg-background border-2 border-foreground max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
-                    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Confirm signature</p>
+                  <div className="bg-background border border-border max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground">Confirm signature</p>
                     <p className="mt-4 text-sm text-foreground leading-relaxed">
                       By clicking <span className="font-bold">Confirm & Sign</span>, you agree to be legally bound by the terms of this contract. Your typed name will serve as your electronic signature.
                     </p>
-                    <p className="mt-4 text-3xl border-y border-border py-3 text-center" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signName}</p>
+                    <p className="mt-4 text-3xl border-y border-border py-3 text-center" style={{ fontFamily:"'Dancing Script','Brush Script MT',cursive" }}>{signName}</p>
                     <div className="mt-6 flex gap-3">
                       <button onClick={() => setConfirmingSign(false)} disabled={signing} className="flex-1 h-11 border border-border text-xs uppercase tracking-widest hover:bg-muted">Cancel</button>
                       <Button onClick={submitSignature} disabled={signing} className="flex-1 h-11 text-xs uppercase tracking-widest rounded-none">
-                        {signing ? "Signing..." : "Confirm & Sign"}
+                        {signing ?"Signing..." :"Confirm & Sign"}
                       </Button>
                     </div>
                   </div>
@@ -688,8 +688,8 @@ const InvoicePortal = () => {
 
               {invoices.length === 0 ? (
                 <div className="py-20 text-center border-2 border-dashed border-border mt-8">
-                  <p className="text-2xl font-mono font-bold text-foreground">No invoice yet</p>
-                  <p className="text-sm font-mono text-muted-foreground mt-2">Check back soon.</p>
+                  <p className="text-2xl font-bold text-foreground">No invoice yet</p>
+                  <p className="text-sm text-muted-foreground mt-2">Check back soon.</p>
                 </div>
               ) : (
                 <div className="pt-6">
@@ -710,7 +710,7 @@ const InvoicePortal = () => {
               )}
 
               <div className="border-t border-border mt-12 py-8 text-center">
-                <p className="text-xs font-mono text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Need help? Email <a href="mailto:reeddigitalgroup@gmail.com" className="text-primary hover:underline">reeddigitalgroup@gmail.com</a>
                 </p>
               </div>

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import NotificationBell from "@/components/NotificationBell";
+import { useEffect, useState } from"react";
+import { Link, useNavigate } from"react-router-dom";
+import { motion } from"framer-motion";
+import { supabase } from"@/integrations/supabase/client";
+import { toast } from"sonner";
+import NotificationBell from"@/components/NotificationBell";
 
 type AcctLink = { id: string; client_user_id: string; status: string; requested_at: string; accepted_at: string | null };
 type ClientProfile = { user_id: string; full_name: string | null; business_name: string | null };
@@ -21,9 +21,9 @@ export default function HomeOfficeAccountant() {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) { navigate("/home-office/login"); return; }
       const { data: prof } = await supabase.from("profiles").select("account_type, accountant_id, full_name").eq("user_id", auth.user.id).maybeSingle();
-      if (!prof || prof.account_type !== "accountant") { navigate("/home-office"); return; }
-      setAccountantId(prof.accountant_id || "");
-      setFullName(prof.full_name || "");
+      if (!prof || prof.account_type !=="accountant") { navigate("/home-office"); return; }
+      setAccountantId(prof.accountant_id ||"");
+      setFullName(prof.full_name ||"");
       await loadLinks();
       setLoading(false);
     })();
@@ -44,13 +44,13 @@ export default function HomeOfficeAccountant() {
   };
 
   const accept = async (id: string) => {
-    const { error } = await supabase.from("accountant_clients").update({ status: "active", accepted_at: new Date().toISOString() } as any).eq("id", id);
+    const { error } = await supabase.from("accountant_clients").update({ status:"active", accepted_at: new Date().toISOString() } as any).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Client accepted.");
     loadLinks();
   };
   const decline = async (id: string) => {
-    const { error } = await supabase.from("accountant_clients").update({ status: "removed" } as any).eq("id", id);
+    const { error } = await supabase.from("accountant_clients").update({ status:"removed" } as any).eq("id", id);
     if (error) return toast.error(error.message);
     loadLinks();
   };
@@ -58,8 +58,8 @@ export default function HomeOfficeAccountant() {
   const copyId = () => { navigator.clipboard.writeText(accountantId); toast.success("Accountant ID copied"); };
   const logout = async () => { await supabase.auth.signOut(); navigate("/home-office/login"); };
 
-  const pending = links.filter((l) => l.status === "pending");
-  const active = links.filter((l) => l.status === "active");
+  const pending = links.filter((l) => l.status ==="pending");
+  const active = links.filter((l) => l.status ==="active");
 
   if (loading) return <div className="min-h-screen bg-background flex items-center justify-center text-sm text-muted-foreground">Loading…</div>;
 
@@ -67,7 +67,7 @@ export default function HomeOfficeAccountant() {
     <div className="min-h-screen bg-background">
       <nav className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">← RDG</Link>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">Accountant {fullName ? `· ${fullName}` : ""}</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">Accountant {fullName ? `· ${fullName}` :""}</span>
         <div className="flex items-center gap-2">
           <NotificationBell />
           <button onClick={logout} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-border hover:border-foreground/40">Log out</button>
@@ -79,14 +79,14 @@ export default function HomeOfficeAccountant() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
             <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Accountant workspace</div>
             <h1 className="text-5xl md:text-7xl tracking-[-0.04em] leading-[0.95] font-medium">
-              Welcome,<br /><span className="italic text-brand">{fullName || "friend"}.</span>
+              Welcome,<br /><span className="italic text-brand">{fullName ||"friend"}.</span>
             </h1>
           </motion.div>
 
           <div className="mb-12 rounded-2xl border border-border bg-foreground/[0.02] p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">Your accountant ID</p>
-              <code className="text-2xl md:text-3xl tracking-[0.2em] text-brand">{accountantId || "—"}</code>
+              <code className="text-2xl md:text-3xl tracking-[0.2em] text-brand">{accountantId ||"—"}</code>
               <p className="text-xs text-muted-foreground mt-3 max-w-md">Share this with your clients. They enter it in their Taxes tab to connect their books to you.</p>
             </div>
             <button onClick={copyId} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2.5 bg-foreground text-background hover:bg-foreground/85">Copy ID</button>
@@ -100,7 +100,7 @@ export default function HomeOfficeAccountant() {
               <div className="space-y-3">
                 {pending.map((l) => {
                   const p = profiles[l.client_user_id];
-                  const name = p?.business_name || p?.full_name || "A client";
+                  const name = p?.business_name || p?.full_name ||"A client";
                   return (
                     <div key={l.id} className="rounded-2xl border border-border rounded-2xl p-5 flex items-center justify-between">
                       <div>
@@ -126,11 +126,11 @@ export default function HomeOfficeAccountant() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {active.map((l) => {
                   const p = profiles[l.client_user_id];
-                  const name = p?.business_name || p?.full_name || "Client";
+                  const name = p?.business_name || p?.full_name ||"Client";
                   return (
                     <div key={l.id} className="rounded-2xl border border-border rounded-2xl p-5">
                       <p className="text-sm font-semibold">{name}</p>
-                      <p className="text-[10px] text-muted-foreground mt-1">Connected {l.accepted_at ? new Date(l.accepted_at).toLocaleDateString() : ""}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">Connected {l.accepted_at ? new Date(l.accepted_at).toLocaleDateString() :""}</p>
                       <p className="text-[10px] text-muted-foreground mt-3">Read-only client portal links are coming next — for now, ask your client to share their accountant portal link from their Taxes tab.</p>
                     </div>
                   );

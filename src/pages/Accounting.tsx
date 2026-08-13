@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { usePlaidLink } from "react-plaid-link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState, useCallback, useMemo } from"react";
+import { useNavigate, Link } from"react-router-dom";
+import { usePlaidLink } from"react-plaid-link";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { supabase } from"@/integrations/supabase/client";
+import { useToast } from"@/hooks/use-toast";
 
 interface AccountantSettings {
   published: boolean;
@@ -23,7 +23,7 @@ interface Txn {
 interface MonthClose { year: number; month: number; closed_at: string; }
 
 const monthLabel = (y: number, m: number) =>
-  new Date(y, m - 1, 1).toLocaleString(undefined, { month: "long", year: "numeric" });
+  new Date(y, m - 1, 1).toLocaleString(undefined, { month:"long", year:"numeric" });
 
 const Accounting = () => {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const Accounting = () => {
   const [txns, setTxns] = useState<Txn[]>([]);
   const [closes, setCloses] = useState<MonthClose[]>([]);
   const [syncing, setSyncing] = useState(false);
-  const [tab, setTab] = useState<"share" | "writeoffs">("share");
+  const [tab, setTab] = useState<"share" |"writeoffs">("share");
 
   const callAdmin = useCallback(async (action: string, payload: Record<string, unknown> = {}) => {
     const { data, error } = await supabase.functions.invoke("accountant-admin", { body: { action, ...payload } });
@@ -77,7 +77,7 @@ const Accounting = () => {
   useEffect(() => {
     if (!sessionStorage.getItem("ho-token")) { navigate("/home-office/login"); return; }
     Promise.all([loadAccountant(), loadFinance()])
-      .catch((e) => toast({ title: "Load failed", description: (e as Error).message, variant: "destructive" }))
+      .catch((e) => toast({ title:"Load failed", description: (e as Error).message, variant:"destructive" }))
       .finally(() => setLoading(false));
   }, [navigate, loadAccountant, loadFinance, toast]);
 
@@ -85,7 +85,7 @@ const Accounting = () => {
     if (!settings) return;
     setSettings({ ...settings, ...patch });
     try { await callAdmin("update_settings", patch as Record<string, unknown>); }
-    catch (e) { toast({ title: "Save failed", description: (e as Error).message, variant: "destructive" }); loadAccountant(); }
+    catch (e) { toast({ title:"Save failed", description: (e as Error).message, variant:"destructive" }); loadAccountant(); }
   };
 
   const generateShare = async () => {
@@ -97,23 +97,23 @@ const Accounting = () => {
   const revokeShare = async () => { if (!confirm("Revoke the current share link?")) return; await callAdmin("revoke_share"); setShareUrl(null); setNewPasscode(null); loadAccountant(); };
   const sendInvite = async () => { const email = inviteEmail.trim(); if (!email) return; await callAdmin("create_invite", { email }); setInviteEmail(""); loadAccountant(); };
   const revokeInvite = async (id: string) => { await callAdmin("revoke_invite", { id }); loadAccountant(); };
-  const copy = (t: string) => { navigator.clipboard.writeText(t); toast({ title: "Copied" }); };
+  const copy = (t: string) => { navigator.clipboard.writeText(t); toast({ title:"Copied" }); };
 
   // Plaid Link
   const initLink = async () => {
     try { const d = await callPlaid("create_link_token"); setLinkToken(d.link_token); }
-    catch (e) { toast({ title: "Plaid error", description: (e as Error).message, variant: "destructive" }); }
+    catch (e) { toast({ title:"Plaid error", description: (e as Error).message, variant:"destructive" }); }
   };
   const { open, ready } = usePlaidLink({
     token: linkToken,
     onSuccess: async (public_token, metadata) => {
       try {
         await callPlaid("exchange_public_token", { public_token, institution_name: metadata.institution?.name });
-        toast({ title: "Bank connected" });
+        toast({ title:"Bank connected" });
         setLinkToken(null);
         await loadFinance();
         await sync();
-      } catch (e) { toast({ title: "Connect failed", description: (e as Error).message, variant: "destructive" }); }
+      } catch (e) { toast({ title:"Connect failed", description: (e as Error).message, variant:"destructive" }); }
     },
     onExit: () => setLinkToken(null),
   });
@@ -122,7 +122,7 @@ const Accounting = () => {
   const sync = async () => {
     setSyncing(true);
     try { const d = await callPlaid("sync"); toast({ title: `Synced ${d.added ?? 0} transactions` }); await loadFinance(); }
-    catch (e) { toast({ title: "Sync failed", description: (e as Error).message, variant: "destructive" }); }
+    catch (e) { toast({ title:"Sync failed", description: (e as Error).message, variant:"destructive" }); }
     finally { setSyncing(false); }
   };
   const disconnect = async (id: string) => { if (!confirm("Disconnect this bank?")) return; await callPlaid("disconnect", { id }); loadFinance(); };
@@ -130,7 +130,7 @@ const Accounting = () => {
   const setWriteOff = async (id: string, value: boolean | null) => {
     setTxns((prev) => prev.map((t) => t.id === id ? { ...t, is_write_off: value } : t));
     try { await callPlaid("set_write_off", { id, value }); }
-    catch (e) { toast({ title: "Failed", description: (e as Error).message, variant: "destructive" }); loadFinance(); }
+    catch (e) { toast({ title:"Failed", description: (e as Error).message, variant:"destructive" }); loadFinance(); }
   };
 
   // Group txns by year-month
@@ -174,26 +174,26 @@ const Accounting = () => {
 
           {/* Tabs */}
           <div className="mt-8 flex gap-6 border-b border-border">
-            {(["share", "writeoffs"] as const).map((t) => (
+            {(["share","writeoffs"] as const).map((t) => (
               <button key={t} onClick={() => setTab(t)}
-                className={`pb-3 text-xs uppercase tracking-widest transition-colors ${tab === t ? "text-foreground border-b-2 border-brand -mb-px" : "text-muted-foreground hover:text-foreground"}`}>
-                {t === "share" ? "Accountant Access" : "Write-offs"}
+                className={`pb-3 text-xs uppercase tracking-widest transition-colors ${tab === t ?"text-foreground border-b-2 border-brand -mb-px" :"text-muted-foreground hover:text-foreground"}`}>
+                {t ==="share" ?"Accountant Access" :"Write-offs"}
               </button>
             ))}
           </div>
 
-          {loading ? <p className="mt-8 text-sm text-muted-foreground">Loading…</p> : tab === "share" ? (
+          {loading ? <p className="mt-8 text-sm text-muted-foreground">Loading…</p> : tab ==="share" ? (
             <div className="mt-8 space-y-8">
               {/* Publish */}
               <section className="flex items-center justify-between gap-4 py-4 border-b border-border">
                 <div>
                   <p className="text-sm font-bold">Publish finances</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {settings?.published ? "Visible to accountants with a link" : "Hidden from accountants"}
+                    {settings?.published ?"Visible to accountants with a link" :"Hidden from accountants"}
                   </p>
                 </div>
-                <Button size="sm" onClick={() => updateSettings({ published: !settings?.published })} variant={settings?.published ? "default" : "outline"}>
-                  {settings?.published ? "ON" : "OFF"}
+                <Button size="sm" onClick={() => updateSettings({ published: !settings?.published })} variant={settings?.published ?"default" :"outline"}>
+                  {settings?.published ?"ON" :"OFF"}
                 </Button>
               </section>
 
@@ -202,10 +202,10 @@ const Accounting = () => {
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Visible sections</p>
                 <div className="space-y-0">
                   {[
-                    { key: "show_bills", label: "Bills" },
-                    { key: "show_invoices", label: "Invoices & revenue" },
-                    { key: "show_writeoffs", label: "Write-offs" },
-                    { key: "show_notes", label: "Notes (private by default)" },
+                    { key:"show_bills", label:"Bills" },
+                    { key:"show_invoices", label:"Invoices & revenue" },
+                    { key:"show_writeoffs", label:"Write-offs" },
+                    { key:"show_notes", label:"Notes (private by default)" },
                   ].map((row) => {
                     const k = row.key as keyof AccountantSettings;
                     return (
@@ -258,7 +258,7 @@ const Accounting = () => {
                       <li key={inv.id} className="flex items-center justify-between py-2 border-b border-border">
                         <div>
                           <p className="text-sm">{inv.email}</p>
-                          <p className="text-xs text-muted-foreground">{inv.accepted_at ? "Accepted" : "Pending"}</p>
+                          <p className="text-xs text-muted-foreground">{inv.accepted_at ?"Accepted" :"Pending"}</p>
                         </div>
                         <Button variant="outline" size="sm" onClick={() => revokeInvite(inv.id)}>Revoke</Button>
                       </li>
@@ -275,7 +275,7 @@ const Accounting = () => {
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">Connected banks</p>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={sync} disabled={syncing || plaidItems.length === 0}>
-                      {syncing ? "Syncing…" : "Sync"}
+                      {syncing ?"Syncing…" :"Sync"}
                     </Button>
                     <Button size="sm" onClick={initLink}>Connect bank</Button>
                   </div>
@@ -287,9 +287,9 @@ const Accounting = () => {
                     {plaidItems.map((it) => (
                       <li key={it.id} className="flex items-center justify-between py-2 border-b border-border">
                         <div>
-                          <p className="text-sm">{it.institution_name || "Bank"}</p>
+                          <p className="text-sm">{it.institution_name ||"Bank"}</p>
                           <p className="text-xs text-muted-foreground">
-                            {it.last_synced_at ? `Synced ${new Date(it.last_synced_at).toLocaleString()}` : "Not synced yet"}
+                            {it.last_synced_at ? `Synced ${new Date(it.last_synced_at).toLocaleString()}` :"Not synced yet"}
                           </p>
                         </div>
                         <Button variant="outline" size="sm" onClick={() => disconnect(it.id)}>Disconnect</Button>
@@ -315,8 +315,8 @@ const Accounting = () => {
                           {g.rows.length} txns · {unreviewed} unreviewed · write-offs ${writeOffTotal.toFixed(2)}
                         </p>
                       </div>
-                      <Button size="sm" variant={closed ? "default" : "outline"} onClick={() => toggleClose(g.year, g.month)}>
-                        {closed ? "Reviewed" : "Mark reviewed"}
+                      <Button size="sm" variant={closed ?"default" :"outline"} onClick={() => toggleClose(g.year, g.month)}>
+                        {closed ?"Reviewed" :"Mark reviewed"}
                       </Button>
                     </div>
                     <ul className="border-t border-border">
@@ -325,17 +325,17 @@ const Accounting = () => {
                           <div className="min-w-0 flex-1">
                             <p className="text-sm truncate">{t.merchant_name || t.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              {new Date(t.txn_date).toLocaleDateString()} · {t.category || "Uncategorized"} · ${Number(t.amount).toFixed(2)}
+                              {new Date(t.txn_date).toLocaleDateString()} · {t.category ||"Uncategorized"} · ${Number(t.amount).toFixed(2)}
                             </p>
                           </div>
                           <div className="flex gap-1">
                             <button
                               onClick={() => setWriteOff(t.id, t.is_write_off === true ? null : true)}
-                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === true ? "bg-brand text-background border-brand" : "border-border hover:border-brand"}`}
+                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === true ?"bg-brand text-background border-brand" :"border-border hover:border-brand"}`}
                               aria-label="Write off">✓</button>
                             <button
                               onClick={() => setWriteOff(t.id, t.is_write_off === false ? null : false)}
-                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === false ? "bg-foreground text-background border-foreground" : "border-border hover:border-foreground"}`}
+                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === false ?"bg-foreground text-background border-foreground" :"border-border hover:border-foreground"}`}
                               aria-label="Not a write off">✕</button>
                           </div>
                         </li>
