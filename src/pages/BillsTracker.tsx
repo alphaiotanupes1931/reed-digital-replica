@@ -211,7 +211,7 @@ const BillsTracker = () => {
   const w2Rows = extraIncome.filter((r) => r.category === "w2");
   const totalExtra = visibleExtraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const retainerIncome = totalIncome + totalExtra;
+  const retainerIncome = (includeMaintenance ? totalIncome : 0) + totalExtra;
   const grandIncome = (includeMaintenance ? totalIncome : 0) + totalExtra + (includeW2 ? totalW2 : 0);
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
@@ -430,20 +430,31 @@ const BillsTracker = () => {
             </div>
             <p className="text-4xl font-bold mt-2 text-brand">{fmt(grandIncome * 12)}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              {fmt(grandIncome)}/mo × 12 — {includeMaintenance ? "maintenance" : ""}
-              {includeMaintenance && totalExtra > 0 ? " + " : ""}
-              {totalExtra > 0 ? "manual" : ""}
-              {includeW2 ? " + W2 take-home" : ""}
-              {totalW2 > 0 && <> · Take-home salary: <span className="font-bold text-foreground">{fmt(totalW2)}/mo</span> ({fmt(totalW2 * 12)}/yr)</>}
+              {fmt(grandIncome)}/mo × 12
             </p>
+            <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+              <li>
+                Maintenance {includeMaintenance ? "(included)" : "(excluded)"}:{" "}
+                <span className={`font-bold ${includeMaintenance ? "text-foreground" : "line-through"}`}>{fmt(totalIncome)}/mo</span>
+              </li>
+              <li>
+                Manual income (included): <span className="font-bold text-foreground">{fmt(totalExtra)}/mo</span>
+              </li>
+              <li>
+                W2 take-home {includeW2 ? "(included)" : "(excluded)"}:{" "}
+                <span className={`font-bold ${includeW2 ? "text-foreground" : "line-through"}`}>{fmt(totalW2)}/mo</span>
+                {totalW2 > 0 && includeW2 && <> ({fmt(totalW2 * 12)}/yr)</>}
+              </li>
+            </ul>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
             <div className="border border-foreground p-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
               <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {incomeRows.length} client{incomeRows.length === 1 ? "" : "s"}
-                {extraRows.length > 0 && ` + ${extraRows.length} manual`}
+                {includeMaintenance ? `${visibleIncomeRows.length} client${visibleIncomeRows.length === 1 ? "" : "s"}` : "no maintenance"}
+                {visibleExtraRows.length > 0 && ` + ${visibleExtraRows.length} manual`}
+                {includeW2 && w2Rows.length > 0 && ` + ${w2Rows.length} W2`}
               </p>
             </div>
             <div className="border border-foreground p-6">
