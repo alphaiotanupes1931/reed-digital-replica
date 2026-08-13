@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import hoLogo from "@/assets/ho-logo.png.asset.json";
 
 const features = [
   { t: "Notes & daily planner", d: "Capture every thought, plan the day, stay in motion." },
@@ -19,8 +20,8 @@ const HomeOfficeWelcome = () => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <nav className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl px-6 py-4 flex items-center justify-between">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-          Reed Digital Group
+        <Link to="/" className="flex items-center" aria-label="Home Office">
+          <img src={hoLogo.url} alt="Home Office" className="h-7 w-auto" />
         </Link>
         <div className="flex items-center gap-2">
           <Link
