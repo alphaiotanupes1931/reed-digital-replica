@@ -616,66 +616,6 @@ const BillsTracker = () => {
             )}
           </div>
 
-          {/* W2 Income */}
-          <div className="mt-12">
-            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
-              <h2 className="text-lg font-bold tracking-tight">W2 Income</h2>
-              <Button
-                type="button"
-                variant={includeW2 ? "default" : "outline"}
-                size="sm"
-                onClick={toggleW2}
-              >
-                {includeW2 ? "Including W2 in Totals" : "Exclude from Totals"}
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">Enter take-home pay, not gross.</p>
-
-            <div
-              ref={w2FormRef}
-              className={`border p-6 mb-6 transition-colors ${editingW2Id ? "border-brand bg-brand/5" : "border-foreground/20"}`}
-            >
-              <form onSubmit={handleW2Submit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
-                <Input placeholder="Employer (e.g. Acme Corp)" value={w2Source} onChange={(e) => setW2Source(e.target.value)} required />
-                <Input type="number" step="0.01" min="0" placeholder="Monthly take-home $" value={w2Price} onChange={(e) => setW2Price(e.target.value)} required />
-                <Input placeholder="Notes (optional)" value={w2Notes} onChange={(e) => setW2Notes(e.target.value)} />
-                <div className="flex gap-2">
-                  <Button type="submit">{editingW2Id ? "Save" : "Add"}</Button>
-                  {editingW2Id && <Button type="button" variant="outline" onClick={cancelEditW2}>Cancel</Button>}
-                </div>
-              </form>
-            </div>
-
-            {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
-            ) : w2Rows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No W2 income yet.</p>
-            ) : (
-              <div className={`divide-y divide-foreground/10 border ${includeW2 ? "border-foreground/20" : "border-foreground/10 opacity-70"}`}>
-                {w2Rows.map((r) => (
-                  <div key={r.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4">
-                    <div>
-                      <p className="font-bold text-sm">{r.source}</p>
-                      {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
-                    </div>
-                    <p className="font-bold text-sm text-brand">{fmt(Number(r.price))}</p>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => startEditW2(r)}>Edit</Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDeleteW2(r.id)}>Delete</Button>
-                    </div>
-                  </div>
-                ))}
-                <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">
-                    Total W2 {includeW2 ? "(included)" : "(excluded)"}
-                  </p>
-                  <p className="font-bold text-sm">{fmt(totalW2)}</p>
-                  <div />
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Tax Reminders */}
           <div className="mt-12">
             <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
