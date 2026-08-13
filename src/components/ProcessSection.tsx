@@ -27,7 +27,7 @@ const ProcessSection = () => {
             {steps.map((step) => (
               <div key={step.label} className="relative flex flex-col items-center group">
                 {/* Dot */}
-                <div className="w-6 h-6 rounded-full bg-background border-2 border-foreground z-10 group-hover:bg-foreground transition-colors" />
+                <div className="w-6 h-6 rounded-full bg-background border border-border z-10 group-hover:bg-foreground transition-colors" />
                 
                 {/* Label */}
                 <span className="mt-4 text-sm font-mono font-medium">

@@ -139,7 +139,7 @@ export const GlossaryChatbot = () => {
       {/* Floating toggle button */}
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 border-2 border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center font-mono text-xs uppercase tracking-[0.15em]"
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 border border-border bg-background text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center font-mono text-xs uppercase tracking-[0.15em]"
         aria-label="Open glossary chatbot"
       >
         {open ? "Close" : "Help"}
@@ -152,7 +152,7 @@ export const GlossaryChatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[calc(100vw-3rem)] max-w-sm h-[28rem] border-2 border-foreground bg-background flex flex-col shadow-2xl"
+            className="fixed bottom-24 right-6 z-50 w-[calc(100vw-3rem)] max-w-sm h-[28rem] border border-border bg-background flex flex-col shadow-2xl"
           >
             {/* Header */}
             <div className="border-b-2 border-foreground p-4 flex items-start justify-between gap-3">
@@ -209,7 +209,7 @@ export const GlossaryChatbot = () => {
               />
               <button
                 type="submit"
-                className="h-10 px-4 border-2 border-foreground bg-foreground text-background font-mono text-[10px] uppercase tracking-[0.15em] hover:bg-background hover:text-foreground transition-colors"
+                className="h-10 px-4 border border-border bg-foreground text-background font-mono text-[10px] uppercase tracking-[0.15em] hover:bg-background hover:text-foreground transition-colors"
               >
                 Ask
               </button>

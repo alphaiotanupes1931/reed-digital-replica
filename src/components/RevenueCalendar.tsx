@@ -75,7 +75,7 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
   const selectedTotal = selectedDay ? byDay.get(selectedDay)?.total ?? 0 : 0;
 
   return (
-    <div className="border-2 border-foreground mb-8">
+    <div className="border border-border mb-8">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-foreground/20 px-5 py-3">
         <div className="flex items-center gap-3">
