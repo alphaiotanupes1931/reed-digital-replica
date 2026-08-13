@@ -60,7 +60,7 @@ const TestimonialsSection = () => {
           >
             <GoogleLogo />
             <div className="flex items-center gap-2">
-              <span className="text-lg font-mono font-semibold">5.0</span>
+              <span className="text-lg font-semibold">5.0</span>
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
                   <svg key={i} viewBox="0 0 20 20" className="w-4 h-4 fill-yellow-400">

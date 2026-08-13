@@ -14,7 +14,7 @@ const RDGMemberPopup = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 24, scale: 0.95 }}
           transition={{ type: "spring", damping: 20, stiffness: 260 }}
-          className="fixed bottom-4 right-4 z-[80] max-w-xs w-[calc(100vw-2rem)] sm:w-80 font-mono"
+          className="fixed bottom-4 right-4 z-[80] max-w-xs w-[calc(100vw-2rem)] sm:w-80"
         >
           <div className="relative bg-background border border-foreground/15 shadow-xl rounded-md p-5">
             <div className="h-0.5 w-8 bg-brand mb-3" />

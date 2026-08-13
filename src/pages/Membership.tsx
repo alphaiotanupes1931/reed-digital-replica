@@ -42,7 +42,7 @@ const Membership = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-32 pb-24">
         <div className="container max-w-md mx-auto px-6">

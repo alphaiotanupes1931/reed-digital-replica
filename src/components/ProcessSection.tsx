@@ -13,7 +13,7 @@ const ProcessSection = () => {
       <div className="container">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center mb-16">
-          <span className="section-label font-mono">Process</span>
+          <span className="section-label">Process</span>
           <TypedHeader text="How We Work" className="mt-4 mb-6" />
         </div>
 
@@ -30,7 +30,7 @@ const ProcessSection = () => {
                 <div className="w-6 h-6 rounded-full bg-background border border-border z-10 group-hover:bg-foreground transition-colors" />
                 
                 {/* Label */}
-                <span className="mt-4 text-sm font-mono font-medium">
+                <span className="mt-4 text-sm font-medium">
                   {step.label}
                 </span>
                 
@@ -48,7 +48,7 @@ const ProcessSection = () => {
               <div key={step.label} className="flex items-start gap-4">
                 <div className="w-3 h-3 rounded-full bg-foreground mt-1.5 flex-shrink-0" />
                 <div>
-                  <span className="text-sm font-mono font-medium block">
+                  <span className="text-sm font-medium block">
                     {step.label}
                   </span>
                   <span className="text-xs text-muted-foreground">

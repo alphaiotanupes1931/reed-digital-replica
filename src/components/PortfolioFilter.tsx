@@ -13,7 +13,7 @@ const PortfolioFilter = ({ categories, activeCategory, onCategoryChange }: Portf
         <button
           key={category}
           onClick={() => onCategoryChange(category)}
-          className={`relative px-4 py-2 text-sm font-mono transition-colors ${
+          className={`relative px-4 py-2 text-sm transition-colors ${
             activeCategory === category 
               ? "text-foreground" 
               : "text-muted-foreground hover:text-foreground"

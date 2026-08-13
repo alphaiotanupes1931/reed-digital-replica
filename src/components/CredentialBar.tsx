@@ -61,7 +61,7 @@ const CredentialBar = () => {
       {/* Content */}
       <div className="relative z-10 container">
         <div className="flex items-center justify-center text-center">
-          <p className="text-lg md:text-2xl font-mono font-bold text-foreground tracking-tight">
+          <p className="text-lg md:text-2xl font-bold text-foreground tracking-tight">
             {displayText}
             {isTyping && displayText.length < fullText.length && (
               <span className="animate-pulse">|</span>

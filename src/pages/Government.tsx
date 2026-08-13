@@ -16,7 +16,7 @@ const GovernmentPage = () => {
               {/* Header */}
               <ScrollReveal>
                 <div className="text-center mb-16">
-                  <span className="section-label font-mono">Government</span>
+                  <span className="section-label">Government</span>
                   <TypedHeader text="Federal Contracting" className="mt-4 mb-6" />
                   <p className="text-muted-foreground">
                     Certified small business ready to support government agencies.
@@ -29,11 +29,11 @@ const GovernmentPage = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 text-center">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">State ID</p>
-                    <p className="font-mono text-sm">W26278200</p>
+                    <p className="text-sm">W26278200</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">FEIN</p>
-                    <p className="font-mono text-sm">39-3305308</p>
+                    <p className="text-sm">39-3305308</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Status</p>
@@ -49,7 +49,7 @@ const GovernmentPage = () => {
               {/* NAICS Codes */}
               <ScrollReveal delay={0.15}>
                 <div className="mb-12">
-                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+                  <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6 text-center">
                     NAICS Codes
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
@@ -71,7 +71,7 @@ const GovernmentPage = () => {
               {/* Core Competencies */}
               <ScrollReveal delay={0.2}>
                 <div className="mb-16">
-                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+                  <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6 text-center">
                     Core Competencies
                   </h3>
                   <div className="flex flex-wrap justify-center gap-3">

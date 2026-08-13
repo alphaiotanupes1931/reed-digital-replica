@@ -94,7 +94,7 @@ const PricingPage = () => {
               {/* Hero */}
               <ScrollReveal>
                 <div className="text-center mb-16">
-                  <span className="section-label font-mono">Pricing</span>
+                  <span className="section-label">Pricing</span>
                   <h1 className="mt-4 mb-6 text-4xl md:text-5xl font-bold tracking-tight">
                     Simple Pricing
                   </h1>
@@ -139,7 +139,7 @@ const PricingPage = () => {
                       }`}
                     >
                       {r.popular && (
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-brand mb-2">
+                        <span className="text-[10px] uppercase tracking-wider text-brand mb-2">
                           Most Popular
                         </span>
                       )}
@@ -176,7 +176,7 @@ const PricingPage = () => {
               <ScrollReveal delay={0.05}>
                 <div className="mb-16">
                   <div className="text-center mb-8">
-                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-2">
+                    <h3 className="text-sm text-primary uppercase tracking-wider mb-2">
                       Build Pricing
                     </h3>
                     <p className="text-xs text-muted-foreground">
@@ -195,7 +195,7 @@ const PricingPage = () => {
                           <div className="flex items-baseline gap-3">
                             <span className="font-medium">{pkg.name}</span>
                             {pkg.popular && (
-                              <span className="text-[10px] font-mono uppercase tracking-wider text-primary">
+                              <span className="text-[10px] uppercase tracking-wider text-primary">
                                 Popular
                               </span>
                             )}
@@ -203,10 +203,10 @@ const PricingPage = () => {
                           <p className="text-xs text-muted-foreground mt-1">{pkg.desc}</p>
                         </div>
                         <div className="flex items-baseline gap-4 flex-shrink-0">
-                          <span className="font-mono text-lg">{pkg.price}</span>
+                          <span className="text-lg">{pkg.price}</span>
                           <Link
                             to="/contact"
-                            className="text-[11px] font-mono uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                            className="text-[11px] uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
                           >
                             Quote
                           </Link>
@@ -224,7 +224,7 @@ const PricingPage = () => {
               <ScrollReveal delay={0.1}>
                 <div className="mb-20">
                   <div className="text-center mb-8">
-                    <h3 className="text-sm font-mono text-primary uppercase tracking-wider mb-2">
+                    <h3 className="text-sm text-primary uppercase tracking-wider mb-2">
                       Maintenance Plans
                     </h3>
                     <p className="text-xs text-muted-foreground">
@@ -232,7 +232,7 @@ const PricingPage = () => {
                     </p>
                   </div>
                   <div className="border border-foreground/15 p-4 mb-6 text-center">
-                    <p className="text-[11px] font-mono uppercase tracking-wider text-primary mb-1">
+                    <p className="text-[11px] uppercase tracking-wider text-primary mb-1">
                       Included with every plan
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -251,7 +251,7 @@ const PricingPage = () => {
                           <div className="flex items-baseline gap-3">
                             <span className="font-medium">{plan.name}</span>
                             {plan.popular && (
-                              <span className="text-[10px] font-mono uppercase tracking-wider text-primary">
+                              <span className="text-[10px] uppercase tracking-wider text-primary">
                                 Popular
                               </span>
                             )}
@@ -259,13 +259,13 @@ const PricingPage = () => {
                           <p className="text-xs text-muted-foreground mt-1">{plan.tagline}</p>
                         </div>
                         <div className="flex items-baseline gap-4 flex-shrink-0">
-                          <span className="font-mono text-lg">
+                          <span className="text-lg">
                             {plan.price}
                             <span className="text-xs text-muted-foreground">/mo</span>
                           </span>
                           <Link
                             to="/contact"
-                            className="text-[11px] font-mono uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                            className="text-[11px] uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
                           >
                             Choose
                           </Link>
@@ -273,7 +273,7 @@ const PricingPage = () => {
                       </div>
                     ))}
                   </div>
-                  <p className="text-[11px] text-muted-foreground text-center mt-4 font-mono">
+                  <p className="text-[11px] text-muted-foreground text-center mt-4">
                     12-month minimum
                   </p>
                   <div className="text-center mt-6">
@@ -291,7 +291,7 @@ const PricingPage = () => {
               <ScrollReveal delay={0.25}>
                 <div className="mb-16">
                   <div>
-                    <h4 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4 text-center">
+                    <h4 className="text-sm text-muted-foreground uppercase tracking-wider mb-4 text-center">
                       Social Media Management
                     </h4>
                     <div className="space-y-0">
@@ -302,7 +302,7 @@ const PricingPage = () => {
                             {pkg.popular && <span className="text-xs text-muted-foreground ml-2">Popular</span>}
                             <p className="text-xs text-muted-foreground mt-0.5">{pkg.desc}</p>
                           </div>
-                          <span className="font-mono text-sm">{pkg.price}</span>
+                          <span className="text-sm">{pkg.price}</span>
                         </div>
                       ))}
                     </div>
@@ -313,7 +313,7 @@ const PricingPage = () => {
               {/* À La Carte */}
               <ScrollReveal delay={0.3}>
                 <div className="mb-16">
-                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+                  <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6 text-center">
                     À La Carte Services
                   </h3>
                   <div className="space-y-0">
@@ -339,7 +339,7 @@ const PricingPage = () => {
               {/* FAQ */}
               <ScrollReveal delay={0.36}>
                 <div className="mb-16">
-                  <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+                  <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6 text-center">
                     Frequently Asked Questions
                   </h3>
                   <div className="space-y-0">
@@ -350,7 +350,7 @@ const PricingPage = () => {
                           className="w-full flex items-center justify-between py-4 text-left hover:opacity-70 transition-opacity"
                         >
                           <span className="text-sm font-medium pr-4">{faq.q}</span>
-                          <span className="font-mono text-lg flex-shrink-0">{openFaq === i ? '−' : '+'}</span>
+                          <span className="text-lg flex-shrink-0">{openFaq === i ? '−' : '+'}</span>
                         </button>
                         {openFaq === i && (
                           <p className="text-sm text-muted-foreground pb-4 leading-relaxed">{faq.a}</p>

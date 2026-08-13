@@ -50,7 +50,7 @@ const TestimonialsPage = () => {
               {/* Header */}
               <ScrollReveal>
                 <div className="text-center mb-16">
-                  <span className="section-label font-mono">Testimonials</span>
+                  <span className="section-label">Testimonials</span>
                   <TypedHeader text="Client Reviews" className="mt-4 mb-6" />
                 </div>
               </ScrollReveal>

@@ -24,7 +24,7 @@ const CalendlySection = () => {
       <div className="container">
         <ScrollReveal>
           <div className="max-w-2xl mx-auto text-center mb-12">
-            <span className="section-label font-mono">Schedule</span>
+            <span className="section-label">Schedule</span>
             <TypedHeader text="Book a Consultation" className="mt-4 mb-6" />
             <p className="text-muted-foreground">
               Ready to discuss your project? Schedule a free consultation call.

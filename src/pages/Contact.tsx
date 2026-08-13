@@ -36,7 +36,7 @@ const ContactPage = () => {
           <section className="mb-20">
             <div className="container">
               <div className="max-w-2xl mx-auto text-center">
-                <span className="section-label font-mono">Contact</span>
+                <span className="section-label">Contact</span>
                 <h1 className="mt-4 mb-6 text-4xl md:text-5xl font-bold tracking-tight">
                   Get in touch
                 </h1>
@@ -54,13 +54,13 @@ const ContactPage = () => {
                 {contactItems.map((item, index) => (
                   <ScrollReveal key={item.label} delay={index * 0.1}>
                     <div className="bg-background p-6 text-center h-full">
-                      <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">{item.label}</h3>
+                      <h3 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">{item.label}</h3>
                       {item.href ? (
-                        <a href={item.href} className="text-sm font-mono hover:text-brand transition-colors break-all">
+                        <a href={item.href} className="text-sm hover:text-brand transition-colors break-all">
                           {item.value}
                         </a>
                       ) : (
-                        <p className="text-sm font-mono">{item.value}</p>
+                        <p className="text-sm">{item.value}</p>
                       )}
                     </div>
                   </ScrollReveal>

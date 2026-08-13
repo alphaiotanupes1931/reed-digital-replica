@@ -89,7 +89,7 @@ const StorePreview = ({ url, title }: { url: string; title: string }) => {
       {!loaded && !failed && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="w-8 h-8 border-2 border-muted-foreground/30 border-t-foreground rounded-full animate-spin mb-3" />
-          <span className="text-xs text-muted-foreground font-mono">Loading preview...</span>
+          <span className="text-xs text-muted-foreground">Loading preview...</span>
         </div>
       )}
       {failed && (
@@ -99,7 +99,7 @@ const StorePreview = ({ url, title }: { url: string; title: string }) => {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-4 py-2 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+            className="text-xs px-4 py-2 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Open in new tab
           </a>
@@ -135,7 +135,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
                 {app.appStoreUrl && (
                   <button
                     onClick={() => setActiveStore("ios")}
-                    className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
+                    className={`px-3 py-1.5 text-[10px] transition-colors ${
                       activeStore === "ios" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -145,7 +145,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
                 {app.playStoreUrl && (
                   <button
                     onClick={() => setActiveStore("android")}
-                    className={`px-3 py-1.5 text-[10px] font-mono transition-colors ${
+                    className={`px-3 py-1.5 text-[10px] transition-colors ${
                       activeStore === "android" ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -166,7 +166,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
         ) : app.liveDemoUrl ? (
           <>
             <div className="absolute top-0 left-0 right-0 h-12 bg-secondary/80 backdrop-blur-sm flex items-end px-2 z-10">
-              <div className="px-3 py-1.5 text-[10px] font-mono bg-background text-foreground">
+              <div className="px-3 py-1.5 text-[10px] bg-background text-foreground">
                 Live Demo
               </div>
             </div>
@@ -186,15 +186,15 @@ const AppListing = ({ app }: { app: AppProject }) => {
             className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border bg-background"
           />
         ) : (
-          <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-border bg-secondary flex items-center justify-center font-mono text-sm text-foreground">
+          <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-border bg-secondary flex items-center justify-center text-sm text-foreground">
             {app.title.charAt(0)}
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <span className="text-xs text-muted-foreground font-mono block mb-0.5">{app.category}</span>
+          <span className="text-xs text-muted-foreground block mb-0.5">{app.category}</span>
           <h4 className="text-lg font-medium leading-tight">{app.title}</h4>
           {app.status && (
-            <span className="text-[10px] text-muted-foreground font-mono block mt-1 uppercase tracking-wider">
+            <span className="text-[10px] text-muted-foreground block mt-1 uppercase tracking-wider">
               {app.status}
             </span>
           )}
@@ -207,7 +207,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
             href={app.appStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             App Store
           </a>
@@ -217,7 +217,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
             href={app.playStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Google Play
           </a>
@@ -227,7 +227,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
             href={app.liveDemoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-mono"
+            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Open Live Demo
           </a>
@@ -256,7 +256,7 @@ const PortfolioPage = () => {
           <div className="container">
             {/* Header */}
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <span className="section-label font-mono">Portfolio</span>
+              <span className="section-label">Portfolio</span>
               <TypedHeader text="Featured Projects" className="mt-4 mb-6" />
               <p className="text-muted-foreground">
                 A showcase of featured projects we've brought to life.
@@ -271,7 +271,7 @@ const PortfolioPage = () => {
             />
 
             {/* Websites Section */}
-            <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-8 text-center">
+            <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-8 text-center">
               Websites
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
@@ -293,7 +293,7 @@ const PortfolioPage = () => {
                       {/* Project Info */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-xs text-muted-foreground font-mono block mb-1">
+                          <span className="text-xs text-muted-foreground block mb-1">
                             {project.category}
                           </span>
                           {project.slug ? (
@@ -339,7 +339,7 @@ const PortfolioPage = () => {
             </div>
 
             {/* Apps Section */}
-            <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-8 text-center">
+            <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-8 text-center">
               Apps
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">

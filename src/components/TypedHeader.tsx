@@ -36,7 +36,7 @@ const TypedHeader = ({ text, className = "" }: TypedHeaderProps) => {
   return (
     <h2 
       ref={ref} 
-      className={`text-3xl md:text-4xl font-mono font-medium min-h-[1.2em] ${className}`}
+      className={`text-3xl md:text-4xl font-medium min-h-[1.2em] ${className}`}
     >
       {displayText}
       <span className="typing-cursor" />

@@ -39,7 +39,7 @@ const Services = () => {
                 <div key={service.title} className="group">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-baseline py-5 border-b border-border hover:border-primary transition-colors duration-300">
                     <div className="flex items-baseline gap-4">
-                      <span className="text-xs text-muted-foreground font-mono">
+                      <span className="text-xs text-muted-foreground">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <div>

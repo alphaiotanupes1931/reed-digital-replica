@@ -35,7 +35,7 @@ const AwardsSection = () => {
       {/* Header */}
       <ScrollReveal>
         <div className="text-center mb-16">
-          <span className="section-label font-mono">Recognition</span>
+          <span className="section-label">Recognition</span>
           <TypedHeader text="Awards & Achievements" className="mt-4" />
         </div>
       </ScrollReveal>
@@ -55,13 +55,13 @@ const AwardsSection = () => {
                     className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-110"
                   />
                 </div>
-                <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
+                <span className="text-xs text-muted-foreground tracking-widest uppercase">
                   {award.place}
                 </span>
                 <h3 className="text-lg font-medium mt-3 mb-2">
                   {award.title}
                 </h3>
-                <p className="text-sm text-muted-foreground font-mono">
+                <p className="text-sm text-muted-foreground">
                   {award.event}
                 </p>
               </div>

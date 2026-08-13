@@ -139,7 +139,7 @@ export const GlossaryChatbot = () => {
       {/* Floating toggle button */}
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 border border-border bg-background text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center font-mono text-xs uppercase tracking-[0.15em]"
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 border border-border bg-background text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center text-xs uppercase tracking-[0.15em]"
         aria-label="Open glossary chatbot"
       >
         {open ? "Close" : "Help"}
@@ -157,13 +157,13 @@ export const GlossaryChatbot = () => {
             {/* Header */}
             <div className="border-b-2 border-foreground p-4 flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em]">Glossary</p>
-                <p className="text-sm font-mono font-bold text-foreground mt-1">Ask about any term</p>
+                <p className="text-[10px] text-primary uppercase tracking-[0.3em]">Glossary</p>
+                <p className="text-sm font-bold text-foreground mt-1">Ask about any term</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close glossary"
-                className="h-7 w-7 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground hover:text-background text-foreground font-mono text-sm leading-none transition-colors"
+                className="h-7 w-7 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground hover:text-background text-foreground text-sm leading-none transition-colors"
               >
                 ×
               </button>
@@ -174,7 +174,7 @@ export const GlossaryChatbot = () => {
               {messages.map((m, i) => (
                 <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
                   <div
-                    className={`max-w-[85%] p-3 text-xs font-mono leading-relaxed ${
+                    className={`max-w-[85%] p-3 text-xs leading-relaxed ${
                       m.role === "user"
                         ? "bg-foreground text-background"
                         : "border border-border text-foreground"
@@ -190,7 +190,7 @@ export const GlossaryChatbot = () => {
                     <button
                       key={s}
                       onClick={() => ask(s)}
-                      className="text-[10px] font-mono uppercase tracking-[0.15em] border border-border hover:border-foreground px-3 py-1.5 text-foreground transition-colors"
+                      className="text-[10px] uppercase tracking-[0.15em] border border-border hover:border-foreground px-3 py-1.5 text-foreground transition-colors"
                     >
                       {s}
                     </button>
@@ -205,11 +205,11 @@ export const GlossaryChatbot = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask: what is a deposit?"
-                className="flex-1 bg-transparent border border-border focus:border-foreground px-3 h-10 font-mono text-xs text-foreground placeholder:text-foreground/40 focus:outline-none"
+                className="flex-1 bg-transparent border border-border focus:border-foreground px-3 h-10 text-xs text-foreground placeholder:text-foreground/40 focus:outline-none"
               />
               <button
                 type="submit"
-                className="h-10 px-4 border border-border bg-foreground text-background font-mono text-[10px] uppercase tracking-[0.15em] hover:bg-background hover:text-foreground transition-colors"
+                className="h-10 px-4 border border-border bg-foreground text-background text-[10px] uppercase tracking-[0.15em] hover:bg-background hover:text-foreground transition-colors"
               >
                 Ask
               </button>

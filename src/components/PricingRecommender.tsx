@@ -159,10 +159,10 @@ const PricingRecommender = () => {
   return (
     <div className="border-2 border-border p-6 md:p-10 bg-card">
       <div className="flex items-baseline justify-between mb-2">
-        <h3 className="text-sm font-mono text-primary uppercase tracking-wider">
+        <h3 className="text-sm text-primary uppercase tracking-wider">
           Plan Finder
         </h3>
-        <span className="text-[11px] font-mono text-muted-foreground">
+        <span className="text-[11px] text-muted-foreground">
           {done ? "Recommendation" : `Question ${step + 1} of ${questions.length}`}
         </span>
       </div>
@@ -201,7 +201,7 @@ const PricingRecommender = () => {
                     {c.label}
                   </div>
                   {c.hint && (
-                    <div className="text-[11px] text-muted-foreground mt-1 font-mono">{c.hint}</div>
+                    <div className="text-[11px] text-muted-foreground mt-1">{c.hint}</div>
                   )}
                 </button>
               ))}
@@ -210,7 +210,7 @@ const PricingRecommender = () => {
             {step > 0 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="mt-6 text-[11px] font-mono text-muted-foreground hover:text-foreground uppercase tracking-wider"
+                className="mt-6 text-[11px] text-muted-foreground hover:text-foreground uppercase tracking-wider"
               >
                 ← Back
               </button>
@@ -225,13 +225,13 @@ const PricingRecommender = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mb-2">
+            <div className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">
               Best fit
             </div>
             <div className="flex items-baseline flex-wrap gap-x-4 gap-y-1 mb-4">
               <h4 className="text-3xl md:text-4xl font-medium">{rec.plan}</h4>
-              <span className="font-mono text-2xl text-primary">{rec.price}</span>
-              <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+              <span className="text-2xl text-primary">{rec.price}</span>
+              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">
                 {rec.cadence}
               </span>
             </div>
@@ -239,12 +239,12 @@ const PricingRecommender = () => {
 
             {rec.alt && (
               <div className="border-l-2 border-border pl-4 mb-8">
-                <div className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mb-1">
+                <div className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1">
                   Also consider
                 </div>
                 <div className="text-sm">
                   <span className="font-medium">{rec.alt.plan}</span>
-                  <span className="font-mono text-muted-foreground ml-2">{rec.alt.price}</span>
+                  <span className="text-muted-foreground ml-2">{rec.alt.price}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">{rec.alt.note}</p>
               </div>

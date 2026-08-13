@@ -35,7 +35,7 @@ const Index = () => {
         <InteractiveProcessSection />
         <section id="work" className="py-24 border-t border-border">
           <div className="container text-center">
-            <span className="section-label font-mono">Our Work</span>
+            <span className="section-label">Our Work</span>
             <h2 className="text-3xl md:text-4xl font-medium mt-4 mb-6 tracking-tight">
               See the projects we've shipped
             </h2>

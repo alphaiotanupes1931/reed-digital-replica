@@ -55,7 +55,7 @@ const PricingCalculator = () => {
 
   return (
     <div className="border border-border p-8">
-      <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6 text-center">
+      <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6 text-center">
         Quick Estimate
       </h3>
 
@@ -127,7 +127,7 @@ const PricingCalculator = () => {
         <p className="text-xs text-muted-foreground mb-1">
           Estimated {projectType === "website" ? "Website" : "App"} Cost
         </p>
-        <p className="text-3xl font-mono">${total.toLocaleString()}+</p>
+        <p className="text-3xl">${total.toLocaleString()}+</p>
         <p className="text-xs text-muted-foreground mt-2">
           Final quote after consultation
         </p>

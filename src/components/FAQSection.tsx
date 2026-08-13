@@ -40,7 +40,7 @@ const FAQSection = () => {
       <div className="container">
         <ScrollReveal>
           <div className="max-w-2xl mx-auto text-center mb-16">
-            <span className="section-label font-mono">FAQ</span>
+            <span className="section-label">FAQ</span>
             <TypedHeader text="Common Questions" className="mt-4 mb-6" />
           </div>
         </ScrollReveal>
