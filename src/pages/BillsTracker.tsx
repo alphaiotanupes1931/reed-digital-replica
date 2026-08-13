@@ -538,15 +538,11 @@ const BillsTracker = () => {
                 {includeMaintenance ? "Including in Totals" : "Exclude from Totals"}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">Auto-pulled from clients with a selected maintenance plan, plus any manual entries you add below. Toggle above to include or exclude from your combined income.</p>
-
+            <div className="mb-4" />
             <div
               ref={extraFormRef}
-              className={`border-2 p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground"}`}
+              className={`border p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground/20"}`}
             >
-              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
-                {editingExtraId ? "Edit Maintenance Entry" : "Add Maintenance Income"}
-              </h3>
               <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Source / Client" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
                 <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
@@ -636,17 +632,12 @@ const BillsTracker = () => {
                 {includeW2 ? "Including W2 in Totals" : "Exclude from Totals"}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Add W2 paychecks here. <span className="font-bold text-foreground">Only enter your take-home pay</span> (after taxes, insurance, and other deductions) — not gross. Toggle the button above to include or exclude this income from your monthly totals and goal progress.
-            </p>
+            <p className="text-xs text-muted-foreground mb-4">Enter take-home pay, not gross.</p>
 
             <div
               ref={w2FormRef}
-              className={`border-2 p-6 mb-6 transition-colors ${editingW2Id ? "border-brand bg-brand/5" : "border-foreground"}`}
+              className={`border p-6 mb-6 transition-colors ${editingW2Id ? "border-brand bg-brand/5" : "border-foreground/20"}`}
             >
-              <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
-                {editingW2Id ? "Edit W2 Block" : "Add a W2 Block"}
-              </h3>
               <form onSubmit={handleW2Submit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Employer (e.g. Acme Corp)" value={w2Source} onChange={(e) => setW2Source(e.target.value)} required />
                 <Input type="number" step="0.01" min="0" placeholder="Monthly take-home $" value={w2Price} onChange={(e) => setW2Price(e.target.value)} required />
