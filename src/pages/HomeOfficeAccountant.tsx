@@ -1,5 +1,6 @@
 import { useEffect, useState } from"react";
 import { Link, useNavigate } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import { supabase } from"@/integrations/supabase/client";
 import { toast } from"sonner";
@@ -66,7 +67,7 @@ export default function HomeOfficeAccountant() {
   return (
     <div className="min-h-screen bg-background">
       <nav className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
-        <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">← RDG</Link>
+        <BackLink to="/" label="RDG" />
         <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">Accountant {fullName ? `· ${fullName}` :""}</span>
         <div className="flex items-center gap-2">
           <NotificationBell />
