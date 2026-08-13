@@ -2,6 +2,7 @@ import { useState, useEffect } from"react";
 import { motion, AnimatePresence } from"framer-motion";
 import { Lock, ChevronRight } from"lucide-react";
 import { Link } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { useTypingEffect } from"@/hooks/use-typing-effect";
 import { Button } from"@/components/ui/button";
 import { Input } from"@/components/ui/input";
@@ -853,9 +854,7 @@ const InvoiceAdmin = () => {
           <img src={logo} alt="" className="w-[500px] md:w-[700px] opacity-[0.03]" />
         </div>
         <div className="max-w-4xl mx-auto px-6 pt-32 pb-8 relative z-10">
-          <button onClick={() => setSelectedClientId(null)} className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">
-            ← All Clients
-          </button>
+          <BackLink onClick={() => setSelectedClientId(null)} label="All Clients" />
           <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mt-3">{selectedClient.company_name}</h1>
           <p className="text-sm text-muted-foreground mt-1">{selectedClient.email}</p>
 
@@ -1145,16 +1144,10 @@ const InvoiceAdmin = () => {
   // ── Clients Dashboard ──
   return (
     <div className="min-h-screen bg-background">
-      <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
-        <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
-          ← Home Office
-        </Link>
-        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Invoices</span>
-        <span className="w-[120px]" />
-      </nav>
       <div className="max-w-5xl mx-auto px-6 md:px-12">
         <div className="pt-12 pb-10">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Clients</div>
+          <BackLink />
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 mt-3">Clients</div>
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Hello, {displayName}</h1>
             <button onClick={() => setShowClientForm(!showClientForm)} className="text-[10px] uppercase tracking-widest px-4 py-2.5 bg-foreground text-background rounded-full hover:bg-foreground/85 transition-colors whitespace-nowrap">

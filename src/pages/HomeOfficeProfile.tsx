@@ -1,5 +1,6 @@
 import { useEffect, useState } from"react";
 import { Link, useNavigate } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import { supabase } from"@/integrations/supabase/client";
 import { useToast } from"@/hooks/use-toast";
@@ -106,10 +107,8 @@ const HomeOfficeProfile = () => {
       <main className="pt-32 pb-20">
         <div className="container max-w-2xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-            <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-brand">
-              ← Home Office
-            </Link>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-4">Profile</h1>
+            <BackLink />
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Profile</h1>
             <p className="text-sm text-muted-foreground mt-2">
               Manage your business details and how your clients pay you.
             </p>

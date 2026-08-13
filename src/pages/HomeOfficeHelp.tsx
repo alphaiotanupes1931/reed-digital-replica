@@ -1,5 +1,6 @@
 import { useEffect } from"react";
 import { useNavigate, Link } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import Header from"@/components/Header";
 import Footer from"@/components/Footer";
@@ -20,7 +21,8 @@ const HomeOfficeHelp = () => {
       <main className="pt-32 pb-20 relative z-10">
         <div className="container max-w-3xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Link to="/home-office" className="inline-block">
+            <BackLink />
+            <Link to="/home-office" className="inline-block mt-3">
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight hover:text-brand transition-colors">Help</h1>
               <p className="text-sm text-brand italic mt-1">by RDG</p>
             </Link>

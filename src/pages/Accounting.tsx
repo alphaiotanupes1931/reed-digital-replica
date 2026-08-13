@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from"react";
 import { useNavigate, Link } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { usePlaidLink } from"react-plaid-link";
 import { Button } from"@/components/ui/button";
 import { Input } from"@/components/ui/input";
@@ -168,7 +169,7 @@ const Accounting = () => {
     <div className="min-h-screen bg-background">
       <main className="py-12">
         <div className="container max-w-3xl mx-auto px-6">
-          <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
+          <BackLink />
           <h1 className="text-2xl font-bold tracking-tight mt-3">Accounting</h1>
           <p className="text-xs text-muted-foreground mt-1">Bank sync, write-offs, and accountant access.</p>
 

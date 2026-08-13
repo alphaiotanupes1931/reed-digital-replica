@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from"react";
 import { useNavigate } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import { supabase } from"@/integrations/supabase/client";
 import Header from"@/components/Header";
@@ -205,7 +206,7 @@ export default function Taxes() {
       <main className="pt-28 pb-20">
         <div className="container max-w-6xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-            <button onClick={() => navigate("/home-office")} className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-brand">← Home Office</button>
+            <BackLink />
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-3">Taxes</h1>
             <p className="text-6xl md:text-7xl font-bold tracking-tight text-brand mt-1">{new Date().getFullYear()}</p>
             <p className="text-sm text-muted-foreground mt-2">Keep your accountant in the loop. Update once, notify with one click.</p>
