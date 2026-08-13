@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from"react";
 import { useNavigate, Link } from"react-router-dom";
+import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import { Input } from"@/components/ui/input";
 import { Button } from"@/components/ui/button";
@@ -373,17 +374,11 @@ const BillsTracker = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
-        <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
-          ← Home Office
-        </Link>
-        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Bills</span>
-        <span className="w-[120px]" />
-      </nav>
       <main className="pt-12 pb-24">
         <div className="max-w-5xl mx-auto px-6 md:px-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Bills &amp; Income</h1>
+            <BackLink />
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">Bills &amp; Income</h1>
           </motion.div>
 
           {/* Summary — three numbers, nothing else */}
