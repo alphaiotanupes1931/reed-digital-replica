@@ -123,21 +123,15 @@ export const EmailShell = ({
   footerNote,
 }: ShellProps) => (
   <Html lang="en" dir="ltr">
-    <Head />
+    <Head>
+      <title>Reed Digital Group</title>
+    </Head>
     <Preview>{preview}</Preview>
     <Body style={main}>
       <Container style={container}>
-        {siteUrl ? (
-          <Link href={siteUrl} style={wordmark}>
-            {siteName}
-          </Link>
-        ) : (
-          <Text style={wordmark}>{siteName}</Text>
-        )}
         <Section>{children}</Section>
         <Hr style={hr} />
         {footerNote ? <Text style={footer}>{footerNote}</Text> : null}
-        <Text style={footer}>{siteName}</Text>
       </Container>
     </Body>
   </Html>

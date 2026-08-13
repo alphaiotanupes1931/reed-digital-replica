@@ -27,7 +27,7 @@ const Email = ({ name, message }: Props) => (
 
 export const template = {
   component: Email,
-  subject: 'We got your message',
+  subject: 'Reed Digital Group - We got your message',
   displayName: 'Contact confirmation',
   previewData: { name: 'Jordan', message: 'I need a new website for my restaurant.' },
 } satisfies TemplateEntry
