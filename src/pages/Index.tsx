@@ -41,7 +41,7 @@ const Index = () => {
             </h2>
             <Link
               to="/portfolio"
-              className="inline-flex items-center justify-center bg-brand text-brand-foreground px-8 py-4 text-sm font-medium hover:bg-brand/90 transition-colors"
+              className="inline-flex items-center justify-center bg-brand text-brand-foreground rounded-full px-8 py-4 text-sm font-medium hover:bg-brand/90 transition-colors"
             >
               Click here to view the portfolio
             </Link>
