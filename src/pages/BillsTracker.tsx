@@ -472,13 +472,10 @@ const BillsTracker = () => {
           {/* Add/Edit Bill */}
           <div
             ref={formRef}
-            className={`border-2 p-6 mb-12 transition-colors ${
-              editingId ? "border-brand bg-brand/5" : "border-foreground"
+            className={`border p-6 mb-12 transition-colors ${
+              editingId ? "border-brand bg-brand/5" : "border-foreground/20"
             }`}
           >
-            <h2 className="text-lg font-bold tracking-tight mb-4">
-              {editingId ? "Edit Bill" : "Add a Monthly Bill"}
-            </h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
               <Input placeholder="Company (e.g. Adobe)" value={company} onChange={(e) => setCompany(e.target.value)} required />
               <Input type="number" step="0.01" min="0" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
