@@ -21,11 +21,6 @@ const BillsTracker = () => {
   const [price, setPrice] = useState("");
   const [notes, setNotes] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [extraSource, setExtraSource] = useState("");
-  const [extraPrice, setExtraPrice] = useState("");
-  const [extraNotes, setExtraNotes] = useState("");
-  const [editingExtraId, setEditingExtraId] = useState<string | null>(null);
-  const extraFormRef = useRef<HTMLDivElement | null>(null);
   const [w2Source, setW2Source] = useState("");
   const [w2Price, setW2Price] = useState("");
   const [w2Notes, setW2Notes] = useState("");
@@ -39,22 +34,6 @@ const BillsTracker = () => {
   const [taxNotes, setTaxNotes] = useState("");
   const [editingTaxId, setEditingTaxId] = useState<string | null>(null);
   const taxFormRef = useRef<HTMLDivElement | null>(null);
-  const [includeW2, setIncludeW2] = useState<boolean>(() => {
-    if (typeof window ==="undefined") return false;
-    return localStorage.getItem("rdg-include-w2") ==="true";
-  });
-  const [hiddenExtraIds, setHiddenExtraIds] = useState<string[]>(() => {
-    if (typeof window ==="undefined") return [];
-    try { return JSON.parse(localStorage.getItem("rdg-hidden-extra") ||"[]"); }
-    catch { return []; }
-  });
-  const toggleHiddenExtra = (id: string) => {
-    setHiddenExtraIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      localStorage.setItem("rdg-hidden-extra", JSON.stringify(next));
-      return next;
-    });
-  };
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
@@ -157,23 +136,15 @@ const BillsTracker = () => {
 
   const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
-  const extraRows = extraIncome.filter((r) => r.category !=="w2");
-  const visibleExtraRows = extraRows.filter((r) => !hiddenExtraIds.includes(r.id));
   const w2Rows = extraIncome.filter((r) => r.category ==="w2");
-  const totalExtra = visibleExtraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const grandIncome = includeW2 ? totalW2 : 0;
+  const grandIncome = totalW2;
   const retainerIncome = grandIncome;
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
   const sixFigPct = Math.min(100, Math.max(0, (retainerIncome / goalAmount) * 100));
   const fmt = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-  const toggleW2 = () => {
-    const next = !includeW2;
-    setIncludeW2(next);
-    localStorage.setItem("rdg-include-w2", String(next));
-  };
   const saveSalary = async () => {
     const n = parseFloat(salaryDraft.replace(/[$,\s]/g,""));
     if (isNaN(n) || n < 0) {
@@ -187,10 +158,6 @@ const BillsTracker = () => {
       } else {
         await api("add_extra_income", { source:"Salary", price: String(n), notes: null, category:"w2" });
       }
-      if (!includeW2) {
-        setIncludeW2(true);
-        localStorage.setItem("rdg-include-w2","true");
-      }
       setEditingSalary(false);
       toast({ title:"Income updated" });
       fetchAll();
@@ -198,29 +165,6 @@ const BillsTracker = () => {
       toast({ title:"Could not save", description: e.message, variant:"destructive" });
     }
   };
-  const toggleW2Unused = () => {
-    const next = !includeW2;
-    setIncludeW2(next);
-    localStorage.setItem("rdg-include-w2", String(next));
-  };
-  const handleExtraSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!extraSource.trim() || !extraPrice) return;
-    try {
-      if (editingExtraId) {
-        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category:"extra" });
-        toast({ title:"Income updated" });
-      } else {
-        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category:"extra" });
-        toast({ title:"Income added" });
-      }
-      setExtraSource(""); setExtraPrice(""); setExtraNotes(""); setEditingExtraId(null);
-      await fetchAll();
-    } catch (err: any) {
-      toast({ title:"Error", description: err.message, variant:"destructive" });
-    }
-  };
-
   const handleW2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!w2Source.trim() || !w2Price) return;
@@ -257,30 +201,6 @@ const BillsTracker = () => {
     try {
       await api("delete_extra_income", { id });
       toast({ title:"W2 income deleted" });
-      await fetchAll();
-    } catch (err: any) {
-      toast({ title:"Error", description: err.message, variant:"destructive" });
-    }
-  };
-
-  const startEditExtra = (r: ExtraIncome) => {
-    setEditingExtraId(r.id);
-    setExtraSource(r.source);
-    setExtraPrice(String(r.price));
-    setExtraNotes(r.notes ||"");
-    setTimeout(() => { extraFormRef.current?.scrollIntoView({ behavior:"smooth", block:"center" }); }, 0);
-  };
-
-  const cancelEditExtra = () => {
-    setEditingExtraId(null);
-    setExtraSource(""); setExtraPrice(""); setExtraNotes("");
-  };
-
-  const handleDeleteExtra = async (id: string) => {
-    if (!confirm("Delete this income block?")) return;
-    try {
-      await api("delete_extra_income", { id });
-      toast({ title:"Income deleted" });
       await fetchAll();
     } catch (err: any) {
       toast({ title:"Error", description: err.message, variant:"destructive" });
