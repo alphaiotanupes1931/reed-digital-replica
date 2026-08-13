@@ -410,139 +410,62 @@ const BillsTracker = () => {
       <main className="pt-12 pb-24">
         <div className="max-w-5xl mx-auto px-6 md:px-12">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Cashflow</div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Bills &amp; Income</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Monthly outflow vs. maintenance plan income.</p>
           </motion.div>
 
-          {/* Summary */}
-          <div className="border border-foreground bg-foreground/[0.02] p-6 mb-4">
-            <div className="flex items-baseline justify-between gap-4 flex-wrap">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Combined Annual Income</p>
-              <Button
-                type="button"
-                variant={includeMaintenance ? "default" : "outline"}
-                size="sm"
-                onClick={toggleMaintenance}
-              >
-                {includeMaintenance ? "Including Maintenance" : "Exclude Maintenance"}
-              </Button>
+          {/* Summary — three numbers, nothing else */}
+          <div className="flex items-start gap-10 md:gap-16 border-b border-foreground/15 pb-8 mb-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Income</p>
+              <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
             </div>
-            <p className="text-4xl font-bold mt-2 text-brand">{fmt(grandIncome * 12)}</p>
-            <p className="text-xs text-muted-foreground mt-2">
-              {fmt(grandIncome)}/mo × 12
-            </p>
-            <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-              <li>
-                Maintenance {includeMaintenance ? "(included)" : "(excluded)"}:{" "}
-                <span className={`font-bold ${includeMaintenance ? "text-foreground" : "line-through"}`}>{fmt(totalIncome)}/mo</span>
-              </li>
-              <li>
-                Manual income (included): <span className="font-bold text-foreground">{fmt(totalExtra)}/mo</span>
-              </li>
-              <li>
-                W2 take-home {includeW2 ? "(included)" : "(excluded)"}:{" "}
-                <span className={`font-bold ${includeW2 ? "text-foreground" : "line-through"}`}>{fmt(totalW2)}/mo</span>
-                {totalW2 > 0 && includeW2 && <> ({fmt(totalW2 * 12)}/yr)</>}
-              </li>
-            </ul>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-            <div className="border border-foreground p-6">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Income</p>
-              <p className="text-2xl font-bold mt-2">{fmt(grandIncome)}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {includeMaintenance ? `${visibleIncomeRows.length} client${visibleIncomeRows.length === 1 ? "" : "s"}` : "no maintenance"}
-                {visibleExtraRows.length > 0 && ` + ${visibleExtraRows.length} manual`}
-                {includeW2 && w2Rows.length > 0 && ` + ${w2Rows.length} W2`}
-              </p>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Bills</p>
+              <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(totalBills)}</p>
             </div>
-            <div className="border border-foreground p-6">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Bills</p>
-              <p className="text-2xl font-bold mt-2">{fmt(totalBills)}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {bills.filter((b) => !b.hidden).length} active
-                {bills.some((b) => b.hidden) && ` · ${bills.filter((b) => b.hidden).length} hidden`}
-              </p>
-            </div>
-            <div className={`border-2 p-6 ${net >= 0 ? "border-brand bg-brand/5" : "border-destructive bg-destructive/5"}`}>
+            <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {net >= 0 ? "Surplus" : "Shortfall"}
+                {net >= 0 ? "Left Over" : "Short"}
               </p>
-              <p className={`text-2xl font-bold mt-2 ${net >= 0 ? "text-brand" : "text-destructive"}`}>
+              <p className={`text-2xl md:text-3xl font-bold mt-1 ${net >= 0 ? "text-brand" : "text-destructive"}`}>
                 {net >= 0 ? fmt(net) : `-${fmt(Math.abs(net))}`}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {net >= 0 ? "Income covers bills." : `Need ${fmt(Math.abs(net))} more / mo to break even.`}
               </p>
             </div>
           </div>
 
-          {/* Six Figures Goal */}
-          <div className={`border-2 p-6 mb-12 ${sixFigGap <= 0 ? "border-brand bg-brand/5" : "border-foreground"}`}>
-            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-3">
-              <div>
-                <div className="flex items-center gap-3">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Monthly Retainer Goal</p>
-                  {!editingGoal && (
-                    <button
-                      onClick={() => { setGoalDraft(String(goalAmount)); setEditingGoal(true); }}
-                      className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline"
-                    >
-                      Edit
-                    </button>
-                  )}
+          {/* Goal — one line + bar */}
+          <div className="mb-12">
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              {editingGoal ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">$</span>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={goalDraft}
+                    onChange={(e) => setGoalDraft(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditingGoal(false); }}
+                    autoFocus
+                    className="h-9 w-32"
+                  />
+                  <Button size="sm" onClick={saveGoal}>Save</Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditingGoal(false)}>Cancel</Button>
                 </div>
-                {editingGoal ? (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-sm text-muted-foreground">$</span>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={goalDraft}
-                      onChange={(e) => setGoalDraft(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditingGoal(false); }}
-                      autoFocus
-                      className="h-9 w-32"
-                    />
-                    <span className="text-xs text-muted-foreground">/ mo</span>
-                    <Button size="sm" onClick={saveGoal}>Save</Button>
-                    <Button size="sm" variant="outline" onClick={() => setEditingGoal(false)}>Cancel</Button>
-                  </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Target: {fmt(goalAmount)} / mo · {fmt(goalAmount * 12)} / yr
-                  </p>
-                )}
-              </div>
-              <div className="text-right">
-                {sixFigGap <= 0 ? (
-                  <>
-                    <p className="text-2xl font-bold text-brand">Goal Hit ✓</p>
-                    <p className="text-xs text-muted-foreground mt-1">{fmt(Math.abs(sixFigGap))} / mo over target.</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Still need</p>
-                    <p className="text-2xl font-bold">{fmt(sixFigGap)}<span className="text-sm text-muted-foreground"> / mo</span></p>
-                  </>
-                )}
-              </div>
+              ) : (
+                <button
+                  onClick={() => { setGoalDraft(String(goalAmount)); setEditingGoal(true); }}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Goal {fmt(retainerIncome)} / {fmt(goalAmount)} · {sixFigPct.toFixed(0)}%
+                </button>
+              )}
             </div>
-            <div className="h-2 w-full bg-foreground/10 relative overflow-hidden">
+            <div className="h-1.5 w-full bg-foreground/10 relative overflow-hidden">
               <div
                 className="absolute inset-y-0 left-0 bg-brand transition-all duration-500"
                 style={{ width: `${sixFigPct}%` }}
               />
-            </div>
-            <div className="flex items-center justify-between mt-2">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {fmt(retainerIncome)} of {fmt(goalAmount)} (retainers only)
-              </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {sixFigPct.toFixed(1)}%
-              </p>
             </div>
           </div>
 
