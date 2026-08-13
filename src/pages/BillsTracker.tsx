@@ -225,6 +225,35 @@ const BillsTracker = () => {
     setIncludeW2(next);
     localStorage.setItem("rdg-include-w2", String(next));
   };
+  const saveSalary = async () => {
+    const n = parseFloat(salaryDraft.replace(/[$,\s]/g, ""));
+    if (isNaN(n) || n < 0) {
+      toast({ title: "Enter a valid amount", variant: "destructive" });
+      return;
+    }
+    try {
+      const existing = w2Rows[0];
+      if (existing) {
+        await api("update_extra_income", { id: existing.id, source: existing.source, price: String(n), notes: existing.notes ?? null, category: "w2" });
+      } else {
+        await api("add_extra_income", { source: "Salary", price: String(n), notes: null, category: "w2" });
+      }
+      if (!includeW2) {
+        setIncludeW2(true);
+        localStorage.setItem("rdg-include-w2", "true");
+      }
+      setEditingSalary(false);
+      toast({ title: "Income updated" });
+      load();
+    } catch (e: any) {
+      toast({ title: "Could not save", description: e.message, variant: "destructive" });
+    }
+  };
+  const toggleW2Unused = () => {
+    const next = !includeW2;
+    setIncludeW2(next);
+    localStorage.setItem("rdg-include-w2", String(next));
+  };
   const toggleMaintenance = () => {
     const next = !includeMaintenance;
     setIncludeMaintenance(next);
