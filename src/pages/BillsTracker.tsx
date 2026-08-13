@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState, useCallback, useRef } from"react";
+import { useNavigate, Link } from"react-router-dom";
+import { motion } from"framer-motion";
+import { Input } from"@/components/ui/input";
+import { Button } from"@/components/ui/button";
+import { supabase } from"@/integrations/supabase/client";
+import { useToast } from"@/hooks/use-toast";
 
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
@@ -39,12 +39,12 @@ const BillsTracker = () => {
   const [editingTaxId, setEditingTaxId] = useState<string | null>(null);
   const taxFormRef = useRef<HTMLDivElement | null>(null);
   const [includeW2, setIncludeW2] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("rdg-include-w2") === "true";
+    if (typeof window ==="undefined") return false;
+    return localStorage.getItem("rdg-include-w2") ==="true";
   });
   const [hiddenExtraIds, setHiddenExtraIds] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem("rdg-hidden-extra") || "[]"); }
+    if (typeof window ==="undefined") return [];
+    try { return JSON.parse(localStorage.getItem("rdg-hidden-extra") ||"[]"); }
     catch { return []; }
   });
   const toggleHiddenExtra = (id: string) => {
@@ -57,7 +57,7 @@ const BillsTracker = () => {
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement | null>(null);
   const [goalAmount, setGoalAmount] = useState<number>(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("rdg-retainer-goal") : null;
+    const saved = typeof window !=="undefined" ? localStorage.getItem("rdg-retainer-goal") : null;
     const parsed = saved ? parseFloat(saved) : NaN;
     return !isNaN(parsed) && parsed > 0 ? parsed : 6300;
   });
@@ -91,7 +91,7 @@ const BillsTracker = () => {
       setExtraIncome((e as { items: ExtraIncome[] }).items || []);
       setTaxReminders((t as { items: TaxReminder[] }).items || []);
     } catch (err: any) {
-      toast({ title: "Error loading data", description: err.message, variant: "destructive" });
+      toast({ title:"Error loading data", description: err.message, variant:"destructive" });
     } finally {
       setLoading(false);
     }
@@ -105,15 +105,15 @@ const BillsTracker = () => {
     try {
       if (editingId) {
         await api("update_bill", { id: editingId, company_name: company.trim(), price, notes: notes.trim() || null });
-        toast({ title: "Bill updated" });
+        toast({ title:"Bill updated" });
       } else {
         await api("add_bill", { company_name: company.trim(), price, notes: notes.trim() || null });
-        toast({ title: "Bill added" });
+        toast({ title:"Bill added" });
       }
       setCompany(""); setPrice(""); setNotes(""); setEditingId(null);
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -121,9 +121,9 @@ const BillsTracker = () => {
     setEditingId(b.id);
     setCompany(b.company_name);
     setPrice(String(b.price));
-    setNotes(b.notes || "");
+    setNotes(b.notes ||"");
     setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      formRef.current?.scrollIntoView({ behavior:"smooth", block:"center" });
     }, 0);
   };
 
@@ -136,10 +136,10 @@ const BillsTracker = () => {
     if (!confirm("Delete this bill?")) return;
     try {
       await api("delete_bill", { id });
-      toast({ title: "Bill deleted" });
+      toast({ title:"Bill deleted" });
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -150,15 +150,15 @@ const BillsTracker = () => {
         prev.map((item) => (item.id === b.id ? { ...item, hidden: !item.hidden } : item))
       );
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
   const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
-  const extraRows = extraIncome.filter((r) => r.category !== "w2");
+  const extraRows = extraIncome.filter((r) => r.category !=="w2");
   const visibleExtraRows = extraRows.filter((r) => !hiddenExtraIds.includes(r.id));
-  const w2Rows = extraIncome.filter((r) => r.category === "w2");
+  const w2Rows = extraIncome.filter((r) => r.category ==="w2");
   const totalExtra = visibleExtraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
   const grandIncome = includeW2 ? totalW2 : 0;
@@ -174,27 +174,27 @@ const BillsTracker = () => {
     localStorage.setItem("rdg-include-w2", String(next));
   };
   const saveSalary = async () => {
-    const n = parseFloat(salaryDraft.replace(/[$,\s]/g, ""));
+    const n = parseFloat(salaryDraft.replace(/[$,\s]/g,""));
     if (isNaN(n) || n < 0) {
-      toast({ title: "Enter a valid amount", variant: "destructive" });
+      toast({ title:"Enter a valid amount", variant:"destructive" });
       return;
     }
     try {
       const existing = w2Rows[0];
       if (existing) {
-        await api("update_extra_income", { id: existing.id, source: existing.source, price: String(n), notes: existing.notes ?? null, category: "w2" });
+        await api("update_extra_income", { id: existing.id, source: existing.source, price: String(n), notes: existing.notes ?? null, category:"w2" });
       } else {
-        await api("add_extra_income", { source: "Salary", price: String(n), notes: null, category: "w2" });
+        await api("add_extra_income", { source:"Salary", price: String(n), notes: null, category:"w2" });
       }
       if (!includeW2) {
         setIncludeW2(true);
-        localStorage.setItem("rdg-include-w2", "true");
+        localStorage.setItem("rdg-include-w2","true");
       }
       setEditingSalary(false);
-      toast({ title: "Income updated" });
+      toast({ title:"Income updated" });
       fetchAll();
     } catch (e: any) {
-      toast({ title: "Could not save", description: e.message, variant: "destructive" });
+      toast({ title:"Could not save", description: e.message, variant:"destructive" });
     }
   };
   const toggleW2Unused = () => {
@@ -207,16 +207,16 @@ const BillsTracker = () => {
     if (!extraSource.trim() || !extraPrice) return;
     try {
       if (editingExtraId) {
-        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category: "extra" });
-        toast({ title: "Income updated" });
+        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category:"extra" });
+        toast({ title:"Income updated" });
       } else {
-        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category: "extra" });
-        toast({ title: "Income added" });
+        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category:"extra" });
+        toast({ title:"Income added" });
       }
       setExtraSource(""); setExtraPrice(""); setExtraNotes(""); setEditingExtraId(null);
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -225,16 +225,16 @@ const BillsTracker = () => {
     if (!w2Source.trim() || !w2Price) return;
     try {
       if (editingW2Id) {
-        await api("update_extra_income", { id: editingW2Id, source: w2Source.trim(), price: w2Price, notes: w2Notes.trim() || null, category: "w2" });
-        toast({ title: "W2 income updated" });
+        await api("update_extra_income", { id: editingW2Id, source: w2Source.trim(), price: w2Price, notes: w2Notes.trim() || null, category:"w2" });
+        toast({ title:"W2 income updated" });
       } else {
-        await api("add_extra_income", { source: w2Source.trim(), price: w2Price, notes: w2Notes.trim() || null, category: "w2" });
-        toast({ title: "W2 income added" });
+        await api("add_extra_income", { source: w2Source.trim(), price: w2Price, notes: w2Notes.trim() || null, category:"w2" });
+        toast({ title:"W2 income added" });
       }
       setW2Source(""); setW2Price(""); setW2Notes(""); setEditingW2Id(null);
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -242,8 +242,8 @@ const BillsTracker = () => {
     setEditingW2Id(r.id);
     setW2Source(r.source);
     setW2Price(String(r.price));
-    setW2Notes(r.notes || "");
-    setTimeout(() => { w2FormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+    setW2Notes(r.notes ||"");
+    setTimeout(() => { w2FormRef.current?.scrollIntoView({ behavior:"smooth", block:"center" }); }, 0);
   };
 
   const cancelEditW2 = () => {
@@ -255,10 +255,10 @@ const BillsTracker = () => {
     if (!confirm("Delete this W2 income block?")) return;
     try {
       await api("delete_extra_income", { id });
-      toast({ title: "W2 income deleted" });
+      toast({ title:"W2 income deleted" });
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -266,8 +266,8 @@ const BillsTracker = () => {
     setEditingExtraId(r.id);
     setExtraSource(r.source);
     setExtraPrice(String(r.price));
-    setExtraNotes(r.notes || "");
-    setTimeout(() => { extraFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+    setExtraNotes(r.notes ||"");
+    setTimeout(() => { extraFormRef.current?.scrollIntoView({ behavior:"smooth", block:"center" }); }, 0);
   };
 
   const cancelEditExtra = () => {
@@ -279,10 +279,10 @@ const BillsTracker = () => {
     if (!confirm("Delete this income block?")) return;
     try {
       await api("delete_extra_income", { id });
-      toast({ title: "Income deleted" });
+      toast({ title:"Income deleted" });
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -298,15 +298,15 @@ const BillsTracker = () => {
       };
       if (editingTaxId) {
         await api("update_tax_reminder", { id: editingTaxId, ...payload });
-        toast({ title: "Tax reminder updated" });
+        toast({ title:"Tax reminder updated" });
       } else {
         await api("add_tax_reminder", payload);
-        toast({ title: "Tax reminder added" });
+        toast({ title:"Tax reminder added" });
       }
       setTaxTitle(""); setTaxAmount(""); setTaxDueDate(""); setTaxNotes(""); setEditingTaxId(null);
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -314,9 +314,9 @@ const BillsTracker = () => {
     setEditingTaxId(r.id);
     setTaxTitle(r.title);
     setTaxAmount(String(r.amount));
-    setTaxDueDate(r.due_date || "");
-    setTaxNotes(r.notes || "");
-    setTimeout(() => { taxFormRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+    setTaxDueDate(r.due_date ||"");
+    setTaxNotes(r.notes ||"");
+    setTimeout(() => { taxFormRef.current?.scrollIntoView({ behavior:"smooth", block:"center" }); }, 0);
   };
 
   const cancelEditTax = () => {
@@ -328,10 +328,10 @@ const BillsTracker = () => {
     if (!confirm("Delete this tax reminder?")) return;
     try {
       await api("delete_tax_reminder", { id });
-      toast({ title: "Tax reminder deleted" });
+      toast({ title:"Tax reminder deleted" });
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
@@ -340,16 +340,16 @@ const BillsTracker = () => {
       await api("update_tax_reminder", { id: r.id, paid: !r.paid });
       await fetchAll();
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title:"Error", description: err.message, variant:"destructive" });
     }
   };
 
   const totalTaxDue = taxReminders.filter((r) => !r.paid).reduce((s, r) => s + Number(r.amount || 0), 0);
   const fmtDate = (d: string | null) => {
-    if (!d) return "—";
+    if (!d) return"—";
     const [y, m, day] = d.split("-").map(Number);
     const dt = new Date(y, (m || 1) - 1, day || 1);
-    return dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return dt.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
   };
   const daysUntil = (d: string | null) => {
     if (!d) return null;
@@ -360,19 +360,19 @@ const BillsTracker = () => {
   };
 
   const saveGoal = () => {
-    const n = parseFloat(goalDraft.replace(/[$,\s]/g, ""));
+    const n = parseFloat(goalDraft.replace(/[$,\s]/g,""));
     if (isNaN(n) || n <= 0) {
-      toast({ title: "Enter a valid amount", variant: "destructive" });
+      toast({ title:"Enter a valid amount", variant:"destructive" });
       return;
     }
     setGoalAmount(n);
     localStorage.setItem("rdg-retainer-goal", String(n));
     setEditingGoal(false);
-    toast({ title: "Goal updated", description: `New monthly target: ${fmt(n)}` });
+    toast({ title:"Goal updated", description: `New monthly target: ${fmt(n)}` });
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
           ← Home Office
@@ -387,7 +387,7 @@ const BillsTracker = () => {
           </motion.div>
 
           {/* Summary — three numbers, nothing else */}
-          <div className="flex items-start gap-10 md:gap-16 border-b border-foreground/15 pb-8 mb-4">
+          <div className="flex items-start gap-10 md:gap-16 border-b border-border pb-8 mb-4">
              <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Income</p>
               {editingSalary ? (
@@ -399,7 +399,7 @@ const BillsTracker = () => {
                     min="0"
                     value={salaryDraft}
                     onChange={(e) => setSalaryDraft(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") saveSalary(); if (e.key === "Escape") setEditingSalary(false); }}
+                    onKeyDown={(e) => { if (e.key ==="Enter") saveSalary(); if (e.key ==="Escape") setEditingSalary(false); }}
                     autoFocus
                     className="h-9 w-32"
                   />
@@ -410,7 +410,7 @@ const BillsTracker = () => {
                 <>
                   <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
                   <button
-                    onClick={() => { setSalaryDraft(totalW2 ? String(totalW2) : ""); setEditingSalary(true); }}
+                    onClick={() => { setSalaryDraft(totalW2 ? String(totalW2) :""); setEditingSalary(true); }}
                     className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline mt-1"
                   >
                     Edit salary ({fmt(totalW2)})
@@ -424,9 +424,9 @@ const BillsTracker = () => {
             </div>
             <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {net >= 0 ? "Left Over" : "Short"}
+                {net >= 0 ?"Left Over" :"Short"}
               </p>
-              <p className={`text-2xl md:text-3xl font-bold mt-1 ${net >= 0 ? "text-brand" : "text-destructive"}`}>
+              <p className={`text-2xl md:text-3xl font-bold mt-1 ${net >= 0 ?"text-brand" :"text-destructive"}`}>
                 {net >= 0 ? fmt(net) : `-${fmt(Math.abs(net))}`}
               </p>
             </div>
@@ -444,7 +444,7 @@ const BillsTracker = () => {
                     min="0"
                     value={goalDraft}
                     onChange={(e) => setGoalDraft(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") saveGoal(); if (e.key === "Escape") setEditingGoal(false); }}
+                    onKeyDown={(e) => { if (e.key ==="Enter") saveGoal(); if (e.key ==="Escape") setEditingGoal(false); }}
                     autoFocus
                     className="h-9 w-32"
                   />
@@ -472,7 +472,7 @@ const BillsTracker = () => {
           <div
             ref={formRef}
             className={`border p-6 mb-12 transition-colors ${
-              editingId ? "border-brand bg-brand/5" : "border-foreground/20"
+              editingId ?"border-brand bg-brand/5" :"border-border"
             }`}
           >
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
@@ -480,7 +480,7 @@ const BillsTracker = () => {
               <Input type="number" step="0.01" min="0" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
               <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
               <div className="flex gap-2">
-                <Button type="submit">{editingId ? "Save" : "Add"}</Button>
+                <Button type="submit">{editingId ?"Save" :"Add"}</Button>
                 {editingId && <Button type="button" variant="outline" onClick={cancelEdit}>Cancel</Button>}
               </div>
             </form>
@@ -492,18 +492,18 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : bills.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No bills yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No bills yet.</p>
             ) : (
-              <div className="border border-foreground/20 divide-y divide-foreground/10">
+              <div className="border border-border divide-y divide-foreground/10">
                 {bills.map((b) => (
-                  <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
+                  <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ?"opacity-50 bg-muted/30" :""}`}>
                     <div>
-                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{b.company_name}</p>
+                      <p className={`font-bold text-sm ${b.hidden ?"line-through text-muted-foreground" :""}`}>{b.company_name}</p>
                       {b.notes && <p className="text-xs text-muted-foreground mt-1">{b.notes}</p>}
                     </div>
-                    <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{fmt(Number(b.price))}</p>
-                    <Button size="sm" variant={b.hidden ? "outline" : "default"} onClick={() => toggleHiddenBill(b)}>
-                      {b.hidden ? "Show" : "Hide"}
+                    <p className={`font-bold text-sm ${b.hidden ?"line-through text-muted-foreground" :""}`}>{fmt(Number(b.price))}</p>
+                    <Button size="sm" variant={b.hidden ?"outline" :"default"} onClick={() => toggleHiddenBill(b)}>
+                      {b.hidden ?"Show" :"Hide"}
                     </Button>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
@@ -511,7 +511,7 @@ const BillsTracker = () => {
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalBills)}</p>
                   <div />
@@ -530,14 +530,14 @@ const BillsTracker = () => {
             <div className="mb-4" />
             <div
               ref={extraFormRef}
-              className={`border p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground/20"}`}
+              className={`border p-6 mb-6 transition-colors ${editingExtraId ?"border-brand bg-brand/5" :"border-border"}`}
             >
               <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Source / Client" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
                 <Input type="number" step="0.01" min="0" placeholder="Monthly $" value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} required />
                 <Input placeholder="Notes (optional)" value={extraNotes} onChange={(e) => setExtraNotes(e.target.value)} />
                 <div className="flex gap-2">
-                  <Button type="submit">{editingExtraId ? "Save" : "Add"}</Button>
+                  <Button type="submit">{editingExtraId ?"Save" :"Add"}</Button>
                   {editingExtraId && <Button type="button" variant="outline" onClick={cancelEditExtra}>Cancel</Button>}
                 </div>
               </form>
@@ -546,21 +546,21 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No other income yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No other income yet.</p>
             ) : (
-              <div className="divide-y divide-foreground/10 border border-foreground/20">
+              <div className="divide-y divide-foreground/10 border border-border">
                 {extraRows.map((r) => {
                   const isHidden = hiddenExtraIds.includes(r.id);
                   return (
-                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
+                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ?"opacity-50" :""}`}>
                       <div>
-                        <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.source}</p>
+                        <p className={`font-bold text-sm ${isHidden ?"line-through" :""}`}>{r.source}</p>
                         {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
                       </div>
                       <p className="text-xs uppercase tracking-widest text-muted-foreground">Manual</p>
-                      <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(Number(r.price))}</p>
+                      <p className={`font-bold text-sm ${isHidden ?"text-muted-foreground line-through" :"text-brand"}`}>{fmt(Number(r.price))}</p>
                       <div className="flex gap-2 flex-wrap justify-end">
-                        <Button size="sm" variant="outline" onClick={() => toggleHiddenExtra(r.id)}>{isHidden ? "Show" : "Hide"}</Button>
+                        <Button size="sm" variant="outline" onClick={() => toggleHiddenExtra(r.id)}>{isHidden ?"Show" :"Hide"}</Button>
                         <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
                         <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
                       </div>
@@ -592,10 +592,10 @@ const BillsTracker = () => {
 
             <div
               ref={taxFormRef}
-              className={`border-2 p-6 mb-6 transition-colors ${editingTaxId ? "border-brand bg-brand/5" : "border-foreground"}`}
+              className={`border-2 p-6 mb-6 transition-colors ${editingTaxId ?"border-brand bg-brand/5" :"border-foreground"}`}
             >
               <h3 className="text-sm font-bold tracking-tight mb-4 uppercase">
-                {editingTaxId ? "Edit Tax Reminder" : "Add a Tax Reminder"}
+                {editingTaxId ?"Edit Tax Reminder" :"Add a Tax Reminder"}
               </h3>
               <form onSubmit={handleTaxSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Title (e.g. Q1 Estimated Tax)" value={taxTitle} onChange={(e) => setTaxTitle(e.target.value)} required />
@@ -603,7 +603,7 @@ const BillsTracker = () => {
                 <Input type="date" value={taxDueDate} onChange={(e) => setTaxDueDate(e.target.value)} />
                 <Input placeholder="Notes (optional)" value={taxNotes} onChange={(e) => setTaxNotes(e.target.value)} />
                 <div className="flex gap-2">
-                  <Button type="submit">{editingTaxId ? "Save" : "Add"}</Button>
+                  <Button type="submit">{editingTaxId ?"Save" :"Add"}</Button>
                   {editingTaxId && <Button type="button" variant="outline" onClick={cancelEditTax}>Cancel</Button>}
                 </div>
               </form>
@@ -612,29 +612,29 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : taxReminders.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No tax reminders yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No tax reminders yet.</p>
             ) : (
-              <div className="border border-foreground/20 divide-y divide-foreground/10">
+              <div className="border border-border divide-y divide-foreground/10">
                 {taxReminders.map((r) => {
                   const d = daysUntil(r.due_date);
                   let dueLabel = fmtDate(r.due_date);
-                  let dueClass = "text-muted-foreground";
+                  let dueClass ="text-muted-foreground";
                   if (!r.paid && d !== null) {
-                    if (d < 0) { dueLabel += ` · ${Math.abs(d)}d overdue`; dueClass = "text-destructive"; }
-                    else if (d === 0) { dueLabel += " · due today"; dueClass = "text-destructive"; }
-                    else if (d <= 14) { dueLabel += ` · in ${d}d`; dueClass = "text-brand"; }
+                    if (d < 0) { dueLabel += ` · ${Math.abs(d)}d overdue`; dueClass ="text-destructive"; }
+                    else if (d === 0) { dueLabel +=" · due today"; dueClass ="text-destructive"; }
+                    else if (d <= 14) { dueLabel += ` · in ${d}d`; dueClass ="text-brand"; }
                     else { dueLabel += ` · in ${d}d`; }
                   }
                   return (
-                    <div key={r.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${r.paid ? "opacity-50" : ""}`}>
+                    <div key={r.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${r.paid ?"opacity-50" :""}`}>
                       <div>
-                        <p className={`font-bold text-sm ${r.paid ? "line-through" : ""}`}>{r.title}</p>
+                        <p className={`font-bold text-sm ${r.paid ?"line-through" :""}`}>{r.title}</p>
                         <p className={`text-xs mt-1 uppercase tracking-widest ${dueClass}`}>{dueLabel}</p>
                         {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
                       </div>
                       <p className="font-bold text-sm">{fmt(Number(r.amount))}</p>
-                      <Button size="sm" variant={r.paid ? "outline" : "default"} onClick={() => togglePaidTax(r)}>
-                        {r.paid ? "Mark Unpaid" : "Mark Paid"}
+                      <Button size="sm" variant={r.paid ?"outline" :"default"} onClick={() => togglePaidTax(r)}>
+                        {r.paid ?"Mark Unpaid" :"Mark Paid"}
                       </Button>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" onClick={() => startEditTax(r)}>Edit</Button>
@@ -643,7 +643,7 @@ const BillsTracker = () => {
                     </div>
                   );
                 })}
-                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total Outstanding</p>
                   <p className="font-bold text-sm">{fmt(totalTaxDue)}</p>
                   <div />

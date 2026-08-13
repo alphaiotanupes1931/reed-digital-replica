@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useState, useEffect, useCallback, useMemo } from"react";
+import { useNavigate, Link } from"react-router-dom";
+import { motion } from"framer-motion";
+import { supabase } from"@/integrations/supabase/client";
+import { useToast } from"@/hooks/use-toast";
+import Header from"@/components/Header";
+import Footer from"@/components/Footer";
 
 const STANDUP_PROMPT = `Using the notes below, generate my standup update in this exact format:
 1. What I did yesterday — One or two sentences max. Specific but brief.
@@ -29,7 +29,7 @@ interface Goal {
   created_at: string;
 }
 
-const tabs = ["Daily Notes", "History", "Goals", "Weekly Summary", "Monthly Summary", "Yearly Summary"] as const;
+const tabs = ["Daily Notes","History","Goals","Weekly Summary","Monthly Summary","Yearly Summary"] as const;
 type Tab = (typeof tabs)[number];
 
 const getYearRange = (year: number) => ({
@@ -48,7 +48,7 @@ const getWeekRange = (refDate: Date) => {
   return {
     start: monday.toISOString().split("T")[0],
     end: sunday.toISOString().split("T")[0],
-    label: `${monday.toLocaleDateString("en-US", { month: "short", day: "numeric" })} — ${sunday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
+    label: `${monday.toLocaleDateString("en-US", { month:"short", day:"numeric" })} — ${sunday.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" })}`,
   };
 };
 
@@ -58,7 +58,7 @@ const getMonthRange = (year: number, month: number) => {
   return {
     start: start.toISOString().split("T")[0],
     end: end.toISOString().split("T")[0],
-    label: start.toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+    label: start.toLocaleDateString("en-US", { month:"long", year:"numeric" }),
   };
 };
 
@@ -70,10 +70,10 @@ const formatNotesAsSummary = (notes: Note[], title: string) => {
   const lines = Object.entries(byDate)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, dayNotes]) => {
-      const dayLabel = new Date(date + "T12:00:00").toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "short",
-        day: "numeric",
+      const dayLabel = new Date(date +"T12:00:00").toLocaleDateString("en-US", {
+        weekday:"long",
+        month:"short",
+        day:"numeric",
       });
       const items = dayNotes.map((n) => `  - ${n.content}`).join("\n");
       return `${dayLabel}\n${items}`;
@@ -145,7 +145,7 @@ const WorkAssistant = () => {
       opts.push({
         year: d.getFullYear(),
         month: d.getMonth(),
-        label: d.toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+        label: d.toLocaleDateString("en-US", { month:"long", year:"numeric" }),
       });
     }
     return opts;
@@ -164,7 +164,7 @@ const WorkAssistant = () => {
         .select("full_name")
         .eq("user_id", data.user.id)
         .maybeSingle();
-      setDisplayName(profile?.full_name || "");
+      setDisplayName(profile?.full_name ||"");
     })();
   }, []);
 
@@ -250,10 +250,10 @@ const WorkAssistant = () => {
   }, [token, fetchNotes, fetchGoals]);
 
   useEffect(() => {
-    if (activeTab === "History") fetchHistoryDates();
-    if (activeTab === "Weekly Summary") fetchWeekly();
-    if (activeTab === "Monthly Summary") fetchMonthly();
-    if (activeTab === "Yearly Summary") fetchYearly();
+    if (activeTab ==="History") fetchHistoryDates();
+    if (activeTab ==="Weekly Summary") fetchWeekly();
+    if (activeTab ==="Monthly Summary") fetchMonthly();
+    if (activeTab ==="Yearly Summary") fetchYearly();
   }, [activeTab, fetchHistoryDates, fetchWeekly, fetchMonthly, fetchYearly]);
 
   useEffect(() => {
@@ -270,7 +270,7 @@ const WorkAssistant = () => {
       setNewNote("");
       fetchNotes();
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title:"Error", description: e.message, variant:"destructive" });
     } finally {
       setLoading(false);
     }
@@ -281,7 +281,7 @@ const WorkAssistant = () => {
       await api("delete_note", { id });
       fetchNotes();
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title:"Error", description: e.message, variant:"destructive" });
     }
   };
 
@@ -289,31 +289,31 @@ const WorkAssistant = () => {
     const text = notes.map((n) => `- ${n.content}`).join("\n");
     const summary = `Daily Notes — ${today}\n\n${text}`;
     navigator.clipboard.writeText(summary);
-    toast({ title: "Summary copied to clipboard" });
+    toast({ title:"Summary copied to clipboard" });
   };
 
   const copyStandupPrompt = () => {
     const notesText = notes.map((n) => `- ${n.content}`).join("\n");
     navigator.clipboard.writeText(`${STANDUP_PROMPT}\n\nNotes:\n${notesText}`);
-    toast({ title: "Standup prompt copied" });
+    toast({ title:"Standup prompt copied" });
   };
 
   const copyWeeklySummary = () => {
     const text = formatNotesAsSummary(weeklyNotes, `Weekly Summary — ${currentWeek.label}`);
     navigator.clipboard.writeText(text);
-    toast({ title: "Weekly summary copied" });
+    toast({ title:"Weekly summary copied" });
   };
 
   const copyMonthlySummary = () => {
     const text = formatNotesAsSummary(monthlyNotes, `Monthly Summary — ${currentMonth.label}`);
     navigator.clipboard.writeText(text);
-    toast({ title: "Monthly summary copied" });
+    toast({ title:"Monthly summary copied" });
   };
 
   const copyYearlySummary = () => {
     const text = formatNotesAsSummary(yearlyNotes, `Yearly Summary — ${currentYear.label}`);
     navigator.clipboard.writeText(text);
-    toast({ title: "Yearly summary copied" });
+    toast({ title:"Yearly summary copied" });
   };
 
   const addGoal = async () => {
@@ -323,7 +323,7 @@ const WorkAssistant = () => {
       setNewGoalTitle("");
       fetchGoals();
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title:"Error", description: e.message, variant:"destructive" });
     }
   };
 
@@ -332,7 +332,7 @@ const WorkAssistant = () => {
       await api("toggle_goal", { id, completed: !completed });
       fetchGoals();
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title:"Error", description: e.message, variant:"destructive" });
     }
   };
 
@@ -341,11 +341,11 @@ const WorkAssistant = () => {
       await api("delete_goal", { id });
       fetchGoals();
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title:"Error", description: e.message, variant:"destructive" });
     }
   };
 
-  const formatTime = (ts: string) => new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const formatTime = (ts: string) => new Date(ts).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
 
   const groupByDate = (notesList: Note[]) =>
     notesList.reduce<Record<string, Note[]>>((acc, n) => {
@@ -363,7 +363,7 @@ const WorkAssistant = () => {
       .map(([date, dayNotes]) => (
         <div key={date}>
           <h3 className="text-xs uppercase tracking-widest font-bold mb-3 text-brand">
-            {new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
+            {new Date(date +"T12:00:00").toLocaleDateString("en-US", { weekday:"long", month:"short", day:"numeric" })}
           </h3>
           <div className="space-y-2">
             {dayNotes.map((n) => (
@@ -378,8 +378,8 @@ const WorkAssistant = () => {
 
 
   return (
-    <div className="min-h-screen bg-background font-mono relative overflow-hidden">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
       </div>
@@ -390,7 +390,7 @@ const WorkAssistant = () => {
             <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">Notes</h1>
             <p className="text-sm text-brand italic mt-1">
-              {displayName ? `Welcome, ${displayName}` : "by RDG"}
+              {displayName ? `Welcome, ${displayName}` :"by RDG"}
             </p>
           </motion.div>
 
@@ -402,8 +402,8 @@ const WorkAssistant = () => {
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-3 text-xs uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 -mb-[2px] ${
                   activeTab === tab
-                    ? "border-brand text-brand font-bold"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    ?"border-brand text-brand font-bold"
+                    :"border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {tab}
@@ -412,20 +412,20 @@ const WorkAssistant = () => {
           </div>
 
           {/* Daily Notes */}
-          {activeTab === "Daily Notes" && (
+          {activeTab ==="Daily Notes" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
               <div className="flex gap-3">
                 <input
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addNote()}
+                  onKeyDown={(e) => e.key ==="Enter" && addNote()}
                   placeholder="What did you do today?"
-                  className="flex-1 border-2 border-foreground bg-background px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand"
+                  className="flex-1 border border-border bg-background px-4 py-3 text-sm rounded-xl focus:outline-none focus:border-brand"
                 />
                 <button
                   onClick={addNote}
                   disabled={loading}
-                  className="bg-brand text-brand-foreground px-6 py-3 text-xs uppercase tracking-widest hover:bg-brand/90 transition-colors"
+                  className="bg-brand text-brand-foreground rounded-full px-6 py-3 text-xs uppercase tracking-widest hover:bg-brand/90 transition-colors"
                 >
                   Add
                 </button>
@@ -435,7 +435,7 @@ const WorkAssistant = () => {
                 <button
                   onClick={copySummary}
                   disabled={notes.length === 0}
-                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="border border-border rounded-2xl px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Copy Summary
                 </button>
@@ -443,7 +443,7 @@ const WorkAssistant = () => {
 
               <div className="space-y-3">
                 {notes.map((note) => (
-                  <div key={note.id} className="border-2 border-foreground/20 p-4 flex justify-between items-start gap-4">
+                  <div key={note.id} className="border-2 border-border p-4 flex justify-between items-start gap-4">
                     <div>
                       <span className="text-xs text-muted-foreground">{formatTime(note.created_at)}</span>
                       <p className="text-sm mt-1">{note.content}</p>
@@ -469,19 +469,19 @@ const WorkAssistant = () => {
           )}
 
           {/* History */}
-          {activeTab === "History" && (
+          {activeTab ==="History" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">
-              <div className="space-y-1 border-r-2 border-foreground/10 pr-4">
+              <div className="space-y-1 border-r-2 border-border pr-4">
                 <h3 className="text-xs uppercase tracking-widest font-bold mb-3">Past Days</h3>
                 {historyDates.map((date) => (
                   <button
                     key={date}
                     onClick={() => setSelectedDate(date)}
                     className={`block w-full text-left px-3 py-2 text-xs transition-colors ${
-                      selectedDate === date ? "bg-brand/10 text-brand font-bold" : "text-muted-foreground hover:text-foreground"
+                      selectedDate === date ?"bg-brand/10 text-brand font-bold" :"text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {new Date(date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                    {new Date(date +"T12:00:00").toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" })}
                   </button>
                 ))}
                 {historyDates.length === 0 && <p className="text-xs text-muted-foreground">No history yet.</p>}
@@ -490,10 +490,10 @@ const WorkAssistant = () => {
                 {selectedDate ? (
                   <>
                     <h3 className="text-sm font-bold mb-4">
-                      {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                      {new Date(selectedDate +"T12:00:00").toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" })}
                     </h3>
                     {historyNotes.map((note) => (
-                      <div key={note.id} className="border-2 border-foreground/20 p-4">
+                      <div key={note.id} className="border-2 border-border p-4">
                         <span className="text-xs text-muted-foreground">{formatTime(note.created_at)}</span>
                         <p className="text-sm mt-1">{note.content}</p>
                       </div>
@@ -507,35 +507,35 @@ const WorkAssistant = () => {
           )}
 
           {/* Goals */}
-          {activeTab === "Goals" && (
+          {activeTab ==="Goals" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
               <div className="flex gap-3">
                 <input
                   value={newGoalTitle}
                   onChange={(e) => setNewGoalTitle(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addGoal()}
+                  onKeyDown={(e) => e.key ==="Enter" && addGoal()}
                   placeholder="Add a goal..."
-                  className="flex-1 border-2 border-foreground bg-background px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand"
+                  className="flex-1 border border-border bg-background px-4 py-3 text-sm rounded-xl focus:outline-none focus:border-brand"
                 />
                 <button
                   onClick={addGoal}
-                  className="bg-brand text-brand-foreground px-6 py-3 text-xs uppercase tracking-widest hover:bg-brand/90 transition-colors"
+                  className="bg-brand text-brand-foreground rounded-full px-6 py-3 text-xs uppercase tracking-widest hover:bg-brand/90 transition-colors"
                 >
                   Add
                 </button>
               </div>
               <div className="space-y-3">
                 {goals.map((goal) => (
-                  <div key={goal.id} className="border-2 border-foreground/20 p-4 flex items-center gap-4">
+                  <div key={goal.id} className="border-2 border-border p-4 flex items-center gap-4">
                     <button
                       onClick={() => toggleGoal(goal.id, goal.completed)}
                       className={`w-5 h-5 border-2 shrink-0 flex items-center justify-center transition-colors ${
-                        goal.completed ? "bg-brand border-brand text-brand-foreground" : "border-foreground"
+                        goal.completed ?"bg-brand border-brand text-brand-foreground" :"border-foreground"
                       }`}
                     >
                       {goal.completed && <span className="text-xs">✓</span>}
                     </button>
-                    <span className={`text-sm flex-1 ${goal.completed ? "line-through text-muted-foreground" : ""}`}>
+                    <span className={`text-sm flex-1 ${goal.completed ?"line-through text-muted-foreground" :""}`}>
                       {goal.title}
                     </span>
                     <button onClick={() => deleteGoal(goal.id)} className="text-xs text-muted-foreground hover:text-destructive transition-colors">
@@ -549,13 +549,13 @@ const WorkAssistant = () => {
           )}
 
           {/* Weekly Summary */}
-          {activeTab === "Weekly Summary" && (
+          {activeTab ==="Weekly Summary" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setWeekOffset((o) => o - 1)}
-                    className="border-2 border-foreground px-3 py-2 text-xs hover:bg-foreground hover:text-background transition-colors"
+                    className="border border-border rounded-2xl px-3 py-2 text-xs hover:bg-foreground hover:text-background transition-colors"
                   >
                     ←
                   </button>
@@ -563,7 +563,7 @@ const WorkAssistant = () => {
                   <button
                     onClick={() => setWeekOffset((o) => Math.min(o + 1, 0))}
                     disabled={weekOffset >= 0}
-                    className="border-2 border-foreground px-3 py-2 text-xs hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="border border-border rounded-2xl px-3 py-2 text-xs hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     →
                   </button>
@@ -571,7 +571,7 @@ const WorkAssistant = () => {
                 <button
                   onClick={copyWeeklySummary}
                   disabled={weeklyNotes.length === 0}
-                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="border border-border rounded-2xl px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Copy Summary
                 </button>
@@ -586,7 +586,7 @@ const WorkAssistant = () => {
           )}
 
           {/* Monthly Summary */}
-          {activeTab === "Monthly Summary" && (
+          {activeTab ==="Monthly Summary" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <select
@@ -595,7 +595,7 @@ const WorkAssistant = () => {
                     const [y, m] = e.target.value.split("-").map(Number);
                     setSelectedMonth({ year: y, month: m });
                   }}
-                  className="border-2 border-foreground bg-background px-4 py-2 font-mono text-sm focus:outline-none focus:border-brand"
+                  className="border border-border bg-background px-4 py-2 text-sm rounded-xl focus:outline-none focus:border-brand"
                 >
                   {monthOptions.map((opt) => (
                     <option key={`${opt.year}-${opt.month}`} value={`${opt.year}-${opt.month}`}>
@@ -606,7 +606,7 @@ const WorkAssistant = () => {
                 <button
                   onClick={copyMonthlySummary}
                   disabled={monthlyNotes.length === 0}
-                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="border border-border rounded-2xl px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Copy Summary
                 </button>
@@ -621,13 +621,13 @@ const WorkAssistant = () => {
           )}
 
           {/* Yearly Summary */}
-          {activeTab === "Yearly Summary" && (
+          {activeTab ==="Yearly Summary" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <select
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
-                  className="border-2 border-foreground bg-background px-4 py-2 font-mono text-sm focus:outline-none focus:border-brand"
+                  className="border border-border bg-background px-4 py-2 text-sm rounded-xl focus:outline-none focus:border-brand"
                 >
                   {yearOptions.map((y) => (
                     <option key={y} value={y}>{y}</option>
@@ -636,7 +636,7 @@ const WorkAssistant = () => {
                 <button
                   onClick={copyYearlySummary}
                   disabled={yearlyNotes.length === 0}
-                  className="border-2 border-foreground px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="border border-border rounded-2xl px-4 py-2 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Copy Summary
                 </button>

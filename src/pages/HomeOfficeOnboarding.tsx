@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { SECURITY_QUESTIONS, hashAnswer } from "@/lib/security-questions";
+import { useEffect, useState } from"react";
+import { useNavigate, useSearchParams } from"react-router-dom";
+import { motion } from"framer-motion";
+import { supabase } from"@/integrations/supabase/client";
+import { useToast } from"@/hooks/use-toast";
+import { SECURITY_QUESTIONS, hashAnswer } from"@/lib/security-questions";
 
 const inputCls =
-  "w-full bg-white/[0.04] border border-white/10 text-white px-4 py-3 font-mono text-sm focus:outline-none focus:border-brand transition-colors";
+"w-full bg-secondary border border-border rounded-xl text-foreground px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors";
 const btnCls =
-  "w-full bg-brand text-brand-foreground py-3 font-mono text-sm uppercase tracking-widest hover:bg-brand/90 transition-colors disabled:opacity-50";
+"w-full bg-brand text-brand-foreground rounded-full py-3 rounded-full text-xs uppercase tracking-widest hover:bg-brand/90 transition-colors disabled:opacity-50";
 
 const REFERRAL_OPTIONS = [
-  "Google search",
-  "Social media",
-  "Friend or colleague",
-  "Existing RDG client",
-  "Other",
+"Google search",
+"Social media",
+"Friend or colleague",
+"Existing RDG client",
+"Other",
 ];
 
-const PAYMENT_OPTIONS: { value: "zelle" | "cashapp"; label: string; placeholder: string }[] = [
-  { value: "zelle", label: "Zelle", placeholder: "Email or phone for Zelle" },
-  { value: "cashapp", label: "Cash App", placeholder: "$yourtag" },
+const PAYMENT_OPTIONS: { value:"zelle" |"cashapp"; label: string; placeholder: string }[] = [
+  { value:"zelle", label:"Zelle", placeholder:"Email or phone for Zelle" },
+  { value:"cashapp", label:"Cash App", placeholder:"$yourtag" },
 ];
 
 const HomeOfficeOnboarding = () => {
@@ -28,7 +28,7 @@ const HomeOfficeOnboarding = () => {
   const { toast } = useToast();
   const [params] = useSearchParams();
   const [step, setStep] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
-  const [accountType, setAccountType] = useState<"owner" | "accountant" | "">("");
+  const [accountType, setAccountType] = useState<"owner" |"accountant" |"">("");
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [birthdate, setBirthdate] = useState("");
@@ -53,7 +53,7 @@ const HomeOfficeOnboarding = () => {
         return;
       }
       // Owner bypass — skip onboarding/paywall entirely
-      if (data.user.email?.toLowerCase() === "terellebony@gmail.com" || data.user.email?.toLowerCase() === "kimorataylor294@gmail.com") {
+      if (data.user.email?.toLowerCase() ==="terellebony@gmail.com" || data.user.email?.toLowerCase() ==="kimorataylor294@gmail.com") {
         navigate("/home-office", { replace: true });
         return;
       }
@@ -68,12 +68,12 @@ const HomeOfficeOnboarding = () => {
           if (p?.business_name) setBusinessName(p.business_name);
           if (p?.account_type) setAccountType(p.account_type);
           // Returning from Stripe checkout
-          if (params.get("checkout") === "success") {
+          if (params.get("checkout") ==="success") {
             setStep(7);
             verifyAndEnter();
             return;
           }
-          if (params.get("step") === "paywall" || p?.onboarded) {
+          if (params.get("step") ==="paywall" || p?.onboarded) {
             setStep(7);
           } else if (p?.account_type) {
             setStep(1);
@@ -99,22 +99,22 @@ const HomeOfficeOnboarding = () => {
         navigate("/home-office", { replace: true });
       } else {
         toast({
-          title: "Subscription not active yet",
-          description: "If you just paid, give it a moment and retry.",
+          title:"Subscription not active yet",
+          description:"If you just paid, give it a moment and retry.",
         });
       }
     } catch (err: any) {
-      toast({ title: "Couldn't verify", description: err.message, variant: "destructive" });
+      toast({ title:"Couldn't verify", description: err.message, variant:"destructive" });
     } finally {
       setVerifying(false);
     }
   };
 
-  const handleAccountTypeNext = async (type: "owner" | "accountant") => {
+  const handleAccountTypeNext = async (type:"owner" |"accountant") => {
     setAccountType(type);
     if (!userId) return;
-    await supabase.from("profiles").upsert({ user_id: userId, account_type: type } as any, { onConflict: "user_id" });
-    if (type === "accountant") {
+    await supabase.from("profiles").upsert({ user_id: userId, account_type: type } as any, { onConflict:"user_id" });
+    if (type ==="accountant") {
       // Accountants: skip biz/payments/paywall steps and land on their dashboard.
       // We still capture a name so they look like a person to clients.
       setStep(1);
@@ -126,7 +126,7 @@ const HomeOfficeOnboarding = () => {
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) return;
-    if (accountType === "accountant") {
+    if (accountType ==="accountant") {
       // Accountant signup: save name + mark onboarded, send to accountant dashboard.
       (async () => {
         if (!userId) return;
@@ -135,15 +135,15 @@ const HomeOfficeOnboarding = () => {
           const { error } = await supabase.from("profiles").upsert({
             user_id: userId,
             full_name: fullName.trim(),
-            account_type: "accountant",
+            account_type:"accountant",
             onboarded: true,
             recovery_setup_complete: true,
             subscribed: true,
-          } as any, { onConflict: "user_id" });
+          } as any, { onConflict:"user_id" });
           if (error) throw error;
           navigate("/home-office/accountant", { replace: true });
         } catch (err: any) {
-          toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
+          toast({ title:"Couldn't save", description: err.message, variant:"destructive" });
         } finally { setLoading(false); }
       })();
       return;
@@ -161,7 +161,7 @@ const HomeOfficeOnboarding = () => {
     e.preventDefault();
     if (!q1 || !q2 || !a1.trim() || !a2.trim()) return;
     if (q1 === q2) {
-      toast({ title: "Pick two different questions", variant: "destructive" });
+      toast({ title:"Pick two different questions", variant:"destructive" });
       return;
     }
     setStep(4);
@@ -207,12 +207,12 @@ const HomeOfficeOnboarding = () => {
             referral_source: referral,
             onboarded: false,
           },
-          { onConflict: "user_id" }
+          { onConflict:"user_id" }
         );
       if (error) throw error;
       setStep(7);
     } catch (err: any) {
-      toast({ title: "Couldn't save", description: err.message, variant: "destructive" });
+      toast({ title:"Couldn't save", description: err.message, variant:"destructive" });
     } finally {
       setLoading(false);
     }
@@ -229,13 +229,13 @@ const HomeOfficeOnboarding = () => {
         throw new Error("No checkout URL returned");
       }
     } catch (err: any) {
-      toast({ title: "Couldn't start checkout", description: err.message, variant: "destructive" });
+      toast({ title:"Couldn't start checkout", description: err.message, variant:"destructive" });
       setCheckoutLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black font-mono text-white flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -243,7 +243,7 @@ const HomeOfficeOnboarding = () => {
           className="mb-2"
         >
           <p className="text-[10px] uppercase tracking-[0.3em] text-brand">
-            {step === 0 ? "Account type" : `Step ${step} of 7`}
+            {step === 0 ?"Account type" : `Step ${step} of 7`}
           </p>
         </motion.div>
 
@@ -256,16 +256,16 @@ const HomeOfficeOnboarding = () => {
           >
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Are you a business owner or an accountant?</h1>
-              <p className="text-xs text-white/50 mt-2">We set up your workspace differently for each.</p>
+              <p className="text-xs text-muted-foreground mt-2">We set up your workspace differently for each.</p>
             </div>
             <div className="grid grid-cols-1 gap-2">
-              <button onClick={() => handleAccountTypeNext("owner")} className="text-left px-4 py-4 border border-white/10 hover:border-brand">
+              <button onClick={() => handleAccountTypeNext("owner")} className="text-left px-4 py-4 border border-border hover:border-brand">
                 <div className="text-sm font-bold">Business owner</div>
-                <div className="text-xs text-white/50 mt-1">Track income, expenses, invoices, taxes, and notify your accountant.</div>
+                <div className="text-xs text-muted-foreground mt-1">Track income, expenses, invoices, taxes, and notify your accountant.</div>
               </button>
-              <button onClick={() => handleAccountTypeNext("accountant")} className="text-left px-4 py-4 border border-white/10 hover:border-brand">
+              <button onClick={() => handleAccountTypeNext("accountant")} className="text-left px-4 py-4 border border-border hover:border-brand">
                 <div className="text-sm font-bold">Accountant</div>
-                <div className="text-xs text-white/50 mt-1">Get an Accountant ID, accept client requests, and review their books.</div>
+                <div className="text-xs text-muted-foreground mt-1">Get an Accountant ID, accept client requests, and review their books.</div>
               </button>
             </div>
           </motion.div>
@@ -281,12 +281,12 @@ const HomeOfficeOnboarding = () => {
               <h1 className="text-2xl font-bold tracking-tight">
                 What's your name?
               </h1>
-              <p className="text-xs text-white/50 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 We'll use this across your Home Office.
               </p>
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 Full Name
               </label>
               <input
@@ -311,16 +311,16 @@ const HomeOfficeOnboarding = () => {
           >
             <div>
               <h1 className="text-2xl font-bold tracking-tight">A few recovery details.</h1>
-              <p className="text-xs text-white/50 mt-2 leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                 Please enter your <span className="text-brand">correct birthdate</span> — this will be used in password recovery if you ever get locked out.
               </p>
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Birthdate</label>
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Birthdate</label>
               <input type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} className={inputCls} required />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Phone number</label>
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Phone number</label>
               <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} placeholder="(555) 555-5555" required />
               <p className="text-[10px] text-white/40 mt-2 uppercase tracking-widest">Used for recovery only.</p>
             </div>
@@ -336,12 +336,12 @@ const HomeOfficeOnboarding = () => {
           >
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Pick 2 security questions.</h1>
-              <p className="text-xs text-white/50 mt-2 leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                 If you forget your password we'll ask these along with your email and birthdate. Answers are hashed before storage.
               </p>
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Question 1</label>
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Question 1</label>
               <select value={q1} onChange={(e) => setQ1(e.target.value)} className={inputCls} required>
                 <option value="" className="bg-black">Select a question…</option>
                 {SECURITY_QUESTIONS.filter((q) => q !== q2).map((q) => (
@@ -351,7 +351,7 @@ const HomeOfficeOnboarding = () => {
               <input value={a1} onChange={(e) => setA1(e.target.value)} className={`${inputCls} mt-2`} placeholder="Your answer" required />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Question 2</label>
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Question 2</label>
               <select value={q2} onChange={(e) => setQ2(e.target.value)} className={inputCls} required>
                 <option value="" className="bg-black">Select a question…</option>
                 {SECURITY_QUESTIONS.filter((q) => q !== q1).map((q) => (
@@ -372,12 +372,12 @@ const HomeOfficeOnboarding = () => {
           >
             <div>
               <h1 className="text-2xl font-bold tracking-tight">What's your business called?</h1>
-              <p className="text-xs text-white/50 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 This is the name your clients will see in the Client Portal when they go to pay you.
               </p>
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 Business Name
               </label>
               <input
@@ -402,7 +402,7 @@ const HomeOfficeOnboarding = () => {
           >
             <div>
               <h1 className="text-2xl font-bold tracking-tight">How do your clients pay you?</h1>
-              <p className="text-xs text-white/50 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Pick all that apply. We'll show these in your Client Portal so clients know how to send payment. You can add Stripe later from Profile.
               </p>
             </div>
@@ -415,7 +415,7 @@ const HomeOfficeOnboarding = () => {
                     type="button"
                     onClick={() => toggleMethod(opt.value)}
                     className={`px-4 py-3 text-sm border transition-colors ${
-                      on ? "border-brand text-brand" : "border-white/10 text-white/70 hover:border-white/30"
+                      on ?"border-brand text-brand" :"border-border text-muted-foreground hover:border-white/30"
                     }`}
                   >
                     {opt.label}
@@ -425,13 +425,13 @@ const HomeOfficeOnboarding = () => {
             </div>
             {methods.includes("zelle") && (
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Zelle</label>
+                <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Zelle</label>
                 <input value={zelle} onChange={(e) => setZelle(e.target.value)} className={inputCls} placeholder="email or phone" />
               </div>
             )}
             {methods.includes("cashapp") && (
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-white/60 mb-2">Cash App</label>
+                <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Cash App</label>
                 <input value={cashapp} onChange={(e) => setCashapp(e.target.value)} className={inputCls} placeholder="$yourtag" />
               </div>
             )}
@@ -449,7 +449,7 @@ const HomeOfficeOnboarding = () => {
               <h1 className="text-2xl font-bold tracking-tight">
                 How did you find us?
               </h1>
-              <p className="text-xs text-white/50 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Helps us know what's working.
               </p>
             </div>
@@ -461,8 +461,8 @@ const HomeOfficeOnboarding = () => {
                   onClick={() => setReferral(opt)}
                   className={`w-full text-left px-4 py-3 text-sm border transition-colors ${
                     referral === opt
-                      ? "border-brand text-brand"
-                      : "border-white/10 text-white/70 hover:border-white/30"
+                      ?"border-brand text-brand"
+                      :"border-border text-muted-foreground hover:border-white/30"
                   }`}
                 >
                   {opt}
@@ -470,7 +470,7 @@ const HomeOfficeOnboarding = () => {
               ))}
             </div>
             <button type="submit" disabled={loading || !referral} className={btnCls}>
-              {loading ? "Saving..." : "Continue"}
+              {loading ?"Saving..." :"Continue"}
             </button>
           </motion.form>
         ) : (
@@ -485,7 +485,7 @@ const HomeOfficeOnboarding = () => {
               <h1 className="text-2xl font-bold tracking-tight">
                 One last step.
               </h1>
-              <p className="text-xs text-white/50 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Start your 7-day free trial. Cancel anytime before it ends and you won't be charged.
               </p>
             </div>
@@ -498,16 +498,16 @@ const HomeOfficeOnboarding = () => {
             >
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl font-bold tracking-tight">$20</span>
-                <span className="text-[10px] text-white/50 uppercase tracking-widest">/ month</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">/ month</span>
               </div>
               <p className="mt-2 text-xs text-brand uppercase tracking-widest">7 days free</p>
-              <ul className="mt-5 space-y-2 text-xs text-white/70">
+              <ul className="mt-5 space-y-2 text-xs text-muted-foreground">
                 {[
-                  "Full Home Office suite",
-                  "Work Assistant, Bills, Invoices",
-                  "Client Portal for your clients",
-                  "All future tools included",
-                  "Cancel anytime",
+"Full Home Office suite",
+"Work Assistant, Bills, Invoices",
+"Client Portal for your clients",
+"All future tools included",
+"Cancel anytime",
                 ].map((t) => (
                   <li key={t} className="flex gap-2">
                     <span className="text-brand">—</span>
@@ -517,13 +517,13 @@ const HomeOfficeOnboarding = () => {
               </ul>
             </motion.div>
 
-            {params.get("checkout") === "success" ? (
+            {params.get("checkout") ==="success" ? (
               <button
                 onClick={verifyAndEnter}
                 disabled={verifying}
                 className={btnCls}
               >
-                {verifying ? "Verifying..." : "Enter Home Office"}
+                {verifying ?"Verifying..." :"Enter Home Office"}
               </button>
             ) : (
               <button
@@ -531,11 +531,11 @@ const HomeOfficeOnboarding = () => {
                 disabled={checkoutLoading}
                 className={btnCls}
               >
-                {checkoutLoading ? "Loading checkout..." : "Start Free Trial"}
+                {checkoutLoading ?"Loading checkout..." :"Start Free Trial"}
               </button>
             )}
 
-            {params.get("checkout") === "cancel" && (
+            {params.get("checkout") ==="cancel" && (
               <p className="text-[11px] text-white/40 text-center">
                 Checkout canceled. You can try again above.
               </p>
@@ -545,14 +545,14 @@ const HomeOfficeOnboarding = () => {
               <button
                 type="button"
                 onClick={() => setStep(6)}
-                className="text-white/50 hover:text-brand transition-colors"
+                className="text-muted-foreground hover:text-brand transition-colors"
               >
                 ← Back
               </button>
               <button
                 type="button"
                 onClick={() => navigate("/home-office/welcome")}
-                className="text-white/50 hover:text-brand transition-colors"
+                className="text-muted-foreground hover:text-brand transition-colors"
               >
                 Exit
               </button>
