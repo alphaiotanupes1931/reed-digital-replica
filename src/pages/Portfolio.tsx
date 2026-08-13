@@ -126,7 +126,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
   return (
     <div className="group block">
       {/* Tabbed store preview */}
-      <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-sm">
+      <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-2xl">
         {hasStores ? (
           <>
             {/* Browser chrome with tabs */}

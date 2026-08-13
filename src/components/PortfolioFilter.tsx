@@ -22,7 +22,7 @@ const PortfolioFilter = ({ categories, activeCategory, onCategoryChange }: Portf
           {activeCategory === category && (
             <motion.div
               layoutId="activeFilter"
-              className="absolute inset-0 border border-foreground"
+              className="absolute inset-0 border border-foreground rounded-full"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
