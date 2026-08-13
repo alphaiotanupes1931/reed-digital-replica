@@ -97,8 +97,8 @@ const HomeOffice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
-      <nav className="border-b border-foreground/10 px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
         <Link to="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
           ← RDG
         </Link>
@@ -109,7 +109,7 @@ const HomeOffice = () => {
           <NotificationBell />
           <button
             onClick={handleLogout}
-            className="text-xs uppercase tracking-widest px-3 py-2 border border-foreground/20 hover:border-foreground/50"
+            className="text-xs uppercase tracking-widest px-3 py-2 border border-border hover:border-foreground/40"
           >
             Log out
           </button>
@@ -127,7 +127,7 @@ const HomeOffice = () => {
         </div>
 
         {businessId && (
-          <div className="mb-8 border border-foreground/15 p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="mb-8 border border-border rounded-2xl p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                 Your business ID
@@ -150,7 +150,7 @@ const HomeOffice = () => {
               </button>
               <button
                 onClick={() => setShowInstructions(true)}
-                className="text-xs uppercase tracking-widest px-4 py-2 border border-foreground/20 hover:border-foreground/50"
+                className="text-xs uppercase tracking-widest px-4 py-2 border border-border hover:border-foreground/40"
               >
                 Instructions
               </button>
@@ -163,7 +163,7 @@ const HomeOffice = () => {
             <Link
               key={tile.label}
               to={tile.href}
-              className="block border border-foreground/15 p-6 hover:border-foreground/40 transition-colors"
+              className="block border border-border rounded-2xl p-6 hover:border-foreground/40 transition-colors"
             >
               <h2 className="text-lg mb-1">{tile.label}</h2>
               <p className="text-sm text-muted-foreground">{tile.desc}</p>
@@ -172,7 +172,7 @@ const HomeOffice = () => {
         </div>
       </main>
 
-      <footer className="px-6 py-6 border-t border-foreground/10 flex justify-end text-xs uppercase tracking-widest text-muted-foreground">
+      <footer className="px-6 py-6 border-t border-border flex justify-end text-xs uppercase tracking-widest text-muted-foreground">
         <Link to="/home-office/help" className="hover:text-foreground">Help</Link>
       </footer>
 
@@ -201,12 +201,12 @@ const HomeOffice = () => {
                   navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
                   toast.success("Email copied to clipboard");
                 }}
-                className="text-[10px] uppercase tracking-widest border border-foreground/30 px-2 py-1 hover:border-brand hover:text-brand transition-colors"
+                className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-2 py-1 hover:border-brand hover:text-brand transition-colors"
               >
                 Copy
               </button>
             </div>
-            <pre className="text-xs whitespace-pre-wrap bg-muted/30 border border-border p-3 leading-relaxed">
+            <pre className="text-xs whitespace-pre-wrap bg-muted/30 border border-border rounded-2xl p-3 leading-relaxed">
 {`Subject: Invoice from ${businessName || "us"}
 
 Hi,

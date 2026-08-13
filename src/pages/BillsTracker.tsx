@@ -372,7 +372,7 @@ const BillsTracker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
           ← Home Office
@@ -387,7 +387,7 @@ const BillsTracker = () => {
           </motion.div>
 
           {/* Summary — three numbers, nothing else */}
-          <div className="flex items-start gap-10 md:gap-16 border-b border-foreground/15 pb-8 mb-4">
+          <div className="flex items-start gap-10 md:gap-16 border-b border-border pb-8 mb-4">
              <div>
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Income</p>
               {editingSalary ? (
@@ -472,7 +472,7 @@ const BillsTracker = () => {
           <div
             ref={formRef}
             className={`border p-6 mb-12 transition-colors ${
-              editingId ? "border-brand bg-brand/5" : "border-foreground/20"
+              editingId ? "border-brand bg-brand/5" : "border-border"
             }`}
           >
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
@@ -492,9 +492,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : bills.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No bills yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No bills yet.</p>
             ) : (
-              <div className="border border-foreground/20 divide-y divide-foreground/10">
+              <div className="border border-border divide-y divide-foreground/10">
                 {bills.map((b) => (
                   <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div>
@@ -511,7 +511,7 @@ const BillsTracker = () => {
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalBills)}</p>
                   <div />
@@ -530,7 +530,7 @@ const BillsTracker = () => {
             <div className="mb-4" />
             <div
               ref={extraFormRef}
-              className={`border p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-foreground/20"}`}
+              className={`border p-6 mb-6 transition-colors ${editingExtraId ? "border-brand bg-brand/5" : "border-border"}`}
             >
               <form onSubmit={handleExtraSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
                 <Input placeholder="Source / Client" value={extraSource} onChange={(e) => setExtraSource(e.target.value)} required />
@@ -546,9 +546,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No other income yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No other income yet.</p>
             ) : (
-              <div className="divide-y divide-foreground/10 border border-foreground/20">
+              <div className="divide-y divide-foreground/10 border border-border">
                 {extraRows.map((r) => {
                   const isHidden = hiddenExtraIds.includes(r.id);
                   return (
@@ -612,9 +612,9 @@ const BillsTracker = () => {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
             ) : taxReminders.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No tax reminders yet.</p>
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No tax reminders yet.</p>
             ) : (
-              <div className="border border-foreground/20 divide-y divide-foreground/10">
+              <div className="border border-border divide-y divide-foreground/10">
                 {taxReminders.map((r) => {
                   const d = daysUntil(r.due_date);
                   let dueLabel = fmtDate(r.due_date);
@@ -643,7 +643,7 @@ const BillsTracker = () => {
                     </div>
                   );
                 })}
-                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background">
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total Outstanding</p>
                   <p className="font-bold text-sm">{fmt(totalTaxDue)}</p>
                   <div />

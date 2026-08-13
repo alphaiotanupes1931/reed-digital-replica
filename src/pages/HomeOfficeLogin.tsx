@@ -16,9 +16,9 @@ const PASSWORD_RULES = [
 const validatePassword = (p: string) => PASSWORD_RULES.every((r) => r.test(p));
 
 const inputCls =
-  "w-full bg-background border border-foreground/20 text-foreground px-3 py-2 font-mono text-sm focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground";
+  "w-full bg-background border border-border text-foreground px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground";
 const btnCls =
-  "w-full bg-foreground text-background py-3 font-mono text-xs uppercase tracking-widest hover:bg-foreground/85 transition-colors disabled:opacity-50";
+  "w-full bg-foreground text-background py-3 text-xs uppercase tracking-widest hover:bg-foreground/85 transition-colors disabled:opacity-50";
 
 const clearStoredAuth = () => {
   sessionStorage.removeItem("ho-token");
@@ -111,8 +111,8 @@ const HomeOfficeLogin = () => {
   const onSubmit = mode === "login" ? handleLogin : handleSignup;
 
   return (
-    <div className="min-h-screen bg-background font-mono text-foreground flex flex-col">
-      <nav className="border-b border-foreground/10 px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
         <Link to="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
           ← Reed Digital Group
         </Link>
@@ -130,7 +130,7 @@ const HomeOfficeLogin = () => {
             </p>
           </div>
 
-          <div className="flex gap-6 mb-6 text-xs uppercase tracking-widest border-b border-foreground/15">
+          <div className="flex gap-6 mb-6 text-xs uppercase tracking-widest border-b border-border">
             {(["login", "signup"] as Mode[]).map((m) => (
               <button
                 key={m}

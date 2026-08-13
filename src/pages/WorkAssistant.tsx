@@ -378,7 +378,7 @@ const WorkAssistant = () => {
 
 
   return (
-    <div className="min-h-screen bg-background font-mono relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
@@ -443,7 +443,7 @@ const WorkAssistant = () => {
 
               <div className="space-y-3">
                 {notes.map((note) => (
-                  <div key={note.id} className="border-2 border-foreground/20 p-4 flex justify-between items-start gap-4">
+                  <div key={note.id} className="border-2 border-border p-4 flex justify-between items-start gap-4">
                     <div>
                       <span className="text-xs text-muted-foreground">{formatTime(note.created_at)}</span>
                       <p className="text-sm mt-1">{note.content}</p>
@@ -471,7 +471,7 @@ const WorkAssistant = () => {
           {/* History */}
           {activeTab === "History" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">
-              <div className="space-y-1 border-r-2 border-foreground/10 pr-4">
+              <div className="space-y-1 border-r-2 border-border pr-4">
                 <h3 className="text-xs uppercase tracking-widest font-bold mb-3">Past Days</h3>
                 {historyDates.map((date) => (
                   <button
@@ -493,7 +493,7 @@ const WorkAssistant = () => {
                       {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
                     </h3>
                     {historyNotes.map((note) => (
-                      <div key={note.id} className="border-2 border-foreground/20 p-4">
+                      <div key={note.id} className="border-2 border-border p-4">
                         <span className="text-xs text-muted-foreground">{formatTime(note.created_at)}</span>
                         <p className="text-sm mt-1">{note.content}</p>
                       </div>
@@ -526,7 +526,7 @@ const WorkAssistant = () => {
               </div>
               <div className="space-y-3">
                 {goals.map((goal) => (
-                  <div key={goal.id} className="border-2 border-foreground/20 p-4 flex items-center gap-4">
+                  <div key={goal.id} className="border-2 border-border p-4 flex items-center gap-4">
                     <button
                       onClick={() => toggleGoal(goal.id, goal.completed)}
                       className={`w-5 h-5 border-2 shrink-0 flex items-center justify-center transition-colors ${

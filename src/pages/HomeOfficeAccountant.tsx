@@ -61,16 +61,16 @@ export default function HomeOfficeAccountant() {
   const pending = links.filter((l) => l.status === "pending");
   const active = links.filter((l) => l.status === "active");
 
-  if (loading) return <div className="min-h-screen bg-background font-mono flex items-center justify-center text-sm text-muted-foreground">Loading…</div>;
+  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center text-sm text-muted-foreground">Loading…</div>;
 
   return (
-    <div className="min-h-screen bg-background font-mono">
-      <nav className="sticky top-0 z-40 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <nav className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-xl px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">← RDG</Link>
         <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden md:block">Accountant {fullName ? `· ${fullName}` : ""}</span>
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <button onClick={logout} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-foreground/15 hover:border-foreground/40">Log out</button>
+          <button onClick={logout} className="text-[10px] uppercase tracking-[0.3em] px-4 py-2 border border-border hover:border-foreground/40">Log out</button>
         </div>
       </nav>
 
@@ -83,7 +83,7 @@ export default function HomeOfficeAccountant() {
             </h1>
           </motion.div>
 
-          <div className="mb-12 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="mb-12 rounded-2xl border border-border bg-foreground/[0.02] p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">Your accountant ID</p>
               <code className="text-2xl md:text-3xl tracking-[0.2em] text-brand">{accountantId || "—"}</code>
@@ -95,20 +95,20 @@ export default function HomeOfficeAccountant() {
           <section className="mb-12">
             <h2 className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Pending requests · {pending.length}</h2>
             {pending.length === 0 ? (
-              <div className="border border-dashed border-foreground/15 p-8 text-center text-xs text-muted-foreground rounded-2xl">No pending requests.</div>
+              <div className="border border-dashed border-border p-8 text-center text-xs text-muted-foreground rounded-2xl">No pending requests.</div>
             ) : (
               <div className="space-y-3">
                 {pending.map((l) => {
                   const p = profiles[l.client_user_id];
                   const name = p?.business_name || p?.full_name || "A client";
                   return (
-                    <div key={l.id} className="rounded-2xl border border-foreground/10 p-5 flex items-center justify-between">
+                    <div key={l.id} className="rounded-2xl border border-border rounded-2xl p-5 flex items-center justify-between">
                       <div>
                         <p className="text-sm font-semibold">{name}</p>
                         <p className="text-[10px] text-muted-foreground mt-1">Requested {new Date(l.requested_at).toLocaleString()}</p>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => decline(l.id)} className="text-[10px] uppercase tracking-widest border border-foreground/20 px-3 py-1.5 hover:border-destructive hover:text-destructive">Decline</button>
+                        <button onClick={() => decline(l.id)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Decline</button>
                         <button onClick={() => accept(l.id)} className="text-[10px] uppercase tracking-widest bg-foreground text-background px-4 py-1.5">Accept</button>
                       </div>
                     </div>
@@ -121,14 +121,14 @@ export default function HomeOfficeAccountant() {
           <section>
             <h2 className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Active clients · {active.length}</h2>
             {active.length === 0 ? (
-              <div className="border border-dashed border-foreground/15 p-8 text-center text-xs text-muted-foreground rounded-2xl">No active clients yet.</div>
+              <div className="border border-dashed border-border p-8 text-center text-xs text-muted-foreground rounded-2xl">No active clients yet.</div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {active.map((l) => {
                   const p = profiles[l.client_user_id];
                   const name = p?.business_name || p?.full_name || "Client";
                   return (
-                    <div key={l.id} className="rounded-2xl border border-foreground/10 p-5">
+                    <div key={l.id} className="rounded-2xl border border-border rounded-2xl p-5">
                       <p className="text-sm font-semibold">{name}</p>
                       <p className="text-[10px] text-muted-foreground mt-1">Connected {l.accepted_at ? new Date(l.accepted_at).toLocaleDateString() : ""}</p>
                       <p className="text-[10px] text-muted-foreground mt-3">Read-only client portal links are coming next — for now, ask your client to share their accountant portal link from their Taxes tab.</p>

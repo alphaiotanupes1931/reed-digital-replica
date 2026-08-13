@@ -10,7 +10,7 @@ const features = [
 const HomeOfficeWelcome = () => {
   return (
     <div className="min-h-screen bg-background text-foreground font-mono flex flex-col">
-      <nav className="border-b border-foreground/10 px-6 py-4 flex items-center justify-between">
+      <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
         <Link to="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
           ← Reed Digital Group
         </Link>
@@ -39,7 +39,7 @@ const HomeOfficeWelcome = () => {
             </Link>
             <Link
               to="/home-office/login"
-              className="px-6 py-3 border border-foreground/20 text-xs uppercase tracking-widest hover:border-foreground/50"
+              className="px-6 py-3 border border-border text-xs uppercase tracking-widest hover:border-foreground/40"
             >
               I have an account
             </Link>
@@ -49,11 +49,11 @@ const HomeOfficeWelcome = () => {
           </p>
         </section>
 
-        <section id="features" className="px-6 py-12 max-w-5xl mx-auto border-t border-foreground/10">
+        <section id="features" className="px-6 py-12 max-w-5xl mx-auto border-t border-border">
           <h2 className="text-xl md:text-2xl tracking-tight mb-6 font-bold">Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {features.map((f) => (
-              <div key={f.t} className="border border-foreground/15 p-5">
+              <div key={f.t} className="border border-border rounded-2xl p-5">
                 <h3 className="text-base mb-1 font-semibold">{f.t}</h3>
                 <p className="text-sm text-muted-foreground">{f.d}</p>
               </div>
@@ -61,9 +61,9 @@ const HomeOfficeWelcome = () => {
           </div>
         </section>
 
-        <section id="pricing" className="px-6 py-12 max-w-2xl mx-auto text-center border-t border-foreground/10">
+        <section id="pricing" className="px-6 py-12 max-w-2xl mx-auto text-center border-t border-border">
           <h2 className="text-xl md:text-2xl tracking-tight mb-6 font-bold">One plan. One price.</h2>
-          <div className="border border-foreground/15 p-6">
+          <div className="border border-border rounded-2xl p-6">
             <div className="text-4xl font-bold mb-1">$20<span className="text-base font-normal text-muted-foreground"> / month</span></div>
             <p className="text-sm text-muted-foreground mb-5">7-day free trial. Cancel anytime.</p>
             <ul className="text-left max-w-sm mx-auto space-y-1.5 mb-6 text-sm">
@@ -82,7 +82,7 @@ const HomeOfficeWelcome = () => {
         </section>
       </main>
 
-      <footer className="px-6 py-6 border-t border-foreground/10 flex justify-end gap-6 text-xs uppercase tracking-widest text-muted-foreground">
+      <footer className="px-6 py-6 border-t border-border flex justify-end gap-6 text-xs uppercase tracking-widest text-muted-foreground">
         <Link to="/contact" className="hover:text-foreground">Contact</Link>
         <Link to="/apps/legal/terms" className="hover:text-foreground">Terms</Link>
         <Link to="/apps/legal/privacy" className="hover:text-foreground">Privacy</Link>

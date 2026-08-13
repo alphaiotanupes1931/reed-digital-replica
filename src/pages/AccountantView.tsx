@@ -72,8 +72,8 @@ const AccountantView = () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-background font-mono flex items-center justify-center px-6">
-        <form id="acc-form" onSubmit={submit} className="w-full max-w-sm border-2 border-foreground/20 p-8 space-y-6">
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <form id="acc-form" onSubmit={submit} className="w-full max-w-sm border-2 border-border p-8 space-y-6">
           <div>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Accountant access</p>
             <h1 className="text-2xl font-bold mt-2">Enter passcode</h1>
@@ -103,7 +103,7 @@ const AccountantView = () => {
   const revenueTotal = paidInvoices.reduce((s, i) => s + Number(i.amount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
       <main className="pt-16 pb-20">
         <div className="container max-w-4xl mx-auto px-6">
@@ -116,7 +116,7 @@ const AccountantView = () => {
               {data.sections.invoices && (
                 <section>
                   <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Revenue · {paidInvoices.length} paid invoices</h2>
-                  <div className="border-2 border-foreground/20 p-6">
+                  <div className="border-2 border-border p-6">
                     <p className="text-3xl font-bold">${revenueTotal.toFixed(2)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Total received</p>
                     {paidInvoices.length > 0 && (
@@ -136,7 +136,7 @@ const AccountantView = () => {
               {data.sections.bills && (
                 <section>
                   <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Monthly bills</h2>
-                  <div className="border-2 border-foreground/20 p-6">
+                  <div className="border-2 border-border p-6">
                     <p className="text-3xl font-bold">${billsTotal.toFixed(2)}/mo</p>
                     <ul className="mt-6 divide-y-2 divide-foreground/10">
                       {(data.bills ?? []).map((b) => (
@@ -153,7 +153,7 @@ const AccountantView = () => {
               {data.sections.writeoffs && (
                 <section>
                   <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Write-offs</h2>
-                  <div className="border-2 border-dashed border-foreground/20 p-6 text-sm text-muted-foreground">
+                  <div className="border-2 border-dashed border-border p-6 text-sm text-muted-foreground">
                     Bank-imported write-offs will appear here once the owner connects their bank.
                   </div>
                 </section>
@@ -162,7 +162,7 @@ const AccountantView = () => {
               {data.sections.notes && (data.notes?.length ?? 0) > 0 && (
                 <section>
                   <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Notes</h2>
-                  <div className="border-2 border-foreground/20 p-6 space-y-3">
+                  <div className="border-2 border-border p-6 space-y-3">
                     {(data.notes ?? []).map((n) => (
                       <div key={n.id} className="text-sm">
                         <p className="text-xs text-muted-foreground">{n.note_date}</p>
@@ -212,10 +212,10 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
   const ytdGas = taxes.mileage.filter((m) => m.entry_date?.startsWith(String(year))).reduce((s, m) => s + Number(m.gas_amount), 0);
 
   const Block = ({ title, rows, file, children }: { title: string; rows: Record<string, unknown>[]; file: string; children: React.ReactNode }) => (
-    <div className="border-2 border-foreground/20 p-6">
+    <div className="border-2 border-border p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs uppercase tracking-widest text-muted-foreground">{title} · {rows.length} rows</h3>
-        <button onClick={() => exportCSV(file, rows)} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:border-brand hover:text-brand">CSV</button>
+        <button onClick={() => exportCSV(file, rows)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-brand hover:text-brand">CSV</button>
       </div>
       {rows.length === 0 ? <p className="text-sm text-muted-foreground">Nothing here yet.</p> : children}
     </div>
@@ -248,7 +248,7 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
               const dateLabel = r.date_precision === "month"
                 ? new Date(`${r.entry_date}T00:00:00`).toLocaleString(undefined, { month: "long", year: "numeric" })
                 : r.entry_date;
-              return (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{dateLabel}</td><td className="py-2">{r.source}{r.invoice_id && <span className="ml-2 text-[10px] text-brand uppercase">invoice</span>}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>);
+              return (<tr key={r.id} className="border-t border-border"><td className="py-2 text-muted-foreground">{dateLabel}</td><td className="py-2">{r.source}{r.invoice_id && <span className="ml-2 text-[10px] text-brand uppercase">invoice</span>}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>);
             })}</tbody>
           </table>
         </Block>
@@ -256,14 +256,14 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
           <table className="w-full text-sm">
             <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Year</th><th className="py-2">Employer</th><th className="py-2">File</th><th className="py-2">Notes</th><th className="py-2 text-right">Download</th></tr></thead>
             <tbody>{taxes.w2_documents.map((r) => (
-              <tr key={r.id} className="border-t border-foreground/10">
+              <tr key={r.id} className="border-t border-border">
                 <td className="py-2 text-muted-foreground">{r.year}</td>
                 <td className="py-2">{r.employer}</td>
                 <td className="py-2 text-muted-foreground truncate max-w-[260px]">{r.file_name}</td>
                 <td className="py-2 text-muted-foreground">{r.notes || "—"}</td>
                 <td className="py-2 text-right">
                   {r.download_url ? (
-                    <a href={r.download_url} target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-1 hover:border-brand hover:text-brand">Download</a>
+                    <a href={r.download_url} target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1 hover:border-brand hover:text-brand">Download</a>
                   ) : <span className="text-[10px] text-muted-foreground">unavailable</span>}
                 </td>
               </tr>
@@ -273,13 +273,13 @@ function TaxesSection({ taxes }: { taxes: NonNullable<ViewData["taxes"]> }) {
         <Block title="Expenses & write-offs" rows={taxes.expenses} file="expenses.csv">
           <table className="w-full text-sm">
             <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Category</th><th className="py-2">Description</th><th className="py-2 text-right">Amount</th></tr></thead>
-            <tbody>{taxes.expenses.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2"><span className="text-[10px] uppercase tracking-widest border border-foreground/20 px-2 py-0.5">{r.category}</span></td><td className="py-2">{r.description}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>))}</tbody>
+            <tbody>{taxes.expenses.map((r) => (<tr key={r.id} className="border-t border-border"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2"><span className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-2 py-0.5">{r.category}</span></td><td className="py-2">{r.description}</td><td className="py-2 text-right font-semibold">{fmt(r.amount)}</td></tr>))}</tbody>
           </table>
         </Block>
         <Block title="Mileage & gas" rows={taxes.mileage} file="mileage.csv">
           <table className="w-full text-sm">
             <thead><tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground"><th className="py-2">Date</th><th className="py-2">Purpose</th><th className="py-2 text-right">Miles</th><th className="py-2 text-right">Gas</th><th className="py-2">Vehicle</th></tr></thead>
-            <tbody>{taxes.mileage.map((r) => (<tr key={r.id} className="border-t border-foreground/10"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.purpose}</td><td className="py-2 text-right font-semibold">{Number(r.miles).toFixed(1)}</td><td className="py-2 text-right">{fmt(r.gas_amount)}</td><td className="py-2 text-muted-foreground">{r.vehicle || "—"}</td></tr>))}</tbody>
+            <tbody>{taxes.mileage.map((r) => (<tr key={r.id} className="border-t border-border"><td className="py-2 text-muted-foreground">{r.entry_date}</td><td className="py-2">{r.purpose}</td><td className="py-2 text-right font-semibold">{Number(r.miles).toFixed(1)}</td><td className="py-2 text-right">{fmt(r.gas_amount)}</td><td className="py-2 text-muted-foreground">{r.vehicle || "—"}</td></tr>))}</tbody>
           </table>
         </Block>
         <Block title="Tax reminders" rows={taxes.reminders} file="reminders.csv">

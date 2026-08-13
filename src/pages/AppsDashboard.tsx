@@ -128,7 +128,7 @@ const AppsDashboard = () => {
                 </button>
                 <button
                   onClick={copyPortalLink}
-                  className="text-xs uppercase tracking-widest border border-foreground/40 px-4 py-2 hover:border-foreground transition-colors"
+                  className="text-xs uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground transition-colors"
                 >
                   Copy portal link
                 </button>

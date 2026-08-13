@@ -195,11 +195,11 @@ export default function Taxes() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background font-mono flex items-center justify-center text-sm text-muted-foreground">Loading…</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center text-sm text-muted-foreground">Loading…</div>;
   }
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
       <Header />
       <main className="pt-28 pb-20">
@@ -219,7 +219,7 @@ export default function Taxes() {
                 <p className="text-xs text-muted-foreground mt-1">If yes, connect Stripe and we'll auto-pull every charge into your income. Zelle, Cash App, and cash always have to be entered manually.</p>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => saveStripeChoice("manual")} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-4 py-2">No, manual only</button>
+                <button onClick={() => saveStripeChoice("manual")} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-4 py-2">No, manual only</button>
                 <button onClick={() => setShowStripeModal(true)} className="text-[10px] uppercase tracking-widest bg-foreground text-background px-4 py-2">Yes, connect Stripe</button>
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function Taxes() {
             ))}
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-4 border-2 border-foreground/20 p-5">
+          <div className="mt-6 flex flex-wrap items-center gap-4 border-2 border-border p-5">
             <div className="flex-1 min-w-[200px]">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Accountant</p>
               <p className="text-sm font-semibold mt-1">
@@ -250,7 +250,7 @@ export default function Taxes() {
                 <p className="text-[10px] text-muted-foreground mt-1">Last notified {new Date(profile.last_accountant_notified_at).toLocaleString()}</p>
               )}
             </div>
-            <button onClick={() => setShowAccountantModal(true)} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-2 hover:border-brand hover:text-brand">
+            <button onClick={() => setShowAccountantModal(true)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-2 hover:border-brand hover:text-brand">
               {profile?.linked_accountant_id ? "Change" : "Set Accountant"}
             </button>
             <button onClick={notifyAccountant} disabled={linkStatus !== "active"} className="text-[10px] uppercase tracking-widest bg-brand text-brand-foreground border-2 border-brand px-4 py-2 hover:bg-brand/90 disabled:opacity-50">
@@ -258,7 +258,7 @@ export default function Taxes() {
             </button>
           </div>
 
-          <div className="mt-10 flex flex-wrap gap-0 border-b-2 border-foreground/20">
+          <div className="mt-10 flex flex-wrap gap-0 border-b-2 border-border">
             {TABS.map(t => (
               <button key={t} onClick={() => setTab(t)} className={`px-5 py-3 text-xs uppercase tracking-widest border-b-2 -mb-[2px] ${tab === t ? "border-brand text-brand" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
                 {t}
@@ -285,10 +285,10 @@ export default function Taxes() {
             <h2 className="text-2xl font-bold mt-2">Enter your accountant's ID</h2>
             <p className="text-xs text-muted-foreground mt-2">Ask them for their Accountant ID (starts with <code>A-</code>). When they accept, you can notify them with one click.</p>
             <div className="mt-6 space-y-3">
-              <input value={accountantIdInput} onChange={e => setAccountantIdInput(e.target.value.toUpperCase())} placeholder="A-XXXXXX" className="w-full border-2 border-foreground/20 px-3 py-2 text-sm bg-background tracking-widest" autoFocus />
+              <input value={accountantIdInput} onChange={e => setAccountantIdInput(e.target.value.toUpperCase())} placeholder="A-XXXXXX" className="w-full border-2 border-border px-3 py-2 text-sm bg-background tracking-widest" autoFocus />
             </div>
             <div className="mt-6 flex gap-3">
-              <button onClick={() => setShowAccountantModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-2">Cancel</button>
+              <button onClick={() => setShowAccountantModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-2">Cancel</button>
               <button onClick={saveAccountantById} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2">Send request</button>
             </div>
           </div>
@@ -307,11 +307,11 @@ export default function Taxes() {
               <li>Copy and paste the <code>sk_…</code> key below</li>
             </ol>
             <div className="mt-4 space-y-3">
-              <input value={stripeKeyInput} onChange={e => setStripeKeyInput(e.target.value)} placeholder="sk_live_… or rk_live_…" type="password" className="w-full border-2 border-foreground/20 px-3 py-2 text-sm bg-background" autoFocus />
+              <input value={stripeKeyInput} onChange={e => setStripeKeyInput(e.target.value)} placeholder="sk_live_… or rk_live_…" type="password" className="w-full border-2 border-border px-3 py-2 text-sm bg-background" autoFocus />
               <p className="text-[10px] text-muted-foreground">Stored encrypted at rest. Used only to read your charges. Revoke any time in your Stripe dashboard.</p>
             </div>
             <div className="mt-6 flex gap-3">
-              <button onClick={() => setShowStripeModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-foreground/30 px-3 py-2">Cancel</button>
+              <button onClick={() => setShowStripeModal(false)} className="flex-1 text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-2">Cancel</button>
               <button disabled={savingStripe} onClick={() => saveStripeChoice("stripe", stripeKeyInput)} className="flex-1 text-[10px] uppercase tracking-widest bg-foreground text-background px-3 py-2 disabled:opacity-50">{savingStripe ? "Connecting…" : "Connect"}</button>
             </div>
           </div>
@@ -328,7 +328,7 @@ function TableShell({ children, header, action }: { children: React.ReactNode; h
         <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{header}</div>
         {action}
       </div>
-      <div className="border-2 border-foreground/20 overflow-x-auto">{children}</div>
+      <div className="border-2 border-border overflow-x-auto">{children}</div>
     </div>
   );
 }
@@ -351,20 +351,20 @@ function IncomeTab({ userId, rows, reload }: { userId: string; rows: IncomeRow[]
   const remove = async (id: string) => { await supabase.from("tax_income_entries").delete().eq("id", id); reload(); };
   return (
     <TableShell header={`Business income · ${rows.length} rows · auto-imported from invoices & Stripe`}>
-      <div className="p-3 border-b-2 border-foreground/20 bg-muted/30 space-y-2">
+      <div className="p-3 border-b-2 border-border bg-muted/30 space-y-2">
         <div className="flex gap-1 text-[10px] uppercase tracking-widest">
-          <button type="button" onClick={() => setForm(s => ({ ...s, precision: "day" }))} className={`px-3 py-1 border ${form.precision === "day" ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-muted-foreground hover:text-foreground"}`}>Exact day</button>
-          <button type="button" onClick={() => setForm(s => ({ ...s, precision: "month" }))} className={`px-3 py-1 border ${form.precision === "month" ? "bg-foreground text-background border-foreground" : "border-foreground/20 text-muted-foreground hover:text-foreground"}`}>Month only</button>
+          <button type="button" onClick={() => setForm(s => ({ ...s, precision: "day" }))} className={`px-3 py-1 border ${form.precision === "day" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:text-foreground"}`}>Exact day</button>
+          <button type="button" onClick={() => setForm(s => ({ ...s, precision: "month" }))} className={`px-3 py-1 border ${form.precision === "month" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:text-foreground"}`}>Month only</button>
         </div>
         <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[160px,2fr,1fr,2fr,auto] gap-2">
           {form.precision === "day" ? (
-            <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+            <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
           ) : (
-            <input type="month" value={form.month_value} onChange={e => setForm(s => ({ ...s, month_value: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+            <input type="month" value={form.month_value} onChange={e => setForm(s => ({ ...s, month_value: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
           )}
-          <input placeholder="Source (client, gig, etc.)" value={form.source} onChange={e => setForm(s => ({ ...s, source: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-          <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-          <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Source (client, gig, etc.)" value={form.source} onChange={e => setForm(s => ({ ...s, source: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+          <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
           <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
         </form>
       </div>
@@ -377,7 +377,7 @@ function IncomeTab({ userId, rows, reload }: { userId: string; rows: IncomeRow[]
         <tbody>
           {rows.length === 0 && <EmptyRow cols={5} text="No income logged yet. Add a row above or pull from invoices." />}
           {rows.map(r => (
-            <tr key={r.id} className="border-t border-foreground/10">
+            <tr key={r.id} className="border-t border-border">
               <td className="px-3 py-2 text-muted-foreground">{formatEntryDate(r.entry_date, r.date_precision || "day")}</td>
               <td className="px-3 py-2">{r.source}{r.invoice_id && <span className="ml-2 text-[10px] text-brand uppercase">invoice</span>}</td>
               <td className="px-3 py-2 text-right font-semibold">{fmt(r.amount)}</td>
@@ -440,12 +440,12 @@ function W2DocsTab({ userId, rows, reload }: { userId: string; rows: W2DocRow[];
 
   return (
     <TableShell header={`W-2 forms on file · ${rows.length}`}>
-      <form onSubmit={upload} className="p-4 border-b-2 border-foreground/20 bg-muted/30 space-y-3">
+      <form onSubmit={upload} className="p-4 border-b-2 border-border bg-muted/30 space-y-3">
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Upload your W-2 PDF or image so your accountant can download it directly.</p>
         <div className="grid grid-cols-1 md:grid-cols-[90px,2fr,2fr] gap-2">
-          <input placeholder="Year" value={form.year} onChange={e => setForm(s => ({ ...s, year: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-          <input placeholder="Employer" value={form.employer} onChange={e => setForm(s => ({ ...s, employer: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-          <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Year" value={form.year} onChange={e => setForm(s => ({ ...s, year: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Employer" value={form.employer} onChange={e => setForm(s => ({ ...s, employer: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+          <input placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <input id="w2-file-input" type="file" accept="application/pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="text-sm" />
@@ -461,13 +461,13 @@ function W2DocsTab({ userId, rows, reload }: { userId: string; rows: W2DocRow[];
         <tbody>
           {rows.length === 0 && <EmptyRow cols={5} text="No W-2 forms uploaded yet." />}
           {rows.map(r => (
-            <tr key={r.id} className="border-t border-foreground/10">
+            <tr key={r.id} className="border-t border-border">
               <td className="px-3 py-2 text-muted-foreground">{r.year}</td>
               <td className="px-3 py-2">{r.employer}</td>
               <td className="px-3 py-2 text-muted-foreground truncate max-w-[240px]">{r.file_name}</td>
               <td className="px-3 py-2 text-muted-foreground">{r.notes || "—"}</td>
               <td className="px-3 py-2 text-right whitespace-nowrap">
-                <button onClick={() => download(r)} className="text-[10px] uppercase tracking-widest border border-foreground/20 px-3 py-1 hover:border-brand hover:text-brand mr-1">Download</button>
+                <button onClick={() => download(r)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1 hover:border-brand hover:text-brand mr-1">Download</button>
                 <button onClick={() => remove(r)} className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-destructive">Delete</button>
               </td>
             </tr>
@@ -491,14 +491,14 @@ function ExpensesTab({ userId, rows, reload }: { userId: string; rows: ExpenseRo
   const remove = async (id: string) => { await supabase.from("tax_expenses").delete().eq("id", id); reload(); };
   return (
     <TableShell header={`Expenses & write-offs · ${rows.length} rows`}>
-      <form onSubmit={add} className="grid grid-cols-2 md:grid-cols-[130px,140px,2fr,1fr,1fr,auto] gap-2 p-3 border-b-2 border-foreground/20 bg-muted/30">
-        <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <select value={form.category} onChange={e => setForm(s => ({ ...s, category: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm">
+      <form onSubmit={add} className="grid grid-cols-2 md:grid-cols-[130px,140px,2fr,1fr,1fr,auto] gap-2 p-3 border-b-2 border-border bg-muted/30">
+        <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <select value={form.category} onChange={e => setForm(s => ({ ...s, category: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm">
           {EXPENSE_CATEGORIES.map(c => <option key={c}>{c}</option>)}
         </select>
-        <input placeholder="What did you buy?" value={form.description} onChange={e => setForm(s => ({ ...s, description: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Receipt note" value={form.receipt_note} onChange={e => setForm(s => ({ ...s, receipt_note: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+        <input placeholder="What did you buy?" value={form.description} onChange={e => setForm(s => ({ ...s, description: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input placeholder="Receipt note" value={form.receipt_note} onChange={e => setForm(s => ({ ...s, receipt_note: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
       </form>
       <table className="w-full text-sm">
@@ -510,9 +510,9 @@ function ExpensesTab({ userId, rows, reload }: { userId: string; rows: ExpenseRo
         <tbody>
           {rows.length === 0 && <EmptyRow cols={6} text="No expenses logged yet." />}
           {rows.map(r => (
-            <tr key={r.id} className="border-t border-foreground/10">
+            <tr key={r.id} className="border-t border-border">
               <td className="px-3 py-2 text-muted-foreground">{r.entry_date}</td>
-              <td className="px-3 py-2"><span className="text-[10px] uppercase tracking-widest border border-foreground/20 px-2 py-0.5">{r.category}</span></td>
+              <td className="px-3 py-2"><span className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-2 py-0.5">{r.category}</span></td>
               <td className="px-3 py-2">{r.description}</td>
               <td className="px-3 py-2 text-right font-semibold">{fmt(r.amount)}</td>
               <td className="px-3 py-2 text-muted-foreground">{r.receipt_note || "—"}</td>
@@ -539,12 +539,12 @@ function MileageTab({ userId, rows, reload }: { userId: string; rows: MileageRow
   const totalMiles = rows.reduce((s, r) => s + Number(r.miles), 0);
   return (
     <TableShell header={`Mileage & gas · ${rows.length} rows · ${totalMiles.toFixed(0)} mi total`}>
-      <form onSubmit={add} className="grid grid-cols-2 md:grid-cols-[140px,2fr,1fr,1fr,1fr,auto] gap-2 p-3 border-b-2 border-foreground/20 bg-muted/30">
-        <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Purpose (client meeting, etc.)" value={form.purpose} onChange={e => setForm(s => ({ ...s, purpose: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.1" placeholder="Miles" value={form.miles} onChange={e => setForm(s => ({ ...s, miles: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="Gas $" value={form.gas_amount} onChange={e => setForm(s => ({ ...s, gas_amount: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Vehicle" value={form.vehicle} onChange={e => setForm(s => ({ ...s, vehicle: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+      <form onSubmit={add} className="grid grid-cols-2 md:grid-cols-[140px,2fr,1fr,1fr,1fr,auto] gap-2 p-3 border-b-2 border-border bg-muted/30">
+        <input type="date" value={form.entry_date} onChange={e => setForm(s => ({ ...s, entry_date: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input placeholder="Purpose (client meeting, etc.)" value={form.purpose} onChange={e => setForm(s => ({ ...s, purpose: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input type="number" step="0.1" placeholder="Miles" value={form.miles} onChange={e => setForm(s => ({ ...s, miles: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input type="number" step="0.01" placeholder="Gas $" value={form.gas_amount} onChange={e => setForm(s => ({ ...s, gas_amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input placeholder="Vehicle" value={form.vehicle} onChange={e => setForm(s => ({ ...s, vehicle: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
       </form>
       <table className="w-full text-sm">
@@ -556,7 +556,7 @@ function MileageTab({ userId, rows, reload }: { userId: string; rows: MileageRow
         <tbody>
           {rows.length === 0 && <EmptyRow cols={6} text="No mileage logged yet." />}
           {rows.map(r => (
-            <tr key={r.id} className="border-t border-foreground/10">
+            <tr key={r.id} className="border-t border-border">
               <td className="px-3 py-2 text-muted-foreground">{r.entry_date}</td>
               <td className="px-3 py-2">{r.purpose}</td>
               <td className="px-3 py-2 text-right font-semibold">{Number(r.miles).toFixed(1)}</td>
@@ -585,11 +585,11 @@ function RemindersTab({ userId, rows, reload }: { userId: string; rows: Reminder
   const remove = async (id: string) => { await supabase.from("tax_reminders").delete().eq("id", id); reload(); };
   return (
     <TableShell header={`Tax reminders · ${rows.length}`}>
-      <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[2fr,1fr,150px,2fr,auto] gap-2 p-3 border-b-2 border-foreground/20 bg-muted/30">
-        <input placeholder="e.g. Q3 federal estimate" value={form.title} onChange={e => setForm(s => ({ ...s, title: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input type="date" value={form.due_date} onChange={e => setForm(s => ({ ...s, due_date: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
-        <input placeholder="Notes" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-foreground/15 bg-background px-2 py-1.5 text-sm" />
+      <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[2fr,1fr,150px,2fr,auto] gap-2 p-3 border-b-2 border-border bg-muted/30">
+        <input placeholder="e.g. Q3 federal estimate" value={form.title} onChange={e => setForm(s => ({ ...s, title: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={e => setForm(s => ({ ...s, amount: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input type="date" value={form.due_date} onChange={e => setForm(s => ({ ...s, due_date: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
+        <input placeholder="Notes" value={form.notes} onChange={e => setForm(s => ({ ...s, notes: e.target.value }))} className="border border-border bg-background px-2 py-1.5 text-sm" />
         <button className="bg-foreground text-background px-4 py-1.5 text-[10px] uppercase tracking-widest">Add</button>
       </form>
       <div className="divide-y divide-foreground/10">
@@ -601,8 +601,8 @@ function RemindersTab({ userId, rows, reload }: { userId: string; rows: Reminder
               <p className="text-[10px] text-muted-foreground mt-1">{r.due_date || "no due date"} · {fmt(r.amount)}{r.notes ? ` · ${r.notes}` : ""}</p>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => togglePaid(r)} className="text-[10px] uppercase tracking-widest border border-foreground/20 px-3 py-1.5 hover:border-brand hover:text-brand">{r.paid ? "Unpaid" : "Paid"}</button>
-              <button onClick={() => remove(r.id)} className="text-[10px] uppercase tracking-widest border border-foreground/20 px-3 py-1.5 hover:border-destructive hover:text-destructive">Delete</button>
+              <button onClick={() => togglePaid(r)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-brand hover:text-brand">{r.paid ? "Unpaid" : "Paid"}</button>
+              <button onClick={() => remove(r.id)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Delete</button>
             </div>
           </div>
         ))}
@@ -645,25 +645,25 @@ function CalendarTab({ reminders, invoices }: { reminders: ReminderRow[]; invoic
       <div className="flex items-center justify-between mb-4">
         <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Tax calendar</div>
         <div className="flex items-center gap-3">
-          <button onClick={() => setCursor(new Date(year, month - 1, 1))} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-2 py-1">←</button>
+          <button onClick={() => setCursor(new Date(year, month - 1, 1))} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-2 py-1">←</button>
           <span className="text-sm font-semibold w-44 text-center">{monthLabel}</span>
-          <button onClick={() => setCursor(new Date(year, month + 1, 1))} className="text-[10px] uppercase tracking-widest border border-foreground/30 px-2 py-1">→</button>
+          <button onClick={() => setCursor(new Date(year, month + 1, 1))} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-2 py-1">→</button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-6">
-        <div className="border-2 border-foreground/20">
-          <div className="grid grid-cols-7 text-[10px] uppercase tracking-widest text-muted-foreground border-b-2 border-foreground/20">
+        <div className="border-2 border-border">
+          <div className="grid grid-cols-7 text-[10px] uppercase tracking-widest text-muted-foreground border-b-2 border-border">
             {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => <div key={d} className="px-2 py-2 text-center">{d}</div>)}
           </div>
           <div className="grid grid-cols-7">
             {cells.map((d, idx) => {
-              if (d === null) return <div key={idx} className="border-t border-l border-foreground/10 min-h-[80px] bg-muted/10" />;
+              if (d === null) return <div key={idx} className="border-t border-l border-border min-h-[80px] bg-muted/10" />;
               const iso = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
               const evs = eventsByDate[iso] || [];
               const isToday = iso === todayIso;
               const isSelected = iso === selected;
               return (
-                <button key={idx} onClick={() => setSelected(iso)} className={`border-t border-l border-foreground/10 min-h-[80px] p-2 text-left hover:bg-brand/5 ${isSelected ? "bg-brand/10" : ""} ${isToday ? "ring-2 ring-brand ring-inset" : ""}`}>
+                <button key={idx} onClick={() => setSelected(iso)} className={`border-t border-l border-border min-h-[80px] p-2 text-left hover:bg-brand/5 ${isSelected ? "bg-brand/10" : ""} ${isToday ? "ring-2 ring-brand ring-inset" : ""}`}>
                   <div className="text-xs font-semibold">{d}</div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {evs.slice(0, 3).map((e, i) => (
@@ -675,21 +675,21 @@ function CalendarTab({ reminders, invoices }: { reminders: ReminderRow[]; invoic
               );
             })}
           </div>
-          <div className="flex flex-wrap gap-4 p-3 border-t-2 border-foreground/20 text-[10px] uppercase tracking-widest text-muted-foreground">
+          <div className="flex flex-wrap gap-4 p-3 border-t-2 border-border text-[10px] uppercase tracking-widest text-muted-foreground">
             <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-brand" />Reminder</span>
             <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-foreground" />Invoice Paid</span>
             <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full border border-foreground" />Invoice Due</span>
           </div>
         </div>
 
-        <div className="border-2 border-foreground/20 p-5">
+        <div className="border-2 border-border p-5">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{selected || "Select a day"}</p>
           {selectedEvents.length === 0 ? (
             <p className="text-sm text-muted-foreground mt-4">{selected ? "Nothing scheduled." : "Click any day to see what's on it."}</p>
           ) : (
             <ul className="mt-4 space-y-3">
               {selectedEvents.map((e, i) => (
-                <li key={i} className="border border-foreground/15 p-3">
+                <li key={i} className="border border-border rounded-2xl p-3">
                   <p className="text-[10px] uppercase tracking-widest text-brand">{e.type.replace("_", " ")}</p>
                   <p className="text-sm font-semibold mt-1">{e.label}</p>
                   <p className="text-xs text-muted-foreground">{fmt(e.amount)}</p>

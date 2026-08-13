@@ -50,7 +50,7 @@ const InvoiceThankYou = () => {
       <div className="border-b border-border">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
           <img src={logo} alt="RDG" className="h-6" />
-          <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">
+          <span className="text-xs text-foreground uppercase tracking-[0.3em]">
             Payment Confirmation
           </span>
         </div>
@@ -82,12 +82,12 @@ const InvoiceThankYou = () => {
             <p className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-3">
               What Happens Next
             </p>
-            <p className="text-sm font-mono text-foreground leading-relaxed">
+            <p className="text-sm text-foreground leading-relaxed">
               All of your property — including source code, documentation, design assets, and any other tools
               or tech stack used for this project — will be delivered to you within the next week.
               You'll receive everything via the links section on your invoice portal.
             </p>
-            <p className="text-sm font-mono text-foreground leading-relaxed mt-3">
+            <p className="text-sm text-foreground leading-relaxed mt-3">
               Thank you for choosing Reed Digital Group. We're honored to have been part of your journey.
             </p>
           </div>
@@ -106,7 +106,7 @@ const InvoiceThankYou = () => {
           <h2 className="text-2xl md:text-3xl font-mono font-bold text-foreground tracking-tight mb-8">
             Meet the Team Behind Your Project
           </h2>
-          <p className="text-base font-mono text-foreground leading-relaxed mb-10">
+          <p className="text-base text-foreground leading-relaxed mb-10">
             Every project at Reed Digital Group is powered by a team of dedicated young professionals
             who care deeply about the work they do. We wanted to take a moment to introduce the
             people who helped make your vision a reality.
@@ -119,7 +119,7 @@ const InvoiceThankYou = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 + i * 0.15 }}
-                className="border border-border p-6"
+                className="border border-border rounded-2xl p-6"
               >
                 <div className="w-20 h-20 mb-4 overflow-hidden border-2 border-foreground">
                   <img
@@ -134,7 +134,7 @@ const InvoiceThankYou = () => {
                 <p className="text-xs font-mono text-primary uppercase tracking-[0.2em] mb-3">
                   {member.title}
                 </p>
-                <p className="text-sm font-mono text-foreground leading-relaxed">
+                <p className="text-sm text-foreground leading-relaxed">
                   {member.description}
                 </p>
               </motion.div>

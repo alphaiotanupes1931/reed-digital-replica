@@ -55,7 +55,7 @@ const InvoiceDetailsCard = ({
       <div className="border-b-2 border-foreground p-6 flex items-start justify-between">
         <div className="flex items-center gap-3">
           <img src={logo} alt="RDG" className="h-6" />
-          <span className="text-xs font-mono text-foreground uppercase tracking-widest">Invoice</span>
+          <span className="text-xs text-foreground uppercase tracking-widest">Invoice</span>
         </div>
         {isPaid ? (
           <span className="text-xl font-mono font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">
@@ -73,19 +73,19 @@ const InvoiceDetailsCard = ({
         <div>
           <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Bill To</p>
           <p className="text-lg font-mono font-bold text-foreground">{clientName}</p>
-          <p className="text-sm font-mono text-foreground">{clientEmail}</p>
+          <p className="text-sm text-foreground">{clientEmail}</p>
         </div>
         <div>
           <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">From</p>
           <p className="text-lg font-mono font-bold text-foreground">Reed Digital Group</p>
-          <p className="text-sm font-mono text-foreground">reeddigitalgroup@gmail.com</p>
+          <p className="text-sm text-foreground">reeddigitalgroup@gmail.com</p>
         </div>
       </div>
 
       {/* Line items */}
       <div className="p-6">
         <div className="flex justify-between items-center py-2 border-b border-border">
-          <span className="text-sm font-mono text-foreground">{invoice.service}</span>
+          <span className="text-sm text-foreground">{invoice.service}</span>
           <span className="text-sm font-mono font-bold text-foreground">${basePrice.toLocaleString()}</span>
         </div>
         <div className="flex justify-between items-center pt-4">
@@ -164,7 +164,7 @@ const PaymentOptions = ({
       >
         <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">Option B · Monthly Payment Plan</p>
         <h3 className="text-2xl font-mono font-bold text-foreground mb-1">${monthlyPerCharge.toLocaleString()} / month</h3>
-        <p className="text-sm font-mono text-foreground/70 mb-1">
+        <p className="text-sm text-foreground/70 mb-1">
           {months} monthly payments · Total ${monthlyGrandTotal.toLocaleString()}
         </p>
         <p className="text-xs font-mono text-emerald-500 mb-4">
@@ -495,7 +495,7 @@ const InvoicePortal = () => {
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 hover:opacity-70 transition-opacity">
             <img src={logo} alt="RDG" className="h-5" />
-            <span className="text-xs font-mono text-foreground uppercase tracking-widest">Pay Invoice</span>
+            <span className="text-xs text-foreground uppercase tracking-widest">Pay Invoice</span>
           </Link>
           {loggedIn && (
             <button
@@ -505,7 +505,7 @@ const InvoicePortal = () => {
                 setInvoices([]);
                 setEmail("");
               }}
-              className="text-xs font-mono text-foreground hover:text-primary transition-colors uppercase tracking-widest"
+              className="text-xs text-foreground hover:text-primary transition-colors uppercase tracking-widest"
             >
               Sign out
             </button>
@@ -619,7 +619,7 @@ const InvoicePortal = () => {
               {contract && (
                 <div className="mt-8 border-2 border-foreground bg-background">
                   <div className="border-b-2 border-foreground p-6 flex items-center justify-between">
-                    <span className="text-xs font-mono text-foreground uppercase tracking-widest">Contract</span>
+                    <span className="text-xs text-foreground uppercase tracking-widest">Contract</span>
                     {contract.signed_name && contract.signed_at ? (
                       <span className="text-xl font-mono font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">SIGNED</span>
                     ) : (
@@ -659,7 +659,7 @@ const InvoicePortal = () => {
                       <Button
                         onClick={() => setConfirmingSign(true)}
                         disabled={signName.trim().length < 2}
-                        className="h-12 px-8 font-mono text-xs uppercase tracking-widest rounded-none"
+                        className="h-12 px-8 text-xs uppercase tracking-widest rounded-none"
                       >
                         Submit Signature
                       </Button>
@@ -672,13 +672,13 @@ const InvoicePortal = () => {
                 <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6" onClick={() => !signing && setConfirmingSign(false)}>
                   <div className="bg-background border-2 border-foreground max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
                     <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Confirm signature</p>
-                    <p className="mt-4 text-sm font-mono text-foreground leading-relaxed">
+                    <p className="mt-4 text-sm text-foreground leading-relaxed">
                       By clicking <span className="font-bold">Confirm & Sign</span>, you agree to be legally bound by the terms of this contract. Your typed name will serve as your electronic signature.
                     </p>
                     <p className="mt-4 text-3xl border-y border-border py-3 text-center" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signName}</p>
                     <div className="mt-6 flex gap-3">
-                      <button onClick={() => setConfirmingSign(false)} disabled={signing} className="flex-1 h-11 border border-border font-mono text-xs uppercase tracking-widest hover:bg-muted">Cancel</button>
-                      <Button onClick={submitSignature} disabled={signing} className="flex-1 h-11 font-mono text-xs uppercase tracking-widest rounded-none">
+                      <button onClick={() => setConfirmingSign(false)} disabled={signing} className="flex-1 h-11 border border-border text-xs uppercase tracking-widest hover:bg-muted">Cancel</button>
+                      <Button onClick={submitSignature} disabled={signing} className="flex-1 h-11 text-xs uppercase tracking-widest rounded-none">
                         {signing ? "Signing..." : "Confirm & Sign"}
                       </Button>
                     </div>

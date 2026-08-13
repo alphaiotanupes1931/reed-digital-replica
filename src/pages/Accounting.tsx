@@ -165,7 +165,7 @@ const Accounting = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <main className="py-12">
         <div className="container max-w-3xl mx-auto px-6">
           <Link to="/home-office" className="text-xs text-muted-foreground hover:text-brand uppercase tracking-widest">← Home Office</Link>
@@ -173,7 +173,7 @@ const Accounting = () => {
           <p className="text-xs text-muted-foreground mt-1">Bank sync, write-offs, and accountant access.</p>
 
           {/* Tabs */}
-          <div className="mt-8 flex gap-6 border-b border-foreground/10">
+          <div className="mt-8 flex gap-6 border-b border-border">
             {(["share", "writeoffs"] as const).map((t) => (
               <button key={t} onClick={() => setTab(t)}
                 className={`pb-3 text-xs uppercase tracking-widest transition-colors ${tab === t ? "text-foreground border-b-2 border-brand -mb-px" : "text-muted-foreground hover:text-foreground"}`}>
@@ -185,7 +185,7 @@ const Accounting = () => {
           {loading ? <p className="mt-8 text-sm text-muted-foreground">Loading…</p> : tab === "share" ? (
             <div className="mt-8 space-y-8">
               {/* Publish */}
-              <section className="flex items-center justify-between gap-4 py-4 border-b border-foreground/10">
+              <section className="flex items-center justify-between gap-4 py-4 border-b border-border">
                 <div>
                   <p className="text-sm font-bold">Publish finances</p>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -209,7 +209,7 @@ const Accounting = () => {
                   ].map((row) => {
                     const k = row.key as keyof AccountantSettings;
                     return (
-                      <label key={row.key} className="flex items-center justify-between py-3 border-b border-foreground/10 cursor-pointer">
+                      <label key={row.key} className="flex items-center justify-between py-3 border-b border-border cursor-pointer">
                         <span className="text-sm">{row.label}</span>
                         <input type="checkbox" checked={!!settings?.[k]}
                           onChange={(e) => updateSettings({ [row.key]: e.target.checked } as Partial<AccountantSettings>)}
@@ -255,7 +255,7 @@ const Accounting = () => {
                 {invites.length > 0 ? (
                   <ul>
                     {invites.map((inv) => (
-                      <li key={inv.id} className="flex items-center justify-between py-2 border-b border-foreground/10">
+                      <li key={inv.id} className="flex items-center justify-between py-2 border-b border-border">
                         <div>
                           <p className="text-sm">{inv.email}</p>
                           <p className="text-xs text-muted-foreground">{inv.accepted_at ? "Accepted" : "Pending"}</p>
@@ -285,7 +285,7 @@ const Accounting = () => {
                 ) : (
                   <ul>
                     {plaidItems.map((it) => (
-                      <li key={it.id} className="flex items-center justify-between py-2 border-b border-foreground/10">
+                      <li key={it.id} className="flex items-center justify-between py-2 border-b border-border">
                         <div>
                           <p className="text-sm">{it.institution_name || "Bank"}</p>
                           <p className="text-xs text-muted-foreground">
@@ -319,9 +319,9 @@ const Accounting = () => {
                         {closed ? "Reviewed" : "Mark reviewed"}
                       </Button>
                     </div>
-                    <ul className="border-t border-foreground/10">
+                    <ul className="border-t border-border">
                       {g.rows.map((t) => (
-                        <li key={t.id} className="flex items-center justify-between gap-3 py-3 border-b border-foreground/10">
+                        <li key={t.id} className="flex items-center justify-between gap-3 py-3 border-b border-border">
                           <div className="min-w-0 flex-1">
                             <p className="text-sm truncate">{t.merchant_name || t.name}</p>
                             <p className="text-xs text-muted-foreground">
@@ -331,11 +331,11 @@ const Accounting = () => {
                           <div className="flex gap-1">
                             <button
                               onClick={() => setWriteOff(t.id, t.is_write_off === true ? null : true)}
-                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === true ? "bg-brand text-background border-brand" : "border-foreground/20 hover:border-brand"}`}
+                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === true ? "bg-brand text-background border-brand" : "border-border hover:border-brand"}`}
                               aria-label="Write off">✓</button>
                             <button
                               onClick={() => setWriteOff(t.id, t.is_write_off === false ? null : false)}
-                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === false ? "bg-foreground text-background border-foreground" : "border-foreground/20 hover:border-foreground"}`}
+                              className={`w-8 h-8 border text-sm font-bold ${t.is_write_off === false ? "bg-foreground text-background border-foreground" : "border-border hover:border-foreground"}`}
                               aria-label="Not a write off">✕</button>
                           </div>
                         </li>

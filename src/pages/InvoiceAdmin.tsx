@@ -110,7 +110,7 @@ const DEFAULT_PHASES: Phase[] = [
 const AdminSubtext = () => {
   const { displayed, done } = useTypingEffect("Enter password to continue", 35, 800);
   return (
-    <p className="text-lg font-mono text-foreground mb-12 text-center h-7">
+    <p className="text-lg text-foreground mb-12 text-center h-7">
       {displayed}
       {!done && <span className="typing-cursor">|</span>}
     </p>
@@ -801,7 +801,7 @@ const InvoiceAdmin = () => {
           </p>
           <Link
             to="/home-office/login"
-            className="inline-block text-xs font-mono uppercase tracking-widest border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
+            className="inline-block text-xs font-mono uppercase tracking-widest border border-border rounded-2xl px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
           >
             Go to Sign In
           </Link>
@@ -820,7 +820,7 @@ const InvoiceAdmin = () => {
         <div className="border-b border-border">
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
             <img src={logo} alt="RDG" className="h-6" />
-            <span className="text-xs font-mono text-foreground uppercase tracking-[0.3em]">Admin</span>
+            <span className="text-xs text-foreground uppercase tracking-[0.3em]">Admin</span>
           </div>
         </div>
 
@@ -832,7 +832,7 @@ const InvoiceAdmin = () => {
             <AdminSubtext />
             <motion.form onSubmit={handleLogin} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="space-y-4">
               <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-14 bg-transparent border-0 border-b border-border rounded-none font-mono text-center text-lg tracking-[0.5em] focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30" />
-              <Button type="submit" variant="outline" className="w-full h-12 font-mono text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground">
+              <Button type="submit" variant="outline" className="w-full h-12 text-xs uppercase tracking-[0.2em] rounded-none border-border hover:border-foreground hover:bg-transparent text-foreground">
                 <Lock className="mr-2 h-3.5 w-3.5" />Enter
               </Button>
             </motion.form>
@@ -863,11 +863,11 @@ const InvoiceAdmin = () => {
             {/* Client details */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Client Details</p>
+                <p className="text-sm text-foreground uppercase tracking-widest">Client Details</p>
                 <button
                   onClick={handleSaveClientDetails}
                   disabled={savingDetails}
-                  className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+                  className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
                 >
                   {savingDetails ? "Saving..." : "Save"}
                 </button>
@@ -907,10 +907,10 @@ const InvoiceAdmin = () => {
             {/* Scope of Work */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Scope of Work</p>
+                <p className="text-sm text-foreground uppercase tracking-widest">Scope of Work</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setSowVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{sowVisible ? "Hide SOW" : "Show SOW"}</button>
-                  <button onClick={handleSaveSow} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                  <button onClick={() => setSowVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{sowVisible ? "Hide SOW" : "Show SOW"}</button>
+                  <button onClick={handleSaveSow} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
                 </div>
               </div>
               {sowVisible && (
@@ -919,7 +919,7 @@ const InvoiceAdmin = () => {
                   onChange={(e) => setSowText(e.target.value)}
                   placeholder="What you're building..."
                   rows={6}
-                  className="w-full bg-transparent border border-border p-4 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
+                  className="w-full bg-transparent border border-border rounded-2xl p-4 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y"
                 />
               )}
             </div>
@@ -927,15 +927,15 @@ const InvoiceAdmin = () => {
             {/* Phases */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Phases</p>
+                <p className="text-sm text-foreground uppercase tracking-widest">Phases</p>
                 <button onClick={addPhase} className="text-xs font-mono uppercase tracking-widest text-foreground hover:text-primary">+ Add</button>
               </div>
               <div className="space-y-2">
                 {phases.map((p, i) => (
-                  <div key={i} className="flex gap-3 items-center border border-border p-3">
+                  <div key={i} className="flex gap-3 items-center border border-border rounded-2xl p-3">
                     <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}</span>
                     <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-none font-mono text-sm flex-1 px-0" />
-                    <select value={p.status} onChange={(e) => updatePhase(i, { status: e.target.value as PhaseStatus })} className="bg-transparent border border-border font-mono text-xs uppercase px-2 py-1">
+                    <select value={p.status} onChange={(e) => updatePhase(i, { status: e.target.value as PhaseStatus })} className="bg-transparent border border-border text-xs uppercase px-2 py-1">
                       {PHASE_STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace("_", " ")}</option>)}
                     </select>
                     <button onClick={() => removePhase(i)} className="text-xs font-mono text-destructive hover:underline">remove</button>
@@ -947,11 +947,11 @@ const InvoiceAdmin = () => {
             {/* Contract */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Contract</p>
+                <p className="text-sm text-foreground uppercase tracking-widest">Contract</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handlePrintContract()} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Print / Save PDF</button>
-                  <button onClick={handleToggleContractHidden} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ? "Publish to Client" : "Unpublish"}</button>
-                  <button onClick={handleSaveContract} className="text-[10px] font-mono uppercase tracking-widest border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
+                  <button onClick={() => handlePrintContract()} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Print / Save PDF</button>
+                  <button onClick={handleToggleContractHidden} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{contractHidden ? "Publish to Client" : "Unpublish"}</button>
+                  <button onClick={handleSaveContract} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">Save</button>
                 </div>
               </div>
               {(() => {
@@ -967,7 +967,7 @@ const InvoiceAdmin = () => {
                           <p className="text-2xl mt-1" style={{ fontFamily: "'Dancing Script','Brush Script MT',cursive" }}>{signedName}</p>
                           <p className="text-[10px] font-mono text-muted-foreground mt-1">on {new Date(signedAt).toLocaleString()}</p>
                         </div>
-                        <button onClick={handleResetSignature} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors">Clear</button>
+                        <button onClick={handleResetSignature} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-destructive hover:text-destructive-foreground transition-colors">Clear</button>
                       </div>
                     ) : (
                       <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
@@ -979,7 +979,7 @@ const InvoiceAdmin = () => {
                       onChange={(e) => setContractText(e.target.value)}
                       placeholder="Paste the full contract text here..."
                       rows={14}
-                      className="w-full bg-transparent border border-border p-4 font-mono text-xs leading-relaxed focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y whitespace-pre-wrap"
+                      className="w-full bg-transparent border border-border rounded-2xl p-4 font-mono text-xs leading-relaxed focus:outline-none focus:border-foreground placeholder:text-foreground/30 resize-y whitespace-pre-wrap"
                     />
                   </div>
                 );
@@ -989,10 +989,10 @@ const InvoiceAdmin = () => {
             {/* Invoices */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-mono text-foreground uppercase tracking-widest">Invoices</p>
+                <p className="text-sm text-foreground uppercase tracking-widest">Invoices</p>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-foreground/30 px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ? "Hide Invoices" : "Show Invoices"}</button>
-                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
+                  <button onClick={() => setInvoicesVisible(v => !v)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors">{invoicesVisible ? "Hide Invoices" : "Show Invoices"}</button>
+                  <button onClick={() => setShowInvoiceForm(!showInvoiceForm)} className="text-xs font-mono uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:bg-foreground hover:text-background transition-colors">
                     {showInvoiceForm ? "Cancel" : "New Invoice"}
                   </button>
                 </div>
@@ -1016,8 +1016,8 @@ const InvoiceAdmin = () => {
                           <div className="border-t border-border pt-4">
                             <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">Payment Plan</p>
                             <div className="flex gap-2 mb-3">
-                              <button type="button" onClick={() => setPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "one_time" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>One-time</button>
-                              <button type="button" onClick={() => setPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "monthly" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                              <button type="button" onClick={() => setPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "one_time" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>One-time</button>
+                              <button type="button" onClick={() => setPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${paymentPlan === "monthly" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
                             </div>
                             {paymentPlan === "monthly" && (
                               <div className="space-y-3">
@@ -1039,7 +1039,7 @@ const InvoiceAdmin = () => {
                                   const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
                                   const monthly = p / months;
                                   return (
-                                    <div className="border border-foreground/30 p-3 font-mono text-xs">
+                                    <div className="border border-border rounded-2xl p-3 font-mono text-xs">
                                       <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
                                       <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
                                       <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
@@ -1050,7 +1050,7 @@ const InvoiceAdmin = () => {
                             )}
                           </div>
                           <div className="flex gap-3">
-                            <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Create</Button>
+                            <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-none">Create</Button>
                           </div>
                         </form>
                       </motion.div>
@@ -1069,7 +1069,7 @@ const InvoiceAdmin = () => {
                               <span className="font-mono font-bold text-foreground">{inv.service}</span>
                               <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border ${inv.status === "paid" ? "border-emerald-500 text-emerald-500" : "border-primary text-primary"}`}>{inv.status}</span>
                               {inv.payment_plan === "monthly" && (
-                                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/40 text-foreground/70">
+                                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-foreground/70">
                                   Monthly · {inv.plan_months}mo · ${Number(inv.plan_monthly_amount || 0).toFixed(2)}/mo
                                 </span>
                               )}
@@ -1078,21 +1078,21 @@ const InvoiceAdmin = () => {
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-lg font-mono font-bold">${inv.price.toLocaleString()}</span>
-                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-foreground">{editingInvoiceId === inv.id ? "Close" : "Edit"}</button>
+                            <button onClick={() => editingInvoiceId === inv.id ? setEditingInvoiceId(null) : startEditInvoice(inv)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">{editingInvoiceId === inv.id ? "Close" : "Edit"}</button>
                             {inv.status !== "paid" ? (
-                              <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
+                              <button onClick={() => handleSetStatus(inv.id, "paid")} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-emerald-500 hover:text-emerald-500">Mark Paid</button>
                             ) : (
-                              <button onClick={() => handleSetStatus(inv.id, "approved")} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-foreground">Unpaid</button>
+                              <button onClick={() => handleSetStatus(inv.id, "approved")} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">Unpaid</button>
                             )}
-                            <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
+                            <button onClick={() => handleDelete(inv.id)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
                           </div>
                           </div>
                           {editingInvoiceId === inv.id && (
-                            <div className="mt-4 border border-border p-4 space-y-4">
+                            <div className="mt-4 border border-border rounded-2xl p-4 space-y-4">
                               <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Payment Plan</p>
                               <div className="flex gap-2">
-                                <button type="button" onClick={() => setEditPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "one_time" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>One-time</button>
-                                <button type="button" onClick={() => setEditPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "monthly" ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
+                                <button type="button" onClick={() => setEditPaymentPlan("one_time")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "one_time" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>One-time</button>
+                                <button type="button" onClick={() => setEditPaymentPlan("monthly")} className={`flex-1 text-xs font-mono uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan === "monthly" ? "border-foreground bg-foreground text-background rounded-full" : "border-border hover:border-foreground"}`}>Monthly (Stripe)</button>
                               </div>
                               {editPaymentPlan === "monthly" && (
                                 <div className="space-y-3">
@@ -1114,7 +1114,7 @@ const InvoiceAdmin = () => {
                                     const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
                                     const monthly = p / months;
                                     return (
-                                      <div className="border border-foreground/30 p-3 font-mono text-xs">
+                                      <div className="border border-border rounded-2xl p-3 font-mono text-xs">
                                         <div className="flex justify-between"><span className="text-muted-foreground">Months</span><span className="font-bold">{months}</span></div>
                                         <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${monthly.toFixed(2)}</span></div>
                                         <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(monthly).toFixed(2)}</span></div>
@@ -1124,8 +1124,8 @@ const InvoiceAdmin = () => {
                                 </div>
                               )}
                               <div className="flex gap-2 pt-2">
-                                <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 font-mono text-xs uppercase tracking-widest rounded-none">Save</Button>
-                                <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] font-mono uppercase tracking-widest border border-border px-4 py-2 hover:border-foreground">Cancel</button>
+                                <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 text-xs uppercase tracking-widest rounded-none">Save</Button>
+                                <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground">Cancel</button>
                               </div>
                             </div>
                           )}
@@ -1144,7 +1144,7 @@ const InvoiceAdmin = () => {
 
   // ── Clients Dashboard ──
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <nav className="w-full border-b border-foreground bg-background px-4 md:px-6 py-3 flex items-center justify-between">
         <Link to="/home-office" className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
           ← Home Office
@@ -1175,7 +1175,7 @@ const InvoiceAdmin = () => {
                   <input value={newCompanyName} onChange={(e) => setNewCompanyName(e.target.value)} placeholder="Business" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                   <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" className="bg-transparent border-b border-border p-3 font-mono text-sm focus:outline-none focus:border-foreground placeholder:text-foreground/30" />
                 </div>
-                <Button type="submit" className="h-10 px-8 font-mono text-xs uppercase tracking-widest rounded-none">Add</Button>
+                <Button type="submit" className="h-10 px-8 text-xs uppercase tracking-widest rounded-none">Add</Button>
               </form>
             </motion.div>
           )}
@@ -1214,7 +1214,7 @@ const InvoiceAdmin = () => {
                       <span className="text-xl font-mono font-bold">${cTotal.toLocaleString()}</span>
                       <button
                         onClick={(e) => handleDeleteClient(e, c.id, c.company_name)}
-                        className="text-[10px] font-mono uppercase tracking-widest border border-border px-3 py-1.5 hover:border-destructive hover:text-destructive"
+                        className="text-[10px] font-mono uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive"
                       >
                         Remove
                       </button>

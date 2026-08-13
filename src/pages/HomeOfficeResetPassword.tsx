@@ -60,7 +60,7 @@ const HomeOfficeResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-32 pb-20">
         <div className="container max-w-md mx-auto">

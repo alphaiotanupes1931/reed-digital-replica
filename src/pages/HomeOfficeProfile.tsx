@@ -100,7 +100,7 @@ const HomeOfficeProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background">
       <div className="fixed top-0 left-0 right-0 h-1 bg-brand z-[60]" />
       <Header />
       <main className="pt-32 pb-20">
@@ -128,7 +128,7 @@ const HomeOfficeProfile = () => {
                   <input className={`${inputCls} flex-1 opacity-60 cursor-not-allowed`} value={email} readOnly disabled />
                   <a
                     href="mailto:info@reeddigitalgroup.com?subject=Email%20change%20request"
-                    className="px-3 flex items-center text-[10px] uppercase tracking-widest border-2 border-foreground/20 hover:border-brand"
+                    className="px-3 flex items-center text-[10px] uppercase tracking-widest border-2 border-border hover:border-brand"
                   >
                     Request Change
                   </a>
@@ -149,7 +149,7 @@ const HomeOfficeProfile = () => {
                 <input className={inputCls} value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
               </Field>
 
-              <div className="border-2 border-foreground/20 p-5 space-y-4">
+              <div className="border-2 border-border p-5 space-y-4">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.2em] text-brand font-bold mb-1">Security Questions</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -194,7 +194,7 @@ const HomeOfficeProfile = () => {
                 </label>
               </div>
 
-              <div className="border-2 border-foreground/20 p-5">
+              <div className="border-2 border-border p-5">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-brand font-bold mb-1">Accept payments from clients</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mb-4">
                   Pick the methods your clients can use. Whatever you select shows up in your Client Portal.
@@ -208,7 +208,7 @@ const HomeOfficeProfile = () => {
                         type="button"
                         onClick={() => toggleMethod(m)}
                         className={`px-3 py-2 text-xs uppercase tracking-widest border-2 transition-colors ${
-                          on ? "border-brand bg-brand/10 text-brand" : "border-foreground/20 text-foreground/60 hover:border-foreground/50"
+                          on ? "border-brand bg-brand/10 text-brand" : "border-border text-foreground/60 hover:border-foreground/40"
                         }`}
                       >
                         {m}
@@ -231,7 +231,7 @@ const HomeOfficeProfile = () => {
               )}
 
               {methods.includes("stripe") && (
-              <div className="border-2 border-foreground/20 p-5">
+              <div className="border-2 border-border p-5">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-brand font-bold mb-1">
                   Stripe Secret API Key <span className="text-foreground/50 normal-case tracking-normal">(optional)</span>
                 </p>
@@ -257,7 +257,7 @@ const HomeOfficeProfile = () => {
                   <button
                     type="button"
                     onClick={() => setShowKey((v) => !v)}
-                    className="px-3 text-[10px] uppercase tracking-widest border-2 border-foreground/20 hover:border-brand"
+                    className="px-3 text-[10px] uppercase tracking-widest border-2 border-border hover:border-brand"
                   >
                     {showKey ? "Hide" : "Show"}
                   </button>
@@ -282,7 +282,7 @@ const HomeOfficeProfile = () => {
 };
 
 const inputCls =
-  "w-full bg-background border-2 border-foreground/20 px-3 py-2 text-sm focus:outline-none focus:border-brand transition-colors";
+  "w-full bg-background border-2 border-border px-3 py-2 text-sm focus:outline-none focus:border-brand transition-colors";
 
 const Field = ({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) => (
   <div>
