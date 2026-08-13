@@ -30,9 +30,9 @@ export const main = {
 
 export const container = {
   width: '100%',
-  maxWidth: '460px',
+  maxWidth: '520px',
   margin: '0 auto',
-  padding: '40px 24px 48px',
+  padding: '56px 40px 64px',
 }
 
 export const wordmark = {
@@ -42,44 +42,44 @@ export const wordmark = {
   textTransform: 'uppercase' as const,
   color: '#171717',
   textAlign: 'center' as const,
-  margin: '0 0 32px',
+  margin: '0 0 56px',
   textDecoration: 'none',
 }
 
 export const h1 = {
-  fontSize: '24px',
-  lineHeight: '1.25',
+  fontSize: '26px',
+  lineHeight: '1.3',
   fontWeight: 700 as const,
   letterSpacing: '-0.02em',
   color: '#171717',
   textAlign: 'center' as const,
-  margin: '0 0 14px',
+  margin: '0 0 20px',
 }
 
 export const text = {
-  fontSize: '15px',
-  lineHeight: '1.6',
+  fontSize: '16px',
+  lineHeight: '1.7',
   color: '#737373',
   textAlign: 'center' as const,
-  margin: '0 0 24px',
+  margin: '0 0 32px',
 }
 
-export const buttonWrap = { textAlign: 'center' as const, margin: '0 0 28px' }
+export const buttonWrap = { textAlign: 'center' as const, margin: '8px 0 16px' }
 
 export const button = {
   display: 'inline-block',
   backgroundColor: brand,
   color: '#ffffff',
-  fontSize: '15px',
+  fontSize: '16px',
   fontWeight: 600 as const,
   borderRadius: '9999px',
-  padding: '14px 34px',
+  padding: '16px 40px',
   textDecoration: 'none',
 }
 
 export const code = {
   display: 'block',
-  fontSize: '30px',
+  fontSize: '32px',
   fontWeight: 700 as const,
   letterSpacing: '0.28em',
   color: '#171717',
@@ -87,22 +87,22 @@ export const code = {
   backgroundColor: '#fafafa',
   border: '1px solid #ededed',
   borderRadius: '16px',
-  padding: '20px 12px',
-  margin: '0 0 28px',
+  padding: '26px 12px',
+  margin: '8px 0 16px',
 }
 
 export const hr = {
   border: 'none',
   borderTop: '1px solid #ededed',
-  margin: '36px 0 20px',
+  margin: '56px 0 28px',
 }
 
 export const footer = {
-  fontSize: '12px',
-  lineHeight: '1.6',
+  fontSize: '13px',
+  lineHeight: '1.7',
   color: '#a3a3a3',
   textAlign: 'center' as const,
-  margin: '0 0 6px',
+  margin: '0 0 10px',
 }
 
 export const link = { color: '#737373', textDecoration: 'underline' }
