@@ -1,6 +1,7 @@
 import { useEffect, useState } from"react";
 import { useNavigate, Link } from"react-router-dom";
 import { motion } from"framer-motion";
+import hoLogo from"@/assets/ho-logo.png.asset.json";
 import { supabase } from"@/integrations/supabase/client";
 import { useToast } from"@/hooks/use-toast";
 
@@ -116,8 +117,8 @@ const HomeOfficeLogin = () => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
-        <Link to="/" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
-          ← Reed Digital Group
+        <Link to="/" className="flex items-center" aria-label="Home Office">
+          <img src={hoLogo.url} alt="Home Office" className="h-7 w-auto" />
         </Link>
         <span className="text-xs uppercase tracking-widest text-muted-foreground">Home Office</span>
       </nav>
