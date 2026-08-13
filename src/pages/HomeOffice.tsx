@@ -1,6 +1,7 @@
 import { useEffect, useState } from"react";
 import { useNavigate, Link } from"react-router-dom";
 import BackLink from"@/components/BackLink";
+import hoLogo from"@/assets/ho-logo.png.asset.json";
 import { supabase } from"@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from"@/components/ui/dialog";
 import NotificationBell from"@/components/NotificationBell";
@@ -100,7 +101,9 @@ const HomeOffice = () => {
   return (
     <div className="min-h-screen bg-background">
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
-        <BackLink to="/" label="RDG" />
+        <Link to="/" className="flex items-center" aria-label="Home Office">
+          <img src={hoLogo.url} alt="Home Office" className="h-7 w-auto" />
+        </Link>
         <span className="text-xs uppercase tracking-widest text-muted-foreground hidden md:block">
           Home Office {displayName ? `· ${displayName}` :""}
         </span>
