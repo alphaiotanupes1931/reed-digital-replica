@@ -156,34 +156,13 @@ const BillsTracker = () => {
 
   const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
-  const incomeRows = incomeClients
-    .map((c) => {
-      const plan = c.maintenance_plan || "";
-      let amount = PLAN_PRICES[plan] || 0;
-      let planLabel = plan;
-      if (plan.startsWith("custom:")) {
-        const m = plan.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/);
-        if (m) {
-          amount = parseFloat(m[2]);
-          planLabel = `Custom — ${m[1]}`;
-        }
-      } else {
-        const [cat, name] = plan.split(":");
-        if (PLAN_LABELS[cat]) planLabel = `${PLAN_LABELS[cat]} — ${name}`;
-      }
-      return { ...c, planLabel, amount };
-    })
-    .filter((r) => r.amount > 0);
-
-  const visibleIncomeRows = incomeRows.filter((r) => !hiddenMaintenanceIds.includes(r.id));
-  const totalIncome = visibleIncomeRows.reduce((s, r) => s + r.amount, 0);
   const extraRows = extraIncome.filter((r) => r.category !== "w2");
   const visibleExtraRows = extraRows.filter((r) => !hiddenExtraIds.includes(r.id));
   const w2Rows = extraIncome.filter((r) => r.category === "w2");
   const totalExtra = visibleExtraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const retainerIncome = (includeMaintenance ? totalIncome : 0) + totalExtra;
-  const grandIncome = (includeMaintenance ? totalIncome : 0) + totalExtra + (includeW2 ? totalW2 : 0);
+  const grandIncome = includeW2 ? totalW2 : 0;
+  const retainerIncome = grandIncome;
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
   const sixFigPct = Math.min(100, Math.max(0, (retainerIncome / goalAmount) * 100));
@@ -223,12 +202,6 @@ const BillsTracker = () => {
     setIncludeW2(next);
     localStorage.setItem("rdg-include-w2", String(next));
   };
-  const toggleMaintenance = () => {
-    const next = !includeMaintenance;
-    setIncludeMaintenance(next);
-    localStorage.setItem("rdg-include-maintenance", String(next));
-  };
-
   const handleExtraSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!extraSource.trim() || !extraPrice) return;
