@@ -54,7 +54,7 @@ const PricingCalculator = () => {
   const total = projectType === "website" ? websiteTotal : appTotal;
 
   return (
-    <div className="border border-border p-8">
+    <div className="border border-border p-8 rounded-2xl">
       <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6 text-center">
         Quick Estimate
       </h3>

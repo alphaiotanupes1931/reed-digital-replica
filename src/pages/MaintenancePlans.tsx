@@ -254,7 +254,7 @@ const MaintenancePlans = () => {
               <p className="text-base md:text-lg text-foreground/85 leading-relaxed mb-6">
                 Reed Digital Group offers three straightforward maintenance tiers. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
               </p>
-              <div className="border border-border bg-secondary/40 p-5">
+              <div className="border border-border bg-secondary/40 p-5 rounded-2xl">
                 <p className="text-sm text-foreground/80 leading-relaxed">
                   <span className="text-primary font-bold">Note:</span> Not sure which plan fits your site? <Link to="/contact" className="underline underline-offset-4 hover:text-primary transition-colors">Contact us</Link> and we'll help you figure it out.
                 </p>

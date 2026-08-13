@@ -178,7 +178,7 @@ const CaseStudyPage = () => {
 
             {/* Results */}
             <ScrollReveal delay={0.3}>
-              <section className="mb-12 bg-muted/30 p-8 border border-border">
+              <section className="mb-12 bg-muted/30 p-8 border border-border rounded-2xl">
                 <h2 className="text-sm text-muted-foreground uppercase tracking-wider mb-6">Results</h2>
                 <ul className="grid md:grid-cols-2 gap-4">
                   {study.results.map((result) => (

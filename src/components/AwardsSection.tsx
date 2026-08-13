@@ -46,7 +46,7 @@ const AwardsSection = () => {
           <ScrollReveal key={index} delay={index * 0.15}>
             <TiltCard>
               <div 
-                className="text-center p-6 border border-border hover:border-foreground/20 transition-all hover:shadow-lg"
+                className="text-center p-6 border border-border hover:border-foreground/20 transition-all hover:shadow-lg rounded-2xl"
               >
                 <div className="h-16 flex items-center justify-center mb-4 bg-white rounded p-2">
                   <img 
