@@ -99,7 +99,7 @@ const StorePreview = ({ url, title }: { url: string; title: string }) => {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-4 py-2 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+            className="text-xs rounded-full px-4 py-2 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Open in new tab
           </a>
@@ -207,7 +207,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
             href={app.appStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+            className="text-xs rounded-full px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             App Store
           </a>
@@ -217,7 +217,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
             href={app.playStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+            className="text-xs rounded-full px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Google Play
           </a>
@@ -227,7 +227,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
             href={app.liveDemoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+            className="text-xs rounded-full px-3 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Open Live Demo
           </a>

@@ -87,7 +87,7 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
               } else setYear(year - 1);
               setSelectedDay(null);
             }}
-            className="text-xs px-2 py-1 border border-border hover:border-foreground"
+            className="text-xs rounded-full px-2 py-1 border border-border hover:border-foreground"
           >‹</button>
           <p className="text-sm uppercase tracking-widest font-bold">
             {view === "month" ? `${MONTHS[month]} ${year}` : year}
@@ -100,7 +100,7 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
               } else setYear(year + 1);
               setSelectedDay(null);
             }}
-            className="text-xs px-2 py-1 border border-border hover:border-foreground"
+            className="text-xs rounded-full px-2 py-1 border border-border hover:border-foreground"
           >›</button>
         </div>
         <div className="flex items-center gap-4">

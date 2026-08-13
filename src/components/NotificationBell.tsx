@@ -44,7 +44,7 @@ export default function NotificationBell() {
     <div className="relative">
       <button
         onClick={() => { setOpen((o) => !o); if (!open) markAllRead(); }}
-        className="relative text-[10px] uppercase tracking-[0.3em] px-3 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
+        className="relative text-[10px] uppercase tracking-[0.3em] rounded-full px-3 py-2 border border-foreground/15 hover:border-foreground/40 transition-colors"
         aria-label="Notifications"
       >
         Inbox

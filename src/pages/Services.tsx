@@ -74,7 +74,7 @@ const Services = () => {
                 </p>
                 <Link
                   to="/pricing"
-                  className="inline-block text-xs uppercase tracking-widest border border-foreground px-5 py-3 hover:bg-foreground hover:text-background transition-colors"
+                  className="inline-block text-xs uppercase tracking-widest border border-foreground rounded-full px-5 py-3 hover:bg-foreground hover:text-background transition-colors"
                 >
                   View Maintenance Plans
                 </Link>
@@ -84,13 +84,13 @@ const Services = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/contact"
-                className="inline-block text-xs uppercase tracking-widest bg-foreground text-background px-5 py-3 hover:bg-foreground/85 transition-colors"
+                className="inline-block text-xs uppercase tracking-widest bg-foreground text-background rounded-full px-5 py-3 hover:bg-foreground/85 transition-colors"
               >
                 Start a Project
               </Link>
               <Link
                 to="/portfolio"
-                className="inline-block text-xs uppercase tracking-widest border border-foreground/30 px-5 py-3 hover:border-foreground transition-colors"
+                className="inline-block text-xs uppercase tracking-widest border border-foreground/30 rounded-full px-5 py-3 hover:border-foreground transition-colors"
               >
                 See Our Work
               </Link>

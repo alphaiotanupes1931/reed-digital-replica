@@ -199,7 +199,7 @@ const CaseStudyPage = () => {
                   {study.technologies.map((tech) => (
                     <span 
                       key={tech}
-                      className="px-3 py-1 border border-border text-sm"
+                      className="rounded-full px-3 py-1 border border-border text-sm"
                     >
                       {tech}
                     </span>

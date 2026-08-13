@@ -206,7 +206,7 @@ const PricingPage = () => {
                           <span className="text-lg">{pkg.price}</span>
                           <Link
                             to="/contact"
-                            className="text-[11px] uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                            className="text-[11px] uppercase tracking-wider border border-foreground rounded-full px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
                           >
                             Quote
                           </Link>
@@ -265,7 +265,7 @@ const PricingPage = () => {
                           </span>
                           <Link
                             to="/contact"
-                            className="text-[11px] uppercase tracking-wider border border-foreground px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
+                            className="text-[11px] uppercase tracking-wider border border-foreground rounded-full px-3 py-1.5 hover:bg-foreground hover:text-background transition-colors"
                           >
                             Choose
                           </Link>

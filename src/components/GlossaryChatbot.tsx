@@ -190,7 +190,7 @@ export const GlossaryChatbot = () => {
                     <button
                       key={s}
                       onClick={() => ask(s)}
-                      className="text-[10px] uppercase tracking-[0.15em] border border-border hover:border-foreground px-3 py-1.5 text-foreground transition-colors"
+                      className="text-[10px] uppercase tracking-[0.15em] border border-border hover:border-foreground rounded-full px-3 py-1.5 text-foreground transition-colors"
                     >
                       {s}
                     </button>

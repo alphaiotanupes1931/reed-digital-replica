@@ -83,7 +83,7 @@ const GovernmentPage = () => {
                       "508 Compliance",
                       "IT Consulting",
                     ].map((item) => (
-                      <span key={item} className="px-4 py-2 border border-border text-sm">
+                      <span key={item} className="rounded-full px-4 py-2 border border-border text-sm">
                         {item}
                       </span>
                     ))}
