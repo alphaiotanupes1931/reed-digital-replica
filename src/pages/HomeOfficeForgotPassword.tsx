@@ -31,6 +31,29 @@ const HomeOfficeForgotPassword = () => {
   const [a2, setA2] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [sendingLink, setSendingLink] = useState(false);
+
+  const sendResetEmail = async () => {
+    if (!email) {
+      toast({ title:"Enter your email first", variant:"destructive" });
+      return;
+    }
+    setSendingLink(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/home-office/reset-password`,
+      });
+      if (error) throw error;
+      toast({
+        title:"Reset link sent",
+        description: `Check ${email} for a link to set a new password.`,
+      });
+    } catch (err: any) {
+      toast({ title:"Couldn't send email", description: err.message, variant:"destructive" });
+    } finally {
+      setSendingLink(false);
+    }
+  };
 
   const lookup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,6 +150,14 @@ const HomeOfficeForgotPassword = () => {
             </div>
             <button type="submit" disabled={loading} className={btnCls}>
               {loading ?"Looking up..." :"Continue"}
+            </button>
+            <button
+              type="button"
+              onClick={sendResetEmail}
+              disabled={sendingLink}
+              className="w-full border border-border rounded-full py-3 text-xs uppercase tracking-widest text-foreground hover:border-brand transition-colors disabled:opacity-50"
+            >
+              {sendingLink ?"Sending..." :"Email me a reset link instead"}
             </button>
             <button type="button" onClick={() => navigate("/home-office/login")} className="block w-full text-center text-[10px] uppercase tracking-widest text-muted-foreground hover:text-brand transition-colors">
               ← Back to login
