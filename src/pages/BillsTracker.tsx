@@ -6,19 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-// Mirror of MAINTENANCE_PLAN_CATALOG in InvoicePortal — keep prices in sync.
-const PLAN_PRICES: Record<string, number> = {
-  "cms:Standard": 200, "cms:Growth": 300, "cms:Pro": 400, "cms:Elite": 500,
-  "smb:Standard": 100, "smb:Growth": 200, "smb:Pro": 300,
-  "landing:Standard": 50, "landing:Growth": 100,
-};
-
-const PLAN_LABELS: Record<string, string> = {
-  cms: "Brochure + CMS", smb: "Small Business", landing: "Landing Page",
-};
-
 interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
-interface IncomeClient { id: string; company_name: string; owner_name: string | null; email: string; maintenance_plan: string | null; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
@@ -26,7 +14,6 @@ const BillsTracker = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [bills, setBills] = useState<Bill[]>([]);
-  const [incomeClients, setIncomeClients] = useState<IncomeClient[]>([]);
   const [extraIncome, setExtraIncome] = useState<ExtraIncome[]>([]);
   const [taxReminders, setTaxReminders] = useState<TaxReminder[]>([]);
   const [company, setCompany] = useState("");
@@ -55,22 +42,6 @@ const BillsTracker = () => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("rdg-include-w2") === "true";
   });
-  const [includeMaintenance, setIncludeMaintenance] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    return localStorage.getItem("rdg-include-maintenance") !== "false";
-  });
-  const [hiddenMaintenanceIds, setHiddenMaintenanceIds] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem("rdg-hidden-maintenance") || "[]"); }
-    catch { return []; }
-  });
-  const toggleHiddenMaintenance = (id: string) => {
-    setHiddenMaintenanceIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      localStorage.setItem("rdg-hidden-maintenance", JSON.stringify(next));
-      return next;
-    });
-  };
   const [hiddenExtraIds, setHiddenExtraIds] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try { return JSON.parse(localStorage.getItem("rdg-hidden-extra") || "[]"); }
@@ -111,14 +82,12 @@ const BillsTracker = () => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [b, c, e, t] = await Promise.all([
+      const [b, e, t] = await Promise.all([
         api("get_bills"),
-        api("get_maintenance_income"),
         api("get_extra_income"),
         api("get_tax_reminders"),
       ]);
       setBills((b as { bills: Bill[] }).bills || []);
-      setIncomeClients((c as { clients: IncomeClient[] }).clients || []);
       setExtraIncome((e as { items: ExtraIncome[] }).items || []);
       setTaxReminders((t as { items: TaxReminder[] }).items || []);
     } catch (err: any) {
@@ -187,34 +156,13 @@ const BillsTracker = () => {
 
   const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
-  const incomeRows = incomeClients
-    .map((c) => {
-      const plan = c.maintenance_plan || "";
-      let amount = PLAN_PRICES[plan] || 0;
-      let planLabel = plan;
-      if (plan.startsWith("custom:")) {
-        const m = plan.slice(7).match(/^(.*)\|(\d+(?:\.\d+)?)$/);
-        if (m) {
-          amount = parseFloat(m[2]);
-          planLabel = `Custom — ${m[1]}`;
-        }
-      } else {
-        const [cat, name] = plan.split(":");
-        if (PLAN_LABELS[cat]) planLabel = `${PLAN_LABELS[cat]} — ${name}`;
-      }
-      return { ...c, planLabel, amount };
-    })
-    .filter((r) => r.amount > 0);
-
-  const visibleIncomeRows = incomeRows.filter((r) => !hiddenMaintenanceIds.includes(r.id));
-  const totalIncome = visibleIncomeRows.reduce((s, r) => s + r.amount, 0);
   const extraRows = extraIncome.filter((r) => r.category !== "w2");
   const visibleExtraRows = extraRows.filter((r) => !hiddenExtraIds.includes(r.id));
   const w2Rows = extraIncome.filter((r) => r.category === "w2");
   const totalExtra = visibleExtraRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const retainerIncome = (includeMaintenance ? totalIncome : 0) + totalExtra;
-  const grandIncome = (includeMaintenance ? totalIncome : 0) + totalExtra + (includeW2 ? totalW2 : 0);
+  const grandIncome = includeW2 ? totalW2 : 0;
+  const retainerIncome = grandIncome;
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
   const sixFigPct = Math.min(100, Math.max(0, (retainerIncome / goalAmount) * 100));
@@ -254,12 +202,6 @@ const BillsTracker = () => {
     setIncludeW2(next);
     localStorage.setItem("rdg-include-w2", String(next));
   };
-  const toggleMaintenance = () => {
-    const next = !includeMaintenance;
-    setIncludeMaintenance(next);
-    localStorage.setItem("rdg-include-maintenance", String(next));
-  };
-
   const handleExtraSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!extraSource.trim() || !extraPrice) return;
@@ -467,11 +409,6 @@ const BillsTracker = () => {
               ) : (
                 <>
                   <p className="text-2xl md:text-3xl font-bold mt-1">{fmt(grandIncome)}</p>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
-                    Salary {fmt(includeW2 ? totalW2 : 0)}
-                    {totalExtra > 0 ? ` + Other ${fmt(totalExtra)}` : ""}
-                    {includeMaintenance && totalIncome > 0 ? ` + Retainers ${fmt(totalIncome)}` : ""}
-                  </p>
                   <button
                     onClick={() => { setSalaryDraft(totalW2 ? String(totalW2) : ""); setEditingSalary(true); }}
                     className="text-[10px] uppercase tracking-[0.2em] text-brand hover:underline mt-1"
@@ -584,18 +521,11 @@ const BillsTracker = () => {
             )}
           </div>
 
-          {/* Income */}
+          {/* Other income (not counted in totals) */}
           <div>
             <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
-              <h2 className="text-lg font-bold tracking-tight">Maintenance Income</h2>
-              <Button
-                type="button"
-                variant={includeMaintenance ? "default" : "outline"}
-                size="sm"
-                onClick={toggleMaintenance}
-              >
-                {includeMaintenance ? "Including in Totals" : "Exclude from Totals"}
-              </Button>
+              <h2 className="text-lg font-bold tracking-tight">Other Income</h2>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Not counted in totals</span>
             </div>
             <div className="mb-4" />
             <div
@@ -615,26 +545,10 @@ const BillsTracker = () => {
 
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading…</p>
-            ) : incomeRows.length === 0 && extraRows.length === 0 ? (
-              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No maintenance income yet.</p>
+            ) : extraRows.length === 0 ? (
+              <p className="text-sm text-muted-foreground border border-dashed border-foreground/15 rounded-xl p-6">No other income yet.</p>
             ) : (
-              <div className={`divide-y divide-foreground/10 border ${includeMaintenance ? "border-foreground/20" : "border-foreground/10 opacity-70"}`}>
-                {incomeRows.map((r) => {
-                  const isHidden = hiddenMaintenanceIds.includes(r.id);
-                  return (
-                    <div key={r.id} className={`grid grid-cols-[1fr_1fr_auto_auto] gap-4 items-center p-4 ${isHidden ? "opacity-50" : ""}`}>
-                      <div>
-                        <p className={`font-bold text-sm ${isHidden ? "line-through" : ""}`}>{r.company_name}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{r.owner_name || r.email}</p>
-                      </div>
-                      <p className="text-xs uppercase tracking-widest text-muted-foreground">{r.planLabel}</p>
-                      <p className={`font-bold text-sm ${isHidden ? "text-muted-foreground line-through" : "text-brand"}`}>{fmt(r.amount)}</p>
-                      <Button size="sm" variant="outline" onClick={() => toggleHiddenMaintenance(r.id)}>
-                        {isHidden ? "Show" : "Hide"}
-                      </Button>
-                    </div>
-                  );
-                })}
+              <div className="divide-y divide-foreground/10 border border-foreground/20">
                 {extraRows.map((r) => {
                   const isHidden = hiddenExtraIds.includes(r.id);
                   return (
@@ -653,27 +567,13 @@ const BillsTracker = () => {
                     </div>
                   );
                 })}
-                {incomeRows.length > 0 && (
-                  <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground/5">
-                    <p className="font-bold text-sm uppercase tracking-widest">
-                      Maintenance Plans {includeMaintenance ? "(included)" : "(excluded)"}
-                    </p>
-                    <div />
-                    <p className={`font-bold text-sm ${includeMaintenance ? "" : "line-through text-muted-foreground"}`}>{fmt(totalIncome)}</p>
-                  </div>
-                )}
                 {extraRows.length > 0 && (
                   <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground/5">
-                    <p className="font-bold text-sm uppercase tracking-widest">Manual Income (included)</p>
+                    <p className="font-bold text-sm uppercase tracking-widest">Other Income (not counted)</p>
                     <div />
                     <p className="font-bold text-sm">{fmt(totalExtra)}</p>
                   </div>
                 )}
-                <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center p-4 bg-foreground text-background">
-                  <p className="font-bold text-sm uppercase tracking-widest">Counted in Totals</p>
-                  <div />
-                  <p className="font-bold text-sm">{fmt((includeMaintenance ? totalIncome : 0) + totalExtra)}</p>
-                </div>
               </div>
             )}
           </div>
