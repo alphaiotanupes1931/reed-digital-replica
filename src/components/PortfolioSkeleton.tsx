@@ -17,7 +17,7 @@ const PortfolioSkeleton = ({ src, title, image, children }: PortfolioSkeletonPro
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-muted-foreground/30 border-t-foreground rounded-full animate-spin" />
-            <span className="text-xs text-muted-foreground font-mono">Loading preview...</span>
+            <span className="text-xs text-muted-foreground">Loading preview...</span>
           </div>
         </div>
       )}

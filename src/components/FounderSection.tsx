@@ -9,7 +9,7 @@ const FounderSection = () => {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <ScrollReveal direction="left" className="order-2 md:order-1">
-              <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
+              <span className="text-xs text-muted-foreground tracking-widest uppercase">
                 Leadership
               </span>
               <h2 className="text-3xl md:text-4xl font-medium mt-2 mb-6">

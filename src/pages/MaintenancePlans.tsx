@@ -108,29 +108,29 @@ const PlanCard = ({ plan, gridCols }: { plan: Plan; gridCols: number }) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}
     transition={{ duration: 0.5 }}
-    className={`relative flex flex-col border-2 p-6 md:p-8 bg-card transition-all ${
+    className={`relative flex flex-col border rounded-2xl p-6 md:p-8 bg-card transition-all ${
       plan.popular
         ? "border-primary shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.35)] md:scale-[1.03] z-10"
         : "border-border hover:border-foreground/30"
     }`}
   >
     {plan.popular && (
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 text-[10px] font-mono uppercase tracking-widest font-bold whitespace-nowrap">
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full px-3 py-1 text-[10px] uppercase tracking-widest font-bold whitespace-nowrap">
         Most Popular
       </div>
     )}
 
     <div className="mb-4">
-      <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
         {plan.name}
       </p>
       <div className="flex items-baseline gap-1 mb-3">
-        <span className="text-4xl md:text-5xl font-mono font-bold text-foreground">
+        <span className="text-4xl md:text-5xl font-bold text-foreground">
           ${plan.price}
         </span>
-        <span className="text-sm font-mono text-muted-foreground">/month</span>
+        <span className="text-sm text-muted-foreground">/month</span>
       </div>
-      <p className="text-sm font-mono text-foreground/80 leading-relaxed">
+      <p className="text-sm text-foreground/80 leading-relaxed">
         {plan.tagline}
       </p>
     </div>
@@ -139,7 +139,7 @@ const PlanCard = ({ plan, gridCols }: { plan: Plan; gridCols: number }) => (
 
     <ul className="space-y-3 mb-6 flex-1">
       {plan.features.map((feature, i) => (
-        <li key={i} className="flex gap-2 text-sm font-mono text-foreground/85 leading-relaxed">
+        <li key={i} className="flex gap-2 text-sm text-foreground/85 leading-relaxed">
           <Check />
           <span>{feature}</span>
         </li>
@@ -147,10 +147,10 @@ const PlanCard = ({ plan, gridCols }: { plan: Plan; gridCols: number }) => (
     </ul>
 
     <div className="pt-4 border-t border-border">
-      <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1">
+      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
         Best for
       </p>
-      <p className="text-sm font-mono text-foreground/80 leading-relaxed">
+      <p className="text-sm text-foreground/80 leading-relaxed">
         {plan.bestFor}
       </p>
     </div>
@@ -183,13 +183,13 @@ const PlanSection = ({
     <section id={id} className="py-20 md:py-28 border-t border-border">
       <div className="container mx-auto px-6">
         <ScrollReveal>
-          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
+          <p className="text-xs uppercase tracking-widest text-primary mb-4">
             {label}
           </p>
-          <h2 className="text-3xl md:text-5xl font-mono font-bold text-foreground mb-4 max-w-3xl leading-tight">
+          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 max-w-3xl leading-tight">
             {title}
           </h2>
-          <p className="text-base md:text-lg font-mono text-muted-foreground max-w-2xl mb-12 md:mb-16 leading-relaxed">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mb-12 md:mb-16 leading-relaxed">
             {subhead}
           </p>
         </ScrollReveal>
@@ -203,7 +203,7 @@ const PlanSection = ({
         {recommendation && (
           <ScrollReveal>
             <div className="mt-12 max-w-3xl border-l-2 border-primary pl-6 py-2">
-              <p className="text-sm font-mono text-foreground/80 leading-relaxed">
+              <p className="text-sm text-foreground/80 leading-relaxed">
                 {recommendation}
               </p>
             </div>
@@ -229,17 +229,17 @@ const MaintenancePlans = () => {
         {/* HERO */}
         <section className="container mx-auto px-6 py-16 md:py-24">
           <ScrollReveal>
-            <TypedHeader text="Maintenance" className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6" />
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-mono font-bold text-foreground leading-[1.05] max-w-5xl mb-8">
+            <TypedHeader text="Maintenance" className="text-xs uppercase tracking-widest text-muted-foreground mb-6" />
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.05] max-w-5xl mb-8">
               Maintenance Plans That Keep Your Website Working for You
             </h1>
-            <p className="text-lg md:text-xl font-mono text-muted-foreground max-w-3xl leading-relaxed mb-10">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed mb-10">
               Your website is an investment. Our maintenance plans keep it secure, updated, and actually driving customers to your business. Pick the plan that fits your goals.
             </p>
             <button
               onClick={scrollToPlans}
               data-magnetic
-              className="inline-flex items-center gap-3 bg-foreground text-background px-6 py-3 font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="inline-flex items-center gap-3 bg-foreground text-background rounded-full px-6 py-3 text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
             >
               See Plans Below
               <span aria-hidden="true">↓</span>
@@ -251,11 +251,11 @@ const MaintenancePlans = () => {
         <section className="container mx-auto px-6 py-12 md:py-16 border-t border-border">
           <ScrollReveal>
             <div className="max-w-3xl">
-              <p className="text-base md:text-lg font-mono text-foreground/85 leading-relaxed mb-6">
+              <p className="text-base md:text-lg text-foreground/85 leading-relaxed mb-6">
                 Reed Digital Group offers three straightforward maintenance tiers. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
               </p>
-              <div className="border border-border bg-secondary/40 p-5">
-                <p className="text-sm font-mono text-foreground/80 leading-relaxed">
+              <div className="border border-border bg-secondary/40 p-5 rounded-2xl">
+                <p className="text-sm text-foreground/80 leading-relaxed">
                   <span className="text-primary font-bold">Note:</span> Not sure which plan fits your site? <Link to="/contact" className="underline underline-offset-4 hover:text-primary transition-colors">Contact us</Link> and we'll help you figure it out.
                 </p>
               </div>
@@ -277,10 +277,10 @@ const MaintenancePlans = () => {
         <section className="py-20 md:py-28 border-t border-border">
           <div className="container mx-auto px-6">
             <ScrollReveal>
-              <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
+              <p className="text-xs uppercase tracking-widest text-primary mb-4">
                 Quick Comparison
               </p>
-              <h2 className="text-3xl md:text-5xl font-mono font-bold text-foreground mb-12 max-w-3xl leading-tight">
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-12 max-w-3xl leading-tight">
                 Recommended Plan by Website Type
               </h2>
             </ScrollReveal>
@@ -299,17 +299,17 @@ const MaintenancePlans = () => {
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="bg-card p-8 md:p-10"
                 >
-                  <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
                     {item.type}
                   </p>
-                  <p className="text-sm font-mono text-foreground/70 mb-6">
+                  <p className="text-sm text-foreground/70 mb-6">
                     Recommended → <span className="text-primary font-bold">{item.tier}</span>
                   </p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl md:text-5xl font-mono font-bold text-foreground">
+                    <span className="text-4xl md:text-5xl font-bold text-foreground">
                       ${item.price}
                     </span>
-                    <span className="text-sm font-mono text-muted-foreground">/month</span>
+                    <span className="text-sm text-muted-foreground">/month</span>
                   </div>
                 </motion.div>
               ))}
@@ -321,10 +321,10 @@ const MaintenancePlans = () => {
         <section className="py-20 md:py-28 border-t border-border">
           <div className="container mx-auto px-6">
             <ScrollReveal>
-              <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
+              <p className="text-xs uppercase tracking-widest text-primary mb-4">
                 FAQ
               </p>
-              <h2 className="text-3xl md:text-5xl font-mono font-bold text-foreground mb-12 max-w-3xl leading-tight">
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-12 max-w-3xl leading-tight">
                 Common Questions
               </h2>
             </ScrollReveal>
@@ -337,13 +337,13 @@ const MaintenancePlans = () => {
                     className="w-full flex items-center justify-between py-5 md:py-6 text-left hover:text-primary transition-colors"
                     aria-expanded={openFaq === i}
                   >
-                    <span className="text-base md:text-lg font-mono font-medium text-foreground pr-6">
+                    <span className="text-base md:text-lg font-medium text-foreground pr-6">
                       {faq.q}
                     </span>
                     <motion.span
                       animate={{ rotate: openFaq === i ? 45 : 0 }}
                       transition={{ duration: 0.2 }}
-                      className="text-2xl font-mono text-primary flex-shrink-0"
+                      className="text-2xl text-primary flex-shrink-0"
                     >
                       +
                     </motion.span>
@@ -357,7 +357,7 @@ const MaintenancePlans = () => {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <p className="pb-6 text-sm md:text-base font-mono text-muted-foreground leading-relaxed max-w-2xl">
+                    <p className="pb-6 text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
                       {faq.a}
                     </p>
                   </motion.div>
@@ -371,19 +371,19 @@ const MaintenancePlans = () => {
         <section className="py-24 md:py-32 border-t border-border bg-secondary/30">
           <div className="container mx-auto px-6 text-center">
             <ScrollReveal>
-              <p className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
+              <p className="text-xs uppercase tracking-widest text-primary mb-6">
                 Get Started
               </p>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-mono font-bold text-foreground mb-6 max-w-3xl mx-auto leading-tight">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 max-w-3xl mx-auto leading-tight">
                 Not sure which plan is right for you?
               </h2>
-              <p className="text-base md:text-lg font-mono text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
                 Text Terell directly and we'll figure it out together.
               </p>
               <Link
                 to="/contact"
                 data-magnetic
-                className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="inline-flex items-center gap-3 bg-foreground text-background rounded-full px-8 py-4 text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 Contact Us
                 <span aria-hidden="true">→</span>

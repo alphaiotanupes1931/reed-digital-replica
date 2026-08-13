@@ -84,7 +84,7 @@ const AboutPage = () => {
               </div>
               <ScrollReveal>
                 <div className="max-w-3xl mx-auto text-center relative z-10">
-                  <span className="section-label font-mono">About Us</span>
+                  <span className="section-label">About Us</span>
                   <TypedHeader text="A small team. Big websites." className="mt-4 mb-6" />
                   <p className="text-lg text-muted-foreground max-w-xl mx-auto">
                     Remote agency based in DC. We build websites and apps that work.
@@ -104,13 +104,13 @@ const AboutPage = () => {
                 ].map((stat, index) => (
                   <motion.div
                     key={stat.label}
-                    className="text-center p-6 border border-border hover:border-primary transition-colors group"
+                    className="text-center p-6 border border-border hover:border-primary transition-colors group rounded-2xl"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ y: -4 }}
                   >
-                    <div className="text-3xl font-mono text-primary mb-2 group-hover:scale-110 transition-transform">
+                    <div className="text-3xl text-primary mb-2 group-hover:scale-110 transition-transform">
                       {stat.value}
                     </div>
                     <div className="text-xs text-muted-foreground">{stat.label}</div>
@@ -122,7 +122,7 @@ const AboutPage = () => {
             {/* Our Values */}
             <ScrollReveal delay={0.15}>
               <div className="mb-24">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center mb-10">
                   Our Values
                 </h2>
                 <div className="grid md:grid-cols-4 gap-6">
@@ -155,7 +155,7 @@ const AboutPage = () => {
                   FOUNDER
                 </div>
                 <div className="max-w-4xl mx-auto">
-                  <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                  <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center mb-10">
                     Meet the Founder
                   </h2>
                   <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -190,7 +190,7 @@ const AboutPage = () => {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="text-2xl font-medium mb-1">Terell Reed</h3>
-                          <p className="text-primary font-mono text-sm">Founder & CEO</p>
+                          <p className="text-primary text-sm">Founder & CEO</p>
                         </div>
                         <a 
                           href="https://www.linkedin.com/in/terell-reed-140377263/" 
@@ -231,13 +231,13 @@ const AboutPage = () => {
 
                       {/* Certifications */}
                       <div>
-                        <p className="text-xs text-muted-foreground mb-3 font-mono">SECURITY CERTIFICATIONS</p>
+                        <p className="text-xs text-muted-foreground mb-3">SECURITY CERTIFICATIONS</p>
                         <div className="flex gap-6 items-center mb-6">
                           <img src={comptiaLogo} alt="CompTIA" className="h-10 opacity-70 hover:opacity-100 transition-opacity" />
                           <img src={ciscoLogo} alt="Cisco" className="h-8 opacity-70 hover:opacity-100 transition-opacity" />
                         </div>
                         
-                        <p className="text-xs text-muted-foreground mb-3 font-mono">PROGRAMMING CERTIFICATIONS</p>
+                        <p className="text-xs text-muted-foreground mb-3">PROGRAMMING CERTIFICATIONS</p>
                         <div className="flex flex-wrap gap-4 items-center">
                           <img 
                             src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" 
@@ -268,7 +268,7 @@ const AboutPage = () => {
             {/* Robotics & Engineering */}
             <ScrollReveal delay={0.21}>
               <div className="mb-24 max-w-4xl mx-auto">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center mb-10">
                   Robotics & Embedded Systems
                 </h2>
                 <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -301,7 +301,7 @@ const AboutPage = () => {
               <div className="mb-24">
                 <div className="flex items-center justify-center gap-2 mb-10">
                   <Trophy className="w-4 h-4 text-primary" />
-                  <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center">
+                  <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center">
                     Awards & Recognition
                   </h2>
                 </div>
@@ -369,7 +369,7 @@ const AboutPage = () => {
             {/* YouTube Channel */}
             <ScrollReveal delay={0.23}>
               <div className="mb-24">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center mb-10">
                   YouTube Channel
                 </h2>
                 <div className="max-w-3xl mx-auto">
@@ -387,7 +387,7 @@ const AboutPage = () => {
                       href="https://www.youtube.com/channel/UCQ9o6XsFFQY-EiUIRvUvE5Q"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 font-mono"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
                     >
                       Follow us on YouTube →
                     </a>
@@ -399,7 +399,7 @@ const AboutPage = () => {
             {/* Timeline */}
             <ScrollReveal delay={0.25}>
               <div className="mb-24">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-10">
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center mb-10">
                   Our Journey
                 </h2>
                 <div className="max-w-2xl mx-auto">
@@ -417,7 +417,7 @@ const AboutPage = () => {
                       )}
                       
                       {/* Year bubble */}
-                      <div className="flex-shrink-0 w-20 h-10 border border-primary bg-primary/5 flex items-center justify-center font-mono text-sm text-primary">
+                      <div className="flex-shrink-0 w-20 h-10 border border-primary bg-primary/5 flex items-center justify-center text-sm text-primary">
                         {item.year}
                       </div>
                       
@@ -436,11 +436,11 @@ const AboutPage = () => {
             <ScrollReveal delay={0.3}>
               <div className="text-center pb-20">
                 <motion.div 
-                  className="inline-flex items-center gap-3 px-6 py-3 border border-border"
+                  className="inline-flex items-center gap-3 rounded-full px-6 py-3 border border-border"
                   whileHover={{ borderColor: "hsl(var(--primary))" }}
                 >
                   <Shield className="w-4 h-4 text-primary" />
-                  <span className="text-xs text-muted-foreground font-mono">
+                  <span className="text-xs text-muted-foreground">
                     Small Business · SAM Registered · Federal Contractor Ready
                   </span>
                 </motion.div>

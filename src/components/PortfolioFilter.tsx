@@ -13,7 +13,7 @@ const PortfolioFilter = ({ categories, activeCategory, onCategoryChange }: Portf
         <button
           key={category}
           onClick={() => onCategoryChange(category)}
-          className={`relative px-4 py-2 text-sm font-mono transition-colors ${
+          className={`relative px-4 py-2 text-sm transition-colors ${
             activeCategory === category 
               ? "text-foreground" 
               : "text-muted-foreground hover:text-foreground"
@@ -22,7 +22,7 @@ const PortfolioFilter = ({ categories, activeCategory, onCategoryChange }: Portf
           {activeCategory === category && (
             <motion.div
               layoutId="activeFilter"
-              className="absolute inset-0 border border-foreground"
+              className="absolute inset-0 border border-foreground rounded-full"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}

@@ -129,11 +129,11 @@ const InteractiveProcessSection = () => {
                   animate={activeStep === step.id ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 0.3 }}
                 >
-                  <span className="text-sm font-mono font-medium">
+                  <span className="text-sm font-medium">
                     {activeStep > step.id ? "✓" : `0${step.id}`}
                   </span>
                 </motion.div>
-                <span className={`text-xs font-mono ${
+                <span className={`text-xs ${
                   activeStep === step.id ? "text-primary" : "text-muted-foreground"
                 }`}>
                   {step.label}
@@ -155,7 +155,7 @@ const InteractiveProcessSection = () => {
               {/* Left: Description */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-4xl font-mono text-primary/30">
+                  <span className="text-4xl text-primary/30">
                     0{currentStep.id}
                   </span>
                   <div className="h-px flex-1 bg-border" />
@@ -168,7 +168,7 @@ const InteractiveProcessSection = () => {
 
               {/* Right: Details */}
               <div className="space-y-4">
-                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">
                   What to expect
                 </p>
                 <ul className="space-y-3">

@@ -67,7 +67,7 @@ const ThankYou = () => {
 
               {/* Label */}
               <motion.span
-                className="section-label font-mono inline-block"
+                className="section-label inline-block"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -95,7 +95,7 @@ const ThankYou = () => {
 
               {/* Body text */}
               <motion.p
-                className="text-muted-foreground font-mono text-lg max-w-md mx-auto"
+                className="text-muted-foreground text-lg max-w-md mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 }}

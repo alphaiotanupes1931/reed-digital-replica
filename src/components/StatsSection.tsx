@@ -16,7 +16,7 @@ const StatsSection = () => {
           {stats.map((stat, index) => (
             <ScrollReveal key={stat.label} delay={index * 0.1}>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-mono font-medium mb-2">
+                <div className="text-4xl md:text-5xl font-medium mb-2">
                   <AnimatedCounter 
                     end={stat.value} 
                     suffix={stat.suffix}

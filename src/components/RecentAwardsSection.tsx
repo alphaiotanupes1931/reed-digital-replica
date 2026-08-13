@@ -13,7 +13,7 @@ const RecentAwardsSection = () => {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <span className="section-label font-mono">Recent Awards</span>
+          <span className="section-label">Recent Awards</span>
         </motion.div>
 
         <motion.div
@@ -33,13 +33,13 @@ const RecentAwardsSection = () => {
           </div>
 
           <div className="flex flex-col justify-center p-8 md:p-12">
-            <span className="text-xs font-mono text-muted-foreground uppercase tracking-[0.2em] mb-4">
+            <span className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-4">
               2026 Winner
             </span>
             <h3 className="text-xl md:text-2xl font-semibold tracking-tight mb-4">
               Website of the Year
             </h3>
-            <p className="text-sm text-muted-foreground font-mono leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Won the Website of the Year Award 2026 for the Eastern Province — Ronald R. Young Website of the Year Award.
             </p>
           </div>

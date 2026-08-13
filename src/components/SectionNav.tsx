@@ -55,7 +55,7 @@ const SectionNav = () => {
           aria-label={`Navigate to ${section.label}`}
         >
           <span 
-            className={`text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity ${
+            className={`text-xs opacity-0 group-hover:opacity-100 transition-opacity ${
               activeSection === section.id ? "opacity-100" : ""
             }`}
           >

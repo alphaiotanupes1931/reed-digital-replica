@@ -75,7 +75,7 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
   const selectedTotal = selectedDay ? byDay.get(selectedDay)?.total ?? 0 : 0;
 
   return (
-    <div className="border-2 border-foreground mb-8">
+    <div className="border border-border mb-8">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-foreground/20 px-5 py-3">
         <div className="flex items-center gap-3">
@@ -87,9 +87,9 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
               } else setYear(year - 1);
               setSelectedDay(null);
             }}
-            className="text-xs font-mono px-2 py-1 border border-border hover:border-foreground"
+            className="text-xs rounded-full px-2 py-1 border border-border hover:border-foreground"
           >‹</button>
-          <p className="text-sm font-mono uppercase tracking-widest font-bold">
+          <p className="text-sm uppercase tracking-widest font-bold">
             {view === "month" ? `${MONTHS[month]} ${year}` : year}
           </p>
           <button
@@ -100,21 +100,21 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
               } else setYear(year + 1);
               setSelectedDay(null);
             }}
-            className="text-xs font-mono px-2 py-1 border border-border hover:border-foreground"
+            className="text-xs rounded-full px-2 py-1 border border-border hover:border-foreground"
           >›</button>
         </div>
         <div className="flex items-center gap-4">
-          <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">
             {view === "month" ? "Month" : "Year"}: <span className="text-brand font-bold">{fmt(view === "month" ? monthTotal : yearTotal)}</span>
           </p>
           <div className="flex border border-border">
             <button
               onClick={() => { setView("month"); setSelectedDay(null); }}
-              className={`text-[10px] font-mono uppercase tracking-widest px-3 py-1 ${view === "month" ? "bg-foreground text-background" : ""}`}
+              className={`text-[10px] uppercase tracking-widest px-3 py-1 ${view === "month" ? "bg-foreground text-background" : ""}`}
             >Month</button>
             <button
               onClick={() => { setView("year"); setSelectedDay(null); }}
-              className={`text-[10px] font-mono uppercase tracking-widest px-3 py-1 ${view === "year" ? "bg-foreground text-background" : ""}`}
+              className={`text-[10px] uppercase tracking-widest px-3 py-1 ${view === "year" ? "bg-foreground text-background" : ""}`}
             >Year</button>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
         <div className="p-4">
           <div className="grid grid-cols-7 gap-px bg-foreground/10 border border-foreground/10">
             {DOW.map((d, i) => (
-              <div key={i} className="bg-background text-center text-[10px] font-mono uppercase tracking-widest text-muted-foreground py-1">{d}</div>
+              <div key={i} className="bg-background text-center text-[10px] uppercase tracking-widest text-muted-foreground py-1">{d}</div>
             ))}
             {cells.map((d, idx) => {
               if (d === null) return <div key={idx} className="bg-background h-20" />;
@@ -139,11 +139,11 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
                   onClick={() => entry && setSelectedDay(isSelected ? null : k)}
                   className={`bg-background h-20 p-2 text-left transition-colors ${entry ? "hover:bg-brand/10 cursor-pointer" : "cursor-default"} ${isSelected ? "bg-brand/20" : ""}`}
                 >
-                  <div className={`text-xs font-mono ${isToday ? "text-brand font-bold" : ""}`}>{d}</div>
+                  <div className={`text-xs ${isToday ? "text-brand font-bold" : ""}`}>{d}</div>
                   {entry && (
                     <div className="mt-1">
-                      <div className="text-[11px] font-mono font-bold text-brand">{fmt(entry.total)}</div>
-                      <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">{entry.items.length} pmt</div>
+                      <div className="text-[11px] font-bold text-brand">{fmt(entry.total)}</div>
+                      <div className="text-[9px] text-muted-foreground uppercase tracking-widest">{entry.items.length} pmt</div>
                     </div>
                   )}
                 </button>
@@ -153,17 +153,17 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
 
           {selectedDay && (
             <div className="mt-4 border-t border-foreground/20 pt-4">
-              <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
                 {selectedDay} · <span className="text-brand font-bold">{fmt(selectedTotal)}</span>
               </p>
               <div className="space-y-2">
                 {selectedItems.map((it) => (
                   <div key={it.id} className="flex justify-between items-center border-b border-border py-2">
                     <div>
-                      <p className="text-sm font-mono font-bold">{it.clients?.company_name || "Client"}</p>
-                      <p className="text-[11px] font-mono text-muted-foreground">{it.service} · {new Date(it.paid_at!).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                      <p className="text-sm font-bold">{it.clients?.company_name || "Client"}</p>
+                      <p className="text-[11px] text-muted-foreground">{it.service} · {new Date(it.paid_at!).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
                     </div>
-                    <p className="text-sm font-mono font-bold text-brand">{fmt(Number(it.price))}</p>
+                    <p className="text-sm font-bold text-brand">{fmt(Number(it.price))}</p>
                   </div>
                 ))}
               </div>
@@ -180,8 +180,8 @@ export default function RevenueCalendar({ invoices }: { invoices: PaidInvoice[] 
                 onClick={() => { setView("month"); setMonth(i); setSelectedDay(null); }}
                 className="bg-background p-4 text-left hover:bg-brand/10 transition-colors"
               >
-                <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{m}</div>
-                <div className="text-lg font-mono font-bold mt-1 text-brand">{fmt(total)}</div>
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">{m}</div>
+                <div className="text-lg font-bold mt-1 text-brand">{fmt(total)}</div>
               </button>
             );
           })}

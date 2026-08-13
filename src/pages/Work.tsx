@@ -25,7 +25,7 @@ const WorkPage = () => {
               {/* Header */}
               <ScrollReveal>
                 <div className="text-center mb-16">
-                  <span className="section-label font-mono">Work</span>
+                  <span className="section-label">Work</span>
                   <TypedHeader text="Selected Projects" className="mt-4 mb-6" />
                 </div>
               </ScrollReveal>
@@ -37,11 +37,11 @@ const WorkPage = () => {
                     <div className="py-5 border-b border-border flex items-center justify-between">
                       <div>
                         <h3 className="font-medium">{project.title}</h3>
-                        <p className="text-xs text-muted-foreground font-mono mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {project.category}
                         </p>
                       </div>
-                      <span className="text-sm text-muted-foreground font-mono">
+                      <span className="text-sm text-muted-foreground">
                         {project.year}
                       </span>
                     </div>
@@ -54,7 +54,7 @@ const WorkPage = () => {
                 <div className="text-center mt-16">
                   <Link 
                     to="/portfolio"
-                    className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                    className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
                     View Full Portfolio
                   </Link>

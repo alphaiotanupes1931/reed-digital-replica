@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Figtree:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* Scoped font override for /apps pages — keep main site on JetBrains Mono */
+/* Scoped font override for /apps pages */
 .font-apps,
 .font-apps h1,
 .font-apps h2,
@@ -12,7 +12,7 @@
 .font-apps h4,
 .font-apps h5,
 .font-apps h6 {
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   letter-spacing: -0.025em;
 }
 .font-apps .font-mono-num {
@@ -45,47 +45,47 @@
 
 @layer base {
   :root {
-    --background: 40 20% 99%;
-    --foreground: 220 15% 15%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
 
-    --card: 40 20% 99%;
-    --card-foreground: 220 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
 
-    --popover: 40 20% 99%;
-    --popover-foreground: 220 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
 
-    --primary: 43 74% 49%;
+    --primary: 43 68% 46%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 15% 95%;
-    --secondary-foreground: 220 15% 15%;
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 40 15% 95%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 0 0% 98%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 43 74% 49%;
+    --accent: 43 68% 46%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 15% 88%;
-    --input: 40 15% 88%;
-    --ring: 43 74% 49%;
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 0 0% 9%;
     
-    --brand: 43 74% 49%;
+    --brand: 43 68% 46%;
     --brand-foreground: 0 0% 100%;
 
-    --radius: 0.25rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 40 15% 98%;
-    --sidebar-foreground: 220 15% 15%;
-    --sidebar-primary: 43 74% 49%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-primary: 43 68% 46%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 15% 95%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 40 15% 88%;
-    --sidebar-ring: 43 74% 49%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 89%;
+    --sidebar-ring: 0 0% 9%;
   }
 }
 
@@ -101,12 +101,14 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Figtree', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: -0.005em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
-    font-family: 'JetBrains Mono', monospace;
+    @apply font-semibold;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: -0.03em;
   }
 
   ::selection {

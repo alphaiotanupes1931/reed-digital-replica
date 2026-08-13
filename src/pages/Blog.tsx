@@ -71,7 +71,7 @@ const BlogPage = () => {
             {/* Header */}
             <ScrollReveal>
               <div className="text-center mb-16 max-w-2xl mx-auto">
-                <span className="section-label font-mono">Blog</span>
+                <span className="section-label">Blog</span>
                 <TypedHeader text="Insights & Resources" className="mt-4 mb-6" />
                 <p className="text-muted-foreground">
                   Tips, insights, and stories to help your business thrive online.
@@ -127,7 +127,7 @@ const BlogPage = () => {
             {/* Press & External Articles */}
             <div className="max-w-2xl mx-auto">
               <ScrollReveal>
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider text-center mb-8">
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider text-center mb-8">
                   Press & Features
                 </h2>
               </ScrollReveal>

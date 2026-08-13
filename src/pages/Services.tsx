@@ -39,7 +39,7 @@ const Services = () => {
                 <div key={service.title} className="group">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-baseline py-5 border-b border-border hover:border-primary transition-colors duration-300">
                     <div className="flex items-baseline gap-4">
-                      <span className="text-xs text-muted-foreground font-mono">
+                      <span className="text-xs text-muted-foreground">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <div>
@@ -62,7 +62,7 @@ const Services = () => {
             </div>
 
             <ScrollReveal>
-              <div className="border border-border p-6 md:p-8 mb-12">
+              <div className="border border-border p-6 md:p-8 mb-12 rounded-2xl">
                 <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3">
                   Maintenance Plan
                 </p>
@@ -74,7 +74,7 @@ const Services = () => {
                 </p>
                 <Link
                   to="/pricing"
-                  className="inline-block text-xs uppercase tracking-widest border border-foreground px-5 py-3 hover:bg-foreground hover:text-background transition-colors"
+                  className="inline-block text-xs uppercase tracking-widest border border-foreground rounded-full px-5 py-3 hover:bg-foreground hover:text-background transition-colors"
                 >
                   View Maintenance Plans
                 </Link>
@@ -84,13 +84,13 @@ const Services = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/contact"
-                className="inline-block text-xs uppercase tracking-widest bg-foreground text-background px-5 py-3 hover:bg-foreground/85 transition-colors"
+                className="inline-block text-xs uppercase tracking-widest bg-foreground text-background rounded-full px-5 py-3 hover:bg-foreground/85 transition-colors"
               >
                 Start a Project
               </Link>
               <Link
                 to="/portfolio"
-                className="inline-block text-xs uppercase tracking-widest border border-foreground/30 px-5 py-3 hover:border-foreground transition-colors"
+                className="inline-block text-xs uppercase tracking-widest border border-foreground/30 rounded-full px-5 py-3 hover:border-foreground transition-colors"
               >
                 See Our Work
               </Link>

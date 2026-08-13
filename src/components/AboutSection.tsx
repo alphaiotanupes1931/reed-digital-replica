@@ -13,7 +13,7 @@ const AboutSection = () => {
               alt="Reed Digital Group" 
               className="h-32 md:h-40 mx-auto mb-8"
             />
-            <span className="section-label font-mono">About</span>
+            <span className="section-label">About</span>
             <TypedHeader text="Who We Are" className="mt-4" />
           </div>
 
@@ -31,7 +31,7 @@ const AboutSection = () => {
           {/* Founder live preview */}
           <div className="mt-16 max-w-2xl mx-auto">
             <div className="text-center mb-4">
-              <span className="text-xs text-muted-foreground tracking-widest font-mono uppercase">
+              <span className="text-xs text-muted-foreground tracking-widest uppercase">
                 Meet the Founder
               </span>
             </div>
@@ -47,7 +47,7 @@ const AboutSection = () => {
                   <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
                   <div className="w-2 h-2 rounded-full bg-green-400/60" />
                   <div className="flex-1 mx-2">
-                    <div className="bg-background/50 rounded-sm px-2 py-0.5 text-[10px] text-muted-foreground truncate font-mono">
+                    <div className="bg-background/50 rounded-sm px-2 py-0.5 text-[10px] text-muted-foreground truncate">
                       terellreed.com
                     </div>
                   </div>
@@ -64,7 +64,7 @@ const AboutSection = () => {
                 <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300" />
               </div>
               <div className="mt-4 text-center">
-                <span className="text-sm font-mono group-hover:text-primary transition-colors">
+                <span className="text-sm group-hover:text-primary transition-colors">
                   Learn more about Terell ↗
                 </span>
               </div>
@@ -73,7 +73,7 @@ const AboutSection = () => {
 
           {/* Certifications */}
           <div className="mt-16 pt-8 border-t border-border text-center">
-            <span className="text-xs text-muted-foreground tracking-widest font-mono">
+            <span className="text-xs text-muted-foreground tracking-widest">
               Small Business · SAM Registered · Federal Contractor Ready
             </span>
           </div>

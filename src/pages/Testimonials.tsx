@@ -50,7 +50,7 @@ const TestimonialsPage = () => {
               {/* Header */}
               <ScrollReveal>
                 <div className="text-center mb-16">
-                  <span className="section-label font-mono">Testimonials</span>
+                  <span className="section-label">Testimonials</span>
                   <TypedHeader text="Client Reviews" className="mt-4 mb-6" />
                 </div>
               </ScrollReveal>
@@ -87,7 +87,7 @@ const TestimonialsPage = () => {
                 <div className="text-center mt-16">
                   <Link 
                     to="/contact"
-                    className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                    className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
                     Start Your Project
                   </Link>

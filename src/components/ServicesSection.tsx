@@ -52,7 +52,7 @@ const ServicesSection = () => {
             >
               <div className="flex flex-col md:flex-row md:justify-between md:items-baseline py-4 md:py-5 border-b border-border hover:border-primary transition-colors duration-300">
                 <div className="flex items-baseline gap-3 md:gap-4">
-                  <span className="text-xs text-muted-foreground font-mono">
+                  <span className="text-xs text-muted-foreground">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <span className="font-medium text-base md:text-lg group-hover:text-primary transition-colors">

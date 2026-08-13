@@ -41,7 +41,7 @@ const ClientLogosSection = () => {
           {industries.map((industry, index) => (
             <motion.div
               key={industry.name}
-              className="flex flex-col items-center gap-3 p-6 border border-border hover:border-muted-foreground transition-colors group"
+              className="flex flex-col items-center gap-3 p-6 border border-border hover:border-muted-foreground transition-colors group rounded-2xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}

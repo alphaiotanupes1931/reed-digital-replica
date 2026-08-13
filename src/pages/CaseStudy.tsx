@@ -110,7 +110,7 @@ const CaseStudyPage = () => {
             {/* Header */}
             <ScrollReveal>
               <div className="mb-12">
-                <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                <span className="text-xs text-muted-foreground uppercase tracking-wider">
                   {study.category}
                 </span>
                 <h1 className="text-4xl md:text-5xl font-medium mt-2 mb-4">{study.title}</h1>
@@ -155,7 +155,7 @@ const CaseStudyPage = () => {
             {/* Overview */}
             <ScrollReveal delay={0.15}>
               <section className="mb-12">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4">Overview</h2>
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider mb-4">Overview</h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">{study.overview}</p>
               </section>
             </ScrollReveal>
@@ -163,7 +163,7 @@ const CaseStudyPage = () => {
             {/* Challenge */}
             <ScrollReveal delay={0.2}>
               <section className="mb-12">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4">The Challenge</h2>
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider mb-4">The Challenge</h2>
                 <p className="text-muted-foreground leading-relaxed">{study.challenge}</p>
               </section>
             </ScrollReveal>
@@ -171,15 +171,15 @@ const CaseStudyPage = () => {
             {/* Solution */}
             <ScrollReveal delay={0.25}>
               <section className="mb-12">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4">Our Solution</h2>
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider mb-4">Our Solution</h2>
                 <p className="text-muted-foreground leading-relaxed">{study.solution}</p>
               </section>
             </ScrollReveal>
 
             {/* Results */}
             <ScrollReveal delay={0.3}>
-              <section className="mb-12 bg-muted/30 p-8 border border-border">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-6">Results</h2>
+              <section className="mb-12 bg-muted/30 p-8 border border-border rounded-2xl">
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider mb-6">Results</h2>
                 <ul className="grid md:grid-cols-2 gap-4">
                   {study.results.map((result) => (
                     <li key={result} className="flex items-start gap-3">
@@ -194,12 +194,12 @@ const CaseStudyPage = () => {
             {/* Technologies */}
             <ScrollReveal delay={0.35}>
               <section className="mb-12">
-                <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-4">Technologies Used</h2>
+                <h2 className="text-sm text-muted-foreground uppercase tracking-wider mb-4">Technologies Used</h2>
                 <div className="flex flex-wrap gap-2">
                   {study.technologies.map((tech) => (
                     <span 
                       key={tech}
-                      className="px-3 py-1 border border-border text-sm font-mono"
+                      className="rounded-full px-3 py-1 border border-border text-sm"
                     >
                       {tech}
                     </span>
@@ -214,7 +214,7 @@ const CaseStudyPage = () => {
                 <p className="text-muted-foreground mb-6">Interested in a similar project?</p>
                 <Link 
                   to="/contact"
-                  className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                  className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                 >
                   Start a Conversation
                 </Link>

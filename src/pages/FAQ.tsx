@@ -47,7 +47,7 @@ const FAQPage = () => {
               {/* Header */}
               <ScrollReveal>
                 <div className="text-center mb-16">
-                  <span className="section-label font-mono">FAQ</span>
+                  <span className="section-label">FAQ</span>
                   <TypedHeader text="Questions" className="mt-4 mb-6" />
                 </div>
               </ScrollReveal>
@@ -62,7 +62,7 @@ const FAQPage = () => {
                     >
                       <span className="text-sm font-medium">{faq.question}</span>
                       <motion.span 
-                        className="text-muted-foreground font-mono text-lg"
+                        className="text-muted-foreground text-lg"
                         animate={{ rotate: openIndex === index ? 45 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
@@ -94,7 +94,7 @@ const FAQPage = () => {
                   </p>
                   <Link 
                     to="/contact" 
-                    className="inline-block border border-foreground px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+                    className="inline-block border border-foreground rounded-full px-8 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
                   >
                     Contact Us
                   </Link>
