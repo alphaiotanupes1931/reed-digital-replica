@@ -43,6 +43,8 @@ const BillsTracker = () => {
   const [w2Notes, setW2Notes] = useState("");
   const [editingW2Id, setEditingW2Id] = useState<string | null>(null);
   const w2FormRef = useRef<HTMLDivElement | null>(null);
+  const [editingSalary, setEditingSalary] = useState(false);
+  const [salaryDraft, setSalaryDraft] = useState("");
   const [taxTitle, setTaxTitle] = useState("");
   const [taxAmount, setTaxAmount] = useState("");
   const [taxDueDate, setTaxDueDate] = useState("");
