@@ -927,11 +927,21 @@ const InvoiceAdmin = () => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm text-foreground uppercase tracking-widest">Phases</p>
-                <button onClick={addPhase} className="text-xs uppercase tracking-widest text-foreground hover:text-primary">+ Add</button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setPhases((ps) => ps.map((p) => ({ ...p, status: "complete" as PhaseStatus })))} className="text-[10px] uppercase tracking-widest border border-emerald-500/60 text-emerald-600 rounded-2xl px-3 py-1.5 hover:bg-emerald-500 hover:text-white transition-colors">All complete</button>
+                  <button onClick={addPhase} className="text-xs uppercase tracking-widest text-foreground hover:text-primary">+ Add</button>
+                </div>
               </div>
               <div className="space-y-2">
                 {phases.map((p, i) => (
-                  <div key={i} className="flex gap-3 items-center border border-border rounded-2xl p-3">
+                  <div
+                    key={i}
+                    className={`flex gap-3 items-center border rounded-2xl p-3 transition-all ${
+                      p.status === "complete"
+                        ? "border-emerald-500/70 bg-emerald-500/5 animate-glow-green"
+                        : "border-border"
+                    }`}
+                  >
                     <span className="text-xs text-muted-foreground w-6">{i + 1}</span>
                     <Input value={p.name} onChange={(e) => updatePhase(i, { name: e.target.value })} className="h-8 bg-transparent border-0 border-b border-border rounded-xl text-sm flex-1 px-0" />
                     <select value={p.status} onChange={(e) => updatePhase(i, { status: e.target.value as PhaseStatus })} className="bg-transparent border border-border text-xs uppercase px-2 py-1">
