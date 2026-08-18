@@ -44,6 +44,8 @@ const InvoiceDetailsCard = ({
   const isPaid = invoice.status ==="paid";
   const depositPending = invoice.deposit_required && !invoice.deposit_paid && !isPaid;
   const basePrice = invoice.price;
+  const isMonthly = invoice.payment_plan ==="monthly";
+  const monthlyBase = invoice.plan_monthly_amount || invoice.price;
 
   return (
     <motion.div
@@ -85,13 +87,29 @@ const InvoiceDetailsCard = ({
       {/* Line items */}
       <div className="p-6">
         <div className="flex justify-between items-center py-2 border-b border-border">
-          <span className="text-sm text-foreground">{invoice.service}</span>
-          <span className="text-sm font-bold text-foreground">${basePrice.toLocaleString()}</span>
+          <span className="text-sm text-foreground">
+            {invoice.service}
+            {isMonthly && <span className="text-muted-foreground"> · Monthly</span>}
+          </span>
+          <span className="text-sm font-bold text-foreground">
+            ${(isMonthly ? monthlyBase : basePrice).toLocaleString()}
+            {isMonthly &&" / mo"}
+          </span>
         </div>
         <div className="flex justify-between items-center pt-4">
-          <span className="text-lg font-bold text-foreground">Total</span>
-          <span className="text-2xl font-bold text-foreground">${basePrice.toLocaleString()}</span>
+          <span className="text-lg font-bold text-foreground">{isMonthly ?"Monthly total" :"Total"}</span>
+          <span className="text-2xl font-bold text-foreground">
+            ${(isMonthly ? monthlyBase : basePrice).toLocaleString()}
+            {isMonthly && <span className="text-base font-normal text-muted-foreground"> / month</span>}
+          </span>
         </div>
+        {isMonthly && (
+          <p className="text-xs text-muted-foreground mt-3">
+            {invoice.plan_months
+              ? `${invoice.plan_months} monthly payments`
+              :"Ongoing monthly billing — no end date"}
+          </p>
+        )}
       </div>
     </motion.div>
   );
