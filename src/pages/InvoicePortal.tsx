@@ -379,6 +379,7 @@ const InvoicePortal = () => {
   const [loading, setLoading] = useState(false);
   const [payingId, setPayingId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState<"current" |"past">("current");
 
   type ContractInfo = {
     text: string;
@@ -748,28 +749,62 @@ const InvoicePortal = () => {
                 </div>
               )}
 
-              {invoices.length === 0 ? (
-                <div className="py-20 text-center border-2 border-dashed border-border mt-8">
-                  <p className="text-2xl font-bold text-foreground">No invoice yet</p>
-                  <p className="text-sm text-muted-foreground mt-2">Check back soon.</p>
-                </div>
-              ) : (
-                <div className="pt-6">
-                  {invoices.map((inv) => (
-                    <InvoiceDocument
-                      key={inv.id}
-                      invoice={inv}
-                      clientName={clientName}
-                      clientEmail={clientEmail}
-                      onPay={handlePay}
-                      onPayMonthly={handlePayMonthly}
-                      payingId={payingId}
-                      zelleHandle={selectedBiz?.zelle_handle ?? null}
-                      bizMethods={selectedBiz?.payment_methods ?? null}
-                    />
-                  ))}
-                </div>
-              )}
+              {(() => {
+                const current = invoices.filter((i) => i.status !=="paid");
+                const past = invoices.filter((i) => i.status ==="paid");
+                const shown = tab ==="current" ? current : past;
+                return (
+                  <div className="pt-8">
+                    <div className="flex gap-2 mb-6">
+                      <button
+                        onClick={() => setTab("current")}
+                        className={`h-10 px-5 text-xs uppercase tracking-widest rounded-full border transition-colors ${
+                          tab ==="current"
+                            ?"bg-foreground text-background border-transparent"
+                            :"border-border text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        Current ({current.length})
+                      </button>
+                      <button
+                        onClick={() => setTab("past")}
+                        className={`h-10 px-5 text-xs uppercase tracking-widest rounded-full border transition-colors ${
+                          tab ==="past"
+                            ?"bg-foreground text-background border-transparent"
+                            :"border-border text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        Past Invoices ({past.length})
+                      </button>
+                    </div>
+
+                    {shown.length === 0 ? (
+                      <div className="py-20 text-center border-2 border-dashed border-border">
+                        <p className="text-2xl font-bold text-foreground">
+                          {tab ==="current" ?"No invoice yet" :"No past invoices"}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {tab ==="current" ?"Check back soon." :"Paid invoices will appear here."}
+                        </p>
+                      </div>
+                    ) : (
+                      shown.map((inv) => (
+                        <InvoiceDocument
+                          key={inv.id}
+                          invoice={inv}
+                          clientName={clientName}
+                          clientEmail={clientEmail}
+                          onPay={handlePay}
+                          onPayMonthly={handlePayMonthly}
+                          payingId={payingId}
+                          zelleHandle={selectedBiz?.zelle_handle ?? null}
+                          bizMethods={selectedBiz?.payment_methods ?? null}
+                        />
+                      ))
+                    )}
+                  </div>
+                );
+              })()}
 
               <div className="border-t border-border mt-12 py-8 text-center">
                 <p className="text-xs text-muted-foreground">
