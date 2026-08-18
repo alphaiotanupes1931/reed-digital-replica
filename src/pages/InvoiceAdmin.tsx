@@ -220,8 +220,8 @@ const InvoiceAdmin = () => {
       toast({ title:"Select at least one payment method", variant:"destructive" });
       return;
     }
-    if (editPaymentPlan ==="monthly" && (!editPlanStart || !editPlanEnd)) {
-      toast({ title:"Monthly plan needs start and end dates", variant:"destructive" });
+    if (editPaymentPlan ==="monthly" && !editPlanStart) {
+      toast({ title:"Monthly plan needs a start date", variant:"destructive" });
       return;
     }
     if (editPaymentPlan ==="monthly" && editPlanStart && editPlanEnd && editPlanEnd < editPlanStart) {
@@ -518,11 +518,11 @@ const InvoiceAdmin = () => {
       toast({ title:"Deposit details required", variant:"destructive" });
       return;
     }
-    if (paymentPlan ==="monthly" && (!planStart || !planEnd)) {
-      toast({ title:"Monthly plan needs start and end dates", variant:"destructive" });
+    if (paymentPlan ==="monthly" && !planStart) {
+      toast({ title:"Monthly plan needs a start date", variant:"destructive" });
       return;
     }
-    if (paymentPlan ==="monthly" && planEnd < planStart) {
+    if (paymentPlan ==="monthly" && planEnd && planEnd < planStart) {
       toast({ title:"End date must be after start date", variant:"destructive" });
       return;
     }
@@ -547,7 +547,7 @@ const InvoiceAdmin = () => {
           ].join(",") ||"stripe",
           payment_plan: paymentPlan,
           plan_start_date: paymentPlan ==="monthly" ? planStart : null,
-          plan_end_date: paymentPlan ==="monthly" ? planEnd : null,
+          plan_end_date: paymentPlan ==="monthly" && planEnd ? planEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
