@@ -49,7 +49,7 @@ serve(async (req) => {
     const client = invoice.clients;
     const origin = req.headers.get("origin") || "https://lovable.dev";
     const BRAND = "Reed Digital Group LLC";
-    const LOGO_URL = "https://reeddigitalgroup.com/stripe-logo.png";
+    const LOGO_URL = "https://reeddigitalgroup.com/__l5e/assets-v1/b584cfee-989d-4ca0-af68-af931da8ce8f/rdg-header-logo.png";
 
     // Fee calculation: 2.9% + $0.30
     const FEE_RATE = 0.029;
