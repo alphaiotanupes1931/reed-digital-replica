@@ -56,18 +56,18 @@ serve(async (req) => {
 
     // ── Monthly payment plan branch ─────────────────────────────────────────
     if (pay_monthly_plan) {
-      if (invoice.payment_plan !== "monthly" || !invoice.plan_monthly_amount || !invoice.plan_end_date) {
+      if (invoice.payment_plan !== "monthly" || !invoice.plan_monthly_amount) {
         throw new Error("This invoice has no monthly payment plan configured.");
       }
       const months = Number(invoice.plan_months || 0);
-      // Match the one-time Stripe total: full price + a single processing fee,
-      // split evenly across the plan months.
-      const oneTimeTotal = addFee(Number(invoice.price));
-      const monthlyTotal = Math.round((oneTimeTotal / Math.max(months, 1)) * 100) / 100;
+      // Monthly amount + processing fee applied to each monthly charge.
+      const monthlyTotal = addFee(Number(invoice.plan_monthly_amount));
 
-      // Plan end date stored in metadata so it can be enforced after the
-      // subscription is created (Checkout doesn't accept cancel_at directly).
-      const cancelAt = Math.floor(new Date(invoice.plan_end_date as string).getTime() / 1000);
+      // Plan end date (when set) stored in metadata so it can be enforced after
+      // the subscription is created (Checkout doesn't accept cancel_at directly).
+      const cancelAt = invoice.plan_end_date
+        ? Math.floor(new Date(invoice.plan_end_date as string).getTime() / 1000)
+        : null;
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -77,8 +77,12 @@ serve(async (req) => {
             price_data: {
               currency: "usd",
               product_data: {
-                name: `${invoice.service} — Monthly Plan (${months} months)`,
-                description: `${months} monthly payments of $${monthlyTotal.toFixed(2)} — ${client.company_name}`,
+                name: months
+                  ? `${invoice.service} — Monthly (${months} months)`
+                  : `${invoice.service} — Monthly (ongoing)`,
+                description: months
+                  ? `${months} monthly payments of $${monthlyTotal.toFixed(2)} — ${client.company_name}`
+                  : `Monthly payment of $${monthlyTotal.toFixed(2)} — ${client.company_name}`,
               },
               unit_amount: Math.round(monthlyTotal * 100),
               recurring: { interval: "month" as const },
@@ -93,7 +97,7 @@ serve(async (req) => {
             client_id: client.id,
             type: "invoice_monthly_plan",
             months: String(months),
-            cancel_at: String(cancelAt),
+            ...(cancelAt ? { cancel_at: String(cancelAt) } : {}),
           },
         },
         success_url: `${origin}/portal/thank-you`,
