@@ -48,6 +48,8 @@ serve(async (req) => {
 
     const client = invoice.clients;
     const origin = req.headers.get("origin") || "https://lovable.dev";
+    const BRAND = "Reed Digital Group LLC";
+    const LOGO_URL = "https://reeddigitalgroup.com/stripe-logo.png";
 
     // Fee calculation: 2.9% + $0.30
     const FEE_RATE = 0.029;
@@ -77,12 +79,11 @@ serve(async (req) => {
             price_data: {
               currency: "usd",
               product_data: {
-                name: months
-                  ? `${invoice.service} — Monthly (${months} months)`
-                  : `${invoice.service} — Monthly (ongoing)`,
+                name: `${invoice.service} — Monthly payment`,
                 description: months
-                  ? `${months} monthly payments of $${monthlyTotal.toFixed(2)} — ${client.company_name}`
-                  : `Monthly payment of $${monthlyTotal.toFixed(2)} — ${client.company_name}`,
+                  ? `${BRAND} · $${monthlyTotal.toFixed(2)}/month for ${months} months`
+                  : `${BRAND} · $${monthlyTotal.toFixed(2)}/month, ongoing until cancelled`,
+                images: [LOGO_URL],
               },
               unit_amount: Math.round(monthlyTotal * 100),
               recurring: { interval: "month" as const },
@@ -91,7 +92,13 @@ serve(async (req) => {
           },
         ],
         mode: "subscription",
+        billing_address_collection: "auto",
+        allow_promotion_codes: false,
+        custom_text: {
+          submit: { message: `You will be charged $${monthlyTotal.toFixed(2)} every month by ${BRAND}.` },
+        },
         subscription_data: {
+          description: `Monthly plan — ${invoice.service}`,
           metadata: {
             invoice_id: invoice.id,
             client_id: client.id,
@@ -145,8 +152,8 @@ serve(async (req) => {
       ? Math.round(addFee(invoice.price) * 100)
       : Math.round(paymentAmount * 100);
     const finalName = isSubscription && !bundled
-      ? `${invoice.service} (Monthly) - ${client.company_name}`
-      : `${description} - ${client.company_name}`;
+      ? `${invoice.service} — Monthly payment`
+      : `${description} — One-time payment`;
 
     // Build line items
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
@@ -157,8 +164,9 @@ serve(async (req) => {
             name: finalName,
             description:
               isSubscription && !bundled
-                ? `Recurring monthly charge`
-                : `Invoice due ${invoice.due_date}`,
+                ? `${BRAND} · billed every month`
+                : `${BRAND} · one-time charge, invoice due ${invoice.due_date}`,
+            images: [LOGO_URL],
           },
           unit_amount: finalUnitAmount,
           ...(isSubscription && !bundled
@@ -179,8 +187,9 @@ serve(async (req) => {
         price_data: {
           currency: "usd",
           product_data: {
-            name: `${maintenance_label || "Monthly Maintenance"} - ${client.company_name}`,
-            description: "Recurring monthly website maintenance — first charge on the 1st of next month",
+            name: `${maintenance_label || "Monthly Maintenance"} — Monthly payment`,
+            description: `${BRAND} · billed monthly, first charge on the 1st of next month`,
+            images: [LOGO_URL],
           },
           unit_amount: Math.round(monthlyTotal * 100),
           recurring: { interval: "month" as const },
@@ -198,6 +207,15 @@ serve(async (req) => {
       customer_email: client.email,
       line_items: lineItems,
       mode,
+      billing_address_collection: "auto",
+      allow_promotion_codes: false,
+      custom_text: {
+        submit: {
+          message: isSubscription
+            ? `${BRAND} will charge this amount every month until cancelled.`
+            : `This is a one-time payment to ${BRAND}.`,
+        },
+      },
       ...(bundled && trialEnd
         ? {
             subscription_data: {
