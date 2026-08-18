@@ -164,48 +164,96 @@ const PaymentOptions = ({
 
   if (isPaid) return null;
 
-  const isMonthlyPlan = invoice.payment_plan ==="monthly" && invoice.plan_monthly_amount && invoice.plan_months;
-  const showMonthlyOption = isMonthlyPlan && !depositPending;
-  // Monthly plan total must equal the one-time Stripe total (price + single processing fee).
-  // We split that single total evenly across the plan months so the customer pays the
-  // same overall amount whether they pay once or monthly.
-  const months = Number(invoice.plan_months || 1);
-  const monthlyPerCharge = Math.round((stripeTotal / months) * 100) / 100;
-  const monthlyGrandTotal = stripeTotal;
+  const isMonthlyPlan = invoice.payment_plan ==="monthly";
+  const monthlyBase = invoice.plan_monthly_amount || invoice.price;
+  const monthlyFee = Math.round((monthlyBase * PROCESSING_FEE_RATE + PROCESSING_FEE_FLAT) * 100) / 100;
+  const monthlyStripe = Math.round((monthlyBase + monthlyFee) * 100) / 100;
 
-  const MonthlyPlanCard = showMonthlyOption ? (
-    <div className="mb-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="border border-border bg-background p-6"
-      >
-        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Option B · Monthly Payment Plan</p>
-        <h3 className="text-2xl font-bold text-foreground mb-1">${monthlyPerCharge.toLocaleString()} / month</h3>
-        <p className="text-sm text-foreground/70 mb-1">
-          {months} monthly payments · Total ${monthlyGrandTotal.toLocaleString()}
-        </p>
-        <p className="text-xs text-emerald-500 mb-4">
-          Same total as paying in full — processing fee split evenly
-        </p>
-        <button
-          onClick={() => onPayMonthly(invoice)}
-          disabled={payingId === invoice.id +"-monthly"}
-          className="w-full h-14 text-sm uppercase tracking-widest border border-border text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
-        >
-          {payingId === invoice.id +"-monthly" ?"Processing..." :"Start Monthly Plan (Stripe)"}
-        </button>
-        <p className="text-[10px] text-muted-foreground mt-3 text-center">
-          Card auto-charged each month. Cancels automatically after {invoice.plan_months} payments.
-        </p>
-      </motion.div>
-    </div>
-  ) : null;
+  // ── Monthly plan: Stripe (recommended, auto-charged) vs Zelle (manual each month)
+  if (isMonthlyPlan && !depositPending) {
+    const bothMonthly = allowZelle && allowStripe;
+    return (
+      <>
+        <div className="mb-3 border border-border bg-muted/30 p-4">
+          <p className="text-xs text-foreground">
+            This is a <span className="font-bold">monthly</span> plan
+            {invoice.plan_months ? ` (${invoice.plan_months} payments)` :" with no end date (ongoing)"}.
+            {" "}For monthly billing it is recommended to use Stripe so your payment is charged automatically each month.
+          </p>
+        </div>
+        <div className={`mb-8 grid gap-4 ${bothMonthly ?"md:grid-cols-[1fr_auto_1fr] items-stretch" :"grid-cols-1"}`}>
+          {allowZelle && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="border border-border bg-background p-6 flex flex-col"
+            >
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Pay monthly with</p>
+                <h3 className="text-2xl font-bold text-foreground mb-1">Zelle</h3>
+                <p className="text-3xl font-bold text-foreground mb-2">
+                  ${monthlyBase.toLocaleString()}<span className="text-base font-normal text-muted-foreground"> / month</span>
+                </p>
+                <p className="text-xs text-emerald-500">No processing fee</p>
+                <p className="text-xs text-muted-foreground mt-1">Send to: {zelleEmail}</p>
+                <p className="text-xs text-primary mt-2">
+                  You are responsible for sending this payment every month on your own — it is not automatic.
+                </p>
+              </div>
+              <a
+                href={zelleUrl}
+                className="mt-6 w-full h-14 flex items-center justify-center text-sm uppercase tracking-widest border border-border text-foreground hover:bg-foreground hover:text-background transition-colors"
+              >
+                Pay with Zelle
+              </a>
+            </motion.div>
+          )}
+
+          {bothMonthly && (
+            <div className="flex items-center justify-center">
+              <span className="text-4xl md:text-5xl font-black text-primary tracking-tight">OR</span>
+            </div>
+          )}
+
+          {allowStripe && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="border-2 border-foreground bg-background p-6 flex flex-col"
+            >
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Recommended · Monthly</p>
+                <h3 className="text-2xl font-bold text-foreground mb-1">Card (Stripe)</h3>
+                <p className="text-3xl font-bold text-foreground mb-2">
+                  ${monthlyStripe.toLocaleString()}<span className="text-base font-normal text-muted-foreground"> / month</span>
+                </p>
+                <p className="text-xs text-emerald-500 font-bold">Includes ${monthlyFee.toLocaleString()} processing fee per month</p>
+                <p className="text-xs text-muted-foreground mt-1">Charged automatically every month</p>
+              </div>
+              <button
+                onClick={() => onPayMonthly(invoice)}
+                disabled={payingId === invoice.id +"-monthly"}
+                className="mt-6 w-full h-14 text-sm uppercase tracking-widest bg-foreground text-background hover:opacity-85 transition-opacity disabled:opacity-50"
+              >
+                {payingId === invoice.id +"-monthly" ?"Processing..." : `Start Monthly Plan — $${monthlyStripe.toLocaleString()}/mo`}
+              </button>
+              <p className="text-[10px] text-muted-foreground mt-3 text-center">
+                {invoice.plan_months
+                  ? `Cancels automatically after ${invoice.plan_months} payments.`
+                  :"Continues each month until cancelled."}
+              </p>
+            </motion.div>
+          )}
+        </div>
+      </>
+    );
+  }
 
   if (depositPending) {
     return (
       <>
-        {MonthlyPlanCard}
         <div className="mb-8">
         <button
           onClick={() => onPay(invoice, true)}
@@ -223,9 +271,6 @@ const PaymentOptions = ({
 
   return (
     <>
-      {showMonthlyOption && (
-        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Option A · Pay in full</p>
-      )}
       <div className={`mb-8 grid gap-4 ${both ?"md:grid-cols-[1fr_auto_1fr] items-stretch" :"grid-cols-1"}`}>
       {/* Zelle Card */}
       {allowZelle && (
@@ -284,7 +329,6 @@ const PaymentOptions = ({
         </motion.div>
       )}
       </div>
-      {MonthlyPlanCard}
     </>
   );
 };
