@@ -579,17 +579,23 @@ serve(async (req) => {
         updates.payment_method = unique.length ? unique.join(",") : "stripe";
       }
       if (payment_plan !== undefined) {
-        if (payment_plan === "monthly" && plan_start_date && plan_end_date) {
-          const s = new Date(plan_start_date);
-          const e = new Date(plan_end_date);
-          const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+        if (payment_plan === "monthly" && plan_start_date) {
           const basePrice = price !== undefined ? Number(price) : null;
           updates.payment_plan = "monthly";
           updates.plan_start_date = plan_start_date;
-          updates.plan_end_date = plan_end_date;
-          updates.plan_months = months;
-          if (basePrice !== null) {
-            updates.plan_monthly_amount = Math.round((basePrice / months) * 100) / 100;
+          updates.plan_end_date = plan_end_date || null;
+          if (plan_end_date) {
+            const s = new Date(plan_start_date);
+            const e = new Date(plan_end_date);
+            const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
+            updates.plan_months = months;
+            if (basePrice !== null) {
+              updates.plan_monthly_amount = Math.round((basePrice / months) * 100) / 100;
+            }
+          } else {
+            // Ongoing monthly plan: price is the recurring monthly amount.
+            updates.plan_months = null;
+            if (basePrice !== null) updates.plan_monthly_amount = basePrice;
           }
         } else {
           updates.payment_plan = "one_time";
