@@ -1088,7 +1088,7 @@ const InvoiceAdmin = () => {
                               <span className={`text-[10px]  uppercase tracking-widest px-2 py-0.5 border ${inv.status ==="paid" ?"border-emerald-500 text-emerald-500" :"border-primary text-primary"}`}>{inv.status}</span>
                               {inv.payment_plan ==="monthly" && (
                                 <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 border border-foreground/30 text-foreground/70">
-                                  Monthly · {inv.plan_months}mo · ${Number(inv.plan_monthly_amount || 0).toFixed(2)}/mo
+                                  Monthly · {inv.plan_months ? `${inv.plan_months}mo` :"Ongoing"} · ${Number(inv.plan_monthly_amount || inv.price || 0).toFixed(2)}/mo
                                 </span>
                               )}
                             </div>
@@ -1107,6 +1107,16 @@ const InvoiceAdmin = () => {
                           </div>
                           {editingInvoiceId === inv.id && (
                             <div className="mt-4 border border-border rounded-2xl p-4 space-y-4">
+                              <div className="grid gap-3 md:grid-cols-2">
+                                <label className="block">
+                                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Service</span>
+                                  <input value={editService} onChange={(e) => setEditService(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
+                                </label>
+                                <label className="block">
+                                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{editPaymentPlan ==="monthly" ?"Monthly amount" :"Price"}</span>
+                                  <input type="number" step="0.01" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
+                                </label>
+                              </div>
                               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Payment Plan</p>
                               <div className="flex gap-2">
                                 <button type="button" onClick={() => setEditPaymentPlan("one_time")} className={`flex-1 text-xs  uppercase tracking-widest border px-3 py-2 transition-colors ${editPaymentPlan ==="one_time" ?"border-foreground bg-foreground text-background rounded-full" :"border-border hover:border-foreground"}`}>One-time</button>
@@ -1150,7 +1160,7 @@ const InvoiceAdmin = () => {
                                   })()}
                                 </div>
                               )}
-                              <div className="flex gap-2 pt-2">
+                              <div className="flex gap-2 pt-4 mt-2 border-t border-border">
                                 <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 text-xs uppercase tracking-widest rounded-xl">Save</Button>
                                 <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground">Cancel</button>
                               </div>
