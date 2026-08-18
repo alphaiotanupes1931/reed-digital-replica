@@ -106,6 +106,10 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" },
           "50%": { boxShadow: "0 0 40px hsl(var(--primary) / 0.6)" },
         },
+        "glow-green": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(16,185,129,0.18), 0 0 12px rgba(16,185,129,0.25)" },
+          "50%": { boxShadow: "0 0 0 4px rgba(16,185,129,0.10), 0 0 26px rgba(16,185,129,0.55)" },
+        },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
@@ -121,6 +125,7 @@ export default {
         blink: "blink 1s step-end infinite",
         "gradient-shift": "gradient-shift 8s ease infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "glow-green": "glow-green 2.2s ease-in-out infinite",
         float: "float 3s ease-in-out infinite",
         shimmer: "shimmer 2s linear infinite",
       },
