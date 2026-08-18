@@ -246,7 +246,7 @@ const InvoiceAdmin = () => {
           ].join(","),
           payment_plan: editPaymentPlan,
           plan_start_date: editPaymentPlan ==="monthly" ? editPlanStart : null,
-          plan_end_date: editPaymentPlan ==="monthly" ? editPlanEnd : null,
+          plan_end_date: editPaymentPlan ==="monthly" && editPlanEnd ? editPlanEnd : null,
           password: ADMIN_PASSWORD,
         },
       });
@@ -1026,13 +1026,22 @@ const InvoiceAdmin = () => {
                                     <input type="date" value={planStart} onChange={(e) => setPlanStart(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                   </label>
                                   <label className="block">
-                                    <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">End date</span>
+                                    <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">End date (optional)</span>
                                     <input type="date" value={planEnd} onChange={(e) => setPlanEnd(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                   </label>
                                 </div>
                                 {(() => {
                                   const p = parseFloat(price);
-                                  if (!p || !planStart || !planEnd) return null;
+                                  if (!p || !planStart) return null;
+                                  if (!planEnd) {
+                                    return (
+                                      <div className="border border-border rounded-2xl p-3 text-xs">
+                                        <div className="flex justify-between"><span className="text-muted-foreground">Duration</span><span className="font-bold">Ongoing (no end date)</span></div>
+                                        <div className="flex justify-between mt-1"><span className="text-muted-foreground">Monthly (base)</span><span className="font-bold">${p.toFixed(2)}</span></div>
+                                        <div className="flex justify-between mt-1"><span className="text-muted-foreground">Client pays / mo (incl. fee)</span><span className="font-bold">${calculateTotal(p).toFixed(2)}</span></div>
+                                      </div>
+                                    );
+                                  }
                                   const s = new Date(planStart);
                                   const e = new Date(planEnd);
                                   const months = Math.max(1, (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1);
