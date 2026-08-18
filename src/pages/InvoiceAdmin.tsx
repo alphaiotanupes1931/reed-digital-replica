@@ -1160,7 +1160,7 @@ const InvoiceAdmin = () => {
                                   })()}
                                 </div>
                               )}
-                              <div className="flex gap-2 pt-2">
+                              <div className="flex gap-2 pt-4 mt-2 border-t border-border">
                                 <Button type="button" onClick={() => handleUpdateInvoice(inv.id)} className="h-9 px-6 text-xs uppercase tracking-widest rounded-xl">Save</Button>
                                 <button type="button" onClick={() => setEditingInvoiceId(null)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-4 py-2 hover:border-foreground">Cancel</button>
                               </div>
