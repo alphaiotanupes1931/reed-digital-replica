@@ -12,37 +12,30 @@ const HomeOfficeHelp = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      <div className="fixed top-0 left-0 right-0 h-1 bg-brand rounded-full z-[60]" />
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <span className="text-[20vw] font-bold text-foreground/[0.03] uppercase tracking-widest select-none">RDG</span>
-      </div>
+    <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-32 pb-20 relative z-10">
-        <div className="container max-w-3xl mx-auto">
+        <div className="container max-w-3xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <BackLink />
-            <Link to="/home-office" className="inline-block mt-3">
+            <div className="mb-6">
+              <BackLink />
+            </div>
+            <Link to="/home-office" className="block">
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight hover:text-brand transition-colors">Help</h1>
-              <p className="text-sm text-brand italic mt-1">by RDG</p>
             </Link>
+            <p className="text-sm text-muted-foreground mt-2">Home Office by RDG</p>
 
-            <div className="mt-12 space-y-6">
+            <div className="mt-10 space-y-4">
               <div className="border border-border rounded-2xl p-6">
-                <h2 className="text-xs uppercase tracking-widest font-bold mb-3">Contact</h2>
-                <div className="space-y-3">
-                  <a href="mailto:reeddigitalgroup@gmail.com" className="block text-sm hover:text-brand transition-colors">
-                    reeddigitalgroup@gmail.com
-                  </a>
-                  <a href="mailto:reeddigitalgroup@gmail.com" className="block text-sm hover:text-brand transition-colors">
-                    reeddigitalgroup@gmail.com
-                  </a>
-                </div>
+                <h2 className="text-xs uppercase tracking-widest font-bold mb-3 text-muted-foreground">Contact</h2>
+                <a href="mailto:reeddigitalgroup@gmail.com" className="text-sm hover:text-brand transition-colors">
+                  reeddigitalgroup@gmail.com
+                </a>
               </div>
-              <div className="border-2 border-border p-6">
-                <h2 className="text-xs uppercase tracking-widest font-bold mb-3">Support</h2>
+              <div className="border border-border rounded-2xl p-6">
+                <h2 className="text-xs uppercase tracking-widest font-bold mb-3 text-muted-foreground">Support</h2>
                 <p className="text-sm text-muted-foreground">
-                  For technical issues or feature requests, email the addresses above.
+                  For technical issues or feature requests, email the address above.
                 </p>
               </div>
             </div>
