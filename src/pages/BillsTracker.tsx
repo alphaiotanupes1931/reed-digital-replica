@@ -135,6 +135,17 @@ const BillsTracker = () => {
     }
   };
 
+  const toggleBillCheck = async (b: Bill, field: "makes_money" | "saves_money" | "saves_time") => {
+    const next = !b[field];
+    setBills((prev) => prev.map((item) => (item.id === b.id ? { ...item, [field]: next } : item)));
+    try {
+      await api("update_bill", { id: b.id, [field]: next });
+    } catch (err: any) {
+      setBills((prev) => prev.map((item) => (item.id === b.id ? { ...item, [field]: !next } : item)));
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   const totalBills = bills.filter((b) => !b.hidden).reduce((s, b) => s + Number(b.price || 0), 0);
 
   const w2Rows = extraIncome.filter((r) => r.category ==="w2");
