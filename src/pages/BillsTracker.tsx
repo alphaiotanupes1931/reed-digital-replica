@@ -455,11 +455,9 @@ const BillsTracker = () => {
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background rounded-full">
+                <div className="flex items-center justify-between p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalBills)}</p>
-                  <div />
-                  <div />
                 </div>
               </div>
             )}
