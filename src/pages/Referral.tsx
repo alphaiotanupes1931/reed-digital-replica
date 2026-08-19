@@ -33,7 +33,22 @@ const Referral = () => {
     const mailto = `mailto:reeddigitalgroup@gmail.com?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
+    const a = document.createElement("a");
+    a.href = mailto;
+    a.target = "_self";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Fallback: if no mail client handles it, copy the details so nothing is lost.
+    setTimeout(() => {
+      navigator.clipboard?.writeText(`To: reeddigitalgroup@gmail.com\nSubject: ${subject}\n\n${body}`).catch(() => {});
+      toast({
+        title: "Email drafted",
+        description: "If your mail app didn't open, the referral details were copied to your clipboard.",
+      });
+    }, 800);
   };
 
   const field = "w-full bg-transparent border-b-2 border-foreground/30 focus:border-brand outline-none py-2 font-mono text-sm";
@@ -87,7 +102,7 @@ const Referral = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-brand rounded-full text-brand-foreground px-8 py-4 text-xs uppercase tracking-[0.3em] hover:bg-brand rounded-full/90 transition-colors"
+              className="w-full bg-brand rounded-full text-brand-foreground px-8 py-4 text-xs uppercase tracking-[0.3em] hover:opacity-90 transition-opacity"
             >
               Draft email & send →
             </button>
