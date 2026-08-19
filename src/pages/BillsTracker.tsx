@@ -8,7 +8,7 @@ import { Checkbox } from"@/components/ui/checkbox";
 import { supabase } from"@/integrations/supabase/client";
 import { useToast } from"@/hooks/use-toast";
 
-interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
+interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; makes_money: boolean; saves_money: boolean; saves_time: boolean; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
