@@ -4,10 +4,11 @@ import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import { Input } from"@/components/ui/input";
 import { Button } from"@/components/ui/button";
+import { Checkbox } from"@/components/ui/checkbox";
 import { supabase } from"@/integrations/supabase/client";
 import { useToast } from"@/hooks/use-toast";
 
-interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; }
+interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; makes_money: boolean; saves_money: boolean; saves_time: boolean; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
@@ -131,6 +132,17 @@ const BillsTracker = () => {
       );
     } catch (err: any) {
       toast({ title:"Error", description: err.message, variant:"destructive" });
+    }
+  };
+
+  const toggleBillCheck = async (b: Bill, field: "makes_money" | "saves_money" | "saves_time") => {
+    const next = !b[field];
+    setBills((prev) => prev.map((item) => (item.id === b.id ? { ...item, [field]: next } : item)));
+    try {
+      await api("update_bill", { id: b.id, [field]: next });
+    } catch (err: any) {
+      setBills((prev) => prev.map((item) => (item.id === b.id ? { ...item, [field]: !next } : item)));
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     }
   };
 
@@ -411,26 +423,41 @@ const BillsTracker = () => {
             ) : (
               <div className="border border-border divide-y divide-foreground/10">
                 {bills.map((b) => (
-                  <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ?"opacity-50 bg-muted/30" :""}`}>
-                    <div>
-                      <p className={`font-bold text-sm ${b.hidden ?"line-through text-muted-foreground" :""}`}>{b.company_name}</p>
+                  <div key={b.id} className={`flex flex-col md:flex-row gap-4 md:items-center justify-between p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
+                    <div className="min-w-0">
+                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{b.company_name}</p>
                       {b.notes && <p className="text-xs text-muted-foreground mt-1">{b.notes}</p>}
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        {[
+                          { key: "makes_money", label: "Makes money" },
+                          { key: "saves_money", label: "Saves money" },
+                          { key: "saves_time", label: "Saves time" },
+                        ].map(({ key, label }) => (
+                          <label key={key} className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+                            <Checkbox
+                              checked={b[key as keyof Bill] as boolean}
+                              onCheckedChange={() => toggleBillCheck(b, key as "makes_money" | "saves_money" | "saves_time")}
+                            />
+                            <span className={b[key as keyof Bill] ? "text-foreground" : ""}>{label}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                    <p className={`font-bold text-sm ${b.hidden ?"line-through text-muted-foreground" :""}`}>{fmt(Number(b.price))}</p>
-                    <Button size="sm" variant={b.hidden ?"outline" :"default"} onClick={() => toggleHiddenBill(b)}>
-                      {b.hidden ?"Show" :"Hide"}
-                    </Button>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDelete(b.id)}>Delete</Button>
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{fmt(Number(b.price))}</p>
+                      <Button size="sm" variant={b.hidden ? "outline" : "default"} onClick={() => toggleHiddenBill(b)}>
+                        {b.hidden ? "Show" : "Hide"}
+                      </Button>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDelete(b.id)}>Delete</Button>
+                      </div>
                     </div>
                   </div>
                 ))}
-                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 bg-foreground text-background rounded-full">
+                <div className="flex items-center justify-between p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalBills)}</p>
-                  <div />
-                  <div />
                 </div>
               </div>
             )}
