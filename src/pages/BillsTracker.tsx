@@ -4,6 +4,7 @@ import BackLink from"@/components/BackLink";
 import { motion } from"framer-motion";
 import { Input } from"@/components/ui/input";
 import { Button } from"@/components/ui/button";
+import { Checkbox } from"@/components/ui/checkbox";
 import { supabase } from"@/integrations/supabase/client";
 import { useToast } from"@/hooks/use-toast";
 
