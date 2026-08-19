@@ -423,18 +423,35 @@ const BillsTracker = () => {
             ) : (
               <div className="border border-border divide-y divide-foreground/10">
                 {bills.map((b) => (
-                  <div key={b.id} className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center p-4 ${b.hidden ?"opacity-50 bg-muted/30" :""}`}>
-                    <div>
-                      <p className={`font-bold text-sm ${b.hidden ?"line-through text-muted-foreground" :""}`}>{b.company_name}</p>
+                  <div key={b.id} className={`flex flex-col md:flex-row gap-4 md:items-center justify-between p-4 ${b.hidden ? "opacity-50 bg-muted/30" : ""}`}>
+                    <div className="min-w-0">
+                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{b.company_name}</p>
                       {b.notes && <p className="text-xs text-muted-foreground mt-1">{b.notes}</p>}
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        {[
+                          { key: "makes_money", label: "Makes money" },
+                          { key: "saves_money", label: "Saves money" },
+                          { key: "saves_time", label: "Saves time" },
+                        ].map(({ key, label }) => (
+                          <label key={key} className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+                            <Checkbox
+                              checked={b[key as keyof Bill] as boolean}
+                              onCheckedChange={() => toggleBillCheck(b, key as "makes_money" | "saves_money" | "saves_time")}
+                            />
+                            <span className={b[key as keyof Bill] ? "text-foreground" : ""}>{label}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                    <p className={`font-bold text-sm ${b.hidden ?"line-through text-muted-foreground" :""}`}>{fmt(Number(b.price))}</p>
-                    <Button size="sm" variant={b.hidden ?"outline" :"default"} onClick={() => toggleHiddenBill(b)}>
-                      {b.hidden ?"Show" :"Hide"}
-                    </Button>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDelete(b.id)}>Delete</Button>
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <p className={`font-bold text-sm ${b.hidden ? "line-through text-muted-foreground" : ""}`}>{fmt(Number(b.price))}</p>
+                      <Button size="sm" variant={b.hidden ? "outline" : "default"} onClick={() => toggleHiddenBill(b)}>
+                        {b.hidden ? "Show" : "Hide"}
+                      </Button>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => startEdit(b)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDelete(b.id)}>Delete</Button>
+                      </div>
                     </div>
                   </div>
                 ))}
