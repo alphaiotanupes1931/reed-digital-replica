@@ -576,9 +576,12 @@ export type Database = {
           created_at: string
           hidden: boolean
           id: string
+          makes_money: boolean
           notes: string | null
           owner_user_id: string | null
           price: number
+          saves_money: boolean
+          saves_time: boolean
           updated_at: string
         }
         Insert: {
@@ -586,9 +589,12 @@ export type Database = {
           created_at?: string
           hidden?: boolean
           id?: string
+          makes_money?: boolean
           notes?: string | null
           owner_user_id?: string | null
           price?: number
+          saves_money?: boolean
+          saves_time?: boolean
           updated_at?: string
         }
         Update: {
@@ -596,9 +602,12 @@ export type Database = {
           created_at?: string
           hidden?: boolean
           id?: string
+          makes_money?: boolean
           notes?: string | null
           owner_user_id?: string | null
           price?: number
+          saves_money?: boolean
+          saves_time?: boolean
           updated_at?: string
         }
         Relationships: []
