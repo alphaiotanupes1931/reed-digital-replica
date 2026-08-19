@@ -432,11 +432,12 @@ const BillsTracker = () => {
                           { key: "makes_money", label: "Makes money" },
                           { key: "saves_money", label: "Saves money" },
                           { key: "saves_time", label: "Saves time" },
+                          { key: "need", label: "Need" },
                         ].map(({ key, label }) => (
                           <label key={key} className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
                             <Checkbox
                               checked={b[key as keyof Bill] as boolean}
-                              onCheckedChange={() => toggleBillCheck(b, key as "makes_money" | "saves_money" | "saves_time")}
+                              onCheckedChange={() => toggleBillCheck(b, key as "makes_money" | "saves_money" | "saves_time" | "need")}
                             />
                             <span className={b[key as keyof Bill] ? "text-foreground" : ""}>{label}</span>
                           </label>
