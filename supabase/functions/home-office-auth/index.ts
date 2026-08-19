@@ -173,10 +173,10 @@ serve(async (req) => {
     }
 
     if (action === "add_bill") {
-      const { company_name, price, notes, makes_money, saves_money, saves_time } = data;
+      const { company_name, price, notes, makes_money, saves_money, saves_time, need } = data;
       const { data: bill, error } = await supabase
         .from("monthly_bills")
-        .insert({ company_name, price: Number(price) || 0, notes: notes || null, makes_money: !!makes_money, saves_money: !!saves_money, saves_time: !!saves_time, owner_user_id: userId })
+        .insert({ company_name, price: Number(price) || 0, notes: notes || null, makes_money: !!makes_money, saves_money: !!saves_money, saves_time: !!saves_time, need: !!need, owner_user_id: userId })
         .select()
         .single();
       if (error) throw error;
@@ -186,7 +186,7 @@ serve(async (req) => {
     }
 
     if (action === "update_bill") {
-      const { id, company_name, price, notes, hidden, makes_money, saves_money, saves_time } = data;
+      const { id, company_name, price, notes, hidden, makes_money, saves_money, saves_time, need } = data;
       const updates: Record<string, unknown> = {};
       if (company_name !== undefined) updates.company_name = company_name;
       if (price !== undefined) updates.price = Number(price) || 0;
@@ -195,6 +195,7 @@ serve(async (req) => {
       if (makes_money !== undefined) updates.makes_money = !!makes_money;
       if (saves_money !== undefined) updates.saves_money = !!saves_money;
       if (saves_time !== undefined) updates.saves_time = !!saves_time;
+      if (need !== undefined) updates.need = !!need;
       const { error } = await supabase.from("monthly_bills").update(updates).eq("id", id).eq("owner_user_id", userId);
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {

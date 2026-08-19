@@ -8,7 +8,7 @@ import { Checkbox } from"@/components/ui/checkbox";
 import { supabase } from"@/integrations/supabase/client";
 import { useToast } from"@/hooks/use-toast";
 
-interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; makes_money: boolean; saves_money: boolean; saves_time: boolean; }
+interface Bill { id: string; company_name: string; price: number; notes: string | null; created_at: string; hidden: boolean; makes_money: boolean; saves_money: boolean; saves_time: boolean; need: boolean; }
 interface ExtraIncome { id: string; source: string; price: number; notes: string | null; created_at: string; category: string; }
 interface TaxReminder { id: string; title: string; amount: number; due_date: string | null; notes: string | null; paid: boolean; created_at: string; }
 
@@ -135,7 +135,7 @@ const BillsTracker = () => {
     }
   };
 
-  const toggleBillCheck = async (b: Bill, field: "makes_money" | "saves_money" | "saves_time") => {
+  const toggleBillCheck = async (b: Bill, field: "makes_money" | "saves_money" | "saves_time" | "need") => {
     const next = !b[field];
     setBills((prev) => prev.map((item) => (item.id === b.id ? { ...item, [field]: next } : item)));
     try {
@@ -432,11 +432,12 @@ const BillsTracker = () => {
                           { key: "makes_money", label: "Makes money" },
                           { key: "saves_money", label: "Saves money" },
                           { key: "saves_time", label: "Saves time" },
+                          { key: "need", label: "Need" },
                         ].map(({ key, label }) => (
                           <label key={key} className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
                             <Checkbox
                               checked={b[key as keyof Bill] as boolean}
-                              onCheckedChange={() => toggleBillCheck(b, key as "makes_money" | "saves_money" | "saves_time")}
+                              onCheckedChange={() => toggleBillCheck(b, key as "makes_money" | "saves_money" | "saves_time" | "need")}
                             />
                             <span className={b[key as keyof Bill] ? "text-foreground" : ""}>{label}</span>
                           </label>
