@@ -577,6 +577,7 @@ export type Database = {
           hidden: boolean
           id: string
           makes_money: boolean
+          need: boolean
           notes: string | null
           owner_user_id: string | null
           price: number
@@ -590,6 +591,7 @@ export type Database = {
           hidden?: boolean
           id?: string
           makes_money?: boolean
+          need?: boolean
           notes?: string | null
           owner_user_id?: string | null
           price?: number
@@ -603,6 +605,7 @@ export type Database = {
           hidden?: boolean
           id?: string
           makes_money?: boolean
+          need?: boolean
           notes?: string | null
           owner_user_id?: string | null
           price?: number
