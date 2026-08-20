@@ -27,6 +27,11 @@ const BillsTracker = () => {
   const [w2Notes, setW2Notes] = useState("");
   const [editingW2Id, setEditingW2Id] = useState<string | null>(null);
   const w2FormRef = useRef<HTMLDivElement | null>(null);
+  const [extraSource, setExtraSource] = useState("");
+  const [extraPrice, setExtraPrice] = useState("");
+  const [extraNotes, setExtraNotes] = useState("");
+  const [editingExtraId, setEditingExtraId] = useState<string | null>(null);
+  const extraFormRef = useRef<HTMLDivElement | null>(null);
   const [editingSalary, setEditingSalary] = useState(false);
   const [salaryDraft, setSalaryDraft] = useState("");
   const [taxTitle, setTaxTitle] = useState("");
