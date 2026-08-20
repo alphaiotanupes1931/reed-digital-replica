@@ -150,7 +150,9 @@ const BillsTracker = () => {
 
   const w2Rows = extraIncome.filter((r) => r.category ==="w2");
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const grandIncome = totalW2;
+  const extraRows = extraIncome.filter((r) => r.category !=="w2");
+  const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const grandIncome = totalW2 + totalExtra;
   const retainerIncome = grandIncome;
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
@@ -213,6 +215,48 @@ const BillsTracker = () => {
     try {
       await api("delete_extra_income", { id });
       toast({ title:"W2 income deleted" });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title:"Error", description: err.message, variant:"destructive" });
+    }
+  };
+
+  const handleExtraSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!extraSource.trim() || !extraPrice) return;
+    try {
+      if (editingExtraId) {
+        await api("update_extra_income", { id: editingExtraId, source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category:"extra" });
+        toast({ title:"Income updated" });
+      } else {
+        await api("add_extra_income", { source: extraSource.trim(), price: extraPrice, notes: extraNotes.trim() || null, category:"extra" });
+        toast({ title:"Income added" });
+      }
+      setExtraSource(""); setExtraPrice(""); setExtraNotes(""); setEditingExtraId(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title:"Error", description: err.message, variant:"destructive" });
+    }
+  };
+
+  const startEditExtra = (r: ExtraIncome) => {
+    setEditingExtraId(r.id);
+    setExtraSource(r.source);
+    setExtraPrice(String(r.price));
+    setExtraNotes(r.notes ||"");
+    setTimeout(() => { extraFormRef.current?.scrollIntoView({ behavior:"smooth", block:"center" }); }, 0);
+  };
+
+  const cancelEditExtra = () => {
+    setEditingExtraId(null);
+    setExtraSource(""); setExtraPrice(""); setExtraNotes("");
+  };
+
+  const handleDeleteExtra = async (id: string) => {
+    if (!confirm("Delete this income entry?")) return;
+    try {
+      await api("delete_extra_income", { id });
+      toast({ title:"Income deleted" });
       await fetchAll();
     } catch (err: any) {
       toast({ title:"Error", description: err.message, variant:"destructive" });
