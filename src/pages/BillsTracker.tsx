@@ -275,6 +275,50 @@ const BillsTracker = () => {
     }
   };
 
+  const handleExpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!expSource.trim() || !expPrice) return;
+    try {
+      if (editingExpId) {
+        await api("update_extra_income", { id: editingExpId, source: expSource.trim(), price: expPrice, notes: expNotes.trim() || null, category:"business_expense" });
+        toast({ title:"Expense updated" });
+      } else {
+        await api("add_extra_income", { source: expSource.trim(), price: expPrice, notes: expNotes.trim() || null, category:"business_expense" });
+        toast({ title:"Expense added" });
+      }
+      setExpSource(""); setExpPrice(""); setExpNotes(""); setEditingExpId(null);
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title:"Error", description: err.message, variant:"destructive" });
+    }
+  };
+
+  const startEditExp = (r: ExtraIncome) => {
+    setEditingExpId(r.id);
+    setExpSource(r.source);
+    setExpPrice(String(r.price));
+    setExpNotes(r.notes ||"");
+    setTimeout(() => { expFormRef.current?.scrollIntoView({ behavior:"smooth", block:"center" }); }, 0);
+  };
+
+  const cancelEditExp = () => {
+    setEditingExpId(null);
+    setExpSource(""); setExpPrice(""); setExpNotes("");
+  };
+
+  const handleDeleteExp = async (id: string) => {
+    if (!confirm("Delete this business expense?")) return;
+    try {
+      await api("delete_extra_income", { id });
+      toast({ title:"Expense deleted" });
+      await fetchAll();
+    } catch (err: any) {
+      toast({ title:"Error", description: err.message, variant:"destructive" });
+    }
+  };
+
+
+
   const handleTaxSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!taxTitle.trim()) return;
