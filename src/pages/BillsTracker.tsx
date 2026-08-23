@@ -160,9 +160,11 @@ const BillsTracker = () => {
 
   const w2Rows = extraIncome.filter((r) => r.category ==="w2");
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const extraRows = extraIncome.filter((r) => r.category !=="w2");
+  const expenseRows = extraIncome.filter((r) => r.category ==="business_expense");
+  const totalExpenses = expenseRows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const extraRows = extraIncome.filter((r) => r.category !=="w2" && r.category !=="business_expense");
   const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
-  const grandIncome = totalW2 + totalExtra;
+  const grandIncome = totalW2 + totalExtra - totalExpenses;
   const retainerIncome = grandIncome;
   const net = grandIncome - totalBills;
   const sixFigGap = goalAmount - retainerIncome;
