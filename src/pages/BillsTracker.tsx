@@ -447,6 +447,11 @@ const BillsTracker = () => {
                       + Additional {fmt(totalExtra)}
                     </p>
                   )}
+                  {totalExpenses > 0 && (
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-destructive mt-1">
+                      − Expenses {fmt(totalExpenses)}
+                    </p>
+                  )}
                 </>
               )}
             </div>
