@@ -621,6 +621,58 @@ const BillsTracker = () => {
             )}
           </div>
 
+          {/* Business Expenses */}
+          <div className="mb-12">
+            <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+              <h2 className="text-lg font-bold tracking-tight">Business Expenses</h2>
+              <p className="text-sm font-bold">Total: <span className="text-destructive">−{fmt(totalExpenses)}</span></p>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Business expenses are subtracted from your total income.
+            </p>
+
+            <div
+              ref={expFormRef}
+              className={`border p-6 mb-6 transition-colors ${editingExpId ?"border-brand bg-brand/5" :"border-border"}`}
+            >
+              <form onSubmit={handleExpSubmit} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-start">
+                <Input placeholder="Expense (e.g. Software, Travel)" value={expSource} onChange={(e) => setExpSource(e.target.value)} required />
+                <Input type="number" step="0.01" min="0" placeholder="Amount" value={expPrice} onChange={(e) => setExpPrice(e.target.value)} required />
+                <Input placeholder="Notes (optional)" value={expNotes} onChange={(e) => setExpNotes(e.target.value)} />
+                <div className="flex gap-2">
+                  <Button type="submit">{editingExpId ?"Save" :"Add"}</Button>
+                  {editingExpId && <Button type="button" variant="outline" onClick={cancelEditExp}>Cancel</Button>}
+                </div>
+              </form>
+            </div>
+
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : expenseRows.length === 0 ? (
+              <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No business expenses yet.</p>
+            ) : (
+              <div className="border border-border divide-y divide-foreground/10">
+                {expenseRows.map((r) => (
+                  <div key={r.id} className="flex flex-col md:flex-row gap-4 md:items-center justify-between p-4">
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm">{r.source}</p>
+                      {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <p className="font-bold text-sm text-destructive">−{fmt(Number(r.price))}</p>
+                      <Button size="sm" variant="outline" onClick={() => startEditExp(r)}>Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDeleteExp(r.id)}>Delete</Button>
+                    </div>
+                  </div>
+                ))}
+                <div className="flex items-center justify-between p-4 bg-foreground text-background rounded-full">
+                  <p className="font-bold text-sm uppercase tracking-widest">Total</p>
+                  <p className="font-bold text-sm">−{fmt(totalExpenses)}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="mt-12">
             <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
               <h2 className="text-lg font-bold tracking-tight">Tax Reminders</h2>
