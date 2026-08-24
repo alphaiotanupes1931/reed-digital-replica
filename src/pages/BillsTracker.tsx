@@ -32,6 +32,16 @@ const BillsTracker = () => {
   const [extraNotes, setExtraNotes] = useState("");
   const [editingExtraId, setEditingExtraId] = useState<string | null>(null);
   const extraFormRef = useRef<HTMLDivElement | null>(null);
+  const [hiddenExtra, setHiddenExtra] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("bills_hidden_extra") || "[]"); } catch { return []; }
+  });
+  const toggleHiddenExtra = (id: string) => {
+    setHiddenExtra((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem("bills_hidden_extra", JSON.stringify(next));
+      return next;
+    });
+  };
   const [expSource, setExpSource] = useState("");
   const [expPrice, setExpPrice] = useState("");
   const [expNotes, setExpNotes] = useState("");
