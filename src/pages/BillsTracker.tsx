@@ -32,6 +32,16 @@ const BillsTracker = () => {
   const [extraNotes, setExtraNotes] = useState("");
   const [editingExtraId, setEditingExtraId] = useState<string | null>(null);
   const extraFormRef = useRef<HTMLDivElement | null>(null);
+  const [hiddenExtra, setHiddenExtra] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("bills_hidden_extra") || "[]"); } catch { return []; }
+  });
+  const toggleHiddenExtra = (id: string) => {
+    setHiddenExtra((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem("bills_hidden_extra", JSON.stringify(next));
+      return next;
+    });
+  };
   const [expSource, setExpSource] = useState("");
   const [expPrice, setExpPrice] = useState("");
   const [expNotes, setExpNotes] = useState("");
@@ -163,7 +173,7 @@ const BillsTracker = () => {
   const expenseRows = extraIncome.filter((r) => r.category ==="business_expense");
   const totalExpenses = expenseRows.reduce((s, r) => s + Number(r.price || 0), 0);
   const extraRows = extraIncome.filter((r) => r.category !=="w2" && r.category !=="business_expense");
-  const totalExtra = extraRows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const totalExtra = extraRows.filter((r) => !hiddenExtra.includes(r.id)).reduce((s, r) => s + Number(r.price || 0), 0);
   const grandIncome = totalW2 + totalExtra - totalExpenses;
   const retainerIncome = grandIncome;
   const net = grandIncome - totalBills;
@@ -605,19 +615,23 @@ const BillsTracker = () => {
               <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No additional income yet.</p>
             ) : (
               <div className="border border-border divide-y divide-foreground/10">
-                {extraRows.map((r) => (
-                  <div key={r.id} className="flex flex-col md:flex-row gap-4 md:items-center justify-between p-4">
+                {extraRows.map((r) => {
+                  const isHidden = hiddenExtra.includes(r.id);
+                  return (
+                  <div key={r.id} className={`flex flex-col md:flex-row gap-4 md:items-center justify-between p-4 ${isHidden ? "opacity-50 bg-muted/30" : ""}`}>
                     <div className="min-w-0">
-                      <p className="font-bold text-sm">{r.source}</p>
+                      <p className={`font-bold text-sm ${isHidden ? "line-through text-muted-foreground" : ""}`}>{r.source}</p>
                       {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
                     </div>
                     <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                      <p className="font-bold text-sm">{fmt(Number(r.price))}</p>
+                      <p className={`font-bold text-sm ${isHidden ? "line-through text-muted-foreground" : ""}`}>{fmt(Number(r.price))}</p>
+                      <Button size="sm" variant={isHidden ? "outline" : "default"} onClick={() => toggleHiddenExtra(r.id)}>{isHidden ? "Show" : "Hide"}</Button>
                       <Button size="sm" variant="outline" onClick={() => startEditExtra(r)}>Edit</Button>
                       <Button size="sm" variant="outline" onClick={() => handleDeleteExtra(r.id)}>Delete</Button>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
                 <div className="flex items-center justify-between p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">{fmt(totalExtra)}</p>
