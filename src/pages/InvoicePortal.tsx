@@ -7,7 +7,7 @@ import { supabase } from"@/integrations/supabase/client";
 import { toast } from"@/hooks/use-toast";
 import { useSearchParams, Link } from"react-router-dom";
 import logo from"@/assets/rdg-header-logo.png";
-import { printReceipt } from"@/lib/printReceipt";
+import { printInvoice, printReceipt } from"@/lib/printReceipt";
 
 
 interface Invoice {
@@ -64,12 +64,21 @@ const InvoiceDetailsCard = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
+              const ok = printInvoice({ invoice, clientName, clientEmail });
+              if (!ok) toast({ title: "Pop-up blocked", description: "Allow pop-ups to save your invoice as a PDF.", variant: "destructive" });
+            }}
+            className="text-[10px] uppercase tracking-widest border border-border rounded-full px-3 py-1.5 hover:border-foreground transition-colors"
+          >
+            Invoice
+          </button>
+          <button
+            onClick={() => {
               const ok = printReceipt({ invoice, clientName, clientEmail });
               if (!ok) toast({ title: "Pop-up blocked", description: "Allow pop-ups to print your receipt.", variant: "destructive" });
             }}
             className="text-[10px] uppercase tracking-widest border border-border rounded-full px-3 py-1.5 hover:border-foreground transition-colors"
           >
-            Print receipt
+            Receipt
           </button>
           {isPaid ? (
             <span className="text-xl font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">

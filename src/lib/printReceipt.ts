@@ -27,17 +27,15 @@ const money = (n: number) =>
 const longDate = (v?: string | null) =>
   v ? new Date(v).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }) : "—";
 
-/**
- * Opens a full-page, Stripe-style RDG-branded receipt in a new window and
- * triggers the print dialog (save as PDF). Returns false if pop-ups are blocked.
- */
-export function printReceipt(opts: {
+interface PrintDocumentOptions {
   invoice: ReceiptInvoice;
   clientName?: string | null;
   clientEmail?: string | null;
   businessName?: string;
   businessEmail?: string;
-}): boolean {
+}
+
+function printDocument(opts: PrintDocumentOptions, type: "invoice" | "receipt"): boolean {
   const {
     invoice,
     clientName,
@@ -53,6 +51,8 @@ export function printReceipt(opts: {
   const receiptNo = invoice.id.slice(0, 4).toUpperCase() + "-" + invoice.id.slice(4, 8).toUpperCase();
   const invoiceNo = invoice.id.slice(0, 8).toUpperCase();
   const logoUrl = `${window.location.origin}${logoAsset.url}`;
+  const isReceipt = type === "receipt";
+  const documentTitle = isReceipt ? "Receipt" : "Invoice";
 
   const items: { desc: string; sub?: string; qty: string; amount: number }[] = [
     {
@@ -81,7 +81,7 @@ export function printReceipt(opts: {
   if (!w) return false;
 
   w.document.write(`<!doctype html><html><head><meta charset="utf-8">
-  <title>Receipt ${esc(receiptNo)} — ${esc(businessName)}</title>
+  <title>${documentTitle} ${esc(isReceipt ? receiptNo : invoiceNo)} — ${esc(businessName)}</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     @page { size: letter; margin: 0.6in; }
@@ -94,7 +94,7 @@ export function printReceipt(opts: {
     .meta { margin-top:28px; font-size:12.5px; line-height:1.9; }
     .meta b { font-weight:600; }
     .cols { display:flex; gap:56px; margin-top:32px; font-size:12.5px; line-height:1.7; }
-    .cols h3 { font-family:'Outfit',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:#8a8a8a; margin:0 0 8px; font-weight:600; }
+     .cols h3 { font-family:'Outfit',sans-serif; font-size:12.5px; margin:0 0 8px; font-weight:700; }
     .amount { font-family:'Outfit',sans-serif; font-size:20px; font-weight:600; margin:40px 0 18px; letter-spacing:-.01em; }
     .amount .gold { color:#c9a227; }
     table { width:100%; border-collapse:collapse; font-size:12.5px; }
@@ -104,26 +104,26 @@ export function printReceipt(opts: {
     .sub { color:#8a8a8a; font-size:11.5px; margin-top:3px; }
     .totals td { border:0; padding:7px 0; }
     .totals tr:last-child td { border-top:1px solid #111; padding-top:12px; font-weight:700; font-family:'Outfit',sans-serif; font-size:14px; }
-    .stamp { display:inline-block; margin-top:26px; font-family:'Outfit',sans-serif; font-size:11px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; border:1.5px solid #c9a227; color:#c9a227; border-radius:999px; padding:7px 18px; }
+     .history { margin-top:48px; }
+     .history h2 { font-family:'Outfit',sans-serif; font-size:20px; margin:0 0 22px; }
     .foot { margin-top:44px; padding-top:16px; border-top:1px solid #eee; font-size:10.5px; color:#9a9a9a; display:flex; justify-content:space-between; }
     @media print { body { background:#fff; padding:0; } .sheet { max-width:none; padding:0; } }
   </style></head><body>
   <div class="sheet">
     <div class="top">
-      <h1>Receipt</h1>
+       <h1>${documentTitle}</h1>
       <img class="logo" src="${esc(logoUrl)}" alt="Reed Digital Group" />
     </div>
 
     <div class="meta">
       <div><b>Invoice number</b> &nbsp;${esc(invoiceNo)}</div>
-      <div><b>Receipt number</b> &nbsp;${esc(receiptNo)}</div>
-      <div><b>${isPaid ? "Date paid" : "Date issued"}</b> &nbsp;${esc(paidDate)}</div>
+       ${isReceipt ? `<div><b>Receipt number</b> &nbsp;${esc(receiptNo)}</div>` : ""}
+       <div><b>${isReceipt ? "Date paid" : "Date issued"}</b> &nbsp;${esc(paidDate)}</div>
     </div>
 
     <div class="cols">
       <div>
-        <h3>From</h3>
-        <div><b>${esc(businessName)}</b></div>
+         <h3>${esc(businessName)}</h3>
         <div>Brandywine, Maryland</div>
         <div>United States</div>
         <div>${esc(businessEmail)}</div>
@@ -139,7 +139,7 @@ export function printReceipt(opts: {
     </div>
 
     <div class="amount">
-      ${isPaid
+       ${isReceipt
         ? `<span class="gold">${money(total)}</span> paid on ${esc(paidDate)}`
         : `<span class="gold">${money(total)}</span> due ${esc(longDate(invoice.due_date))}`}
       ${isMonthly ? " (per month)" : ""}
@@ -160,10 +160,21 @@ export function printReceipt(opts: {
     <table class="totals" style="margin-top:18px">
       <tr><td>Subtotal</td><td class="num">${money(total)}</td></tr>
       <tr><td>Tax</td><td class="num">${money(0)}</td></tr>
-      <tr><td>${isPaid ? "Amount paid" : "Amount due"}</td><td class="num">${money(total)}${isMonthly ? " /mo" : ""}</td></tr>
+       <tr><td>${isReceipt ? "Amount paid" : "Amount due"}</td><td class="num">${money(total)}${isMonthly ? " /mo" : ""}</td></tr>
     </table>
 
-    ${isPaid ? `<div class="stamp">Paid in full</div>` : ""}
+     ${isReceipt ? `<section class="history">
+       <h2>Payment history</h2>
+       <table>
+         <thead><tr><th>Payment method</th><th>Date</th><th class="num">Amount paid</th><th class="num">Receipt number</th></tr></thead>
+         <tbody><tr>
+           <td>${esc(invoice.payment_method ? invoice.payment_method.toUpperCase() : "Payment")}</td>
+           <td>${esc(paidDate)}</td>
+           <td class="num">${money(total)}</td>
+           <td class="num">${esc(receiptNo)}</td>
+         </tr></tbody>
+       </table>
+     </section>` : ""}
 
     <div class="foot">
       <span>${esc(businessName)} — Thank you for your business.</span>
@@ -174,4 +185,14 @@ export function printReceipt(opts: {
   </body></html>`);
   w.document.close();
   return true;
+}
+
+/** Opens the paid receipt layout and triggers the browser's Save as PDF dialog. */
+export function printReceipt(opts: PrintDocumentOptions): boolean {
+  return printDocument(opts, "receipt");
+}
+
+/** Opens the amount-due invoice layout and triggers the browser's Save as PDF dialog. */
+export function printInvoice(opts: PrintDocumentOptions): boolean {
+  return printDocument(opts, "invoice");
 }
