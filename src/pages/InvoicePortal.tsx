@@ -7,6 +7,8 @@ import { supabase } from"@/integrations/supabase/client";
 import { toast } from"@/hooks/use-toast";
 import { useSearchParams, Link } from"react-router-dom";
 import logo from"@/assets/rdg-header-logo.png";
+import { printReceipt } from"@/lib/printReceipt";
+
 
 interface Invoice {
   id: string;
