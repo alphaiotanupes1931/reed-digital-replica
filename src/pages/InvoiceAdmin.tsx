@@ -199,6 +199,7 @@ const InvoiceAdmin = () => {
     setEditService(inv.service);
     setEditPrice(String(inv.price));
     setEditMessage(inv.message ||"");
+    setEditDueDate(inv.due_date || "");
     setEditDepositRequired(!!inv.deposit_required);
     setEditDepositAmount(inv.deposit_amount != null ? String(inv.deposit_amount) :"");
     setEditDepositDueDate(inv.deposit_due_date ||"");
@@ -211,8 +212,8 @@ const InvoiceAdmin = () => {
   };
 
   const handleUpdateInvoice = async (invoiceId: string) => {
-    if (!editService || !editPrice) {
-      toast({ title:"Service and price required", variant:"destructive" });
+    if (!editService || !editPrice || !editDueDate) {
+      toast({ title:"Service, price and due date required", variant:"destructive" });
       return;
     }
     if (editDepositRequired && (!editDepositAmount || !editDepositDueDate)) {
@@ -238,7 +239,7 @@ const InvoiceAdmin = () => {
           invoice_id: invoiceId,
           service: editService,
           price: parseFloat(editPrice),
-          due_date: editDepositRequired ? editDepositDueDate : new Date().toISOString().split("T")[0],
+          due_date: editDueDate,
           deposit_required: editDepositRequired,
           deposit_amount: editDepositRequired ? parseFloat(editDepositAmount) : null,
           deposit_due_date: editDepositRequired ? editDepositDueDate : null,
