@@ -1102,7 +1102,22 @@ const InvoiceAdmin = () => {
                             ) : (
                               <button onClick={() => handleSetStatus(inv.id,"approved")} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground">Unpaid</button>
                             )}
+                            <button
+                              onClick={() => {
+                                const c = clients.find(x => x.id === selectedClientId);
+                                const ok = printReceipt({
+                                  invoice: inv as any,
+                                  clientName: c?.company_name || c?.owner_name || null,
+                                  clientEmail: c?.email || null,
+                                });
+                                if (!ok) toast({ title:"Pop-up blocked", description:"Allow pop-ups to print.", variant:"destructive" });
+                              }}
+                              className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-foreground"
+                            >
+                              Receipt
+                            </button>
                             <button onClick={() => handleDelete(inv.id)} className="text-[10px] uppercase tracking-widest border border-border rounded-2xl px-3 py-1.5 hover:border-destructive hover:text-destructive">Remove</button>
+
                           </div>
                           </div>
                           {editingInvoiceId === inv.id && (
