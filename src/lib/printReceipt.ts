@@ -134,7 +134,7 @@ function printDocument(opts: PrintDocumentOptions, type: "invoice" | "receipt"):
         <div><b>${esc(clientName || "Client")}</b></div>
         ${clientEmail ? `<div>${esc(clientEmail)}</div>` : ""}
         <div>Due ${esc(longDate(invoice.due_date))}</div>
-        ${invoice.payment_method ? `<div>Method: ${esc(invoice.payment_method.toUpperCase())}</div>` : ""}
+        ${!isReceipt && invoice.payment_method ? `<div>Payment method: ${esc(invoice.payment_method.toLowerCase() === "stripe" ? "Card" : invoice.payment_method.toUpperCase())}</div>` : ""}
       </div>
     </div>
 
@@ -168,7 +168,7 @@ function printDocument(opts: PrintDocumentOptions, type: "invoice" | "receipt"):
        <table>
          <thead><tr><th>Payment method</th><th>Date</th><th class="num">Amount paid</th><th class="num">Receipt number</th></tr></thead>
          <tbody><tr>
-           <td>${esc(invoice.payment_method ? invoice.payment_method.toUpperCase() : "Payment")}</td>
+           <td>${esc(invoice.payment_method ? (invoice.payment_method.toLowerCase() === "stripe" ? "Card" : invoice.payment_method.toUpperCase()) : "Payment")}</td>
            <td>${esc(paidDate)}</td>
            <td class="num">${money(total)}</td>
            <td class="num">${esc(receiptNo)}</td>

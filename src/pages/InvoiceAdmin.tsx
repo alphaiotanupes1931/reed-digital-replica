@@ -184,6 +184,7 @@ const InvoiceAdmin = () => {
   const [editService, setEditService] = useState("");
   const [editPrice, setEditPrice] = useState("");
   const [editMessage, setEditMessage] = useState("");
+  const [editDueDate, setEditDueDate] = useState("");
   const [editDepositRequired, setEditDepositRequired] = useState(false);
   const [editDepositAmount, setEditDepositAmount] = useState("");
   const [editDepositDueDate, setEditDepositDueDate] = useState("");
