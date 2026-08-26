@@ -1140,7 +1140,7 @@ const InvoiceAdmin = () => {
                           </div>
                           {editingInvoiceId === inv.id && (
                             <div className="mt-4 border border-border rounded-2xl p-4 space-y-4">
-                              <div className="grid gap-3 md:grid-cols-2">
+                              <div className="grid gap-3 md:grid-cols-3">
                                 <label className="block">
                                   <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Service</span>
                                   <input value={editService} onChange={(e) => setEditService(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
@@ -1148,6 +1148,10 @@ const InvoiceAdmin = () => {
                                 <label className="block">
                                   <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{editPaymentPlan ==="monthly" ?"Monthly amount" :"Price"}</span>
                                   <input type="number" step="0.01" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
+                                </label>
+                                <label className="block">
+                                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Due date</span>
+                                  <input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                 </label>
                               </div>
                               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Payment Plan</p>
