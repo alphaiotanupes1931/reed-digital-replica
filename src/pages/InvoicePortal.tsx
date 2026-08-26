@@ -59,16 +59,28 @@ const InvoiceDetailsCard = ({
           <img src={logo} alt="RDG" className="h-6" />
           <span className="text-xs text-foreground uppercase tracking-widest">Invoice</span>
         </div>
-        {isPaid ? (
-          <span className="text-xl font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">
-            PAID
-          </span>
-        ) : (
-          <span className="text-sm font-bold uppercase tracking-widest text-primary">
-            {depositPending ?"DEPOSIT DUE" :"PENDING"}
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              const ok = printReceipt({ invoice, clientName, clientEmail });
+              if (!ok) toast({ title: "Pop-up blocked", description: "Allow pop-ups to print your receipt.", variant: "destructive" });
+            }}
+            className="text-[10px] uppercase tracking-widest border border-border rounded-full px-3 py-1.5 hover:border-foreground transition-colors"
+          >
+            Print receipt
+          </button>
+          {isPaid ? (
+            <span className="text-xl font-black uppercase tracking-widest text-emerald-500 border-2 border-emerald-500 px-3 py-1">
+              PAID
+            </span>
+          ) : (
+            <span className="text-sm font-bold uppercase tracking-widest text-primary">
+              {depositPending ? "DEPOSIT DUE" : "PENDING"}
+            </span>
+          )}
+        </div>
       </div>
+
 
       {/* Bill To / From */}
       <div className="border-b-2 border-foreground p-6 grid md:grid-cols-2 gap-6">
