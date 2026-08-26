@@ -184,6 +184,7 @@ const InvoiceAdmin = () => {
   const [editService, setEditService] = useState("");
   const [editPrice, setEditPrice] = useState("");
   const [editMessage, setEditMessage] = useState("");
+  const [editDueDate, setEditDueDate] = useState("");
   const [editDepositRequired, setEditDepositRequired] = useState(false);
   const [editDepositAmount, setEditDepositAmount] = useState("");
   const [editDepositDueDate, setEditDepositDueDate] = useState("");
@@ -198,6 +199,7 @@ const InvoiceAdmin = () => {
     setEditService(inv.service);
     setEditPrice(String(inv.price));
     setEditMessage(inv.message ||"");
+    setEditDueDate(inv.due_date || "");
     setEditDepositRequired(!!inv.deposit_required);
     setEditDepositAmount(inv.deposit_amount != null ? String(inv.deposit_amount) :"");
     setEditDepositDueDate(inv.deposit_due_date ||"");
@@ -210,8 +212,8 @@ const InvoiceAdmin = () => {
   };
 
   const handleUpdateInvoice = async (invoiceId: string) => {
-    if (!editService || !editPrice) {
-      toast({ title:"Service and price required", variant:"destructive" });
+    if (!editService || !editPrice || !editDueDate) {
+      toast({ title:"Service, price and due date required", variant:"destructive" });
       return;
     }
     if (editDepositRequired && (!editDepositAmount || !editDepositDueDate)) {
@@ -237,7 +239,7 @@ const InvoiceAdmin = () => {
           invoice_id: invoiceId,
           service: editService,
           price: parseFloat(editPrice),
-          due_date: editDepositRequired ? editDepositDueDate : new Date().toISOString().split("T")[0],
+          due_date: editDueDate,
           deposit_required: editDepositRequired,
           deposit_amount: editDepositRequired ? parseFloat(editDepositAmount) : null,
           deposit_due_date: editDepositRequired ? editDepositDueDate : null,
@@ -1138,7 +1140,7 @@ const InvoiceAdmin = () => {
                           </div>
                           {editingInvoiceId === inv.id && (
                             <div className="mt-4 border border-border rounded-2xl p-4 space-y-4">
-                              <div className="grid gap-3 md:grid-cols-2">
+                              <div className="grid gap-3 md:grid-cols-3">
                                 <label className="block">
                                   <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Service</span>
                                   <input value={editService} onChange={(e) => setEditService(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
@@ -1146,6 +1148,10 @@ const InvoiceAdmin = () => {
                                 <label className="block">
                                   <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{editPaymentPlan ==="monthly" ?"Monthly amount" :"Price"}</span>
                                   <input type="number" step="0.01" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
+                                </label>
+                                <label className="block">
+                                  <span className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Due date</span>
+                                  <input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} className="w-full bg-transparent border-b border-border p-2 text-sm focus:outline-none focus:border-foreground" />
                                 </label>
                               </div>
                               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Payment Plan</p>
