@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
+import MenuShowcase from "@/components/MenuShowcase";
 
 const services = [
   { title: "Websites", desc: "Fast sites that get you customers." },
@@ -51,8 +52,17 @@ const Services = () => {
                             Included in Maintenance
                           </span>
                         )}
+                        {service.title === "Restaurant Menus" && (
+                          <a
+                            href="#menus"
+                            className="ml-3 text-[10px] uppercase tracking-widest underline underline-offset-4 hover:text-primary"
+                          >
+                            See examples
+                          </a>
+                        )}
                       </div>
                     </div>
+
                     <span className="text-xs md:text-sm text-muted-foreground mt-1 md:mt-0 pl-8 md:pl-0 group-hover:text-foreground transition-colors">
                       {service.desc}
                     </span>
@@ -60,6 +70,9 @@ const Services = () => {
                 </div>
               ))}
             </div>
+
+            <MenuShowcase />
+
 
             <ScrollReveal>
               <div className="border border-border p-6 md:p-8 mb-12 rounded-2xl">
