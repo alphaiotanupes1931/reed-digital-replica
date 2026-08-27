@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageTransition from "@/components/PageTransition";
+import MenuShowcase from "@/components/MenuShowcase";
 
 const services = [
   { title: "Websites", desc: "Fast sites that get you customers." },
