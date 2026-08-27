@@ -352,6 +352,29 @@ const PortfolioPage = () => {
               ))}
             </div>
 
+            {/* Menus Section */}
+            <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-2 text-center">
+              Menus
+            </h3>
+            <p className="text-xs text-muted-foreground text-center mb-8">
+              Print-ready trifold menu design for Auntie Sam's Seafood — Clinton, MD
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-5xl mx-auto">
+              {menuProjects.map((menu, index) => (
+                <ScrollReveal key={menu.label} delay={index * 0.05}>
+                  <figure>
+                    <div className="overflow-hidden rounded-2xl border border-border bg-white">
+                      <img src={menu.src} alt={menu.alt} loading="lazy" className="w-full h-auto" />
+                    </div>
+                    <figcaption className="mt-3 text-xs text-muted-foreground uppercase tracking-wider">
+                      {menu.label}
+                    </figcaption>
+                  </figure>
+                </ScrollReveal>
+              ))}
+            </div>
+
+
             {/* Tech Stack Carousel */}
             <ClientCarousel title="Common tech stack used" />
 
