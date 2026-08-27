@@ -62,6 +62,9 @@ const Services = () => {
               ))}
             </div>
 
+            <MenuShowcase />
+
+
             <ScrollReveal>
               <div className="border border-border p-6 md:p-8 mb-12 rounded-2xl">
                 <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3">
