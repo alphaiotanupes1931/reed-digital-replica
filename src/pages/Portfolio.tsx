@@ -12,6 +12,21 @@ import PortfolioSkeleton from "@/components/PortfolioSkeleton";
 import ClientCarousel from "@/components/ClientCarousel";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
+import menuInside from "@/assets/auntie-sams-menu-inside.png.asset.json";
+import menuOutside from "@/assets/auntie-sams-menu-outside.png.asset.json";
+
+const menuProjects = [
+  {
+    src: menuOutside.url,
+    alt: "Auntie Sam's Seafood trifold menu — outside panels with logo, hours, contact info and QR menu",
+    label: "Auntie Sam's Seafood — Trifold, Outside",
+  },
+  {
+    src: menuInside.url,
+    alt: "Auntie Sam's Seafood trifold menu — inside panels with starters, sandwiches, entrees, sides and boil bags",
+    label: "Auntie Sam's Seafood — Trifold, Inside",
+  },
+];
 // App projects with store links and listing previews
 type AppProject = {
   title: string;
