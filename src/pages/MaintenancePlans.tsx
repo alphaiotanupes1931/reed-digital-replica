@@ -304,11 +304,13 @@ const MaintenancePlans = () => {
               </h2>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border max-w-6xl">
               {[
-                { type: "Simple / Landing Page", tier: "Basic", price: 150 },
-                { type: "Small Business Website", tier: "Standard", price: 300 },
-                { type: "Active / E-commerce Site", tier: "Premium", price: 500 },
+                { type: "Simple / Landing Page", tier: "Essential", price: 300 },
+                { type: "Small Business Website", tier: "Growth", price: 500 },
+                { type: "Active / E-commerce Site", tier: "Priority", price: 700 },
+                { type: "Revenue-Driving Brand", tier: "Partner", price: 1000 },
+
               ].map((item, i) => (
                 <motion.div
                   key={item.type}
