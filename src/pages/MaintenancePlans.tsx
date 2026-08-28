@@ -40,7 +40,7 @@ const maintenancePlans: Plan[] = [
       "5 content updates per month",
       "Daily backups + uptime monitoring",
       "Support response within 24 hours",
-      "Up to 2 phone calls per day",
+      "Up to 3 phone calls per week",
       "Monthly strategy call + performance report",
     ],
     bestFor: "Businesses that want their site staying fresh and growing.",
