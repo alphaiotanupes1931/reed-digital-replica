@@ -270,7 +270,7 @@ const MaintenancePlans = () => {
           <ScrollReveal>
             <div className="max-w-3xl">
               <p className="text-base md:text-lg text-foreground/85 leading-relaxed mb-6">
-                Reed Digital Group offers three straightforward maintenance tiers. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
+                Reed Digital Group offers four straightforward maintenance tiers — SEO and cybersecurity are included in every one. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
               </p>
               <div className="border border-border bg-secondary/40 p-5 rounded-2xl">
                 <p className="text-sm text-foreground/80 leading-relaxed">
