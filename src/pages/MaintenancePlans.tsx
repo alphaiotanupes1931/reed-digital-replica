@@ -328,7 +328,7 @@ const MaintenancePlans = () => {
                   </p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl md:text-5xl font-bold text-foreground">
-                      ${item.price}
+                      ${item.price.toLocaleString()}
                     </span>
                     <span className="text-sm text-muted-foreground">/month</span>
                   </div>
