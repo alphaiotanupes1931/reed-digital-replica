@@ -285,10 +285,11 @@ const MaintenancePlans = () => {
         <PlanSection
           id="cms-plans"
           label="Maintenance Plans"
-          title="Three Plans. Pick What Fits."
-          subhead="Hosting, security, backups, and updates handled monthly. Or skip this entirely — every monthly Website or App plan already includes maintenance free."
+          title="Four Plans. Pick What Fits."
+          subhead="SEO, cybersecurity, hosting, backups, and updates handled monthly. Or skip this entirely — every monthly Website or App plan already includes maintenance free."
           plans={maintenancePlans}
-          recommendation="Most small businesses pick the Standard plan at $300/month. It's the sweet spot — three updates a month, daily backups, uptime monitoring, and same-day text support. Heavier sites should look at Premium for unlimited minor updates and quarterly refreshes."
+          recommendation="Most small businesses pick Growth at $500/month — five updates a month, 24-hour response, and up to two calls a day. Need us instantly? Priority at $700 gives you same-hour contact. Partner at $1,000 adds two marketing videos a month and in-person meetings."
+
         />
 
         {/* COMPARISON */}
