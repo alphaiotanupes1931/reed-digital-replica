@@ -15,35 +15,31 @@ const buildPackages = [
   { name: "Enterprise", price: "$30k+", desc: "Multi-site, multi-user platforms, advanced security" },
 ];
 
-// Maintenance plans — monthly recurring (formerly "managed" plans)
+// Maintenance plans — monthly recurring
 const maintenancePlans = [
   {
-    name: "Starter",
+    name: "Essential",
     price: "$300",
-    tagline: "Up to 5 pages · hosting, SSL, basic SEO · 2 updates/mo",
+    tagline: "SEO + cybersecurity included · 2 updates/mo · response within 2 business days · 1 call/week",
   },
   {
-    name: "Business",
-    price: "$400",
-    popular: true,
-    tagline: "Up to 10 pages + CMS · monitoring · 5 updates/mo · 24hr response",
-  },
-  {
-    name: "Professional",
+    name: "Growth",
     price: "$500",
-    tagline: "Up to 20 pages, e-com/portal · unlimited minor changes · monthly strategy call",
+    popular: true,
+    tagline: "SEO + cybersecurity included · 5 updates/mo · 24hr response · up to 2 calls/day · monthly strategy call",
   },
   {
-    name: "Scale",
-    price: "$600",
-    tagline: "Unlimited pages + integrations · dedicated PM · bi-weekly calls",
-  },
-  {
-    name: "Enterprise",
+    name: "Priority",
     price: "$700",
-    tagline: "Custom platforms · SLA · dedicated team · compliance reviews · monthly videographer visit (DMV area), printed menus, QR codes, and a free business shirt every month on request",
+    tagline: "Unlimited minor updates · instant contact (call/text, same hour) · unlimited calls · 48hr turnaround on requests",
+  },
+  {
+    name: "Partner",
+    price: "$1,000",
+    tagline: "Everything in Priority · 2 marketing videos/mo · in-person meetings · 24hr turnaround · dedicated PM",
   },
 ];
+
 
 const socialMedia = [
   { name: "Starter", price: "$150/mo", desc: "3 posts/week, 1 platform" },

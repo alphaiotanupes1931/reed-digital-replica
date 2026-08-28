@@ -18,48 +18,66 @@ interface Plan {
 
 const maintenancePlans: Plan[] = [
   {
-    name: "Basic",
-    price: 150,
-    tagline: "Keeps your website online and protected.",
+    name: "Essential",
+    price: 300,
+    tagline: "Keeps your site online, secure, and found on Google.",
     features: [
-      "Hosting, SSL, and security monitoring",
-      "Weekly backups",
-      "We fix things if they break",
-      "Email support (2 business day response)",
-      "1 content update per month",
+      "Hosting, SSL, and cybersecurity monitoring",
+      "Ongoing SEO upkeep and monthly ranking check",
+      "Weekly backups + we fix things if they break",
+      "2 content updates per month",
+      "Support response within 2 business days",
+      "1 scheduled call per week",
     ],
-    bestFor: "Businesses with a simple site they rarely change.",
+    bestFor: "Simple sites and landing pages that rarely change.",
   },
   {
-    name: "Standard",
-    price: 300,
+    name: "Growth",
+    price: 500,
     tagline: "The plan most small businesses need.",
     features: [
-      "Everything in Basic",
-      "3 content updates per month",
-      "Uptime monitoring",
-      "Daily backups",
-      "Same-day text support (48hr response)",
-      "Monthly performance report",
+      "Everything in Essential",
+      "5 content updates per month",
+      "Daily backups + uptime monitoring",
+      "Support response within 24 hours",
+      "Up to 2 phone calls per day",
+      "Monthly strategy call + performance report",
     ],
-    bestFor: "Businesses that want their site to stay fresh and help them grow.",
+    bestFor: "Businesses that want their site staying fresh and growing.",
     popular: true,
   },
   {
-    name: "Premium",
-    price: 500,
-    tagline: "Hands off. We handle everything.",
+    name: "Priority",
+    price: 700,
+    tagline: "Instant access. We move when you move.",
     features: [
-      "Everything in Standard",
+      "Everything in Growth",
       "Unlimited minor updates",
-      "Priority support",
-      "Monthly performance report",
-      "Quarterly site refresh",
+      "Instant contact — call or text, answered same hour",
+      "Unlimited phone calls",
+      "48-hour turnaround on most requests",
       "Google Business Profile management",
+      "Quarterly site refresh",
     ],
-    bestFor: "Businesses using their website as a serious marketing tool.",
+    bestFor: "Active sites, e-commerce, and businesses that change often.",
+  },
+  {
+    name: "Partner",
+    price: 1000,
+    tagline: "We work like an in-house team.",
+    features: [
+      "Everything in Priority",
+      "2 marketing videos produced per month",
+      "In-person meetings (DMV area)",
+      "24-hour turnaround on most requests",
+      "Dedicated project manager",
+      "Advanced SEO campaigns + competitor reports",
+      "Printed menus, QR codes, and design assets on request",
+    ],
+    bestFor: "Businesses treating their website as a primary revenue channel.",
   },
 ];
+
 
 const faqs = [
   {
@@ -126,7 +144,7 @@ const PlanCard = ({ plan, gridCols }: { plan: Plan; gridCols: number }) => (
       </p>
       <div className="flex items-baseline gap-1 mb-3">
         <span className="text-4xl md:text-5xl font-bold text-foreground">
-          ${plan.price}
+          ${plan.price.toLocaleString()}
         </span>
         <span className="text-sm text-muted-foreground">/month</span>
       </div>
@@ -252,7 +270,7 @@ const MaintenancePlans = () => {
           <ScrollReveal>
             <div className="max-w-3xl">
               <p className="text-base md:text-lg text-foreground/85 leading-relaxed mb-6">
-                Reed Digital Group offers three straightforward maintenance tiers. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
+                Reed Digital Group offers four straightforward maintenance tiers — SEO and cybersecurity are included in every one. Pick the one that matches how active your site is. Already on a monthly Website or App plan? Maintenance is included free.
               </p>
               <div className="border border-border bg-secondary/40 p-5 rounded-2xl">
                 <p className="text-sm text-foreground/80 leading-relaxed">
@@ -267,10 +285,11 @@ const MaintenancePlans = () => {
         <PlanSection
           id="cms-plans"
           label="Maintenance Plans"
-          title="Three Plans. Pick What Fits."
-          subhead="Hosting, security, backups, and updates handled monthly. Or skip this entirely — every monthly Website or App plan already includes maintenance free."
+          title="Four Plans. Pick What Fits."
+          subhead="SEO, cybersecurity, hosting, backups, and updates handled monthly. Or skip this entirely — every monthly Website or App plan already includes maintenance free."
           plans={maintenancePlans}
-          recommendation="Most small businesses pick the Standard plan at $300/month. It's the sweet spot — three updates a month, daily backups, uptime monitoring, and same-day text support. Heavier sites should look at Premium for unlimited minor updates and quarterly refreshes."
+          recommendation="Most small businesses pick Growth at $500/month — five updates a month, 24-hour response, and up to two calls a day. Need us instantly? Priority at $700 gives you same-hour contact. Partner at $1,000 adds two marketing videos a month and in-person meetings."
+
         />
 
         {/* COMPARISON */}
@@ -285,11 +304,13 @@ const MaintenancePlans = () => {
               </h2>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border max-w-6xl">
               {[
-                { type: "Simple / Landing Page", tier: "Basic", price: 150 },
-                { type: "Small Business Website", tier: "Standard", price: 300 },
-                { type: "Active / E-commerce Site", tier: "Premium", price: 500 },
+                { type: "Simple / Landing Page", tier: "Essential", price: 300 },
+                { type: "Small Business Website", tier: "Growth", price: 500 },
+                { type: "Active / E-commerce Site", tier: "Priority", price: 700 },
+                { type: "Revenue-Driving Brand", tier: "Partner", price: 1000 },
+
               ].map((item, i) => (
                 <motion.div
                   key={item.type}
@@ -307,7 +328,7 @@ const MaintenancePlans = () => {
                   </p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl md:text-5xl font-bold text-foreground">
-                      ${item.price}
+                      ${item.price.toLocaleString()}
                     </span>
                     <span className="text-sm text-muted-foreground">/month</span>
                   </div>
