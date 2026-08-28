@@ -26,7 +26,7 @@ const maintenancePlans = [
     name: "Growth",
     price: "$500",
     popular: true,
-    tagline: "SEO + cybersecurity included · 5 updates/mo · 24hr response · up to 2 calls/day · monthly strategy call",
+    tagline: "SEO + cybersecurity included · 5 updates/mo · 24hr response · up to 3 calls a week · monthly strategy call",
   },
   {
     name: "Priority",
