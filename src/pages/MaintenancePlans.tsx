@@ -144,7 +144,7 @@ const PlanCard = ({ plan, gridCols }: { plan: Plan; gridCols: number }) => (
       </p>
       <div className="flex items-baseline gap-1 mb-3">
         <span className="text-4xl md:text-5xl font-bold text-foreground">
-          ${plan.price}
+          ${plan.price.toLocaleString()}
         </span>
         <span className="text-sm text-muted-foreground">/month</span>
       </div>
