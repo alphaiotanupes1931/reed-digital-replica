@@ -192,6 +192,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
           </>
         ) : null}
       </div>
+      ) : null}
 
       {/* App info + store links */}
       <div className="flex items-start gap-4 mb-3">
