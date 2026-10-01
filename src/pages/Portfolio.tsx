@@ -38,6 +38,7 @@ type AppProject = {
   playStoreUrl?: string;
   liveDemoUrl?: string;
   status?: string;
+  showPreview?: boolean;
 };
 
 const appProjects: AppProject[] = [
@@ -68,7 +69,6 @@ const websiteProjects = [
   { title: "Auntie Sam", category: "Food & Beverage", url: "https://auntiesam.vercel.app/", image: auntieSamPreview },
   { title: "Build With Marcus", category: "Home Services", url: "https://buildwithmarcus.com/" },
   { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
-  { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/", slug: "shilom-ai" },
   { title: "DGM Consulting", category: "Consulting", url: "https://consultdgm.com/", slug: "dgm-consulting" },
   { title: "TradeMind", category: "Finance", url: "https://trademindaicoach.com/" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
@@ -80,7 +80,6 @@ const websiteProjects = [
   { title: "AVISIONSTUDIO", category: "Film & Cinematography", url: "https://theavisionstudio.com/" },
   { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
-  { title: "Alpha Iota Merch", category: "E-Commerce", url: "https://alphaiotamerch.com/" },
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
