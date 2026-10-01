@@ -50,6 +50,7 @@ const appProjects: AppProject[] = [
     icon: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/2d/b6/a8/2db6a896-060f-2a90-0e26-adc5d9a6b05f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/400x400bb.webp",
     appStoreUrl: "https://apps.apple.com/us/app/dgm-consulting/id6749719732",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.dgmconsulting.app",
+    showPreview: false,
   },
   {
     title: "AIVA",
