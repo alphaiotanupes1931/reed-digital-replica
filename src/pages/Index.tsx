@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
 import LeaveReviewSection from "@/components/LeaveReviewSection";
+import ConceptsSection from "@/components/ConceptsSection";
 import Footer from "@/components/Footer";
 import SectionNav from "@/components/SectionNav";
 import PageTransition from "@/components/PageTransition";
@@ -47,6 +48,7 @@ const Index = () => {
             </Link>
           </div>
         </section>
+        <ConceptsSection />
         <div id="testimonials">
           <TestimonialsSection />
         </div>
