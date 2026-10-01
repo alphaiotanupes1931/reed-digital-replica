@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
+import senaPreview from "@/assets/sena-preview.jpg";
+import floraPreview from "@/assets/flora-preview.jpg";
 
 const concepts = [
   {
     title: "Sena Studio",
     category: "Design Studio",
     url: "https://senawastudio.com/",
+    image: senaPreview,
   },
   {
     title: "Jeff Milanes",
@@ -17,6 +20,7 @@ const concepts = [
     title: "Flora Wellness Cafe",
     category: "Cafe & Wellness",
     url: "https://www.florawellnesscafe.com/",
+    image: floraPreview,
   },
   {
     title: "Crav Burgers",
