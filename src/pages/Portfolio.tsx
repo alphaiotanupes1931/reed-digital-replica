@@ -38,6 +38,7 @@ type AppProject = {
   playStoreUrl?: string;
   liveDemoUrl?: string;
   status?: string;
+  showPreview?: boolean;
 };
 
 const appProjects: AppProject[] = [
@@ -49,6 +50,7 @@ const appProjects: AppProject[] = [
     icon: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/2d/b6/a8/2db6a896-060f-2a90-0e26-adc5d9a6b05f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/400x400bb.webp",
     appStoreUrl: "https://apps.apple.com/us/app/dgm-consulting/id6749719732",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.dgmconsulting.app",
+    showPreview: false,
   },
   {
     title: "AIVA",
@@ -68,7 +70,6 @@ const websiteProjects = [
   { title: "Auntie Sam", category: "Food & Beverage", url: "https://auntiesam.vercel.app/", image: auntieSamPreview },
   { title: "Build With Marcus", category: "Home Services", url: "https://buildwithmarcus.com/" },
   { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
-  { title: "Shilom AI", category: "Technology", url: "https://shilomai.com/", slug: "shilom-ai" },
   { title: "DGM Consulting", category: "Consulting", url: "https://consultdgm.com/", slug: "dgm-consulting" },
   { title: "TradeMind", category: "Finance", url: "https://trademindaicoach.com/" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
@@ -80,7 +81,6 @@ const websiteProjects = [
   { title: "AVISIONSTUDIO", category: "Film & Cinematography", url: "https://theavisionstudio.com/" },
   { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
-  { title: "Alpha Iota Merch", category: "E-Commerce", url: "https://alphaiotamerch.com/" },
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
@@ -141,7 +141,8 @@ const AppListing = ({ app }: { app: AppProject }) => {
   return (
     <div className="group block">
       {/* Tabbed store preview */}
-      <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-2xl">
+      {(app.showPreview !== false && (app.appStoreUrl || app.playStoreUrl || app.liveDemoUrl)) ? (
+        <div className="relative aspect-[16/10] mb-4 border border-border overflow-hidden bg-muted rounded-2xl">
         {hasStores ? (
           <>
             {/* Browser chrome with tabs */}
@@ -191,6 +192,7 @@ const AppListing = ({ app }: { app: AppProject }) => {
           </>
         ) : null}
       </div>
+      ) : null}
 
       {/* App info + store links */}
       <div className="flex items-start gap-4 mb-3">
