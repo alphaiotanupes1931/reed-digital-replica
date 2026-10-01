@@ -95,7 +95,7 @@ const ConceptsSection = () => {
                 className="group block"
               >
                 <div className="transition-transform duration-300 group-hover:scale-[1.01]">
-                  <ConceptPreview url={concept.url} title={concept.title} />
+                  <ConceptPreview url={concept.url} title={concept.title} image={(concept as any).image} />
                 </div>
                 <div className="flex items-center justify-between mt-4">
                   <div>
