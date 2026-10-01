@@ -48,6 +48,7 @@ const Index = () => {
             </Link>
           </div>
         </section>
+        <ConceptsSection />
         <div id="testimonials">
           <TestimonialsSection />
         </div>
