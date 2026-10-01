@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import senaPreview from "@/assets/sena-preview.jpg";
 import floraPreview from "@/assets/flora-preview.jpg";
+import cravPreview from "@/assets/crav-preview.jpg";
 
 const concepts = [
   {
@@ -26,6 +27,7 @@ const concepts = [
     title: "Crav Burgers",
     category: "Restaurant",
     url: "https://www.cravburgers.shop/",
+    image: cravPreview,
   },
 ];
 
