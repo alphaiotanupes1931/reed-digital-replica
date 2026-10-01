@@ -29,7 +29,7 @@ const concepts = [
   },
 ];
 
-const ConceptPreview = ({ url, title }: { url: string; title: string }) => {
+const ConceptPreview = ({ url, title, image }: { url: string; title: string; image?: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -42,17 +42,29 @@ const ConceptPreview = ({ url, title }: { url: string; title: string }) => {
           </div>
         </div>
       )}
-      <iframe
-        src={url}
-        title={title}
-        className={`pointer-events-none origin-top-left transition-opacity duration-500 ${
-          isLoaded ? "opacity-100" : "opacity-0"
-        }`}
-        style={{ width: "200%", height: "200%", transform: "scale(0.5)" }}
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin"
-        onLoad={() => setIsLoaded(true)}
-      />
+      {image ? (
+        <img
+          src={image}
+          alt={title}
+          className={`w-full h-full object-cover object-top transition-opacity duration-500 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          onLoad={() => setIsLoaded(true)}
+        />
+      ) : (
+        <iframe
+          src={url}
+          title={title}
+          className={`pointer-events-none origin-top-left transition-opacity duration-500 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ width: "200%", height: "200%", transform: "scale(0.5)" }}
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin"
+          onLoad={() => setIsLoaded(true)}
+        />
+      )}
+      <div className="absolute inset-0 bg-transparent group-hover:bg-foreground/5 transition-colors" />
     </div>
   );
 };
