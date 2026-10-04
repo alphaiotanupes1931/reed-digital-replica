@@ -181,7 +181,7 @@ const BillsTracker = () => {
   const w2Rows = extraIncome.filter((r) => r.category ==="w2");
   const totalW2 = w2Rows.reduce((s, r) => s + Number(r.price || 0), 0);
   const expenseRows = extraIncome.filter((r) => r.category ==="business_expense");
-  const totalExpenses = expenseRows.reduce((s, r) => s + Number(r.price || 0), 0);
+  const totalExpenses = expenseRows.filter((r) => !hiddenExp.includes(r.id)).reduce((s, r) => s + Number(r.price || 0), 0);
   const extraRows = extraIncome.filter((r) => r.category !=="w2" && r.category !=="business_expense");
   const totalExtra = extraRows.filter((r) => !hiddenExtra.includes(r.id)).reduce((s, r) => s + Number(r.price || 0), 0);
   const grandIncome = totalW2 + totalExtra - totalExpenses;
