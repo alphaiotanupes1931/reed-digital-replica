@@ -43,7 +43,7 @@ import HomeOfficeHelp from "./pages/HomeOfficeHelp";
 import BillsTracker from "./pages/BillsTracker";
 import HomeOfficeProfile from "./pages/HomeOfficeProfile";
 import Taxes from "./pages/Taxes";
-import AppsLanding from "./pages/AppsLanding";
+import AppsDashboard from "./pages/AppsDashboard";
 import AppsLogin from "./pages/AppsLogin";
 import AppsResetPassword from "./pages/AppsResetPassword";
 import AppsOnboarding from "./pages/AppsOnboarding";
@@ -120,7 +120,7 @@ const App = () => (
             <Route path="/home-office/bills" element={<BillsTracker />} />
             <Route path="/home-office/profile" element={<HomeOfficeProfile />} />
             <Route path="/home-office/taxes" element={<Taxes />} />
-            <Route path="/apps" element={<AppsLanding />} />
+            <Route path="/apps" element={<AppsDashboard />} />
             <Route path="/apps/login" element={<AppsLogin />} />
             <Route path="/apps/reset-password" element={<AppsResetPassword />} />
             <Route path="/apps/onboarding" element={<AppsOnboarding />} />
