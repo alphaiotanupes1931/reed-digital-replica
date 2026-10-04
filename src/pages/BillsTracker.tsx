@@ -681,19 +681,23 @@ const BillsTracker = () => {
               <p className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-6">No business expenses yet.</p>
             ) : (
               <div className="border border-border divide-y divide-foreground/10">
-                {expenseRows.map((r) => (
-                  <div key={r.id} className="flex flex-col md:flex-row gap-4 md:items-center justify-between p-4">
+                {expenseRows.map((r) => {
+                  const isHidden = hiddenExp.includes(r.id);
+                  return (
+                  <div key={r.id} className={`flex flex-col md:flex-row gap-4 md:items-center justify-between p-4 ${isHidden ?"opacity-50 bg-muted/30" :""}`}>
                     <div className="min-w-0">
-                      <p className="font-bold text-sm">{r.source}</p>
+                      <p className={`font-bold text-sm ${isHidden ?"line-through text-muted-foreground" :""}`}>{r.source}</p>
                       {r.notes && <p className="text-xs text-muted-foreground mt-1">{r.notes}</p>}
                     </div>
                     <div className="flex items-center gap-2 shrink-0 flex-wrap">
                       <p className="font-bold text-sm text-destructive">−{fmt(Number(r.price))}</p>
                       <Button size="sm" variant="outline" onClick={() => startEditExp(r)}>Edit</Button>
                       <Button size="sm" variant="outline" onClick={() => handleDeleteExp(r.id)}>Delete</Button>
+                      <Button size="sm" variant={isHidden ?"outline" :"default"} onClick={() => toggleHiddenExp(r.id)}>{isHidden ?"Show" :"Hide"}</Button>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
                 <div className="flex items-center justify-between p-4 bg-foreground text-background rounded-full">
                   <p className="font-bold text-sm uppercase tracking-widest">Total</p>
                   <p className="font-bold text-sm">−{fmt(totalExpenses)}</p>
