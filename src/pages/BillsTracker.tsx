@@ -47,6 +47,16 @@ const BillsTracker = () => {
   const [expNotes, setExpNotes] = useState("");
   const [editingExpId, setEditingExpId] = useState<string | null>(null);
   const expFormRef = useRef<HTMLDivElement | null>(null);
+  const [hiddenExp, setHiddenExp] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("bills_hidden_exp") || "[]"); } catch { return []; }
+  });
+  const toggleHiddenExp = (id: string) => {
+    setHiddenExp((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem("bills_hidden_exp", JSON.stringify(next));
+      return next;
+    });
+  };
   const [editingSalary, setEditingSalary] = useState(false);
   const [salaryDraft, setSalaryDraft] = useState("");
   const [taxTitle, setTaxTitle] = useState("");
