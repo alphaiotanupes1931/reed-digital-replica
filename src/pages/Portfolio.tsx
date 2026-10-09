@@ -81,6 +81,8 @@ const websiteProjects = [
   { title: "AVISIONSTUDIO", category: "Film & Cinematography", url: "https://theavisionstudio.com/" },
   { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
+  { title: "Alpha Iota Merch", category: "Merchandise", url: "https://alphaiotamerch.com/" },
+
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
