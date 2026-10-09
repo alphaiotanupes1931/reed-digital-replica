@@ -12,6 +12,10 @@ import PortfolioSkeleton from "@/components/PortfolioSkeleton";
 import ClientCarousel from "@/components/ClientCarousel";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
+import senaPreview from "@/assets/sena-preview.jpg";
+import floraPreview from "@/assets/flora-preview.jpg";
+import cravPreview from "@/assets/crav-preview.jpg";
+import newmixPreview from "@/assets/newmix-preview.jpg";
 import menuInside from "@/assets/auntie-sams-menu-inside.png.asset.json";
 import menuOutside from "@/assets/auntie-sams-menu-outside.png.asset.json";
 
@@ -66,13 +70,18 @@ const appProjects: AppProject[] = [
 
 const websiteProjects = [
   { title: "Reed Digital Group", category: "Agency", url: "https://reeddigitalgroup.com/" },
+  { title: "Sena Studio", category: "Design Studio", url: "https://senawastudio.com/", image: senaPreview },
   { title: "Young ExeKutive", category: "Personal Brand", url: "https://youngexekutive.com/" },
   { title: "Auntie Sam", category: "Food & Beverage", url: "https://auntiesam.vercel.app/", image: auntieSamPreview },
+  { title: "Jeff Milanes", category: "Personal Portfolio", url: "https://www.jeffmilanes.com/" },
   { title: "Build With Marcus", category: "Home Services", url: "https://buildwithmarcus.com/" },
+  { title: "Flora Wellness Cafe", category: "Cafe & Wellness", url: "https://www.florawellnesscafe.com/", image: floraPreview },
   { title: "Friends of Jessica Showell", category: "Political", url: "https://friendsofjessicashowell.com/", image: jessicaPreview },
   { title: "DGM Consulting", category: "Consulting", url: "https://consultdgm.com/", slug: "dgm-consulting" },
+  { title: "Crav Burgers", category: "Restaurant", url: "https://www.cravburgers.shop/", image: cravPreview },
   { title: "TradeMind", category: "Finance", url: "https://trademindaicoach.com/" },
   { title: "The Intern by Shilom", category: "Finance", url: "https://www.theinternbyshilom.com/" },
+  { title: "New Mix Coffee", category: "Coffee Brand", url: "https://newmixcoffee.com/en", image: newmixPreview },
   { title: "Wright Shade Creations", category: "Art", url: "https://wrightshadecreations.com/" },
   { title: "OQP Solutions", category: "Government", url: "https://oqpsolutions.com/", slug: "oqp-solutions" },
   { title: "Kappa Alpha Psi Fraternity Inc.", category: "Organization", url: "https://ainupes1931.com/" },
@@ -82,7 +91,6 @@ const websiteProjects = [
   { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
   { title: "Alpha Iota Merch", category: "Merchandise", url: "https://alphaiotamerch.com/" },
-
   { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
