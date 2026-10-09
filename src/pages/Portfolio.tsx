@@ -69,6 +69,9 @@ const appProjects: AppProject[] = [
 // Website projects with live iframe previews
 
 const websiteProjects = [
+  { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
+  { title: "HospiHub", category: "Hospitality", url: "https://hospihub.net/" },
+  { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Reed Digital Group", category: "Agency", url: "https://reeddigitalgroup.com/" },
   { title: "Sena Studio", category: "Design Studio", url: "https://senawastudio.com/", image: senaPreview },
   { title: "Young ExeKutive", category: "Personal Brand", url: "https://youngexekutive.com/" },
@@ -88,15 +91,12 @@ const websiteProjects = [
   { title: "VisionHeartz", category: "Clothing", url: "https://visionheartz.github.io/" },
   { title: "Conation Fitness", category: "Fitness", url: "https://conationfitness.com/" },
   { title: "AVISIONSTUDIO", category: "Film & Cinematography", url: "https://theavisionstudio.com/" },
-  { title: "Planet Baltimore", category: "Community", url: "https://planetbaltimore.vercel.app/" },
   { title: "Alpha Iota 95th Anniversary", category: "Organization", url: "https://alphaiota95.com/" },
   { title: "Alpha Iota Merch", category: "Merchandise", url: "https://alphaiotamerch.com/" },
-  { title: "Call Us First", category: "Government", url: "https://www.callusfirst.world/" },
   { title: "Got Tint", category: "Automotive", url: "https://got-tint-redesign.vercel.app/" },
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
   { title: "Archives of Lo", category: "Art", url: "https://archivesoflo.com/" },
   { title: "Geek Beats", category: "Music", url: "https://geekbeats.vercel.app/" },
-  { title: "HospiHub", category: "Hospitality", url: "https://hospihub.net/" },
 ];
 
 const StorePreview = ({ url, title }: { url: string; title: string }) => {
