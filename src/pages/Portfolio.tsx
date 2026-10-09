@@ -12,6 +12,10 @@ import PortfolioSkeleton from "@/components/PortfolioSkeleton";
 import ClientCarousel from "@/components/ClientCarousel";
 import jessicaPreview from "@/assets/jessica-showell-preview.png";
 import auntieSamPreview from "@/assets/auntie-sam-preview.png";
+import senaPreview from "@/assets/sena-preview.jpg";
+import floraPreview from "@/assets/flora-preview.jpg";
+import cravPreview from "@/assets/crav-preview.jpg";
+import newmixPreview from "@/assets/newmix-preview.jpg";
 import menuInside from "@/assets/auntie-sams-menu-inside.png.asset.json";
 import menuOutside from "@/assets/auntie-sams-menu-outside.png.asset.json";
 
