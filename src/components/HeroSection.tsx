@@ -79,16 +79,12 @@ const HeroSection = () => {
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center py-24">
           <motion.p 
-            className="text-5xl md:text-7xl font-black tracking-[0.15em] uppercase text-foreground mb-6"
-            style={{
-              textShadow:
-                "1px 1px 0 hsl(var(--foreground) / 0.55), 2px 2px 0 hsl(var(--foreground) / 0.45), 3px 3px 0 hsl(var(--foreground) / 0.35), 4px 4px 0 hsl(var(--foreground) / 0.25), 5px 5px 0 hsl(var(--foreground) / 0.15), 8px 8px 16px hsl(var(--foreground) / 0.25)",
-            }}
+            className="text-2xl md:text-3xl font-bold tracking-[0.2em] uppercase text-brand mb-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
-            RDG
+            Reed Digital Group
           </motion.p>
 
           <motion.p 
