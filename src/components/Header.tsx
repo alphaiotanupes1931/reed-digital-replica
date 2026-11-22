@@ -137,12 +137,15 @@ const Header = () => {
       <div className="container mx-auto">
         <div className="flex items-center justify-between py-4 md:py-5">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center gap-3">
             <img
               src={logo}
               alt="Reed Digital Group"
               className="h-7 md:h-10 w-auto"
             />
+            <span className="hidden sm:block text-sm md:text-base font-bold tracking-[0.15em] uppercase text-brand">
+              Reed Digital Group
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
