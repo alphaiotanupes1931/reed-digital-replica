@@ -79,6 +79,15 @@ const HeroSection = () => {
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center py-24">
           <motion.p 
+            className="text-sm font-semibold tracking-[0.35em] uppercase text-brand mb-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            Reed Digital Group
+          </motion.p>
+
+          <motion.p 
             className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -98,12 +107,21 @@ const HeroSection = () => {
           </motion.h1>
 
           <motion.p 
-            className="text-lg text-muted-foreground max-w-xl mx-auto mb-10"
+            className="text-lg text-muted-foreground max-w-xl mx-auto mb-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
             Websites and apps for businesses that want to look great online — priced fairly.
+          </motion.p>
+
+          <motion.p 
+            className="text-xs tracking-[0.25em] uppercase text-muted-foreground/80 mb-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            Clean. Modern. Built to grow.
           </motion.p>
 
           <motion.div 
