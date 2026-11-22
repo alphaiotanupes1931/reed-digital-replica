@@ -97,6 +97,7 @@ const websiteProjects = [
   { title: "Luxury Courier Club", category: "Lifestyle", url: "https://luxurycourier.club/" },
   { title: "Archives of Lo", category: "Art", url: "https://archivesoflo.com/" },
   { title: "Geek Beats", category: "Music", url: "https://geekbeats.vercel.app/" },
+  { title: "First View CUF", category: "Finance", url: "https://firstviewcuf.vercel.app/" },
 ];
 
 const StorePreview = ({ url, title }: { url: string; title: string }) => {
